@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173d35"><title>ميثاق | نموذج التطبيق</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#19342c;background:#f3f6f2}*{box-sizing:border-box}body{margin:0}.wrap{max-width:760px;margin:auto}
+header{background:#173d35;color:#fff;padding:22px 18px 24px}.brand{font-size:13px;opacity:.8}.hero h1{margin:8px 0;font-size:30px}.hero p{margin:0;line-height:1.8;color:#e1ece6}
+main{padding:16px}.demo{background:#fff3d6;border:1px solid #ead49c;border-radius:13px;padding:11px 13px;font-size:13px;line-height:1.7;margin-bottom:14px}
+nav{display:flex;gap:7px;overflow:auto;margin-bottom:14px}button{font:inherit;cursor:pointer;border:0;border-radius:11px;padding:10px 13px}nav button{white-space:nowrap;background:#e3ebe5;color:#29483d}nav button.active,.primary{background:#1d5a49;color:white}
+.card{background:#fff;border:1px solid #e0e8e1;border-radius:17px;padding:16px;margin-bottom:13px;box-shadow:0 3px 14px #173d3508}.muted{color:#66766e;line-height:1.8}.tag{display:inline-block;background:#e9f2ec;color:#285543;padding:4px 9px;border-radius:30px;font-size:12px;margin:2px}
+h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-between;gap:10px;align-items:center}.profile h3{margin:0 0 4px}.avatar{width:45px;height:45px;border-radius:50%;background:#e4eee7;display:grid;place-items:center;font-size:21px;flex:none}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.secondary{background:#e7efea;color:#24483b}.field{margin:12px 0}label{display:block;font-size:14px;margin-bottom:6px}input,select,textarea{width:100%;font:inherit;border:1px solid #cbd8cf;border-radius:10px;padding:11px;background:#fff}textarea{min-height:125px}.tab.hidden{display:none}.notice{font-size:13px;color:#64736b;line-height:1.8}footer{text-align:center;padding:20px;color:#718078;font-size:12px}
+</style></head>
+<body>
+<header><div class="wrap hero"><div class="brand">MITHAQ • ميثاق</div><h1>التعارف الجاد يبدأ بالاحترام</h1><p>للتعارف بقصد الزواج المعلن أو المسيار، مع حفظ الخصوصية ووضوح الموافقة.</p></div></header>
+<main class="wrap">
+<div class="demo"><strong>نسخة تجريبية ببيانات وهمية فقط.</strong> لا تنشئ حسابات ولا تحفظ البيانات ولا ترسل واتساب. لا تدخل معلوماتك الشخصية.</div>
+<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="life">حياتي</button><button data-tab="requests">طلباتي</button><button data-tab="safety">الأمان</button></nav>
+<section id="home" class="tab">
+<div class="card"><h2>مرحباً بك في ميثاق</h2><p class="muted">مساحة للتعارف الجاد، يكون فيها القرار للطرفين. لا محادثات داخلية، ولا كشف لوسيلة التواصل دون موافقة مستقلة من الطرفين.</p><div class="row"><button class="primary" data-go="search">استكشف الملفات</button><button class="secondary" data-go="safety">تعرف على الخصوصية</button></div></div>
+<div class="card"><h2>كيف يعمل ميثاق؟</h2><p class="muted">تصفح الملف ← أبدِ اهتمامك ← أرسل طلب وصول ← ينتظر موافقة صاحب الملف ← يوافق الطرفان بشكل مستقل على كشف واتساب.</p><span class="tag">الرضا أولاً</span><span class="tag">لا صور أو فيديو</span><span class="tag">التواصل الأساسي مجاني</span></div>
+<div class="card"><h2>ملفات مقترحة — وهمية</h2><div class="profile"><div><h3>ملف تجريبي ١</h3><p class="muted">السعودية · زواج معلن</p></div><span class="tag">بيانات وهمية</span></div><button class="secondary" data-go="search">عرض الملفات</button></div>
+</section>
+<section id="search" class="tab hidden">
+<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول التجريبية</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
+<div id="profiles">
+<div class="card profile-card" data-country="السعودية" data-kind="الزواج المعلن"><div class="profile"><div class="avatar">م</div><div style="flex:1"><h3>ملف تجريبي ألف</h3><p class="muted">السعودية · الزواج المعلن</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
+<div class="card profile-card" data-country="السعودية" data-kind="زواج المسيار"><div class="profile"><div class="avatar">ن</div><div style="flex:1"><h3>ملف تجريبي باء</h3><p class="muted">السعودية · زواج المسيار</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
+<div class="card profile-card" data-country="دولة أخرى" data-kind="الزواج المعلن"><div class="profile"><div class="avatar">س</div><div style="flex:1"><h3>ملف تجريبي جيم</h3><p class="muted">دولة أخرى · الزواج المعلن</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
+</div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
+</section>
+<section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. هذه المعاينة لا تحفظ النص.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
+<section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p class="muted">ستظهر هنا الطلبات في النسخة الفعلية. في هذه المعاينة، الأزرار لا ترسل طلبات حقيقية.</p><div id="requestList" class="muted">لا توجد طلبات تجريبية بعد.</div></div></section>
+<section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا يظهر رقم واتساب عند مشاهدة الملف أو إبداء الاهتمام.</li><li>لا يُكشف الرقم إلا بعد موافقة منفصلة وصريحة من الطرفين.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>يمكن إيقاف الكشف مستقبلاً، لكن لا يمكن استرجاع ما حفظه الطرف الآخر سابقاً.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
+</main><footer>ميثاق — نموذج واجهات أولي فقط · لا تستخدم بيانات حقيقية</footer>
+<script>
+const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+function show(id){tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));}
+nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+function filter(){const c=document.getElementById('country').value,k=document.getElementById('kind').value;let n=0;document.querySelectorAll('.profile-card').forEach(p=>{const ok=(c==='all'||p.dataset.country===c)&&(k==='all'||p.dataset.kind===k);p.style.display=ok?'block':'none';if(ok)n++;});document.getElementById('searchMsg').textContent='عدد الملفات التجريبية المعروضة: '+n;}
+document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);
+document.querySelectorAll('.interest').forEach((b,i)=>b.addEventListener('click',()=>{document.getElementById('requestList').textContent='اهتمام تجريبي بالملف '+(i+1)+' — لم يُرسل إلى أي شخص ولم تُكشف أي بيانات.';show('requests');}));
+document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\\p{S}\\p{P}\\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: قسم حياتي في التصميم النهائي مخصص للحروف والكلمات فقط. لا يتم حفظ النص.':'معاينة محلية فقط؛ لم يتم حفظ النص.';});
+</script></body></html>
