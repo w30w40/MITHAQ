@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d35">
+  <title>ميثاق | نموذج أولي</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#172b26;background:#f4f6f3}
+    *{box-sizing:border-box}body{margin:0}header{background:#173d35;color:white;padding:24px 18px 28px}
+    .wrap{max-width:760px;margin:auto}.brand{font-size:13px;opacity:.85}.hero h1{font-size:32px;margin:8px 0}.hero p{line-height:1.8;margin:0;color:#e2eee9}
+    main{padding:18px}.notice{background:#fff4d9;border:1px solid #efd89c;padding:12px 14px;border-radius:14px;line-height:1.7;font-size:13px;margin-bottom:16px}
+    nav{display:flex;gap:8px;overflow:auto;margin:0 0 16px}nav button,.action{border:0;border-radius:12px;padding:11px 14px;font:inherit;cursor:pointer}
+    nav button{background:#e4eae5;color:#24443b;white-space:nowrap}nav button.active,.action{background:#1c5a49;color:white}
+    .card{background:white;border:1px solid #e1e8e2;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 3px 14px #173d3508}
+    h2{font-size:20px;margin:0 0 12px}.muted{color:#66766e;line-height:1.8}.profile{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .tag{font-size:12px;background:#e9f2ec;color:#285543;padding:5px 9px;border-radius:20px}.field{margin:12px 0}
+    label{display:block;font-size:14px;margin-bottom:6px}input,textarea,select{width:100%;padding:12px;border:1px solid #cbd8cf;border-radius:11px;font:inherit;background:#fff}
+    textarea{min-height:110px;resize:vertical}.action{margin-top:8px}.action.secondary{background:#e8efea;color:#24443b}
+    .row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}.hidden{display:none}.profile h3{margin:0 0 4px}
+    footer{text-align:center;color:#718078;font-size:12px;padding:18px;line-height:1.8}
+  </style>
+</head>
+<body>
+<header><div class="wrap hero"><div class="brand">MITHAQ • ميثاق</div><h1>التعارف الجاد يبدأ بالاحترام</h1><p>مساحة للتعارف بقصد الزواج المعلن أو المسيار، مع حفظ الخصوصية ووضوح الموافقة.</p></div></header>
+<main class="wrap">
+  <div class="notice"><strong>نموذج تجريبي فقط:</strong> هذه الواجهة لا تنشئ حسابات حقيقية ولا تحفظ بيانات ولا ترسل واتساب. استخدم بيانات وهمية فقط.</div>
+  <nav aria-label="التنقل">
+    <button class="active" data-tab="home">الرئيسية</button><button data-tab="profile">ملفي التجريبي</button><button data-tab="life">حياتي</button><button data-tab="safety">الخصوصية</button>
+  </nav>
+  <section id="home" class="tab">
+    <div class="card"><h2>أهلاً بك في ميثاق</h2><p class="muted">الهدف هو تسهيل التعارف الجاد مع احترام حق كل شخص في القبول أو الرفض. لا توجد محادثات داخلية في التصور الأساسي.</p><div class="row"><button class="action" data-go="profile">إنشاء ملف تجريبي</button><button class="action secondary" data-go="safety">كيف نحمي الخصوصية؟</button></div></div>
+    <div class="card"><h2>مبادئ ميثاق</h2><p class="muted">لا يظهر رقم التواصل عند مشاهدة الملف أو إبداء الاهتمام. لا يُكشف واتساب إلا بعد موافقة منفصلة وصريحة من الطرفين.</p><span class="tag">الرضا أولاً</span> <span class="tag">لا صور في النموذج</span> <span class="tag">لا رسوم للتواصل الأساسي</span></div>
+  </section>
+  <section id="profile" class="tab hidden">
+    <div class="card"><h2>ملف تجريبي</h2><div class="field"><label for="country">الدولة (تجريبي)</label><select id="country"><option>السعودية</option><option>دولة أخرى — لاحقاً</option></select></div>
+    <div class="field"><label for="kind">نوع الزواج المرغوب</label><select id="kind"><option>الزواج المعلن</option><option>زواج المسيار</option><option>كلاهما</option></select></div>
+    <div class="field"><label for="about">نبذة تجريبية قصيرة</label><textarea id="about" placeholder="اكتب وصفاً وهمياً لا يتضمن بيانات شخصية"></textarea></div><button class="action" id="interest">إبداء اهتمام تجريبي</button><p id="profileMsg" class="muted" aria-live="polite"></p></div>
+  </section>
+  <section id="life" class="tab hidden">
+    <div class="card"><h2>حياتي</h2><p class="muted">المبدأ المقترح: نص فقط دون صور أو فيديو أو أرقام أو رموز أو إيموجي. هذه النسخة تعرض الفكرة ولا تحفظ النص.</p><div class="field"><label for="lifeText">اكتب نصاً تجريبياً</label><textarea id="lifeText" placeholder="اكتب كلماتك هنا دون معلومات حقيقية"></textarea></div><p id="lifeMsg" class="muted" aria-live="polite"></p></div>
+  </section>
+  <section id="safety" class="tab hidden">
+    <div class="card"><h2>كيف تتم الموافقة؟</h2><ol class="muted"><li>يمكن إرسال طلب وصول دون كشف الرقم.</li><li>صاحب الملف يختار القبول أو الرفض.</li><li>بعد القبول، يوافق كل طرف بشكل مستقل على كشف وسيلة التواصل.</li><li>لا يُكشف الرقم إلا بعد اكتمال موافقة الطرفين.</li></ol><p class="muted">الموافقة على التواصل لا تعني الموافقة على الزواج. ويمكن إيقاف الكشف مستقبلاً، مع العلم أن ما شاهده الطرف الآخر سابقاً قد لا يمكن استرجاعه.</p></div>
+    <div class="card"><h2>الجهات الرسمية</h2><p class="muted">ستضاف روابط المحاكم والجهات الرسمية بعد التحقق من مصادرها لكل دولة. ميثاق منصة مستقلة وليس جهة حكومية أو جهة إصدار عقود.</p></div>
+  </section>
+</main>
+<footer>ميثاق — نسخة واجهات أولية غير مخصصة للاستخدام الحقيقي. لا تدخل بياناتك الشخصية.</footer>
+<script>
+  const tabs=[...document.querySelectorAll('.tab')], nav=[...document.querySelectorAll('nav button')];
+  function show(id){tabs.forEach(x=>x.classList.toggle('hidden',x.id!==id));nav.forEach(x=>x.classList.toggle('active',x.dataset.tab===id));}
+  nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+  document.getElementById('interest').addEventListener('click',()=>{document.getElementById('profileMsg').textContent='تم تسجيل اهتمام تجريبي على الشاشة فقط. لم يتم إرسال أي طلب أو كشف أي بيانات.';});
+  document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\p{S}\p{P}\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: التصور النهائي لقسم حياتي يسمح بالحروف والكلمات فقط. لم يتم حفظ النص.':'لم يتم حفظ النص؛ هذه معاينة محلية فقط.';});
+</script>
+</body>
+</html>
