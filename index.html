@@ -37,11 +37,7 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 </div></section>
 <section id="search" class="tab hidden">
 <div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول التجريبية</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
-<div id="profiles">
-<div class="card profile-card" data-country="السعودية" data-kind="الزواج المعلن"><div class="profile"><div class="avatar">م</div><div style="flex:1"><h3>ملف تجريبي ألف</h3><p class="muted">السعودية · الزواج المعلن</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
-<div class="card profile-card" data-country="السعودية" data-kind="زواج المسيار"><div class="profile"><div class="avatar">ن</div><div style="flex:1"><h3>ملف تجريبي باء</h3><p class="muted">السعودية · زواج المسيار</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
-<div class="card profile-card" data-country="دولة أخرى" data-kind="الزواج المعلن"><div class="profile"><div class="avatar">س</div><div style="flex:1"><h3>ملف تجريبي جيم</h3><p class="muted">دولة أخرى · الزواج المعلن</p></div><span class="tag">وهمي</span></div><p class="muted">مثال توضيحي لملف عام لا يمثل شخصاً حقيقياً.</p><button class="primary interest">إبداء اهتمام</button></div>
-</div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
+<div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
 <section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p class="muted">طلبات الوصول والاهتمام لم تُفعّل بعد؛ هذه الصفحة للعرض فقط.</p><div id="requestList" class="muted">لا توجد طلبات تجريبية بعد.</div></div></section>
@@ -116,8 +112,37 @@ document.querySelector('button[data-tab="myprofile"]').addEventListener('click',
 supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
 
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
-function filter(){const c=document.getElementById('country').value,k=document.getElementById('kind').value;let n=0;document.querySelectorAll('.profile-card').forEach(p=>{const ok=(c==='all'||p.dataset.country===c)&&(k==='all'||p.dataset.kind===k);p.style.display=ok?'block':'none';if(ok)n++;});document.getElementById('searchMsg').textContent='عدد الملفات التجريبية المعروضة: '+n;}
+let publishedProfiles=[];
+function renderPublishedProfiles(){
+ const c=document.getElementById('country').value,k=document.getElementById('kind').value,host=document.getElementById('profiles');
+ host.replaceChildren();let count=0;
+ publishedProfiles.filter(p=>(c==='all'||(p.country||'')===c)&&(k==='all'||p.marriage_type===k)).forEach(p=>{
+  count++;const card=document.createElement('div');card.className='card profile-card';
+  const head=document.createElement('div');head.className='profile';
+  const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
+  const info=document.createElement('div');info.style.flex='1';
+  const name=document.createElement('h3');name.textContent=p.display_name||'عضو ميثاق';
+  const meta=document.createElement('p');meta.className='muted';const type=p.marriage_type==='معلن'?'الزواج المعلن':p.marriage_type==='مسيار'?'زواج المسيار':'';
+  meta.textContent=[p.country,p.region,type].filter(Boolean).join(' · ');
+  info.append(name,meta);head.append(avatar,info);card.append(head);
+  if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
+  host.append(card);
+ });
+ document.getElementById('searchMsg').textContent='عدد الملفات المنشورة المعروضة: '+count;
+ if(!count){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد ملفات منشورة تطابق اختياراتك حالياً.';host.append(empty);}
+}
+async function loadPublishedProfiles(){
+ const host=document.getElementById('profiles');
+ if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
+ host.textContent='جارٍ تحميل الملفات المنشورة...';
+ const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text').eq('is_published',true);
+ if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
+ publishedProfiles=data||[];renderPublishedProfiles();
+}
+function filter(){renderPublishedProfiles();}
 document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);
-document.querySelectorAll('.interest').forEach((b,i)=>b.addEventListener('click',()=>{document.getElementById('requestList').textContent='اهتمام تجريبي بالملف '+(i+1)+' — لم يُرسل إلى أي شخص ولم تُكشف أي بيانات.';show('requests');}));
+document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);
 document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\\p{S}\\p{P}\\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: قسم حياتي في التصميم النهائي مخصص للحروف والكلمات فقط. لا يتم حفظ النص.':'معاينة محلية فقط؛ لم يتم حفظ النص.';});
 </script></body></html>
