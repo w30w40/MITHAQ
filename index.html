@@ -690,7 +690,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
 // يتم تحميل الملف من show() عند فتح تبويبه.
 
 document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='messages')loadConversations();}));
-document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){document.getElementById('signedInBox').hidden=true;document.body.classList.remove('authenticated');showEntry('signup');}});
+document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){const signedInBox=document.getElementById('signedInBox');if(signedInBox)signedInBox.hidden=true;document.body.classList.remove('authenticated');showEntry('signup');}});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
