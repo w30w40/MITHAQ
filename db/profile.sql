@@ -85,6 +85,29 @@ BEGIN
   ON CONFLICT (id) DO UPDATE
   SET details = COALESCE(EXCLUDED.details, '{}'::jsonb) || COALESCE(public.profile_details.details, '{}'::jsonb),
       updated_at = now();
+
+  -- Publish only when the new member explicitly accepted the public-listing consent.
+  IF COALESCE((NEW.raw_user_meta_data->>'public_listing_consent')::boolean, false) THEN
+    INSERT INTO public.profiles
+      (id, display_name, country, region, marriage_type, life_text, is_published)
+    VALUES (
+      NEW.id,
+      COALESCE(NULLIF(NEW.raw_user_meta_data->>'username', ''), 'عضو ميثاق'),
+      NULLIF(NEW.raw_user_meta_data->>'country', ''),
+      NULLIF(NEW.raw_user_meta_data->>'city', ''),
+      NULLIF(NEW.raw_user_meta_data->>'marriage_type', ''),
+      COALESCE(NEW.raw_user_meta_data->>'about', ''),
+      true
+    )
+    ON CONFLICT (id) DO UPDATE SET
+      display_name = EXCLUDED.display_name,
+      country = EXCLUDED.country,
+      region = EXCLUDED.region,
+      marriage_type = EXCLUDED.marriage_type,
+      life_text = EXCLUDED.life_text,
+      is_published = true,
+      updated_at = now();
+  END IF;
   RETURN NEW;
 END;
 $function$;
