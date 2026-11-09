@@ -91,6 +91,22 @@ body.authenticated .card h2{color:#246b98}
  .member-section-heading h2{font-size:19px}
 }
 @media(max-width:370px){.member-service strong{font-size:13px}.member-service small{font-size:11px}}
+ 
+.member-profile-cover{display:flex;align-items:center;gap:17px;padding:23px;border-radius:18px;background:linear-gradient(115deg,#fff0f4,#e5f3fa);border:1px solid #f0dfe5;margin-bottom:16px}
+.member-profile-avatar{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#287ba5;font-size:37px;border:4px solid #fff;box-shadow:0 2px 12px #0001}
+.member-profile-cover h2{font-size:23px;color:#246b98;margin:5px 0}
+.member-profile-cover p{font-size:13px;color:#77848c;margin:0}
+.member-profile-card{background:#fff;border:1px solid #f0e3e6;border-radius:17px;padding:19px;margin:14px 0;box-shadow:0 5px 18px #963a4a08}
+.member-profile-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid #f3e8eb;padding-bottom:12px;margin-bottom:13px}
+.member-profile-card-head h2{font-size:19px;color:#246b98;margin:0}
+.member-profile-card-head span{font-size:11px;color:#9a8790}
+.member-profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.member-detail-item{background:#fff9fa;border:1px solid #f4e8eb;border-radius:12px;padding:11px 13px;min-width:0}
+.member-detail-item span{display:block;font-size:11px;color:#9b7d87;margin-bottom:5px}
+.member-detail-item strong{display:block;font-size:14px;color:#35444d;overflow-wrap:anywhere}
+.member-profile-about{white-space:pre-wrap;line-height:1.9;color:#485963;font-size:14px}
+.member-profile-card form{margin-top:14px}
+@media(max-width:600px){.member-profile-cover{padding:17px}.member-profile-avatar{width:62px;height:62px;font-size:30px}.member-profile-card{padding:15px}.member-profile-details{grid-template-columns:1fr}.member-profile-card-head h2{font-size:17px}}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -375,19 +391,30 @@ body.authenticated #entryGate{display:none}
   <div class="member-info-card"><strong>خصوصيتك أولاً</strong><p>لا تشارك رقم هاتفك أو معلوماتك الشخصية الحساسة في ملفك. لا تبدأ المراسلة إلا بعد قبول طلب التعارف.</p></div>
 </section>
 <section id="myprofile" class="tab hidden">
-<div class="card"><h2>ملفي الشخصي</h2>
-<p id="profileGate" class="muted">سجّل الدخول أولاً لإنشاء ملفك وحفظه بشكل خاص.</p>
+<div class="member-page-title"><div><small>حسابك في ميثاق</small><h1>ملفي الشخصي</h1></div><span class="member-title-heart">♥</span></div>
+<div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div></div>
+<p id="profileGate" class="muted">جارٍ تحميل ملفك الشخصي...</p>
+<div class="member-profile-card">
+<div class="member-profile-card-head"><h2>معلوماتي الشخصية</h2><span>كما أدخلتها عند التسجيل</span></div>
+<div id="myProfileDetails" class="member-profile-details"><p class="muted">جارٍ تحميل المواصفات...</p></div>
+</div>
+<div class="member-profile-card">
+<div class="member-profile-card-head"><h2>نبذة عني ومواصفات شريك الحياة</h2><span>معلوماتك التعريفية</span></div>
+<div id="myProfileAbout" class="member-profile-about">—</div>
+</div>
+<div class="member-profile-card">
+<div class="member-profile-card-head"><h2>تعديل الملف الشخصي</h2><span>احفظ التغييرات عند الانتهاء</span></div>
 <form id="myProfileForm" hidden>
 <div class="field"><label for="displayName">الاسم الظاهر</label><input id="displayName" maxlength="60" required autocomplete="name" placeholder="الاسم الذي تريد عرضه"></div>
 <div class="field"><label for="profileCountry">الدولة</label><input id="profileCountry" maxlength="80" placeholder="مثال: السعودية"></div>
 <div class="field"><label for="profileRegion">المنطقة أو المدينة (اختياري)</label><input id="profileRegion" maxlength="100"></div>
-<div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option></select></div>
-<div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" required placeholder="اكتب نبذة عن نفسك بالكلمات والحروف فقط"></textarea><p class="notice">يُسمح بالحروف والمسافات فقط، دون أرقام أو رموز أو علامات ترقيم أو إيموجي.</p></div>
+<div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
+<div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" required placeholder="اكتب نبذة عن نفسك"></textarea></div>
 <label style="display:flex;gap:8px;align-items:center"><input id="publishProfile" type="checkbox" style="width:auto"> أوافق على نشر ملفي ليظهر للمستخدمين المسجلين</label>
-<div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ الملف الشخصي</button></div>
+<div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ التعديلات</button></div>
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
-
-</div></section>
+</div>
+</section>
 <section id="search" class="tab hidden">
 <div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
@@ -493,7 +520,7 @@ document.getElementById('memberMenuClose').addEventListener('click',closeMemberD
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='myprofile')refreshProfileAccess();if(id==='favorites')renderFavoriteProfiles();}));
 
-function show(id){tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));}
+function show(id){tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 const authPanel=document.getElementById('authPanel'),authTitle=document.getElementById('authTitle'),authSubmit=document.getElementById('authSubmit'),authStatus=document.getElementById('authStatus'),authForm=document.getElementById('authForm');
 let authMode='signup';
@@ -507,23 +534,49 @@ async function showAuthSession(){if(!supabaseClient)return;const {data}=await su
 if(supabaseClient){supabaseClient.auth.onAuthStateChange((_event,session)=>{showAuthSession();if(session)document.body.classList.add('authenticated');});showAuthSession();supabaseClient.auth.getSession().then(({data})=>{if(data.session){document.body.classList.add('authenticated');show('home');}});}
 async function refreshProfileAccess(){
  const gate=document.getElementById('profileGate'),form=document.getElementById('myProfileForm');
+ const details=document.getElementById('myProfileDetails'),about=document.getElementById('myProfileAbout');
+ const status=document.getElementById('profileStatus');
  if(!supabaseClient){gate.textContent='تعذر الاتصال بالخدمة حالياً.';form.hidden=true;return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
- gate.textContent=session?'يمكنك إنشاء ملفك. لن يُنشر إلا إذا اخترت مربع الموافقة أدناه.':'سجّل الدخول أولاً لإنشاء ملفك وحفظه بشكل خاص.';
- form.hidden=!session;
-
- if(session){
-  const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,is_published').eq('id',session.user.id).maybeSingle();
-  if(error){document.getElementById('profileStatus').textContent='تعذر تحميل ملفك: '+error.message;return;}
-  if(data){
-   document.getElementById('displayName').value=data.display_name||'';
-   document.getElementById('profileCountry').value=data.country||'';
-   document.getElementById('profileRegion').value=data.region||'';
-   document.getElementById('marriageType').value=data.marriage_type||'';
-   document.getElementById('profileLifeText').value=data.life_text||'';
-   document.getElementById('publishProfile').checked=!!data.is_published;
-   document.getElementById('profileStatus').textContent='تم تحميل ملفك المحفوظ.';
-  }
+ if(!session){gate.textContent='سجّل الدخول أولاً لعرض ملفك الشخصي.';form.hidden=true;details.textContent='لا توجد جلسة دخول.';return;}
+ const meta=session.user.user_metadata||{};
+ const profileFields=[
+  ['اسم المستخدم',meta.username],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
+  ['مكان الإقامة',meta.country],['الجنسية',meta.nationality],['المدينة',meta.city],['الأصل',meta.origin],
+  ['الوزن',meta.weight],['الطول',meta.height],['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
+  ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
+  ['المستوى التعليمي',meta.education],['الوضع المادي',meta.financial_status],['مجال العمل',meta.work_field],['الوظيفة',meta.work],['الدخل الشهري',meta.monthly_income],['الحالة الصحية',meta.health]
+ ];
+ details.replaceChildren();
+ let count=0;
+ profileFields.forEach(([label,value])=>{if(value!==undefined&&value!==null&&String(value).trim()!==''){const item=document.createElement('div');item.className='member-detail-item';const name=document.createElement('span');name.textContent=label;const val=document.createElement('strong');val.textContent=String(value);item.append(name,val);details.append(item);count++;}});
+ if(!count){details.textContent='لم نعثر على مواصفات التسجيل في بيانات الحساب.';}
+ document.getElementById('myProfileDisplayName').textContent=meta.username||'ملفي الشخصي';
+ document.getElementById('myProfileSubline').textContent=[meta.age?meta.age+' سنة':'',meta.country,meta.city].filter(Boolean).join(' • ')||'بياناتك ومواصفاتك الشخصية';
+ const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]);
+ about.replaceChildren();
+ if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
+ else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
+ gate.textContent='هذه هي المعلومات التي أدخلتها عند إنشاء حسابك.';
+ form.hidden=false;
+ const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,is_published').eq('id',session.user.id).maybeSingle();
+ if(error){status.textContent='تعذر تحميل بيانات الملف الإضافية: '+error.message;return;}
+ if(data){
+  document.getElementById('displayName').value=data.display_name||meta.username||'';
+  document.getElementById('profileCountry').value=data.country||meta.country||'';
+  document.getElementById('profileRegion').value=data.region||meta.city||'';
+  document.getElementById('marriageType').value=data.marriage_type||meta.marriage_type||'';
+  document.getElementById('profileLifeText').value=data.life_text||meta.about||'';
+  document.getElementById('publishProfile').checked=!!data.is_published;
+  status.textContent='تم تحميل بياناتك المحفوظة.';
+ }else{
+  document.getElementById('displayName').value=meta.username||'';
+  document.getElementById('profileCountry').value=meta.country||'';
+  document.getElementById('profileRegion').value=meta.city||'';
+  document.getElementById('marriageType').value=meta.marriage_type||'';
+  document.getElementById('profileLifeText').value=meta.about||'';
+  document.getElementById('publishProfile').checked=false;
+  status.textContent='مواصفات التسجيل معروضة أعلاه. يمكنك الآن إنشاء ملفك العام وحفظه.';
  }
 }
 const lifeWordsOnly=/^[\p{L}\s]+$/u;
