@@ -517,8 +517,7 @@ const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUP
   persistSession:true,
   autoRefreshToken:true,
   detectSessionInUrl:true,
-  storage:window.localStorage,
-  storageKey:'mithaq-auth-session'
+  storage:window.localStorage
  }
 }):null;
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
