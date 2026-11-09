@@ -910,6 +910,10 @@ async function loadPublishedProfiles(){
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){currentUserId=null;host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
  currentUserId=session.user.id;
+ // Refresh the signed-in member's presence while the site remains open.
+ const touchPresence=()=>supabaseClient.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',session.user.id);
+ await touchPresence();
+ if(!window.mithaqPresenceTimer)window.mithaqPresenceTimer=setInterval(()=>{if(document.visibilityState==='visible')touchPresence();},120000);
  host.textContent='جارٍ تحميل الملفات المنشورة...';
  const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at').eq('is_published',true);
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
