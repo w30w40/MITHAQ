@@ -608,11 +608,12 @@ async function refreshProfileAccess(){
  if(privateError)console.warn('MITHAQ private profile load:',privateError.message);
  if(publicError)console.warn('MITHAQ public profile load:',publicError.message);
  if(publicRow){
-  meta.username=publicRow.display_name||meta.username;
-  meta.country=publicRow.country||meta.country;
-  meta.city=publicRow.region||meta.city;
-  meta.marriage_type=publicRow.marriage_type||meta.marriage_type;
-  meta.about=publicRow.life_text||meta.about;
+  // Keep the actual registration/private values first; use the public summary only as a fallback.
+  meta.username=meta.username||((publicRow.display_name&&publicRow.display_name!=='عضو ميثاق')?publicRow.display_name:'');
+  meta.country=meta.country||publicRow.country||'';
+  meta.city=meta.city||publicRow.region||'';
+  meta.marriage_type=meta.marriage_type||publicRow.marriage_type||'';
+  meta.about=meta.about||publicRow.life_text||'';
  }
  const profileFields=[
   ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
@@ -677,7 +678,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   const {error:publicError}=await supabaseClient.from('profiles').upsert({
    id:session.user.id,display_name:updated.username,country:updated.country||null,
    region:updated.city||null,marriage_type:updated.marriage_type||null,
-   life_text:updated.about||null,is_published:published,updated_at:new Date().toISOString()
+   life_text:updated.about||'',is_published:published,updated_at:new Date().toISOString()
   },{onConflict:'id'});
   if(publicError)throw publicError;
   const {data:{session:latestSession}}=await supabaseClient.auth.getSession();
