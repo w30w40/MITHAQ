@@ -658,6 +658,15 @@ body.authenticated #entryGate{display:none}
  picker.addEventListener('click',event=>{if(event.target===picker)closePicker();});
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&picker.classList.contains('open'))closePicker();});
  search.addEventListener('input',render);
+ function translateAdded(node){
+  if(node.nodeType===3){if(/[\\u0600-\\u06FF]/.test(node.nodeValue))translateTextNode(node,true);return;}
+  if(node.nodeType!==1)return;
+  const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);
+  let textNode;while((textNode=walker.nextNode()))if(/[\\u0600-\\u06FF]/.test(textNode.nodeValue))translateTextNode(textNode,true);
+  [node,...node.querySelectorAll('*')].forEach(el=>['placeholder','title','aria-label'].forEach(attr=>{const v=el.getAttribute(attr);if(v&&en[v]){el.setAttribute('data-ar-'+attr,v);el.setAttribute(attr,en[v]);}}));
+ }
+ const languageObserver=new MutationObserver(records=>{if(selected!=='en')return;records.forEach(record=>record.addedNodes.forEach(translateAdded));});
+ languageObserver.observe(document.body,{childList:true,subtree:true});
  applyLanguage();updateButtons();
 
 })();</script>
