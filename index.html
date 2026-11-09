@@ -608,6 +608,43 @@ body.authenticated #entryGate{display:none}
  </div>
 </div>
 
+<script>
+/* Global language selector: saved per device, with correct language and text direction metadata. */
+(()=>{
+ const languages=[
+  ['ar','AR','🇸🇦','العربية','Arabic','rtl'],['en','EN','🇬🇧','English','English','ltr'],
+  ['fr','FR','🇫🇷','Français','French','ltr'],['de','DE','🇩🇪','Deutsch','German','ltr'],
+  ['es','ES','🇪🇸','Español','Spanish','ltr'],['it','IT','🇮🇹','Italiano','Italian','ltr'],
+  ['pt','PT','🇵🇹','Português','Portuguese','ltr'],['tr','TR','🇹🇷','Türkçe','Turkish','ltr'],
+  ['ru','RU','🇷🇺','Русский','Russian','ltr'],['zh','ZH','🇨🇳','中文','Chinese','ltr'],
+  ['ja','JA','🇯🇵','日本語','Japanese','ltr'],['ko','KO','🇰🇷','한국어','Korean','ltr'],
+  ['hi','HI','🇮🇳','हिन्दी','Hindi','ltr'],['ur','UR','🇵🇰','اردو','Urdu','rtl'],
+  ['fa','FA','🇮🇷','فارسی','Persian','rtl'],['bn','BN','🇧🇩','বাংলা','Bengali','ltr'],
+  ['id','ID','🇮🇩','Bahasa Indonesia','Indonesian','ltr'],['ms','MS','🇲🇾','Bahasa Melayu','Malay','ltr'],
+  ['nl','NL','🇳🇱','Nederlands','Dutch','ltr'],['sv','SV','🇸🇪','Svenska','Swedish','ltr'],
+  ['no','NO','🇳🇴','Norsk','Norwegian','ltr'],['da','DA','🇩🇰','Dansk','Danish','ltr'],
+  ['fi','FI','🇫🇮','Suomi','Finnish','ltr'],['pl','PL','🇵🇱','Polski','Polish','ltr'],
+  ['uk','UK','🇺🇦','Українська','Ukrainian','ltr'],['el','EL','🇬🇷','Ελληνικά','Greek','ltr'],
+  ['he','HE','🇮🇱','עברית','Hebrew','rtl'],['sw','SW','🇰🇪','Kiswahili','Swahili','ltr'],
+  ['th','TH','🇹🇭','ไทย','Thai','ltr'],['vi','VI','🇻🇳','Tiếng Việt','Vietnamese','ltr'],
+  ['fa-AF','FA','🇦🇫','دری','Dari','rtl'],['am','AM','🇪🇹','አማርኛ','Amharic','ltr'],
+  ['ro','RO','🇷🇴','Română','Romanian','ltr'],['cs','CS','🇨🇿','Čeština','Czech','ltr'],
+  ['hu','HU','🇭🇺','Magyar','Hungarian','ltr'],['sr','SR','🇷🇸','Српски','Serbian','ltr']
+ ];
+ const picker=document.getElementById('languagePicker'),list=document.getElementById('languageOptions'),search=document.getElementById('languageSearch');
+ if(!picker||!list)return;
+ let selected=localStorage.getItem('mithaq-language')||'ar';
+ const current=()=>languages.find(x=>x[0]===selected)||languages[0];
+ function updateButtons(){const x=current();document.querySelectorAll('.js-language-open').forEach(b=>{b.textContent='⌄ '+x[1]+' '+x[2];b.setAttribute('aria-label','لغة الموقع: '+x[3]);});}
+ function render(){const q=(search.value||'').trim().toLocaleLowerCase();list.replaceChildren();languages.filter(x=>x.join(' ').toLocaleLowerCase().includes(q)).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='language-option';b.setAttribute('aria-selected',String(x[0]===selected));const flag=document.createElement('span');flag.className='lang-flag';flag.textContent=x[2];const name=document.createElement('span');name.className='lang-name';name.textContent=x[3];const code=document.createElement('small');code.textContent=x[1];b.append(flag,name,code);b.addEventListener('click',()=>choose(x));list.append(b);});}
+ function choose(x){selected=x[0];localStorage.setItem('mithaq-language',selected);document.documentElement.lang=x[0];document.documentElement.dir=x[5];updateButtons();picker.classList.remove('open');document.getElementById('languageStatus').textContent='تم حفظ اختيارك: '+x[3];}
+ document.querySelectorAll('.js-language-open').forEach(b=>b.addEventListener('click',()=>{search.value='';render();picker.classList.add('open');search.focus();}));
+ document.getElementById('languagePickerClose').addEventListener('click',()=>picker.classList.remove('open'));
+ picker.addEventListener('click',e=>{if(e.target===picker)picker.classList.remove('open');});
+ search.addEventListener('input',render);
+ const initial=languages.find(x=>x[0]===selected)||languages[0];document.documentElement.lang=initial[0];document.documentElement.dir=initial[5];updateButtons();
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
@@ -1107,41 +1144,7 @@ const searchCitySelect=document.getElementById('cityFilter');
 searchCountrySelect.addEventListener('change',()=>fillAreaSelect(searchCitySelect,searchCountrySelect.value==='all'?'':searchCountrySelect.value,'كل المدن / المناطق'));
 
 
-/* Global language selector: saved per device, with correct language and text direction metadata. */
-(()=>{
- const languages=[
-  ['ar','AR','🇸🇦','العربية','Arabic','rtl'],['en','EN','🇬🇧','English','English','ltr'],
-  ['fr','FR','🇫🇷','Français','French','ltr'],['de','DE','🇩🇪','Deutsch','German','ltr'],
-  ['es','ES','🇪🇸','Español','Spanish','ltr'],['it','IT','🇮🇹','Italiano','Italian','ltr'],
-  ['pt','PT','🇵🇹','Português','Portuguese','ltr'],['tr','TR','🇹🇷','Türkçe','Turkish','ltr'],
-  ['ru','RU','🇷🇺','Русский','Russian','ltr'],['zh','ZH','🇨🇳','中文','Chinese','ltr'],
-  ['ja','JA','🇯🇵','日本語','Japanese','ltr'],['ko','KO','🇰🇷','한국어','Korean','ltr'],
-  ['hi','HI','🇮🇳','हिन्दी','Hindi','ltr'],['ur','UR','🇵🇰','اردو','Urdu','rtl'],
-  ['fa','FA','🇮🇷','فارسی','Persian','rtl'],['bn','BN','🇧🇩','বাংলা','Bengali','ltr'],
-  ['id','ID','🇮🇩','Bahasa Indonesia','Indonesian','ltr'],['ms','MS','🇲🇾','Bahasa Melayu','Malay','ltr'],
-  ['nl','NL','🇳🇱','Nederlands','Dutch','ltr'],['sv','SV','🇸🇪','Svenska','Swedish','ltr'],
-  ['no','NO','🇳🇴','Norsk','Norwegian','ltr'],['da','DA','🇩🇰','Dansk','Danish','ltr'],
-  ['fi','FI','🇫🇮','Suomi','Finnish','ltr'],['pl','PL','🇵🇱','Polski','Polish','ltr'],
-  ['uk','UK','🇺🇦','Українська','Ukrainian','ltr'],['el','EL','🇬🇷','Ελληνικά','Greek','ltr'],
-  ['he','HE','🇮🇱','עברית','Hebrew','rtl'],['sw','SW','🇰🇪','Kiswahili','Swahili','ltr'],
-  ['th','TH','🇹🇭','ไทย','Thai','ltr'],['vi','VI','🇻🇳','Tiếng Việt','Vietnamese','ltr'],
-  ['fa-AF','FA','🇦🇫','دری','Dari','rtl'],['am','AM','🇪🇹','አማርኛ','Amharic','ltr'],
-  ['ro','RO','🇷🇴','Română','Romanian','ltr'],['cs','CS','🇨🇿','Čeština','Czech','ltr'],
-  ['hu','HU','🇭🇺','Magyar','Hungarian','ltr'],['sr','SR','🇷🇸','Српски','Serbian','ltr']
- ];
- const picker=document.getElementById('languagePicker'),list=document.getElementById('languageOptions'),search=document.getElementById('languageSearch');
- if(!picker||!list)return;
- let selected=localStorage.getItem('mithaq-language')||'ar';
- const current=()=>languages.find(x=>x[0]===selected)||languages[0];
- function updateButtons(){const x=current();document.querySelectorAll('.js-language-open').forEach(b=>{b.textContent='⌄ '+x[1]+' '+x[2];b.setAttribute('aria-label','لغة الموقع: '+x[3]);});}
- function render(){const q=(search.value||'').trim().toLocaleLowerCase();list.replaceChildren();languages.filter(x=>x.join(' ').toLocaleLowerCase().includes(q)).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='language-option';b.setAttribute('aria-selected',String(x[0]===selected));const flag=document.createElement('span');flag.className='lang-flag';flag.textContent=x[2];const name=document.createElement('span');name.className='lang-name';name.textContent=x[3];const code=document.createElement('small');code.textContent=x[1];b.append(flag,name,code);b.addEventListener('click',()=>choose(x));list.append(b);});}
- function choose(x){selected=x[0];localStorage.setItem('mithaq-language',selected);document.documentElement.lang=x[0];document.documentElement.dir=x[5];updateButtons();picker.classList.remove('open');document.getElementById('languageStatus').textContent='تم حفظ اختيارك: '+x[3];}
- document.querySelectorAll('.js-language-open').forEach(b=>b.addEventListener('click',()=>{search.value='';render();picker.classList.add('open');search.focus();}));
- document.getElementById('languagePickerClose').addEventListener('click',()=>picker.classList.remove('open'));
- picker.addEventListener('click',e=>{if(e.target===picker)picker.classList.remove('open');});
- search.addEventListener('input',render);
- const initial=languages.find(x=>x[0]===selected)||languages[0];document.documentElement.lang=initial[0];document.documentElement.dir=initial[5];updateButtons();
-})();
+
 
 </script>
 </body></html>
