@@ -109,6 +109,42 @@ body.authenticated #entryGate{display:none}
 @media(max-width:700px){.entry-top{height:128px;padding:15px 28px}.entry-screen{padding:40px 29px 25px;min-height:calc(100vh - 220px)}.entry-heading{font-size:31px;margin-bottom:42px}.entry-oath{font-size:25px;line-height:1.95;margin-bottom:58px}.entry-pledge{font-size:21px;padding:20px 14px;margin-bottom:56px}.entry-genders{gap:20px;padding:0 8%}.entry-gender{height:225px;border-radius:27px}.entry-gender span{font-size:70px}.entry-gender b{font-size:21px}.entry-gender i{right:25%;font-size:32px}.entry-login-form>label{font-size:22px;margin-bottom:48px}.entry-login-form input{height:82px}.entry-switch{font-size:22px}.entry-bottom{height:94px}}
 @media(max-width:390px){.entry-oath{font-size:21px}.entry-genders{padding:0 2%;gap:12px}.entry-gender{height:190px}.entry-gender b{font-size:18px}.entry-pledge{font-size:18px}.entry-login-options{font-size:17px}}
 </style>
+
+<style id="mithaq-five-step-registration">
+#entryGate{background:#fff9fa;color:#343b43}
+.entry-top{background:linear-gradient(110deg,#d94368,#ef7897)}
+.entry-heading{color:#216b9c}
+#entrySignupForm.entry-form{border:0;background:transparent;padding:0;margin-top:0}
+#entrySignupForm .entry-heading{margin:0 0 42px;text-align:center;font-size:32px}
+#entrySignupForm h2{color:#216b9c;font-size:27px;margin:35px 0 28px;text-align:right}
+.wizard-progress{position:relative;display:flex;justify-content:space-between;align-items:center;margin:0 0 65px;padding:0 0;direction:rtl}
+.wizard-track{position:absolute;left:8%;right:8%;height:7px;background:#d8eaf5;border-radius:8px;top:50%;transform:translateY(-50%)}
+.wizard-step{position:relative;z-index:1;width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:#d8eaf5;color:#3d5362;font-size:29px;font-weight:750}
+.wizard-step.active,.wizard-step.done{background:#269bc2;color:white}
+.wizard-panel[hidden]{display:none!important}
+.wizard-panel>label{display:block;font-size:21px;font-weight:650;color:#343b43;margin:0 0 32px}
+.wizard-panel input:not([type=checkbox]),.wizard-panel select,.wizard-panel textarea{width:100%;height:76px;margin-top:14px;border:2px solid #e0e0e0;border-radius:14px;background:white;padding:14px 18px;font-size:21px;text-align:right;color:#414b53}
+.wizard-panel textarea{height:130px}
+.required-star{color:#d34d70;margin-inline-start:8px}
+.field-help{background:#d8ecf9;border-radius:23px;padding:22px 24px;margin:-4px 0 35px;font-size:18px;line-height:1.9;color:#344957}
+.field-help ul{margin:10px 0 0;padding-right:23px}
+.field-help li{padding:4px 0}
+.field-help li::marker{color:#269bc2}
+.wizard-actions{display:flex;gap:12px;align-items:center;justify-content:flex-start;margin:45px 0 20px}
+.wizard-actions .entry-submit{margin:0;min-width:250px}
+.wizard-back{background:#e6eff5;color:#285d80;border-radius:45px;padding:18px 30px;font-size:21px}
+.wizard-check{display:flex!important;gap:12px;align-items:flex-start;font-size:18px!important;line-height:1.8}
+.wizard-check input{width:22px;height:22px;margin-top:6px;flex:none;accent-color:#278fbd}
+#entrySignup .entry-switch{margin-top:45px}
+@media(max-width:700px){
+ .wizard-step{width:82px;height:82px;font-size:28px}
+ #entrySignupForm .entry-heading{font-size:31px}
+ .wizard-panel>label{font-size:21px}
+ .wizard-panel input:not([type=checkbox]),.wizard-panel select,.wizard-panel textarea{height:76px;font-size:21px}
+ .field-help{font-size:18px}
+}
+@media(max-width:390px){.wizard-step{width:58px;height:58px;font-size:22px}.wizard-track{left:9%;right:9%}.wizard-actions .entry-submit{min-width:0;flex:1}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -118,19 +154,65 @@ body.authenticated #entryGate{display:none}
     <button class="entry-menu" type="button" aria-label="القائمة">☰</button>
   </div>
   <section id="entrySignup" class="entry-screen">
-    <h1 class="entry-heading">قسم التسجيل</h1>
-    <p class="entry-oath">أقسم بالله العظيم أني أدخل ميثاق إلا بهدف الزواج الشرعي وليس لأي هدف آخر؛ وأعاهد الله ثم أعاهدكم على أن أكون ملتزماً بشروط وقوانين الموقع، عسى ربي يكتب لي الخير في هذا المكان.</p>
-    <label class="entry-pledge"><input id="entryAgree" type="checkbox"> <span>لقد قمت بأداء القسم، وسألتزم به</span></label>
-    <div class="entry-genders">
-      <button type="button" class="entry-gender wife" data-gender="wife"><span>👩🏻</span><b>التسجيل كزوجة</b><i>＋</i></button>
-      <button type="button" class="entry-gender husband" data-gender="husband"><span>👨🏻</span><b>التسجيل كزوج</b><i>＋</i></button>
+    <div id="entryChooseGender" class="entry-form">
+      <h1 class="entry-heading">إنشاء حساب جديد</h1>
+      <p class="muted" style="text-align:center">اختر نوع التسجيل للمتابعة</p>
+      <div class="entry-genders">
+        <button type="button" class="entry-gender wife" data-gender="wife"><span>👩🏻</span><b>التسجيل كزوجة</b></button>
+        <button type="button" class="entry-gender husband" data-gender="husband"><span>👨🏻</span><b>التسجيل كزوج</b></button>
+      </div>
     </div>
     <div id="entrySignupForm" class="entry-form" hidden>
-      <h2>إنشاء حساب جديد</h2>
-      <form id="entryCreateForm">
-        <label>البريد الإلكتروني<input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
-        <label>كلمة المرور<input id="entrySignupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="كلمة المرور (8 أحرف على الأقل)"></label>
-        <button class="entry-submit" type="submit">إنشاء حساب</button>
+      <h1 id="wizardHeading" class="entry-heading">تسجيل زوجة</h1>
+      <div class="wizard-progress" aria-label="مراحل التسجيل">
+        <div class="wizard-track"></div>
+        <div class="wizard-step active" data-step-dot="1"><span>1</span></div>
+        <div class="wizard-step" data-step-dot="2"><span>2</span></div>
+        <div class="wizard-step" data-step-dot="3"><span>3</span></div>
+        <div class="wizard-step" data-step-dot="4"><span>4</span></div>
+        <div class="wizard-step" data-step-dot="5"><span>5</span></div>
+      </div>
+      <form id="entryCreateForm" novalidate>
+        <section class="wizard-panel" data-step-panel="1">
+          <h2>معلومات تسجيل الدخول</h2>
+          <label>اسم المستخدم <b class="required-star">*</b><input id="entryUsername" type="text" maxlength="14" required autocomplete="username" placeholder="أدخل اسم المستخدم الخاص بك"></label>
+          <div class="field-help"><strong>اسم المستخدم:</strong><ul><li>يجب أن يكون أقل من 15 حرفاً</li><li>يجب أن يكون محترماً ولا يتضمن إساءة أو ألفاظاً غير لائقة</li><li>سيظهر للأعضاء</li></ul></div>
+          <label>البريد الإلكتروني<input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
+          <label>كلمة المرور <b class="required-star">*</b><input id="entrySignupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="كلمة المرور"></label>
+          <label>تأكيد كلمة المرور <b class="required-star">*</b><input id="entrySignupConfirm" type="password" minlength="8" required autocomplete="new-password" placeholder="إعادة كتابة كلمة المرور"></label>
+        </section>
+        <section class="wizard-panel" data-step-panel="2" hidden>
+          <h2>الحالة الاجتماعية</h2>
+          <label>نوع الزواج <b class="required-star">*</b><select id="entryMarriageType" required><option value="">إختر ..</option><option value="معلن">زواج معلن</option><option value="مسيار">زواج مسيار</option></select></label>
+          <label>الجنسية <b class="required-star">*</b><select id="entryNationality" required><option value="">إختر ..</option><option>السعودية</option><option>مصر</option><option>الأردن</option><option>المغرب</option><option>الجزائر</option><option>تونس</option><option>سوريا</option><option>العراق</option><option>فرنسا</option><option>أخرى</option></select></label>
+          <label>الحالة العائلية <b class="required-star">*</b><select id="entryFamilyStatus" required><option value="">إختر ..</option><option>أعزب / عزباء</option><option>مطلق / مطلقة</option><option>أرمل / أرملة</option><option>متزوج / متزوجة</option></select></label>
+          <label>العمر <b class="required-star">*</b><select id="entryAge" required><option value="">إختر ..</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select></label>
+          <label>عدد الأطفال <b class="required-star">*</b><select id="entryChildren" required><option value="">بدون أطفال</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6 أو أكثر</option></select></label>
+        </section>
+        <section class="wizard-panel" data-step-panel="3" hidden>
+          <h2>المعلومات الشخصية</h2>
+          <label>البلد الحالي <b class="required-star">*</b><input id="entryCountry" required placeholder="أدخل البلد"></label>
+          <label>المدينة <input id="entryCity" placeholder="أدخل المدينة"></label>
+          <label>المستوى التعليمي <select id="entryEducation"><option value="">إختر ..</option><option>ثانوي</option><option>دبلوم</option><option>جامعي</option><option>دراسات عليا</option><option>أخرى</option></select></label>
+          <label>العمل <input id="entryWork" placeholder="أدخل مجال العمل (اختياري)"></label>
+        </section>
+        <section class="wizard-panel" data-step-panel="4" hidden>
+          <h2>معلومات إضافية</h2>
+          <label>نبذة عنك <textarea id="entryAbout" maxlength="600" placeholder="اكتب نبذة مختصرة ومحترمة عن نفسك وما تبحث عنه"></textarea></label>
+          <p class="notice">لا تكتب رقم هاتفك أو عنوانك أو أي معلومات شخصية حساسة في النبذة.</p>
+          <label>مواصفات الشريك الذي تبحث عنه <textarea id="entryPartner" maxlength="600" placeholder="اكتب الصفات المهمة بالنسبة لك (اختياري)"></textarea></label>
+        </section>
+        <section class="wizard-panel" data-step-panel="5" hidden>
+          <h2>إنهاء التسجيل</h2>
+          <p class="muted">راجع بياناتك وتأكد من صحتها قبل إنشاء الحساب.</p>
+          <label class="wizard-check"><input id="entryTerms" type="checkbox" required> أوافق على شروط الاستخدام وسياسة الخصوصية، وأتعهد باستخدام ميثاق لغرض التعارف الجاد بقصد الزواج.</label>
+          <label class="wizard-check"><input id="entryConsent" type="checkbox" required> أوافق على حفظ بيانات ملفي، ولن يتم نشره إلا وفق إعدادات الخصوصية وموافقتي.</label>
+        </section>
+        <div class="wizard-actions">
+          <button id="entryBack" class="wizard-back" type="button" hidden>السابق</button>
+          <button id="entryNext" class="entry-submit" type="button">التالي</button>
+          <button id="entryFinish" class="entry-submit" type="submit" hidden>إنشاء الحساب</button>
+        </div>
       </form>
       <p id="entrySignupStatus" class="entry-status" aria-live="polite"></p>
     </div>
@@ -214,9 +296,63 @@ body.authenticated #entryGate{display:none}
 const entryGate=document.getElementById('entryGate');
 function showEntry(which){document.getElementById('entrySignup').hidden=which!=='signup';document.getElementById('entryLogin').hidden=which!=='login';window.scrollTo(0,0);}
 document.querySelectorAll('[data-entry]').forEach(b=>b.addEventListener('click',()=>showEntry(b.dataset.entry)));
-let chosenEntryGender='';
-document.querySelectorAll('[data-gender]').forEach(b=>b.addEventListener('click',()=>{if(!document.getElementById('entryAgree').checked){document.getElementById('entrySignupStatus').textContent='يرجى تأكيد أداء القسم والالتزام به أولاً.';return;}chosenEntryGender=b.dataset.gender;document.getElementById('entrySignupForm').hidden=false;document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'center'});}));
-document.getElementById('entryCreateForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entrySignupStatus');if(!chosenEntryGender){status.textContent='اختر التسجيل كزوج أو كزوجة أولاً.';return;}if(!supabaseClient){status.textContent='التسجيل غير متاح حالياً. تحقق من اتصال الخدمة.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';try{const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/'}});if(error)throw error;if(data.session){document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();}else{status.textContent='تم إنشاء طلب الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول.';}}catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}finally{btn.disabled=false;}});
+let chosenEntryGender='',currentWizardStep=1;
+const wizardPanels=[...document.querySelectorAll('[data-step-panel]')];
+function renderWizard(){
+ wizardPanels.forEach(p=>p.hidden=Number(p.dataset.stepPanel)!==currentWizardStep);
+ document.querySelectorAll('[data-step-dot]').forEach(dot=>{const n=Number(dot.dataset.stepDot);dot.classList.toggle('active',n===currentWizardStep);dot.classList.toggle('done',n<currentWizardStep);});
+ document.getElementById('entryBack').hidden=currentWizardStep===1;
+ document.getElementById('entryNext').hidden=currentWizardStep===5;
+ document.getElementById('entryFinish').hidden=currentWizardStep!==5;
+ document.getElementById('wizardHeading').textContent=chosenEntryGender==='wife'?'تسجيل زوجة':'تسجيل زوج';
+}
+function validateWizardStep(){
+ const panel=wizardPanels.find(p=>Number(p.dataset.stepPanel)===currentWizardStep);
+ for(const field of panel.querySelectorAll('input,select,textarea')){
+  if(field.type==='checkbox'&&!field.checked&&field.required){field.focus();return 'يرجى الموافقة على الحقول المطلوبة للمتابعة.';}
+  if(field.required&&!field.checkValidity()){field.reportValidity();return 'يرجى إكمال الحقول المطلوبة بشكل صحيح.';}
+ }
+ if(currentWizardStep===1){
+  const username=document.getElementById('entryUsername').value.trim();
+  if(username.length<3||username.length>=15)return 'اسم المستخدم يجب أن يكون من 3 إلى 14 حرفاً.';
+  if(!/^[\\p{L}0-9_]+$/u.test(username))return 'اسم المستخدم يقبل الحروف والأرقام والشرطة السفلية فقط.';
+  const password=document.getElementById('entrySignupPassword').value;
+  if(password!==document.getElementById('entrySignupConfirm').value)return 'كلمتا المرور غير متطابقتين.';
+ }
+ return '';
+}
+document.querySelectorAll('[data-gender]').forEach(b=>b.addEventListener('click',()=>{
+ chosenEntryGender=b.dataset.gender;
+ document.getElementById('entryChooseGender').hidden=true;
+ document.getElementById('entrySignupForm').hidden=false;
+ currentWizardStep=1;renderWizard();
+ document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'start'});
+}));
+document.getElementById('entryNext').addEventListener('click',()=>{
+ const error=validateWizardStep(),status=document.getElementById('entrySignupStatus');
+ if(error){status.textContent=error;return;}
+ status.textContent='';currentWizardStep=Math.min(5,currentWizardStep+1);renderWizard();
+ document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('entryBack').addEventListener('click',()=>{
+ currentWizardStep=Math.max(1,currentWizardStep-1);document.getElementById('entrySignupStatus').textContent='';renderWizard();
+ document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
+ e.preventDefault();const status=document.getElementById('entrySignupStatus');
+ const error=validateWizardStep();if(error){status.textContent=error;return;}
+ if(!supabaseClient){status.textContent='التسجيل غير متاح حالياً. تحقق من اتصال الخدمة.';return;}
+ const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
+ const username=document.getElementById('entryUsername').value.trim();
+ const profile={username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,nationality:document.getElementById('entryNationality').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value.trim(),city:document.getElementById('entryCity').value.trim(),education:document.getElementById('entryEducation').value,work:document.getElementById('entryWork').value.trim(),about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ try{
+  const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
+  if(error)throw error;
+  if(data.session){document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();}
+  else{status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. بيانات التسجيل محفوظة مع حسابك.';}
+ }catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
+ finally{btn.disabled=false;}
+});
 document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();await showAuthSession();}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
 document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
 
