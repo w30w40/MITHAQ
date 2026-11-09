@@ -240,6 +240,116 @@ body.authenticated #entryGate{display:none}
 }
 @media(max-width:390px){.wizard-step{width:58px;height:58px;font-size:22px}.wizard-track{left:9%;right:9%}.wizard-actions .entry-submit{min-width:0;flex:1}}
 </style>
+
+<style id="mithaq-profile-responsive-fix">
+/* Keep the profile page fluid on narrow phones, tablets and desktop screens. */
+#myprofile,
+#myprofile > *,
+#myprofile .member-profile-cover,
+#myprofile .member-profile-card,
+#myprofile #profileReadView,
+#myprofile #profileEditView {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#myprofile {
+  position: relative;
+  overflow: visible;
+}
+#myprofile .member-profile-cover {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+#myprofile .member-profile-cover > div:nth-child(2) {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+#myprofile .member-profile-cover h2,
+#myprofile .member-profile-cover p,
+#myprofile .member-profile-card,
+#myprofile .member-profile-card-head,
+#myprofile .member-detail-item,
+#myprofile .member-profile-about {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+#myprofile .member-profile-card-head {
+  flex-wrap: wrap;
+}
+#myprofile .member-profile-details {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 700px) {
+  body.authenticated main.wrap {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding: 16px 12px 32px;
+  }
+  body.authenticated main.wrap > .tab,
+  body.authenticated main.wrap > .tab:not(.hidden) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  #myprofile {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0;
+  }
+  #myprofile .member-profile-cover {
+    padding: 15px;
+    gap: 12px;
+  }
+  #myprofile .member-profile-avatar {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    font-size: 29px;
+  }
+  #myprofile .member-profile-cover #editProfileOpen {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 6px 0 0;
+  }
+  #myprofile .member-profile-card {
+    margin: 12px 0;
+    padding: 14px;
+  }
+  #myprofile .member-profile-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #myprofile .member-profile-card-head {
+    align-items: flex-start;
+    gap: 6px;
+  }
+  #myprofile #profileEditView form,
+  #myprofile #profileEditView .field,
+  #myprofile #profileEditView input,
+  #myprofile #profileEditView select,
+  #myprofile #profileEditView textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+@media (max-width: 360px) {
+  body.authenticated main.wrap {
+    padding-inline: 9px;
+  }
+  #myprofile .member-profile-card {
+    padding: 11px;
+  }
+  #myprofile .member-profile-cover h2 {
+    font-size: 19px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="entryGate" dir="rtl">
