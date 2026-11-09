@@ -22,3 +22,21 @@ ON public.profiles (last_seen_at);
 
 -- Existing rows remain searchable by their public summary only.
 -- New/updated searchable details are written only when the member enables profile publishing.
+
+-- Backfill searchable fields from existing private registration details,
+-- but only for members who have already chosen to publish their profile.
+UPDATE public.profiles AS p
+SET
+  gender = NULLIF(d.details->>'gender',''),
+  family_status = NULLIF(d.details->>'family_status',''),
+  age = CASE WHEN COALESCE(d.details->>'age','') ~ '^[0-9]+$' THEN (d.details->>'age')::integer ELSE NULL END,
+  children = NULLIF(d.details->>'children',''),
+  nationality = NULLIF(d.details->>'nationality',''),
+  education = NULLIF(d.details->>'education',''),
+  work_field = NULLIF(d.details->>'work_field',''),
+  work = NULLIF(d.details->>'work',''),
+  religiosity = NULLIF(d.details->>'religiosity',''),
+  prayer = NULLIF(d.details->>'prayer',''),
+  smoking = NULLIF(d.details->>'smoking','')
+FROM public.profile_details AS d
+WHERE p.id = d.id AND p.is_published = true;
