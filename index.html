@@ -352,7 +352,14 @@ body.authenticated #entryGate{display:none}
 }
 </style>
 
-</head>
+<style id="mithaq-advanced-search">
+.search-filter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.search-online-row{padding:12px 0;border-top:1px solid #e8eef4;border-bottom:1px solid #e8eef4;margin:8px 0 14px}
+.search-online-row label{display:flex;align-items:center;gap:9px;margin:0}
+.search-online-row input{width:18px;height:18px;accent-color:#2879b8}
+.search-actions{margin:12px 0 18px}.search-actions button{min-width:120px}
+@media(max-width:600px){.search-filter-grid{grid-template-columns:1fr}.search-actions button{flex:1}}
+</style></head>
 <body>
 <div id="entryGate" dir="rtl">
   <div class="entry-top">
@@ -531,8 +538,30 @@ body.authenticated #entryGate{display:none}
 </section>
 <section id="search" class="tab hidden">
 <div class="member-page-title"><div><small>اكتشف الأعضاء</small><h1>بحث</h1></div><span class="member-title-heart">⌕</span></div>
-<div class="card"><div class="section-kicker">ابدأ البحث</div><h2>ابحث عن شريك الحياة المناسب</h2><p class="muted">حدّد خيارات البحث لعرض الملفات المنشورة في ميثاق.</p><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
-<button class="primary" id="runSearch" type="button">بحث</button><div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
+<div class="card search-card">
+<div class="section-kicker">البحث المتقدم</div><h2>ابحث عن العضو المناسب</h2>
+<div class="field"><label for="searchText">اسم المستخدم أو كلمة من النبذة</label><input id="searchText" type="search" placeholder="اكتب اسم المستخدم"></div>
+<div class="search-filter-grid">
+<div class="field"><label for="genderFilter">الجنس</label><select id="genderFilter"><option value="">الكل</option><option>زوج</option><option>زوجة</option><option>ذكر</option><option>أنثى</option></select></div>
+<div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div>
+<div class="field"><label for="cityFilter">المدينة</label><input id="cityFilter" placeholder="كل المدن"></div>
+<div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>معلن</option><option>مسيار</option><option>الوحيدة</option><option>لا مانع من التعدد</option><option>زواج عادي</option><option>زوجة ثانية</option></select></div>
+<div class="field"><label for="ageFrom">العمر من</label><input id="ageFrom" type="number" min="18" max="100" placeholder="أي عمر"></div>
+<div class="field"><label for="ageTo">العمر إلى</label><input id="ageTo" type="number" min="18" max="100" placeholder="أي عمر"></div>
+<div class="field"><label for="familyFilter">الحالة الاجتماعية</label><select id="familyFilter"><option value="">الكل</option><option>أعزب</option><option>عزباء</option><option>متزوج</option><option>متزوجة</option><option>مطلق</option><option>مطلقة</option><option>أرمل</option><option>أرملة</option><option>آنسة</option></select></div>
+<div class="field"><label for="childrenFilter">عدد الأطفال</label><select id="childrenFilter"><option value="">الكل</option><option>بدون أطفال</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5 فأكثر</option></select></div>
+<div class="field"><label for="nationalityFilter">الجنسية</label><input id="nationalityFilter" placeholder="كل الجنسيات"></div>
+<div class="field"><label for="educationFilter">المستوى التعليمي</label><select id="educationFilter"><option value="">الكل</option><option>ابتدائي</option><option>متوسط</option><option>ثانوي</option><option>دبلوم</option><option>جامعي</option><option>ماجستير</option><option>دكتوراه</option></select></div>
+<div class="field"><label for="workFieldFilter">مجال العمل</label><input id="workFieldFilter" placeholder="كل المجالات"></div>
+<div class="field"><label for="workFilter">الوظيفة</label><input id="workFilter" placeholder="كل الوظائف"></div>
+<div class="field"><label for="religiosityFilter">التدين</label><input id="religiosityFilter" placeholder="الكل"></div>
+<div class="field"><label for="prayerFilter">الصلاة</label><input id="prayerFilter" placeholder="الكل"></div>
+<div class="field"><label for="smokingFilter">التدخين</label><select id="smokingFilter"><option value="">الكل</option><option>غير مدخن</option><option>مدخن</option><option>لا أدخن</option><option>أدخن</option></select></div>
+</div>
+<div class="search-online-row"><label><input id="onlineOnly" type="checkbox"> المتواجدون الآن فقط</label></div>
+<div class="row search-actions"><button class="primary" id="runSearch" type="button">بحث</button><button class="secondary" id="resetSearch" type="button">إعادة ضبط</button></div>
+<p class="notice">تظهر في البحث المواصفات التي وافق العضو على نشرها في ملفه فقط.</p>
+<div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
 
@@ -796,7 +825,13 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   const {error:publicError}=await supabaseClient.from('profiles').upsert({
    id:session.user.id,display_name:updated.username,country:updated.country||null,
    region:updated.city||null,marriage_type:updated.marriage_type||null,
-   life_text:updated.about||'',is_published:published,updated_at:new Date().toISOString()
+   life_text:updated.about||'',is_published:published,
+   gender:published?(updated.gender||null):null,family_status:published?(updated.family_status||null):null,
+   age:published&&updated.age?Number(updated.age):null,children:published?(updated.children||null):null,
+   nationality:published?(updated.nationality||null):null,education:published?(updated.education||null):null,
+   work_field:published?(updated.work_field||null):null,work:published?(updated.work||null):null,
+   religiosity:published?(updated.religiosity||null):null,prayer:published?(updated.prayer||null):null,
+   smoking:published?(updated.smoking||null):null,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()
   },{onConflict:'id'});
   if(publicError)throw publicError;
   const {data:{session:latestSession}}=await supabaseClient.auth.getSession();
@@ -834,23 +869,38 @@ async function createContactRequest(recipientId,button){
   msg.textContent='تم إرسال طلب الوصول. لن تتم مشاركة بيانات شخصية بهذه الخطوة.';
  }catch(err){button.disabled=false;button.textContent='إرسال طلب وصول';msg.textContent='تعذر إرسال الطلب: '+(err.message||'حدث خطأ غير معروف');}
 }
+function searchValue(id){return (document.getElementById(id)?.value||'').trim().toLocaleLowerCase('ar');}
 function renderPublishedProfiles(){
- const c=document.getElementById('country').value,k=document.getElementById('kind').value,q=(document.getElementById('searchText')?.value||'').trim().toLocaleLowerCase('ar'),host=document.getElementById('profiles');
- host.replaceChildren();let count=0;
- publishedProfiles.filter(p=>(c==='all'||(p.country||'')===c)&&(k==='all'||p.marriage_type===k)&&(!q||[p.display_name,p.country,p.region,p.life_text].join(' ').toLocaleLowerCase('ar').includes(q))).forEach(p=>{
+ const host=document.getElementById('profiles');host.replaceChildren();let count=0;
+ const q=searchValue('searchText'),country=document.getElementById('country').value,kind=document.getElementById('kind').value;
+ const from=Number(document.getElementById('ageFrom').value||0),to=Number(document.getElementById('ageTo').value||999);
+ const textMatch=(value,filter)=>!filter||String(value||'').toLocaleLowerCase('ar').includes(filter);
+ const rows=publishedProfiles.filter(p=>{
+  const online=!document.getElementById('onlineOnly').checked||(p.last_seen_at&&Date.now()-new Date(p.last_seen_at).getTime()<5*60*1000);
+  return online&&(country==='all'||(p.country||'')===country)&&(kind==='all'||p.marriage_type===kind)&&
+   textMatch([p.display_name,p.life_text].join(' '),q)&&textMatch(p.region,searchValue('cityFilter'))&&
+   (!searchValue('genderFilter')||p.gender===searchValue('genderFilter'))&&
+   (!from||Number(p.age||0)>=from)&&(!to||Number(p.age||0)<=to)&&
+   textMatch(p.family_status,searchValue('familyFilter'))&&textMatch(p.children,searchValue('childrenFilter'))&&
+   textMatch(p.nationality,searchValue('nationalityFilter'))&&textMatch(p.education,searchValue('educationFilter'))&&
+   textMatch(p.work_field,searchValue('workFieldFilter'))&&textMatch(p.work,searchValue('workFilter'))&&
+   textMatch(p.religiosity,searchValue('religiosityFilter'))&&textMatch(p.prayer,searchValue('prayerFilter'))&&
+   textMatch(p.smoking,searchValue('smokingFilter'));
+ });
+ rows.forEach(p=>{
   count++;const card=document.createElement('div');card.className='card profile-card';
   const head=document.createElement('div');head.className='profile';
   const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
   const info=document.createElement('div');info.style.flex='1';
   const name=document.createElement('h3');name.textContent=p.display_name||'عضو ميثاق';
-  const meta=document.createElement('p');meta.className='muted';const type=p.marriage_type==='معلن'?'الزواج المعلن':p.marriage_type==='مسيار'?'زواج المسيار':'';
-  meta.textContent=[p.country,p.region,type].filter(Boolean).join(' · ');
+  const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');
   info.append(name,meta);head.append(avatar,info);card.append(head);
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
-  const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id && p.id!==currentUserId){actions.className='row';actions.style.marginTop='10px';const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);
-  host.append(card);
+  const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work]].filter(x=>x[1]);
+  if(details.length){const line=document.createElement('p');line.className='notice';line.textContent=details.map(x=>x.join(': ')).join(' · ');card.append(line);}
+  const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id&&p.id!==currentUserId){const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);host.append(card);
  });
- document.getElementById('searchMsg').textContent='عدد الملفات المنشورة المعروضة: '+count;
+ document.getElementById('searchMsg').textContent='عدد الملفات المطابقة: '+count;
  renderFavoriteProfiles();
  if(!count){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد ملفات منشورة تطابق اختياراتك حالياً.';host.append(empty);}
 }
@@ -861,12 +911,14 @@ async function loadPublishedProfiles(){
  if(!session){currentUserId=null;host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
  currentUserId=session.user.id;
  host.textContent='جارٍ تحميل الملفات المنشورة...';
- const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text').eq('is_published',true);
+ const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at').eq('is_published',true);
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
  publishedProfiles=data||[];if(searchExecuted)renderPublishedProfiles();
 }
-function filter(){renderPublishedProfiles();}
-document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);document.getElementById('searchText').addEventListener('input',filter);
+function filter(){if(searchExecuted)renderPublishedProfiles();}
+let searchExecuted=false;
+document.getElementById('runSearch').addEventListener('click',()=>{searchExecuted=true;if(!publishedProfiles.length){loadPublishedProfiles().then(renderPublishedProfiles);}else renderPublishedProfiles();});
+document.getElementById('resetSearch').addEventListener('click',()=>{document.querySelectorAll('#search input').forEach(x=>{if(x.type==='checkbox')x.checked=false;else x.value='';});document.querySelectorAll('#search select').forEach(x=>x.selectedIndex=0);searchExecuted=false;document.getElementById('profiles').innerHTML='<p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p>';document.getElementById('searchMsg').textContent='';});
 document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);document.querySelector('button[data-tab="favorites"]').addEventListener('click',()=>{loadPublishedProfiles().then(renderFavoriteProfiles)});
 function requestStatusLabel(status){return status==='accepted'?'تم قبول طلب الوصول':status==='rejected'?'تم رفض طلب الوصول':'بانتظار رد صاحب الملف';}
 async function loadMyContactRequests(){
