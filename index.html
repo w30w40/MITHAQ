@@ -315,7 +315,7 @@ function validateWizardStep(){
  if(currentWizardStep===1){
   const username=document.getElementById('entryUsername').value.trim();
   if(username.length<3||username.length>=15)return 'اسم المستخدم يجب أن يكون من 3 إلى 14 حرفاً.';
-  if(!/^[\\p{L}0-9_]+$/u.test(username))return 'اسم المستخدم يقبل الحروف والأرقام والشرطة السفلية فقط.';
+  if(!/^[\p{L}0-9_]+$/u.test(username))return 'اسم المستخدم يقبل الحروف والأرقام والشرطة السفلية فقط.';
   const password=document.getElementById('entrySignupPassword').value;
   if(password!==document.getElementById('entrySignupConfirm').value)return 'كلمتا المرور غير متطابقتين.';
  }
