@@ -877,8 +877,9 @@ function renderPublishedProfiles(){
  const textMatch=(value,filter)=>!filter||String(value||'').toLocaleLowerCase('ar').includes(filter);
  const rows=publishedProfiles.filter(p=>{
   const online=!document.getElementById('onlineOnly').checked||(p.last_seen_at&&Date.now()-new Date(p.last_seen_at).getTime()<5*60*1000);
+  const searchable=[p.display_name,p.life_text,p.country,p.region,p.marriage_type,p.gender,p.family_status,p.age,p.children,p.nationality,p.education,p.work_field,p.work,p.religiosity,p.prayer,p.smoking].join(' ');
   return online&&(country==='all'||(p.country||'')===country)&&(kind==='all'||p.marriage_type===kind)&&
-   textMatch([p.display_name,p.life_text].join(' '),q)&&textMatch(p.region,searchValue('cityFilter'))&&
+   textMatch(searchable,q)&&textMatch(p.region,searchValue('cityFilter'))&&
    (!searchValue('genderFilter')||p.gender===searchValue('genderFilter'))&&
    (!from||Number(p.age||0)>=from)&&(!to||Number(p.age||0)<=to)&&
    textMatch(p.family_status,searchValue('familyFilter'))&&textMatch(p.children,searchValue('childrenFilter'))&&
@@ -896,7 +897,7 @@ function renderPublishedProfiles(){
   const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');
   info.append(name,meta);head.append(avatar,info);card.append(head);
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
-  const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work]].filter(x=>x[1]);
+  const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['الجنسية',p.nationality],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work],['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]].filter(x=>x[1]!==null&&x[1]!==undefined&&String(x[1]).trim()!=='');
   if(details.length){const line=document.createElement('p');line.className='notice';line.textContent=details.map(x=>x.join(': ')).join(' · ');card.append(line);}
   const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id&&p.id!==currentUserId){const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);host.append(card);
  });
