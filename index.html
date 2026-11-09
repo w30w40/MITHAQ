@@ -532,7 +532,7 @@ body.authenticated #entryGate{display:none}
 <section id="search" class="tab hidden">
 <div class="member-page-title"><div><small>اكتشف الأعضاء</small><h1>بحث</h1></div><span class="member-title-heart">⌕</span></div>
 <div class="card"><div class="section-kicker">ابدأ البحث</div><h2>ابحث عن شريك الحياة المناسب</h2><p class="muted">حدّد خيارات البحث لعرض الملفات المنشورة في ميثاق.</p><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
-<div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
+<button class="primary" id="runSearch" type="button">بحث</button><div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
 
@@ -649,7 +649,7 @@ function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
 document.getElementById('memberMenuOpen').addEventListener('click',()=>document.body.classList.add('drawer-open'));
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
-document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
 
 function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
@@ -863,7 +863,7 @@ async function loadPublishedProfiles(){
  host.textContent='جارٍ تحميل الملفات المنشورة...';
  const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text').eq('is_published',true);
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
- publishedProfiles=data||[];renderPublishedProfiles();renderHomeMemberPreview();
+ publishedProfiles=data||[];if(searchExecuted)renderPublishedProfiles();
 }
 function filter(){renderPublishedProfiles();}
 document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);document.getElementById('searchText').addEventListener('input',filter);
