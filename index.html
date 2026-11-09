@@ -16,11 +16,53 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:11px 16px
 .profile{display:flex;justify-content:space-between;gap:12px;align-items:center}.profile h3{margin:0 0 4px}.avatar{width:49px;height:49px;border-radius:16px;background:#e6f0f8;color:#2b5f88;display:grid;place-items:center;font-size:21px;font-weight:700;flex:none}.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1}.field{margin:14px 0}label{display:block;font-size:13px;font-weight:650;margin-bottom:7px;color:#40564b}input,select,textarea{width:100%;font:inherit;border:1px solid #d6e0d8;border-radius:12px;padding:12px 13px;background:#fbfcfa;color:#233b31;outline:none}input:focus,select:focus,textarea:focus{border-color:#5b8db6;box-shadow:0 0 0 3px #5b8db61b}textarea{min-height:125px;resize:vertical}.tab.hidden{display:none}.notice{font-size:12px;color:#748078;line-height:1.8}
 .home-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:15px}.welcome{background:linear-gradient(135deg,#fff,#f0f6f0);position:relative;overflow:hidden}.welcome:after{content:"م";position:absolute;left:15px;bottom:-50px;font-size:190px;font-weight:800;color:#24578308;pointer-events:none}.welcome>*{position:relative;z-index:1}.eyebrow,.section-kicker{font-size:12px;color:#8b744d;font-weight:750;letter-spacing:.4px}.welcome h2{font-size:25px;line-height:1.5;margin:9px 0}.welcome p{max-width:520px}.feature-list{display:grid;gap:10px}.feature{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid #edf1ed;border-radius:14px;background:#fcfdfb}.feature-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;background:#eaf2f9;font-size:17px;flex:none}.feature strong{display:block;font-size:13px;margin:1px 0 4px}.feature span{display:block;color:#78847d;font-size:12px;line-height:1.7}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.step{background:#f7f9fc;border:1px solid #e8edf3;border-radius:14px;padding:14px}.step b{display:block;color:#b18d55;font-size:12px;margin-bottom:7px}.step strong{font-size:13px}.step p{font-size:12px;line-height:1.7;color:#78847d;margin:6px 0 0}
 footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-width:700px){.wrap{padding-inline:14px}header{padding:20px 0 51px}.hero h1{font-size:29px}.hero p{font-size:13px}main.wrap{margin-top:-25px}.card{padding:17px;border-radius:16px}.home-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}nav{position:sticky;top:6px;z-index:10;border-radius:14px;padding:5px;gap:3px}nav button{padding:10px 12px;font-size:12px;flex:0 0 auto}.demo{font-size:12px}}
-</style></head>
+</style>
+<style id="mithaq-refresh">
+:root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
+body{background:#f3f7fc}
+header{background:linear-gradient(125deg,#123b63 0%,#1c5b8e 58%,#347fb5 100%);padding:30px 0 76px}
+header:after{width:390px;height:390px;left:-125px;top:-205px;border-color:#ffffff24;box-shadow:0 0 0 42px #ffffff09,0 0 0 88px #ffffff06}
+.brand{font-size:14px;letter-spacing:1.8px;color:#e6f2fb}
+.hero h1{font-size:clamp(30px,5vw,46px);letter-spacing:-.6px;margin-top:20px}
+.hero p{font-size:16px;max-width:660px;color:#eaf4fc}
+main.wrap{max-width:1120px;margin-top:-39px}
+.demo{border:1px solid #dce9f5;border-right:4px solid #d5b16e;background:#fff;color:#536a80;border-radius:14px;box-shadow:0 8px 26px #183e6010;padding:14px 18px}
+nav{border:1px solid #e0e9f2;border-radius:16px;box-shadow:0 8px 25px #163c5c0d;padding:6px;background:#fffffffa;gap:5px}
+nav button{color:#65788b;border-radius:11px}
+nav button.active{background:#e8f2fb;color:#1d5d91;box-shadow:inset 0 0 0 1px #d7e8f6}
+.card{border:1px solid #e3ebf3;border-radius:18px;box-shadow:0 8px 28px #163c5c0a;padding:23px}
+.card h2{color:#243e58}
+.welcome{background:linear-gradient(135deg,#fff 0%,#f0f7fd 100%);border-color:#dce9f5}
+.welcome h2{font-size:29px;line-height:1.45;color:#1c4f78}
+.eyebrow,.section-kicker{color:#a17d42}
+.feature{background:#fbfdff;border-color:#e7eff6}
+.feature-icon,.avatar{background:#e8f2fb;color:#216494}
+.step{background:#f7fafe;border-color:#e4edf5}
+.step b{color:#a17d42}
+.primary{background:#2879b8;color:#fff}
+.primary:hover{background:#1d6096}
+.secondary{background:#edf4fa;color:#285d85}
+input,select,textarea{border-color:#d9e4ee;background:#fcfdff;color:#24364b}
+input:focus,select:focus,textarea:focus{border-color:#4c91c7;box-shadow:0 0 0 3px #4c91c71b}
+.auth-status{color:#285d85}
+.profile-card{transition:transform .16s,box-shadow .16s}
+.profile-card:hover{transform:translateY(-2px);box-shadow:0 12px 30px #163c5c12}
+footer{color:#8a9aad}
+@media(max-width:700px){
+ header{padding:24px 0 61px}
+ .hero h1{font-size:30px}
+ .hero p{font-size:14px}
+ main.wrap{margin-top:-31px}
+ .card{padding:18px}
+ .welcome h2{font-size:25px}
+ nav{top:5px}
+}
+</style>
+</head>
 <body>
-<header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>منصة للتعارف بقصد الزواج المعلن أو المسيار، بملفات واضحة وخصوصية وموافقة متبادلة.</p></div></header>
+<header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
-<div class="demo">مرحباً بك في ميثاق. أنشئ ملفك الشخصي، واستكشف الملفات المناسبة، وتواصل بعد قبول طلب التعارف.</div>
+<div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
 <nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
 <section id="home" class="tab">
 <div class="home-grid">
