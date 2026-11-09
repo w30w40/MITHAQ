@@ -105,7 +105,7 @@ INSERT INTO public.profiles
   (id, display_name, country, region, marriage_type, life_text, is_published)
 SELECT
   u.id,
-  NULLIF(u.raw_user_meta_data->>'username', ''),
+  COALESCE(NULLIF(u.raw_user_meta_data->>'username', ''), 'عضو ميثاق'),
   NULLIF(u.raw_user_meta_data->>'country', ''),
   NULLIF(u.raw_user_meta_data->>'city', ''),
   NULLIF(u.raw_user_meta_data->>'marriage_type', ''),
