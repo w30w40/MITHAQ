@@ -502,8 +502,16 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  try{
   const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
   if(error)throw error;
-  if(data.session){applyAuthenticatedSession(data.session);show('home');}
-  else{status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. بيانات التسجيل محفوظة مع حسابك.';}
+  // When Supabase returns an active session, explicitly persist the five-step registration
+  // in the private profile table as well as Auth metadata. Email-confirmation signups
+  // are captured by the database trigger in db/profile.sql.
+  if(data.session&&data.user?.id){
+   const {error:profileSaveError}=await supabaseClient.from('profile_details').upsert({id:data.user.id,details:profile,updated_at:new Date().toISOString()},{onConflict:'id'});
+   if(profileSaveError)throw profileSaveError;
+   applyAuthenticatedSession(data.session);show('home');
+  }else{
+   status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. سيُربط ملف التسجيل بحسابك تلقائياً.';
+  }
  }catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
 });
@@ -604,7 +612,18 @@ async function refreshProfileAccess(){
   supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published').eq('id',uid).maybeSingle()
  ]);
  const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
- const meta={...authMeta,...(privateRow?.details||{})};
+ const savedDetails=privateRow?.details||{};
+ const registrationKeys=['username','gender','marriage_type','family_status','age','children','country','nationality','city','origin','weight','height','skin_color','body_build','religiosity','prayer','smoking','covering','education','financial_status','work_field','work','monthly_income','health','about','partner_preferences'];
+ const registrationMeta={};
+ registrationKeys.forEach(key=>{if(authMeta[key]!==undefined&&authMeta[key]!==null&&String(authMeta[key]).trim()!=='')registrationMeta[key]=authMeta[key];});
+ const meta={...registrationMeta,...savedDetails};
+ // Repair older accounts where Auth still has registration data but the private row is empty/incomplete.
+ const missingRegistrationKeys=Object.keys(registrationMeta).filter(key=>savedDetails[key]===undefined||savedDetails[key]===null||String(savedDetails[key]).trim()==='');
+ if(missingRegistrationKeys.length&&!privateError){
+  const repairedDetails={...registrationMeta,...savedDetails};
+  const {error:repairError}=await supabaseClient.from('profile_details').upsert({id:uid,details:repairedDetails,updated_at:new Date().toISOString()},{onConflict:'id'});
+  if(repairError)console.warn('MITHAQ registration profile repair:',repairError.message);
+ }
  if(privateError)console.warn('MITHAQ private profile load:',privateError.message);
  if(publicError)console.warn('MITHAQ public profile load:',publicError.message);
  if(publicRow){
