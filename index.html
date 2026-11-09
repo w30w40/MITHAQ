@@ -126,8 +126,8 @@ document.getElementById('privateContactForm').addEventListener('submit',async e=
  const status=document.getElementById('privateContactStatus');
  const btn=document.getElementById('savePrivateContact');
  const raw=document.getElementById('privateWhatsapp').value.trim();
- const number=raw.replace(/[\\s()-]/g,'');
- if(!/^\\+[1-9][0-9]{7,14}$/.test(number)){
+ const number=raw.replace(/[\s()-]/g,'');
+ if(!/^\+[1-9][0-9]{7,14}$/.test(number)){
   status.textContent='اكتب الرقم بصيغة دولية تبدأ بعلامة +، مثل +9665XXXXXXXX.';
   return;
  }
