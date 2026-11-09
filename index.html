@@ -644,18 +644,13 @@ async function refreshProfileAccess(){
  document.getElementById('publishProfile').checked=!!publicRow?.is_published;
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
 }
-const lifeWordsOnly=/^[\p{L}\s]+$/u;
-document.getElementById('profileLifeText').addEventListener('input',e=>{
- const v=e.target.value;
- if(v && !lifeWordsOnly.test(v)){document.getElementById('profileStatus').textContent='استخدم الحروف والمسافات فقط في «نبذة عني».';}
-});
 document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const status=document.getElementById('profileStatus'),btn=document.getElementById('saveProfile');
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='انتهت جلستك؛ سجّل الدخول من جديد.';return;}
  const life=document.getElementById('profileLifeText').value.trim();
- if(!lifeWordsOnly.test(life)){status.textContent='النبذة تقبل الحروف والمسافات فقط.';return;}
+ if(life.length>2000){status.textContent='النبذة طويلة جداً؛ الحد الأقصى 2000 حرف.';return;}
  const {data:userData,error:userError}=await supabaseClient.auth.getUser();
  if(userError){status.textContent='تعذر قراءة بيانات حسابك: '+userError.message;return;}
  const previous=userData.user?.user_metadata||session.user.user_metadata||{};
