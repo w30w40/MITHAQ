@@ -637,10 +637,14 @@ body.authenticated #entryGate{display:none}
  const current=()=>languages.find(x=>x[0]===selected)||languages[0];
  function updateButtons(){const x=current();document.querySelectorAll('.js-language-open').forEach(b=>{b.textContent='⌄ '+x[1]+' '+x[2];b.setAttribute('aria-label','لغة الموقع: '+x[3]);});}
  function render(){const q=(search.value||'').trim().toLocaleLowerCase();list.replaceChildren();languages.filter(x=>x.join(' ').toLocaleLowerCase().includes(q)).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='language-option';b.setAttribute('aria-selected',String(x[0]===selected));const flag=document.createElement('span');flag.className='lang-flag';flag.textContent=x[2];const name=document.createElement('span');name.className='lang-name';name.textContent=x[3];const code=document.createElement('small');code.textContent=x[1];b.append(flag,name,code);b.addEventListener('click',()=>choose(x));list.append(b);});}
- function choose(x){selected=x[0];localStorage.setItem('mithaq-language',selected);document.documentElement.lang=x[0];document.documentElement.dir=x[5];updateButtons();picker.classList.remove('open');document.getElementById('languageStatus').textContent='تم حفظ اختيارك: '+x[3];}
- document.querySelectorAll('.js-language-open').forEach(b=>b.addEventListener('click',()=>{search.value='';render();picker.classList.add('open');search.focus();}));
- document.getElementById('languagePickerClose').addEventListener('click',()=>picker.classList.remove('open'));
- picker.addEventListener('click',e=>{if(e.target===picker)picker.classList.remove('open');});
+ function closePicker(){picker.classList.remove('open');picker.style.display='none';}
+ function openPicker(){search.value='';render();picker.style.display='flex';picker.classList.add('open');}
+ function choose(x){selected=x[0];localStorage.setItem('mithaq-language',selected);document.documentElement.lang=x[0];document.documentElement.dir=x[5];updateButtons();closePicker();document.getElementById('languageStatus').textContent='تم حفظ اختيارك: '+x[3];}
+ // Use delegated capture so the selector works on both the entry screen and signed-in header.
+ document.addEventListener('click',e=>{const trigger=e.target.closest('.js-language-open');if(!trigger)return;e.preventDefault();e.stopImmediatePropagation();openPicker();},true);
+ document.getElementById('languagePickerClose').addEventListener('click',closePicker);
+ picker.addEventListener('click',e=>{if(e.target===picker)closePicker();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&picker.classList.contains('open'))closePicker();});
  search.addEventListener('input',render);
  const initial=languages.find(x=>x[0]===selected)||languages[0];document.documentElement.lang=initial[0];document.documentElement.dir=initial[5];updateButtons();
 })();
