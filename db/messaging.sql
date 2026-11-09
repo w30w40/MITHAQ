@@ -15,20 +15,34 @@ CREATE INDEX IF NOT EXISTS messages_recipient_created_idx
 
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
+CREATE OR REPLACE FUNCTION public.can_message(p_user_a uuid, p_user_b uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.contact_consent_requests r
+    WHERE r.access_status = 'accepted'
+      AND (
+        (r.requester_id = p_user_a AND r.recipient_id = p_user_b)
+        OR
+        (r.requester_id = p_user_b AND r.recipient_id = p_user_a)
+      )
+  );
+$$;
+
+REVOKE ALL ON FUNCTION public.can_message(uuid, uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.can_message(uuid, uuid) TO authenticated;
+
 DROP POLICY IF EXISTS "participants can read accepted conversations" ON public.messages;
 CREATE POLICY "participants can read accepted conversations"
 ON public.messages FOR SELECT TO authenticated
 USING (
   (sender_id = auth.uid() OR recipient_id = auth.uid())
-  AND EXISTS (
-    SELECT 1 FROM public.contact_consent_requests r
-    WHERE r.access_status = 'accepted'
-      AND (
-        (r.requester_id = public.messages.sender_id AND r.recipient_id = public.messages.recipient_id)
-        OR
-        (r.requester_id = public.messages.recipient_id AND r.recipient_id = public.messages.sender_id)
-      )
-  )
+  AND public.can_message(sender_id, recipient_id)
 );
 
 DROP POLICY IF EXISTS "send messages in accepted conversations" ON public.messages;
@@ -36,15 +50,7 @@ CREATE POLICY "send messages in accepted conversations"
 ON public.messages FOR INSERT TO authenticated
 WITH CHECK (
   sender_id = auth.uid()
-  AND EXISTS (
-    SELECT 1 FROM public.contact_consent_requests r
-    WHERE r.access_status = 'accepted'
-      AND (
-        (r.requester_id = public.messages.sender_id AND r.recipient_id = public.messages.recipient_id)
-        OR
-        (r.requester_id = public.messages.recipient_id AND r.recipient_id = public.messages.sender_id)
-      )
-  )
+  AND public.can_message(sender_id, recipient_id)
 );
 
 REVOKE ALL ON public.messages FROM anon;
