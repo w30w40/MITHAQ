@@ -19,9 +19,13 @@ ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS region text,
   ADD COLUMN IF NOT EXISTS marriage_type text,
   ADD COLUMN IF NOT EXISTS life_text text,
-  ADD COLUMN IF NOT EXISTS is_published boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS is_published boolean NOT NULL DEFAULT true,
   ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT now(),
   ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now();
+
+-- Existing registered members are listed automatically for authenticated members.
+ALTER TABLE public.profiles ALTER COLUMN is_published SET DEFAULT true;
+UPDATE public.profiles SET is_published = true;
 
 CREATE TABLE IF NOT EXISTS public.profile_details (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -52,9 +56,10 @@ WITH CHECK (id = auth.uid());
 
 -- Public discovery exposes only the deliberately selected summary columns.
 DROP POLICY IF EXISTS "members_read_published_profiles_or_own" ON public.profiles;
-CREATE POLICY "members_read_published_profiles_or_own"
+DROP POLICY IF EXISTS "members_read_all_member_profiles" ON public.profiles;
+CREATE POLICY "members_read_all_member_profiles"
 ON public.profiles FOR SELECT TO authenticated
-USING (is_published = true OR id = auth.uid());
+USING (true);
 
 DROP POLICY IF EXISTS "members_insert_own_public_profile" ON public.profiles;
 CREATE POLICY "members_insert_own_public_profile"
@@ -144,7 +149,7 @@ SELECT
   NULLIF(u.raw_user_meta_data->>'city', ''),
   NULLIF(u.raw_user_meta_data->>'marriage_type', ''),
   COALESCE(NULLIF(u.raw_user_meta_data->>'about', ''), ''),
-  false
+  true
 FROM auth.users AS u
 ON CONFLICT (id) DO UPDATE
 SET
