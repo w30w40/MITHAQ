@@ -111,6 +111,8 @@ body.authenticated .card h2{color:#246b98}
 .member-profile-cover #editProfileOpen{margin-right:auto;flex:none}
 .member-profile-actions{display:flex;align-items:center;gap:8px;margin-right:auto;flex:none}.member-profile-actions button{white-space:nowrap}@media(max-width:600px){.member-profile-actions{width:100%;margin:8px 0 0}.member-profile-actions button{flex:1}.member-profile-cover #editProfileOpen{width:auto;margin:0}}
 @media(max-width:600px){.member-profile-cover{padding:17px}.member-profile-avatar{width:62px;height:62px;font-size:30px}.member-profile-card{padding:15px}.member-profile-details{grid-template-columns:1fr}.member-profile-card-head h2{font-size:17px}}
+
+.mithaq-section-back{display:inline-flex;align-items:center;gap:7px;margin:0 0 15px;padding:10px 17px;border:1px solid #dce8f2;border-radius:12px;background:#fff;color:#246b98;font-weight:700;box-shadow:0 3px 12px #183e3008}.mithaq-section-back:active{transform:scale(.98)}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -506,7 +508,7 @@ body.authenticated #entryGate{display:none}
 </section>
 <section id="myprofile" class="tab hidden">
 <div class="member-page-title"><div><small>حسابك في ميثاق</small><h1>ملفي الشخصي</h1></div><span class="member-title-heart">♥</span></div>
-<div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="secondary" id="profileBackButton" type="button">← رجوع</button><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
+<div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
 <p id="profileGate" class="muted">جارٍ تحميل ملفك الشخصي...</p>
 <div id="profileReadView">
 <div class="member-profile-card">
@@ -645,7 +647,7 @@ const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUP
  }
 }):null;
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
- let profileReturnTab='home';
+ const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
 function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
 document.getElementById('memberMenuOpen').addEventListener('click',()=>document.body.classList.add('drawer-open'));
@@ -653,11 +655,12 @@ document.getElementById('memberMenuClose').addEventListener('click',closeMemberD
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
 
-function show(id){if(id!=='myprofile')profileReturnTab=id;tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
+function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
+ function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
+ ['myprofile','search','favorites','requests','messages','settings','safety','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
 function showProfileEditView(){document.getElementById('profileReadView').hidden=true;document.getElementById('profileEditView').hidden=false;document.getElementById('profileEditView').scrollIntoView({behavior:'smooth',block:'start'});}
 document.getElementById('editProfileOpen').addEventListener('click',showProfileEditView);
- document.getElementById('profileBackButton').addEventListener('click',()=>show(profileReturnTab||'home'));
 document.getElementById('cancelProfileEdit').addEventListener('click',showProfileReadView);
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 /* Legacy authentication modal removed: MITHAQ now uses the dedicated five-step signup form and the dedicated login form above. Keeping this obsolete block caused null-element errors and interrupted session restoration. */
