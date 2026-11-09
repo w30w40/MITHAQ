@@ -380,7 +380,7 @@ body.authenticated #entryGate{display:none}
 <body>
 <div id="entryGate" dir="rtl">
   <div class="entry-top">
-    <button class="entry-lang js-language-open" type="button" aria-haspopup="dialog">⌄ &nbsp; AR 🇸🇦</button>
+    <button class="entry-lang js-language-open" type="button" aria-haspopup="dialog" onclick="window.openMithaqLanguagePicker && window.openMithaqLanguagePicker();">⌄ &nbsp; AR 🇸🇦</button>
     <div class="entry-logo"><span>♥</span><b>MITHAQ</b></div>
     <button class="entry-menu" type="button" aria-label="القائمة">☰</button>
   </div>
@@ -487,7 +487,7 @@ body.authenticated #entryGate{display:none}
 
 <header>
 <div class="member-topbar">
-  <button class="member-language js-language-open" type="button" aria-haspopup="dialog">⌄ AR 🇸🇦</button>
+  <button class="member-language js-language-open" type="button" aria-haspopup="dialog" onclick="window.openMithaqLanguagePicker && window.openMithaqLanguagePicker();">⌄ AR 🇸🇦</button>
   <div class="member-brand"><span class="member-mark">♥</span><strong>MITHAQ</strong></div>
   <button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button>
 </div>
@@ -637,6 +637,7 @@ body.authenticated #entryGate{display:none}
  const current=()=>languages.find(x=>x[0]===selected)||languages[0];
  function updateButtons(){const x=current();document.querySelectorAll('.js-language-open').forEach(b=>{b.textContent='⌄ '+x[1]+' '+x[2];b.setAttribute('aria-label','لغة الموقع: '+x[3]);});}
  function render(){const q=(search.value||'').trim().toLocaleLowerCase();list.replaceChildren();languages.filter(x=>x.join(' ').toLocaleLowerCase().includes(q)).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='language-option';b.setAttribute('aria-selected',String(x[0]===selected));const flag=document.createElement('span');flag.className='lang-flag';flag.textContent=x[2];const name=document.createElement('span');name.className='lang-name';name.textContent=x[3];const code=document.createElement('small');code.textContent=x[1];b.append(flag,name,code);b.addEventListener('click',()=>choose(x));list.append(b);});}
+ window.openMithaqLanguagePicker=function(){search.value='';render();picker.style.display='flex';picker.classList.add('open');};
  function closePicker(){picker.classList.remove('open');picker.style.display='none';}
  function openPicker(){search.value='';render();picker.style.display='flex';picker.classList.add('open');}
  function choose(x){selected=x[0];localStorage.setItem('mithaq-language',selected);document.documentElement.lang=x[0];document.documentElement.dir=x[5];updateButtons();closePicker();document.getElementById('languageStatus').textContent='تم حفظ اختيارك: '+x[3];}
