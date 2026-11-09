@@ -544,24 +544,14 @@ function applyAuthenticatedSession(session){
  const box=document.getElementById('signedInBox');
  if(session){
   document.body.classList.add('authenticated');
+  // The old signed-in banner is not part of the current MITHAQ layout.
+  // Session state must still update even when that optional element is absent.
+  if(!box)return;
   box.hidden=false;
   box.textContent='تم تسجيل الدخول بالبريد: '+session.user.email;
-  let out=document.getElementById('signOutBtn');
-  if(!out){
-   out=document.createElement('button');out.id='signOutBtn';out.className='secondary';out.textContent='تسجيل الخروج';
-   box.appendChild(document.createElement('br'));box.appendChild(out);
-   out.addEventListener('click',async()=>{
-    out.disabled=true;
-    const {error}=await supabaseClient.auth.signOut();
-    if(error){out.disabled=false;box.dataset.error=error.message;return;}
-    document.body.classList.remove('authenticated');
-    box.hidden=true;
-    showEntry('login');
-   });
-  }
  }else{
   document.body.classList.remove('authenticated');
-  box.hidden=true;
+  if(box)box.hidden=true;
  }
 }
 async function showAuthSession(){
@@ -693,7 +683,8 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   status.textContent='تم حفظ ملفك الشخصي ومواصفاتك بنجاح.';
   await refreshProfileAccess();
  }catch(err){
-  status.textContent='تعذر حفظ الملف في قاعدة البيانات: '+(err.message||'خطأ غير معروف')+' — تأكد من تنفيذ db/profile.sql في Supabase.';
+  console.error('MITHAQ profile save:',err);
+  status.textContent='تعذر إكمال الحفظ: '+(err.message||'خطأ غير معروف')+'. لم يتغير تصميم الملف.';
  }finally{btn.disabled=false;}
 });
 // يتم تحميل الملف من show() عند فتح تبويبه.
