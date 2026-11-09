@@ -58,12 +58,15 @@ footer{color:#8a9aad}
  nav{top:5px}
 }
 </style>
+<style id="mithaq-settings">
+.settings-list{padding:5px 18px}.settings-item{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:16px 5px;border-radius:0;background:transparent;color:#243e58;border-bottom:1px solid #e8eef4}.settings-item:last-of-type{border-bottom:0}.settings-item>span:nth-child(2){display:grid;gap:5px;flex:1}.settings-item strong{font-size:14px}.settings-item small{font-size:12px;color:#7a8b9b;font-weight:400}.settings-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#edf5fc;font-size:18px}.settings-arrow{font-size:24px;color:#8ca0b2}.settings-static{cursor:default}.settings-logout{color:#a43c42}.settings-logout .settings-icon{background:#fff0f0}@media(max-width:700px){.settings-list{padding-inline:14px}.settings-item{padding:14px 3px}}
+</style>
 </head>
 <body>
 <header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
-<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
+<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button><button data-tab="settings">الإعدادات</button></nav>
 <section id="home" class="tab">
 <div class="home-grid">
 <div class="card welcome"><div class="eyebrow">أهلاً بك في ميثاق</div><h2>ابدأ رحلة تعارف<br>واضحة ومحترمة</h2><p class="muted">أنشئ ملفك، تعرّف على الملفات المناسبة، وأرسل طلب تعارف. لا تبدأ المراسلة إلا بعد قبول الطرف الآخر.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="resetPassword" type="button">نسيت كلمة المرور؟</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div></div>
@@ -101,6 +104,17 @@ footer{color:#8a9aad}
 
 <section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p id="requestIntro" class="muted">طلبات الوصول الخاصة بك ستظهر هنا بعد تسجيل الدخول.</p><div id="requestList" class="muted">سجّل الدخول لعرض طلباتك.</div></div></section>
 <section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
+<section id="settings" class="tab hidden">
+<div class="card"><div class="section-kicker">حسابك في ميثاق</div><h2>الإعدادات</h2><p class="muted">إدارة حسابك وملفك وخصوصيتك من مكان واحد.</p></div>
+<div class="card settings-list">
+<button class="settings-item" type="button" data-settings-go="myprofile"><span class="settings-icon">👤</span><span><strong>إدارة الملف الشخصي</strong><small>تعديل بياناتك والنبذة ونشر الملف</small></span><span class="settings-arrow">‹</span></button>
+<button class="settings-item" type="button" data-settings-go="safety"><span class="settings-icon">🔒</span><span><strong>الخصوصية والأمان</strong><small>حماية معلوماتك واستخدام المنصة</small></span><span class="settings-arrow">‹</span></button>
+<button class="settings-item" type="button" data-settings-go="requests"><span class="settings-icon">🤝</span><span><strong>طلبات التعارف</strong><small>متابعة الطلبات والردود</small></span><span class="settings-arrow">‹</span></button>
+<button class="settings-item" type="button" data-settings-go="messages"><span class="settings-icon">✉️</span><span><strong>المراسلات</strong><small>محادثاتك المقبولة داخل ميثاق</small></span><span class="settings-arrow">‹</span></button>
+<div class="settings-item settings-static"><span class="settings-icon">🌐</span><span><strong>اللغة</strong><small>العربية</small></span></div>
+<button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
+<p id="settingsStatus" class="notice" aria-live="polite"></p>
+</div></section>
 <section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
 </main><footer>ميثاق • التعارف الجاد يبدأ بالاحترام والخصوصية</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -173,6 +187,8 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
 document.querySelector('button[data-tab="myprofile"]').addEventListener('click',refreshProfileAccess);
 supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
 
+document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='myprofile')refreshProfileAccess();if(id==='messages')loadConversations();}));
+document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){document.getElementById('signedInBox').hidden=true;show('home');}});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
