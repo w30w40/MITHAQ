@@ -548,7 +548,7 @@ body.authenticated #entryGate{display:none}
 <div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
 <div id="profileExtraFields"></div>
 <div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" required placeholder="اكتب نبذة عن نفسك"></textarea></div>
-<label style="display:flex;gap:8px;align-items:center"><input id="publishProfile" type="checkbox" style="width:auto"> أوافق على نشر ملفي ليظهر للمستخدمين المسجلين</label>
+<p class="muted">ملفك المختصر يظهر تلقائياً للأعضاء المسجلين في ميثاق.</p>
 <div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ التعديلات</button><button class="secondary" id="cancelProfileEdit" type="button">إلغاء</button></div>
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
 </div>
@@ -966,7 +966,6 @@ async function refreshProfileAccess(){
  document.getElementById('profileRegion').value=meta.city||'';
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
- document.getElementById('publishProfile').checked=!!publicRow?.is_published;
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
 }
 document.getElementById('myProfileForm').addEventListener('submit',async e=>{
@@ -988,7 +987,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
- const published=document.getElementById('publishProfile').checked;
+ const published=true; // All registered members are listed automatically.
  btn.disabled=true;status.textContent='جارٍ حفظ ملفك في قاعدة البيانات...';
  try{
   const {error:authError}=await supabaseClient.auth.updateUser({data:updated});
@@ -1119,7 +1118,7 @@ async function loadPublishedProfiles(){
  await touchPresence();
  if(!window.mithaqPresenceTimer)window.mithaqPresenceTimer=setInterval(()=>{if(document.visibilityState==='visible')touchPresence();},120000);
  host.textContent='جارٍ تحميل الملفات المنشورة...';
- const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at').eq('is_published',true);
+ const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at');
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
  publishedProfiles=data||[];searchExecuted=true;renderPublishedProfiles();
 }
