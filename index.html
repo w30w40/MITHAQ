@@ -599,6 +599,15 @@ body.authenticated #entryGate{display:none}
 <section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
 </main><footer>ميثاق • التعارف الجاد يبدأ بالاحترام والخصوصية</footer>
+<div class="language-popover" id="languagePicker" role="dialog" aria-modal="true" aria-labelledby="languagePickerTitle">
+ <div class="language-panel">
+  <div class="language-panel-head"><h2 id="languagePickerTitle">اختر لغة الموقع</h2><button type="button" class="language-close" id="languagePickerClose" aria-label="إغلاق">×</button></div>
+  <input class="language-search" id="languageSearch" type="search" placeholder="ابحث عن لغة..." autocomplete="off">
+  <div class="language-options" id="languageOptions"></div>
+  <p class="notice" id="languageStatus">سيُحفظ اختيارك على هذا الجهاز.</p>
+ </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
@@ -1135,12 +1144,4 @@ searchCountrySelect.addEventListener('change',()=>fillAreaSelect(searchCitySelec
 })();
 
 </script>
-<div class="language-popover" id="languagePicker" role="dialog" aria-modal="true" aria-labelledby="languagePickerTitle">
- <div class="language-panel">
-  <div class="language-panel-head"><h2 id="languagePickerTitle">اختر لغة الموقع</h2><button type="button" class="language-close" id="languagePickerClose" aria-label="إغلاق">×</button></div>
-  <input class="language-search" id="languageSearch" type="search" placeholder="ابحث عن لغة..." autocomplete="off">
-  <div class="language-options" id="languageOptions"></div>
-  <p class="notice" id="languageStatus">سيُحفظ اختيارك على هذا الجهاز.</p>
- </div>
-</div>
 </body></html>
