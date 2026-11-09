@@ -16,7 +16,7 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 <header><div class="wrap hero"><div class="brand">MITHAQ • ميثاق</div><h1>التعارف الجاد يبدأ بالاحترام</h1><p>للتعارف بقصد الزواج المعلن أو المسيار، مع حفظ الخصوصية ووضوح الموافقة.</p></div></header>
 <main class="wrap">
 <div class="demo">سجّل حسابك وأنشئ ملفك الشخصي، ولا تشارك معلومات شخصية حساسة.</div>
-<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="safety">الأمان</button></nav>
+<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
 <section id="home" class="tab">
 <div class="card"><h2>مرحباً بك في ميثاق</h2><p class="muted">مساحة للتعارف الجاد، يكون فيها القرار للطرفين. لا توجد محادثات داخلية؛ تبقى بياناتك الشخصية خاصة.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div><div class="row" style="margin-top:12px"><button class="secondary" data-go="search">استكشف الملفات</button><button class="secondary" data-go="safety">تعرف على الخصوصية</button></div></div>
 <div class="card"><h2>كيف يعمل ميثاق؟</h2><p class="muted">تصفح الملف ← أبدِ اهتمامك ← أرسل طلب وصول ← ينتظر موافقة صاحب الملف على طلب الوصول.</p><span class="tag">الرضا أولاً</span><span class="tag">لا صور أو فيديو</span><span class="tag">التواصل الأساسي مجاني</span></div>
@@ -42,6 +42,7 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 </section>
 <section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
 <section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p id="requestIntro" class="muted">طلبات الوصول الخاصة بك ستظهر هنا بعد تسجيل الدخول.</p><div id="requestList" class="muted">سجّل الدخول لعرض طلباتك.</div></div></section>
+<section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
 </main><footer>ميثاق — حفظ الملف الشخصي متاح للحساب المسجل؛ بقية وظائف التعارف قيد التطوير والاختبار.</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -192,5 +193,56 @@ async function loadMyContactRequests(){
  });
 }
 document.querySelector('button[data-tab="requests"]').addEventListener('click',loadMyContactRequests);
+
+let activeChatUser=null,activeChatName='';
+async function loadConversations(){
+ const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
+ panel.hidden=true;
+ if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){host.textContent='سجّل الدخول لعرض مراسلاتك.';return;}
+ host.textContent='جارٍ تحميل المراسلات...';
+ const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300);
+ if(error){host.textContent='تعذر تحميل المراسلات. تأكد من تنفيذ إعداد قاعدة بيانات المراسلات. '+error.message;return;}
+ const ids=[...new Set((data||[]).map(m=>m.sender_id===session.user.id?m.recipient_id:m.sender_id))];
+ if(!ids.length){host.textContent='لا توجد مراسلات بعد. اقبل طلب تعارف أولاً لبدء المراسلة.';return;}
+ const {data:people,error:peopleError}=await supabaseClient.from('profiles').select('id,display_name').in('id',ids);
+ if(peopleError){host.textContent='تعذر تحميل أسماء المستخدمين: '+peopleError.message;return;}
+ host.replaceChildren();
+ ids.forEach(id=>{
+  const person=(people||[]).find(p=>p.id===id),name=person?.display_name||'عضو ميثاق';
+  const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
+  const b=document.createElement('button');b.className='secondary';b.style.display='block';b.style.width='100%';b.style.textAlign='right';b.style.margin='7px 0';
+  b.textContent=name+' — '+(last?.body||'ابدأ المحادثة').slice(0,70);
+  b.addEventListener('click',()=>openChat(id,name));host.append(b);
+ });
+}
+async function openChat(userId,name){
+ activeChatUser=userId;activeChatName=name;
+ document.getElementById('chatPanel').hidden=false;document.getElementById('chatTitle').textContent='محادثة مع '+name;
+ await refreshChat();
+}
+async function refreshChat(){
+ const box=document.getElementById('chatMessages'),status=document.getElementById('messageStatus');
+ if(!activeChatUser)return;
+ const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
+ const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at').or('and(sender_id.eq.'+session.user.id+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+session.user.id+')').order('created_at',{ascending:true}).limit(200);
+ if(error){status.textContent='تعذر تحميل الرسائل: '+error.message;return;}
+ box.replaceChildren();
+ (data||[]).forEach(m=>{const p=document.createElement('p');p.style.cssText='padding:9px 12px;border-radius:12px;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere;background:'+(m.sender_id===session.user.id?'#dceee2':'#fff')+';margin:7px 0 '+(m.sender_id===session.user.id?'7px auto':'7px 0');p.textContent=m.body;box.append(p);});
+ box.scrollTop=box.scrollHeight;status.textContent='';
+}
+document.getElementById('messageForm').addEventListener('submit',async e=>{
+ e.preventDefault();const input=document.getElementById('messageText'),btn=document.getElementById('sendMessage'),status=document.getElementById('messageStatus'),body=input.value.trim();
+ if(!body||!activeChatUser)return;
+ const {data:{session}}=await supabaseClient.auth.getSession();if(!session){status.textContent='سجّل الدخول أولاً.';return;}
+ btn.disabled=true;status.textContent='جارٍ الإرسال...';
+ const {error}=await supabaseClient.from('messages').insert({sender_id:session.user.id,recipient_id:activeChatUser,body});
+ btn.disabled=false;
+ if(error){status.textContent='تعذر الإرسال: '+error.message;return;}
+ input.value='';await refreshChat();await loadConversations();
+});
+document.querySelector('button[data-tab="messages"]').addEventListener('click',loadConversations);
+
 document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\\p{S}\\p{P}\\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: قسم حياتي في التصميم النهائي مخصص للحروف والكلمات فقط. لا يتم حفظ النص.':'معاينة محلية فقط؛ لم يتم حفظ النص.';});
 </script></body></html>
