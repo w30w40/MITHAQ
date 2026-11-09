@@ -1117,7 +1117,7 @@ async function loadPublishedProfiles(){
  host.textContent='جارٍ تحميل الملفات المنشورة...';
  const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at').eq('is_published',true);
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
- publishedProfiles=data||[];if(searchExecuted)renderPublishedProfiles();
+ publishedProfiles=data||[];searchExecuted=true;renderPublishedProfiles();
 }
 function filter(){if(searchExecuted)renderPublishedProfiles();}
 let searchExecuted=false;
