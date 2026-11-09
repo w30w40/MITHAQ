@@ -112,4 +112,10 @@ SELECT
   COALESCE(NULLIF(u.raw_user_meta_data->>'about', ''), ''),
   false
 FROM auth.users AS u
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE
+SET
+  display_name = COALESCE(NULLIF(public.profiles.display_name, ''), NULLIF(public.profiles.display_name, 'عضو ميثاق'), EXCLUDED.display_name),
+  country = COALESCE(NULLIF(public.profiles.country, ''), EXCLUDED.country),
+  region = COALESCE(NULLIF(public.profiles.region, ''), EXCLUDED.region),
+  marriage_type = COALESCE(NULLIF(public.profiles.marriage_type, ''), EXCLUDED.marriage_type),
+  life_text = COALESCE(NULLIF(public.profiles.life_text, ''), EXCLUDED.life_text);
