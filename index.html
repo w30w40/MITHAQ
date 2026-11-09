@@ -28,6 +28,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
 body.authenticated{background:#fff9fa;color:#343b43}
+body.authenticated #entryGate{display:none!important}
 body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
 body.authenticated header:after{display:none}
 body.authenticated header .hero{display:none}
@@ -511,7 +512,15 @@ document.getElementById('entryForgot').addEventListener('click',async()=>{const 
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_9stWwK7GGAJOHWSBrGGYTA_Lyvkhwdy';
 const authReady=SUPABASE_PUBLISHABLE_KEY!=='PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
-const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
+const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+ auth:{
+  persistSession:true,
+  autoRefreshToken:true,
+  detectSessionInUrl:true,
+  storage:window.localStorage,
+  storageKey:'mithaq-auth-session'
+ }
+}):null;
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
 const drawer=document.getElementById('memberDrawer');
 function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
@@ -530,8 +539,50 @@ document.getElementById('openLogin').addEventListener('click',()=>openAuth('logi
 document.getElementById('closeAuth').addEventListener('click',()=>authPanel.classList.remove('open'));
 document.getElementById('resetPassword').addEventListener('click',async()=>{if(!supabaseClient){authStatus.textContent='خدمة استعادة كلمة المرور غير متاحة حالياً.';return;}const email=document.getElementById('authEmail').value.trim();if(!email){authStatus.textContent='اكتب بريدك الإلكتروني أولاً ثم اضغط نسيت كلمة المرور.';return;}authStatus.textContent='جارٍ إرسال رابط الاستعادة...';const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});authStatus.textContent=error?'تعذر إرسال الرابط: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور. افحص بريدك الوارد والرسائل غير المرغوب فيها.';});
 authForm.addEventListener('submit',async e=>{e.preventDefault();if(!supabaseClient){authStatus.textContent='التسجيل غير مفعّل بعد. يجب أولاً ربط المفتاح العام الصحيح لمشروع Supabase.';return;}authSubmit.disabled=true;authStatus.textContent='جارٍ التنفيذ...';const email=document.getElementById('authEmail').value.trim();const password=document.getElementById('authPassword').value;try{const result=authMode==='signup'?await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/'}}):await supabaseClient.auth.signInWithPassword({email,password});if(result.error)throw result.error;authStatus.textContent=authMode==='signup'?'تم إنشاء طلب الحساب. افحص بريدك واضغط رابط التأكيد قبل تسجيل الدخول.':'تم تسجيل الدخول بنجاح.';if(authMode==='login')await showAuthSession();}catch(err){authStatus.textContent='تعذر إكمال العملية: '+(err.message||'حدث خطأ غير معروف');}finally{authSubmit.disabled=false;}});
-async function showAuthSession(){if(!supabaseClient)return;const {data}=await supabaseClient.auth.getSession();const box=document.getElementById('signedInBox');if(data.session){box.hidden=false;box.textContent='تم تسجيل الدخول بالبريد: '+data.session.user.email;let out=document.getElementById('signOutBtn');if(!out){out=document.createElement('button');out.id='signOutBtn';out.className='secondary';out.textContent='تسجيل الخروج';box.appendChild(document.createElement('br'));box.appendChild(out);out.addEventListener('click',async()=>{await supabaseClient.auth.signOut();box.hidden=true;});}}}
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((_event,session)=>{showAuthSession();if(session)document.body.classList.add('authenticated');});showAuthSession();supabaseClient.auth.getSession().then(({data})=>{if(data.session){document.body.classList.add('authenticated');show('home');}});}
+function applyAuthenticatedSession(session){
+ const box=document.getElementById('signedInBox');
+ if(session){
+  document.body.classList.add('authenticated');
+  box.hidden=false;
+  box.textContent='تم تسجيل الدخول بالبريد: '+session.user.email;
+  let out=document.getElementById('signOutBtn');
+  if(!out){
+   out=document.createElement('button');out.id='signOutBtn';out.className='secondary';out.textContent='تسجيل الخروج';
+   box.appendChild(document.createElement('br'));box.appendChild(out);
+   out.addEventListener('click',async()=>{
+    out.disabled=true;
+    const {error}=await supabaseClient.auth.signOut();
+    if(error){out.disabled=false;box.dataset.error=error.message;return;}
+    document.body.classList.remove('authenticated');
+    box.hidden=true;
+    showEntry('login');
+   });
+  }
+ }else{
+  document.body.classList.remove('authenticated');
+  box.hidden=true;
+ }
+}
+async function restoreAuthSession(){
+ if(!supabaseClient)return;
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error){console.error('MITHAQ session restore:',error.message);return;}
+ if(data.session){
+  applyAuthenticatedSession(data.session);
+  show('home');
+ }else{
+  applyAuthenticatedSession(null);
+ }
+}
+if(supabaseClient){
+ supabaseClient.auth.onAuthStateChange((event,session)=>{
+  applyAuthenticatedSession(session);
+  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
+   if(!document.querySelector('.tab:not(.hidden)'))show('home');
+  }
+ });
+ restoreAuthSession();
+}
 async function refreshProfileAccess(){
  const gate=document.getElementById('profileGate'),form=document.getElementById('myProfileForm');
  const details=document.getElementById('myProfileDetails'),about=document.getElementById('myProfileAbout');
