@@ -455,7 +455,7 @@ body.authenticated #entryGate{display:none}
           <h2>إنهاء التسجيل</h2>
           <p class="muted">راجع بياناتك ووافق على الشروط قبل إنشاء الحساب.</p>
           <label class="wizard-check"><input id="entryTerms" type="checkbox" required> أوافق على شروط الاستخدام وسياسة الخصوصية، وأتعهد باستخدام ميثاق لغرض التعارف الجاد بقصد الزواج.</label>
-          <label class="wizard-check"><input id="entryConsent" type="checkbox" required> أوافق على حفظ بيانات ملفي، ولن يتم نشره إلا وفق إعدادات الخصوصية وموافقتي.</label>
+          <label class="wizard-check"><input id="entryConsent" type="checkbox" required> أوافق على ظهور ملفي الأساسي (اسم المستخدم والبيانات التعريفية) للأعضاء المسجلين في ميثاق، مع إمكانية إخفائه لاحقاً من إعدادات الخصوصية.</label>
         </section>
         <div class="wizard-actions">
           <button id="entryBack" class="wizard-back" type="button" hidden>السابق</button>
@@ -810,7 +810,7 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  if(!supabaseClient){status.textContent='التسجيل غير متاح حالياً. تحقق من اتصال الخدمة.';return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
- const profile={username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ const profile={public_listing_consent:true,username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
   const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
   if(error)throw error;
@@ -820,6 +820,8 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
   if(data.session&&data.user?.id){
    const {error:profileSaveError}=await supabaseClient.from('profile_details').upsert({id:data.user.id,details:profile,updated_at:new Date().toISOString()},{onConflict:'id'});
    if(profileSaveError)throw profileSaveError;
+   const {error:publicProfileError}=await supabaseClient.from('profiles').upsert({id:data.user.id,display_name:profile.username,country:profile.country||null,region:profile.city||null,marriage_type:profile.marriage_type||null,life_text:profile.about||'',is_published:true,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'id'});
+   if(publicProfileError)throw publicProfileError;
    applyAuthenticatedSession(data.session);show('home');
   }else{
    status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. سيُربط ملف التسجيل بحسابك تلقائياً.';
@@ -1094,7 +1096,9 @@ function renderPublishedProfiles(){
   const info=document.createElement('div');info.style.flex='1';
   const name=document.createElement('h3');name.textContent=p.display_name||'عضو ميثاق';
   const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');
-  info.append(name,meta);head.append(avatar,info);card.append(head);
+  const online=!!(p.last_seen_at&&Date.now()-new Date(p.last_seen_at).getTime()<5*60*1000);
+  const presence=document.createElement('p');presence.className='muted';presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل';
+  info.append(name,meta,presence);head.append(avatar,info);card.append(head);
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
   const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['الجنسية',p.nationality],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work],['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]].filter(x=>x[1]!==null&&x[1]!==undefined&&String(x[1]).trim()!=='');
   if(details.length){const line=document.createElement('p');line.className='notice';line.textContent=details.map(x=>x.join(': ')).join(' · ');card.append(line);}
