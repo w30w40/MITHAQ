@@ -598,7 +598,22 @@ async function refreshProfileAccess(){
  if(!session){gate.textContent='سجّل الدخول أولاً لعرض ملفك الشخصي.';form.hidden=true;details.textContent='لا توجد جلسة دخول.';return;}
  const {data:userData,error:userError}=await supabaseClient.auth.getUser();
  if(userError){gate.textContent='تعذر جلب بيانات حسابك: '+userError.message;form.hidden=true;return;}
- const meta=userData.user?.user_metadata||session.user.user_metadata||{};
+ const uid=session.user.id;
+ const [{data:privateRow,error:privateError},{data:publicRow,error:publicError}]=await Promise.all([
+  supabaseClient.from('profile_details').select('details').eq('id',uid).maybeSingle(),
+  supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published').eq('id',uid).maybeSingle()
+ ]);
+ const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
+ const meta={...authMeta,...(privateRow?.details||{})};
+ if(privateError)console.warn('MITHAQ private profile load:',privateError.message);
+ if(publicError)console.warn('MITHAQ public profile load:',publicError.message);
+ if(publicRow){
+  meta.username=publicRow.display_name||meta.username;
+  meta.country=publicRow.country||meta.country;
+  meta.city=publicRow.region||meta.city;
+  meta.marriage_type=publicRow.marriage_type||meta.marriage_type;
+  meta.about=publicRow.life_text||meta.about;
+ }
  const profileFields=[
   ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
   ['مكان الإقامة',meta.country],['الجنسية',meta.nationality],['المدينة',meta.city],['الأصل',meta.origin],
@@ -606,35 +621,27 @@ async function refreshProfileAccess(){
   ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
   ['المستوى التعليمي',meta.education],['الوضع المادي',meta.financial_status],['مجال العمل',meta.work_field],['الوظيفة',meta.work],['الدخل الشهري',meta.monthly_income],['الحالة الصحية',meta.health]
  ];
- details.replaceChildren();
- let count=0;
+ details.replaceChildren();let count=0;
  profileFields.forEach(([label,value])=>{if(value!==undefined&&value!==null&&String(value).trim()!==''){const item=document.createElement('div');item.className='member-detail-item';const name=document.createElement('span');name.textContent=label;const val=document.createElement('strong');val.textContent=String(value);item.append(name,val);details.append(item);count++;}});
- if(!count){details.textContent='لم نعثر على مواصفات التسجيل في بيانات الحساب.';}
+ if(!count)details.textContent='لم نعثر على مواصفات التسجيل في بيانات الحساب.';
  document.getElementById('myProfileDisplayName').textContent=meta.username||'ملفي الشخصي';
  document.getElementById('myProfileSubline').textContent=[meta.age?meta.age+' سنة':'',meta.country,meta.city].filter(Boolean).join(' • ')||'بياناتك ومواصفاتك الشخصية';
- const extraHost=document.getElementById('profileExtraFields');
- extraHost.replaceChildren();
+ const extraHost=document.getElementById('profileExtraFields');extraHost.replaceChildren();
  const extraFields=[['gender','الجنس'],['family_status','الحالة الاجتماعية'],['age','العمر'],['children','عدد الأطفال'],['nationality','الجنسية'],['origin','الأصل'],['weight','الوزن'],['height','الطول'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية'],['partner_preferences','مواصفات شريك الحياة']];
- extraFields.forEach(([key,label])=>{
-  const wrap=document.createElement('div');wrap.className='field';
-  const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;
-  const input=document.createElement(key==='partner_preferences'?'textarea':'input');
-  input.id='edit_'+key;input.dataset.profileKey=key;input.value=meta[key]??'';input.maxLength=key==='partner_preferences'?2000:120;
-  wrap.append(caption,input);extraHost.append(wrap);
- });
+ extraFields.forEach(([key,label])=>{const wrap=document.createElement('div');wrap.className='field';const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;const input=document.createElement(key==='partner_preferences'?'textarea':'input');input.id='edit_'+key;input.dataset.profileKey=key;input.value=meta[key]??'';input.maxLength=key==='partner_preferences'?2000:120;wrap.append(caption,input);extraHost.append(wrap);});
  const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]);
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
  else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
- gate.textContent='هذه هي المعلومات التي أدخلتها عند إنشاء حسابك.';
+ gate.textContent='هذه هي المعلومات المحفوظة في ملفك المرتبط بحسابك.';
  form.hidden=false;
  document.getElementById('displayName').value=meta.username||'';
  document.getElementById('profileCountry').value=meta.country||'';
  document.getElementById('profileRegion').value=meta.city||'';
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
- document.getElementById('publishProfile').checked=false;
- status.textContent='تم تحميل بيانات حسابك. يمكنك تعديلها وحفظها من هنا.';
+ document.getElementById('publishProfile').checked=!!publicRow?.is_published;
+ status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
 }
 const lifeWordsOnly=/^[\p{L}\s]+$/u;
 document.getElementById('profileLifeText').addEventListener('input',e=>{
@@ -651,8 +658,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  const {data:userData,error:userError}=await supabaseClient.auth.getUser();
  if(userError){status.textContent='تعذر قراءة بيانات حسابك: '+userError.message;return;}
  const previous=userData.user?.user_metadata||session.user.user_metadata||{};
- const updated={
-  ...previous,
+ const updated={...previous,
   username:document.getElementById('displayName').value.trim(),
   country:document.getElementById('profileCountry').value.trim(),
   city:document.getElementById('profileRegion').value.trim(),
@@ -661,17 +667,27 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
- btn.disabled=true;status.textContent='جارٍ حفظ تعديلات ملفك...';
+ const published=document.getElementById('publishProfile').checked;
+ btn.disabled=true;status.textContent='جارٍ حفظ ملفك في قاعدة البيانات...';
  try{
-  const {data,error}=await supabaseClient.auth.updateUser({data:updated});
-  if(error)throw error;
-  if(data.user)applyAuthenticatedSession((await supabaseClient.auth.getSession()).data.session);
-  status.textContent='تم حفظ تعديلات ملفك الشخصي بنجاح.';
+  const {error:authError}=await supabaseClient.auth.updateUser({data:updated});
+  if(authError)throw authError;
+  const {error:privateError}=await supabaseClient.from('profile_details').upsert({id:session.user.id,details:updated,updated_at:new Date().toISOString()},{onConflict:'id'});
+  if(privateError)throw privateError;
+  const {error:publicError}=await supabaseClient.from('profiles').upsert({
+   id:session.user.id,display_name:updated.username,country:updated.country||null,
+   region:updated.city||null,marriage_type:updated.marriage_type||null,
+   life_text:updated.about||null,is_published:published,updated_at:new Date().toISOString()
+  },{onConflict:'id'});
+  if(publicError)throw publicError;
+  const {data:{session:latestSession}}=await supabaseClient.auth.getSession();
+  if(latestSession)applyAuthenticatedSession(latestSession);
+  status.textContent='تم حفظ ملفك الشخصي ومواصفاتك بنجاح.';
   await refreshProfileAccess();
- }catch(err){status.textContent='تعذر حفظ التعديلات: '+(err.message||'خطأ غير معروف');}
- finally{btn.disabled=false;}
+ }catch(err){
+  status.textContent='تعذر حفظ الملف في قاعدة البيانات: '+(err.message||'خطأ غير معروف')+' — تأكد من تنفيذ db/profile.sql في Supabase.';
+ }finally{btn.disabled=false;}
 });
-
 // يتم تحميل الملف من show() عند فتح تبويبه.
 
 document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='messages')loadConversations();}));
