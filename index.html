@@ -63,7 +63,7 @@ footer{color:#8a9aad}
 <header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
-<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
+<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
 <section id="home" class="tab">
 <div class="home-grid">
 <div class="card welcome"><div class="eyebrow">أهلاً بك في ميثاق</div><h2>ابدأ رحلة تعارف<br>واضحة ومحترمة</h2><p class="muted">أنشئ ملفك، تعرّف على الملفات المناسبة، وأرسل طلب تعارف. لا تبدأ المراسلة إلا بعد قبول الطرف الآخر.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="resetPassword" type="button">نسيت كلمة المرور؟</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div></div>
@@ -87,7 +87,7 @@ footer{color:#8a9aad}
 <div class="field"><label for="profileCountry">الدولة</label><input id="profileCountry" maxlength="80" placeholder="مثال: السعودية"></div>
 <div class="field"><label for="profileRegion">المنطقة أو المدينة (اختياري)</label><input id="profileRegion" maxlength="100"></div>
 <div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option></select></div>
-<div class="field"><label for="profileLifeText">حياتي — كلمات فقط</label><textarea id="profileLifeText" maxlength="2000" required placeholder="اكتب نبذة عن نفسك بالكلمات والحروف فقط"></textarea><p class="notice">يُسمح بالحروف والمسافات فقط، دون أرقام أو رموز أو علامات ترقيم أو إيموجي.</p></div>
+<div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" required placeholder="اكتب نبذة عن نفسك بالكلمات والحروف فقط"></textarea><p class="notice">يُسمح بالحروف والمسافات فقط، دون أرقام أو رموز أو علامات ترقيم أو إيموجي.</p></div>
 <label style="display:flex;gap:8px;align-items:center"><input id="publishProfile" type="checkbox" style="width:auto"> أوافق على نشر ملفي ليظهر للمستخدمين المسجلين</label>
 <div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ الملف الشخصي</button></div>
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
@@ -98,7 +98,7 @@ footer{color:#8a9aad}
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
-<section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
+
 <section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p id="requestIntro" class="muted">طلبات الوصول الخاصة بك ستظهر هنا بعد تسجيل الدخول.</p><div id="requestList" class="muted">سجّل الدخول لعرض طلباتك.</div></div></section>
 <section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
@@ -146,7 +146,7 @@ async function refreshProfileAccess(){
 const lifeWordsOnly=/^[\p{L}\s]+$/u;
 document.getElementById('profileLifeText').addEventListener('input',e=>{
  const v=e.target.value;
- if(v && !lifeWordsOnly.test(v)){document.getElementById('profileStatus').textContent='استخدم الحروف والمسافات فقط في «حياتي».';}
+ if(v && !lifeWordsOnly.test(v)){document.getElementById('profileStatus').textContent='استخدم الحروف والمسافات فقط في «نبذة عني».';}
 });
 document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  e.preventDefault();
@@ -154,7 +154,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='انتهت جلستك؛ سجّل الدخول من جديد.';return;}
  const life=document.getElementById('profileLifeText').value.trim();
- if(!lifeWordsOnly.test(life)){status.textContent='قسم حياتي يقبل الحروف والمسافات فقط.';return;}
+ if(!lifeWordsOnly.test(life)){status.textContent='النبذة تقبل الحروف والمسافات فقط.';return;}
  const record={id:session.user.id,display_name:document.getElementById('displayName').value.trim(),country:document.getElementById('profileCountry').value.trim()||null,region:document.getElementById('profileRegion').value.trim()||null,marriage_type:document.getElementById('marriageType').value,life_text:life,is_published:document.getElementById('publishProfile').checked,updated_at:new Date().toISOString()};
  if(!record.display_name){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
  btn.disabled=true;status.textContent='جارٍ حفظ ملفك...';
@@ -308,5 +308,5 @@ document.getElementById('messageForm').addEventListener('submit',async e=>{
 });
 document.querySelector('button[data-tab="messages"]').addEventListener('click',loadConversations);
 
-document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\\p{S}\\p{P}\\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: قسم حياتي في التصميم النهائي مخصص للحروف والكلمات فقط. لا يتم حفظ النص.':'معاينة محلية فقط؛ لم يتم حفظ النص.';});
+
 </script></body></html>
