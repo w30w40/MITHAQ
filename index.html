@@ -498,21 +498,22 @@ body.authenticated #entryGate{display:none}
 <div class="member-drawer-backdrop" id="memberDrawerBackdrop"></div>
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
-  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
+  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button><button class="drawer-link" data-menu-go="members"><span>👥</span>الأعضاء</button>
   <div class="drawer-separator"></div>
   <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
   <div class="drawer-separator"></div>
 </aside>
-<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="messages">المراسلات</button><button data-tab="myprofile">ملفي</button></nav>
+<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="members">الأعضاء</button><button data-tab="messages">الرسائل</button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
   
   
   <div class="member-service-grid">
-    <button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
+    <button class="member-service" data-go="members"><span class="service-icon">👥</span><strong>الأعضاء</strong><small>تصفح أعضاء ميثاق</small></button><button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
     <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات</strong><small>محادثاتك الخاصة</small></button>
   </div>
   
 </section>
+<section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div></div></section>
 <section id="myprofile" class="tab hidden">
 
 <div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
@@ -795,9 +796,9 @@ document.getElementById('memberMenuClose').addEventListener('click',closeMemberD
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
 
-function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
+function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();if(id==='members')loadMembers();if(id==='messages')loadConversations();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
- ['myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
+ ['members','myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
 function showProfileEditView(){document.getElementById('profileReadView').hidden=true;document.getElementById('profileEditView').hidden=false;document.getElementById('profileEditView').scrollIntoView({behavior:'smooth',block:'start'});}
 document.getElementById('editProfileOpen').addEventListener('click',showProfileEditView);
@@ -965,6 +966,29 @@ document.getElementById('settingsSignOut').addEventListener('click',async()=>{co
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
+let activeChatUser=null;
+let activeChatName='';
+async function loadMembers(){
+ const host=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
+ host.replaceChildren();
+ if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
+ status.textContent='جارٍ تحميل الأعضاء...';
+ const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text').order('created_at',{ascending:false}).limit(500);
+ if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
+ const people=(data||[]).filter(person=>person.id!==session.user.id);
+ if(!people.length){status.textContent='لا يوجد أعضاء آخرون حالياً.';return;}
+ status.textContent='عدد الأعضاء: '+people.length;
+ people.forEach(person=>{
+  const card=document.createElement('article');card.className='member-profile-card';card.style.margin='0';
+  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.style.color='#246b98';
+  const info=document.createElement('p');info.className='muted';info.textContent=[person.country,person.region,person.marriage_type].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const about=document.createElement('p');about.className='member-profile-about';about.textContent=person.life_text||'';
+  const button=document.createElement('button');button.className='primary';button.type='button';button.textContent='إرسال رسالة';button.style.marginTop='10px';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
+  card.append(name,info);if(person.life_text)card.append(about);card.append(button);host.append(card);
+ });
+}
   async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
  panel.hidden=true;
@@ -975,7 +999,7 @@ let currentUserId=null;
  const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300);
  if(error){host.textContent='تعذر تحميل المراسلات. تأكد من تنفيذ إعداد قاعدة بيانات المراسلات. '+error.message;return;}
  const ids=[...new Set((data||[]).map(m=>m.sender_id===session.user.id?m.recipient_id:m.sender_id))];
- if(!ids.length){host.textContent='لا توجد مراسلات بعد. اقبل طلب تعارف أولاً لبدء المراسلة.';return;}
+ if(!ids.length){host.textContent='لا توجد رسائل بعد. افتح قسم الأعضاء واختر عضواً لإرسال رسالة.';return;}
  const {data:people,error:peopleError}=await supabaseClient.from('profiles').select('id,display_name').in('id',ids);
  if(peopleError){host.textContent='تعذر تحميل أسماء المستخدمين: '+peopleError.message;return;}
  host.replaceChildren();
@@ -1013,6 +1037,7 @@ document.getElementById('messageForm').addEventListener('submit',async e=>{
  input.value='';await refreshChat();await loadConversations();
 });
 document.querySelector('button[data-tab="messages"]').addEventListener('click',loadConversations);
+
 
 
 
