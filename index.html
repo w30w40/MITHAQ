@@ -18,9 +18,9 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 <div class="demo"><strong>تنبيه:</strong> تسجيل الدخول متصل بقاعدة البيانات، ويمكن حفظ ملفك الشخصي بشكل خاص. الاستكشاف والطلبات ما زالت تجريبية؛ لا تستخدم معلومات حساسة أو رقم واتساب.</div>
 <nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="safety">الأمان</button></nav>
 <section id="home" class="tab">
-<div class="card"><h2>مرحباً بك في ميثاق</h2><p class="muted">مساحة للتعارف الجاد، يكون فيها القرار للطرفين. لا محادثات داخلية، ولا كشف لوسيلة التواصل دون موافقة مستقلة من الطرفين.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div><div class="row" style="margin-top:12px"><button class="secondary" data-go="search">استكشف الملفات التجريبية</button><button class="secondary" data-go="safety">تعرف على الخصوصية</button></div></div>
+<div class="card"><h2>مرحباً بك في ميثاق</h2><p class="muted">مساحة للتعارف الجاد، يكون فيها القرار للطرفين. لا محادثات داخلية، ولا كشف لوسيلة التواصل دون موافقة مستقلة من الطرفين.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div><div class="row" style="margin-top:12px"><button class="secondary" data-go="search">استكشف الملفات</button><button class="secondary" data-go="safety">تعرف على الخصوصية</button></div></div>
 <div class="card"><h2>كيف يعمل ميثاق؟</h2><p class="muted">تصفح الملف ← أبدِ اهتمامك ← أرسل طلب وصول ← ينتظر موافقة صاحب الملف ← يوافق الطرفان بشكل مستقل على كشف واتساب.</p><span class="tag">الرضا أولاً</span><span class="tag">لا صور أو فيديو</span><span class="tag">التواصل الأساسي مجاني</span></div>
-<div class="card"><h2>ملفات مقترحة — وهمية</h2><div class="profile"><div><h3>ملف تجريبي ١</h3><p class="muted">السعودية · زواج معلن</p></div><span class="tag">بيانات وهمية</span></div><button class="secondary" data-go="search">عرض الملفات</button></div>
+
 </section>
 <section id="myprofile" class="tab hidden">
 <div class="card"><h2>ملفي الشخصي</h2>
@@ -34,9 +34,18 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 <label style="display:flex;gap:8px;align-items:center"><input id="publishProfile" type="checkbox" style="width:auto"> أوافق على نشر ملفي ليظهر للمستخدمين المسجلين</label>
 <div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ الملف الشخصي</button></div>
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
+<div id="privateContactPanel" class="card" hidden>
+<h2>رقم التواصل الخاص</h2>
+<p class="muted">يُحفظ الرقم بشكل خاص ولا يظهر في ملفك. لا يُعرض للطرف الآخر إلا بعد قبول طلب الوصول وموافقة الطرفين.</p>
+<form id="privateContactForm">
+<div class="field"><label for="privateWhatsapp">رقم واتساب مع مفتاح الدولة</label><input id="privateWhatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+9665XXXXXXXX" maxlength="20" required></div>
+<button class="primary" id="savePrivateContact" type="submit">حفظ الرقم بشكل خاص</button>
+</form>
+<p id="privateContactStatus" class="auth-status" aria-live="polite"></p>
+</div>
 </div></section>
 <section id="search" class="tab hidden">
-<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول التجريبية</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
+<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
@@ -67,6 +76,7 @@ async function refreshProfileAccess(){
  const {data:{session}}=await supabaseClient.auth.getSession();
  gate.textContent=session?'يمكنك إنشاء ملفك. لن يُنشر إلا إذا اخترت مربع الموافقة أدناه.':'سجّل الدخول أولاً لإنشاء ملفك وحفظه بشكل خاص.';
  form.hidden=!session;
+ document.getElementById("privateContactPanel").hidden=!session;
  if(session){
   const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,is_published').eq('id',session.user.id).maybeSingle();
   if(error){document.getElementById('profileStatus').textContent='تعذر تحميل ملفك: '+error.message;return;}
@@ -110,6 +120,27 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
 
 document.querySelector('button[data-tab="myprofile"]').addEventListener('click',refreshProfileAccess);
 supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
+
+document.getElementById('privateContactForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const status=document.getElementById('privateContactStatus');
+ const btn=document.getElementById('savePrivateContact');
+ const raw=document.getElementById('privateWhatsapp').value.trim();
+ const number=raw.replace(/[\\s()-]/g,'');
+ if(!/^\\+[1-9][0-9]{7,14}$/.test(number)){
+  status.textContent='اكتب الرقم بصيغة دولية تبدأ بعلامة +، مثل +9665XXXXXXXX.';
+  return;
+ }
+ btn.disabled=true;status.textContent='جارٍ حفظ الرقم بشكل خاص...';
+ try{
+  const {error}=await supabaseClient.rpc('set_my_private_contact',{p_whatsapp_number:number});
+  if(error)throw error;
+  document.getElementById('privateWhatsapp').value='';
+  status.textContent='تم حفظ الرقم بشكل خاص. لن يظهر إلا بعد موافقة الطرفين.';
+ }catch(err){
+  status.textContent='تعذر حفظ الرقم: '+(err.message||'تأكد من تفعيل خدمة حفظ رقم التواصل.');
+ }finally{btn.disabled=false;}
+});
 
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
