@@ -363,8 +363,8 @@ body.authenticated #entryGate{display:none}
 @media(max-width:600px){.search-filter-grid{grid-template-columns:1fr}.search-actions button{flex:1}}
 </style>
 <style id="mithaq-global-language">
-.language-popover{position:fixed;inset:0;z-index:1000;background:#17202b88;display:none;align-items:center;justify-content:center;padding:18px}
-.language-popover.open{display:flex}
+.language-popover{position:fixed!important;inset:0!important;z-index:2147483000!important;background:#17202b99;display:none;align-items:center;justify-content:center;padding:18px;visibility:visible}
+.language-popover.open{display:flex!important}
 .language-panel{width:min(440px,100%);max-height:82vh;overflow:auto;background:#fff;border-radius:20px;padding:20px;box-shadow:0 18px 55px #0003;color:#24364b}
 .language-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .language-panel-head h2{margin:0;font-size:20px;color:#1d5d91}
@@ -727,7 +727,7 @@ body.authenticated #entryGate{display:none}
  function updateButtons(){const x=current();document.querySelectorAll('.js-language-open').forEach(b=>{b.textContent='⌄ '+x[1]+' '+x[2];b.setAttribute('aria-label','Website language: '+x[3]);});}
  const languageAliases={ar:'العربية عربي السعودية',en:'الإنجليزية انجليزي انكليزي بريطانيا',fr:'الفرنسية فرنسا',de:'الألمانية المانيا',es:'الإسبانية اسبانيا',it:'الإيطالية ايطاليا',pt:'البرتغالية البرتغال',tr:'التركية تركيا',ru:'الروسية روسيا',zh:'الصينية الصين',ja:'اليابانية اليابان',ko:'الكورية كوريا',hi:'الهندية الهند',ur:'الأردية الباكستانية باكستان',fa:'الفارسية ايران',bn:'البنغالية بنغلاديش',id:'الإندونيسية اندونيسيا',ms:'الماليزية ماليزيا',nl:'الهولندية هولندا',sv:'السويدية السويد',no:'النرويجية النرويج',da:'الدنماركية الدنمارك',fi:'الفنلندية فنلندا',pl:'البولندية بولندا',uk:'الأوكرانية اوكرانيا',el:'اليونانية اليونان',he:'العبرية اسرائيل',sw:'السواحيلية كينيا',th:'التايلاندية تايلاند',vi:'الفيتنامية فيتنام','fa-AF':'الدرية افغانستان',am:'الأمهرية اثيوبيا',ro:'الرومانية رومانيا',cs:'التشيكية التشيك',hu:'المجرية هنغاريا',sr:'الصربية صربيا'};
  function render(){const q=(search.value||'').trim().toLocaleLowerCase();list.replaceChildren();const matches=languages.filter(x=>(x.join(' ')+' '+(languageAliases[x[0]]||'')).toLocaleLowerCase().includes(q));if(!matches.length){const empty=document.createElement('p');empty.className='notice';empty.textContent='لا توجد لغة مطابقة. جرّب اسم اللغة بالعربية أو الإنجليزية.';list.append(empty);return;}matches.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='language-option';b.setAttribute('aria-selected',String(x[0]===selected));const flag=document.createElement('span');flag.className='lang-flag';flag.textContent=x[2];const name=document.createElement('span');name.className='lang-name';name.textContent=x[3];const code=document.createElement('small');code.textContent=x[1];b.append(flag,name,code);b.addEventListener('click',()=>choose(x));list.append(b);});}
- function openPicker(){search.value='';render();picker.classList.add('open');picker.style.display='flex';}
+ function openPicker(){search.value='';render();picker.setAttribute('aria-hidden','false');picker.classList.add('open');picker.style.setProperty('display','flex','important');}
  function closePicker(){picker.classList.remove('open');picker.style.setProperty('display','none','important');picker.setAttribute('aria-hidden','true');}
  function choose(x){selected=x[0];saveSelected(selected);applyLanguage();updateButtons();closePicker();const status=document.getElementById('languageStatus');if(status)status.textContent=selected==='en'?'Language saved: English':'تم حفظ اختيارك: '+x[3];}
  window.openMithaqLanguagePicker=openPicker;
