@@ -61,12 +61,17 @@ footer{color:#8a9aad}
 <style id="mithaq-settings">
 .settings-list{padding:5px 18px}.settings-item{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:16px 5px;border-radius:0;background:transparent;color:#243e58;border-bottom:1px solid #e8eef4}.settings-item:last-of-type{border-bottom:0}.settings-item>span:nth-child(2){display:grid;gap:5px;flex:1}.settings-item strong{font-size:14px}.settings-item small{font-size:12px;color:#7a8b9b;font-weight:400}.settings-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#edf5fc;font-size:18px}.settings-arrow{font-size:24px;color:#8ca0b2}.settings-static{cursor:default}.settings-logout{color:#a43c42}.settings-logout .settings-icon{background:#fff0f0}@media(max-width:700px){.settings-list{padding-inline:14px}.settings-item{padding:14px 3px}}
 </style>
-</head>
+<style id="mithaq-main-navigation">
+.mooda-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border-radius:16px}
+.mooda-nav button{min-width:0;padding:13px 7px;font-size:14px;font-weight:700;color:#61788d;border-radius:12px}
+.mooda-nav button.active{background:#e5f1fb;color:#1d5d91;box-shadow:inset 0 0 0 1px #d3e5f5}
+@media(max-width:700px){.mooda-nav{position:sticky;top:5px;z-index:10;background:#fff;box-shadow:0 5px 20px #183e3010}.mooda-nav button{padding:13px 4px;font-size:13px}}
+</style></head>
 <body>
 <header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
-<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button><button data-tab="settings">الإعدادات</button></nav>
+<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="requests">إرسال</button><button class="active" data-tab="search">الأعضاء</button><button data-tab="myprofile">الملف</button><button data-tab="settings">الإعدادات</button></nav>
 <section id="home" class="tab">
 <div class="home-grid">
 <div class="card welcome"><div class="eyebrow">أهلاً بك في ميثاق</div><h2>ابدأ رحلة تعارف<br>واضحة ومحترمة</h2><p class="muted">أنشئ ملفك، تعرّف على الملفات المناسبة، وأرسل طلب تعارف. لا تبدأ المراسلة إلا بعد قبول الطرف الآخر.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="resetPassword" type="button">نسيت كلمة المرور؟</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div></div>
