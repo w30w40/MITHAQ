@@ -66,8 +66,94 @@ footer{color:#8a9aad}
 .mooda-nav button{min-width:0;padding:13px 7px;font-size:14px;font-weight:700;color:#61788d;border-radius:12px}
 .mooda-nav button.active{background:#e5f1fb;color:#1d5d91;box-shadow:inset 0 0 0 1px #d3e5f5}
 @media(max-width:700px){.mooda-nav{position:sticky;top:5px;z-index:10;background:#fff;box-shadow:0 5px 20px #183e3010}.mooda-nav button{padding:13px 4px;font-size:13px}}
-</style></head>
+</style>
+<style id="mithaq-entry-design">
+#entryGate{min-height:100vh;background:#fff9fa;color:#343b43;font-family:"Segoe UI",Tahoma,Arial,sans-serif;padding-bottom:94px}
+body:not(.authenticated)>header,body:not(.authenticated)>main,body:not(.authenticated)>footer{display:none!important}
+.entry-top{height:128px;background:linear-gradient(110deg,#d94368,#ef7897);display:flex;align-items:center;justify-content:space-between;padding:18px 28px;color:#fff}
+.entry-lang{border-radius:28px;background:#e4f5ff;color:#28678d;padding:12px 18px;font-size:18px}
+.entry-logo{display:grid;justify-items:center;gap:0;color:#fff;font-weight:800;letter-spacing:2px}
+.entry-logo span{font-size:52px;line-height:1;color:#d71e45;text-shadow:-9px 3px #176b91}
+.entry-logo b{font-size:12px}
+.entry-menu{background:transparent;color:white;font-size:36px;padding:0}
+.entry-screen{max-width:680px;margin:0 auto;padding:40px 29px 30px;min-height:calc(100vh - 230px)}
+.entry-heading{text-align:center;font-size:32px;margin:0 0 42px;color:#343b43;font-weight:750}
+.entry-oath{font-size:27px;line-height:1.95;text-align:right;color:#777;margin:0 0 58px}
+.entry-pledge{display:flex;align-items:center;gap:12px;border:2px solid #efdddd;border-radius:17px;padding:22px 17px;color:#d45e78;font-size:23px;font-weight:700;margin-bottom:56px}
+.entry-pledge input{width:22px;height:22px;accent-color:#d75a77;flex:none}
+.entry-genders{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:0 10%}
+.entry-gender{height:225px;border-radius:28px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 30px #9a64701a}
+.entry-gender span{font-size:76px;line-height:1.2}
+.entry-gender b{font-size:23px}
+.entry-gender i{position:absolute;right:28%;top:48%;background:#55c85b;color:white;border-radius:50%;width:45px;height:45px;font-style:normal;font-size:35px;line-height:42px}
+.entry-gender.wife{background:#ffdae2;color:#d34e70}.entry-gender.husband{background:#d8efff;color:#288ab5}
+.entry-form{margin-top:35px;background:white;padding:22px;border-radius:18px;border:1px solid #f0dfe3}
+.entry-form h2{margin:0 0 18px;color:#c84e6b}
+.entry-form label,.entry-login-form>label{display:block;font-size:20px;font-weight:650;margin:20px 0;color:#3b4148}
+.entry-form input,.entry-login-form input{display:block;width:100%;height:76px;margin-top:14px;border:2px solid #e0e0e0;border-radius:14px;background:#fff;padding:14px 18px;font-size:21px;text-align:right}
+.entry-submit{display:block;background:linear-gradient(100deg,#155d91,#278fbd);color:white;border-radius:60px;padding:18px 48px;font-size:27px;margin:30px auto 10px;min-width:250px}
+.entry-status{color:#28658b;text-align:center;line-height:1.8}
+.entry-switch{text-align:center;font-size:24px;font-weight:650;margin:55px 0 15px}
+.entry-switch button,.entry-login-options button{background:transparent;color:#d44f6e;padding:0;font-size:inherit;font-weight:750}
+.login-heading{color:#176494;margin-bottom:48px}
+.entry-login-form>label{font-size:23px;margin:0 0 48px}
+.entry-login-form input{height:82px;font-size:25px}
+.entry-login-options{display:flex;justify-content:space-between;align-items:center;font-size:20px;margin:0 0 65px}
+.entry-login-options .entry-remember{display:flex;align-items:center;gap:10px}
+.entry-login-options .entry-remember input{width:22px;height:22px;margin:0;accent-color:#247db1}
+.login-submit{font-size:30px;min-width:285px}
+.entry-bottom{position:fixed;bottom:0;left:0;right:0;height:94px;background:#fff;box-shadow:0 -5px 22px #2221;display:flex;justify-content:space-around;align-items:center;z-index:20}
+.entry-bottom button{background:transparent;color:#777;display:grid;justify-items:center;gap:3px;font-size:16px;padding:5px}
+.entry-bottom span{font-size:28px}
+body.authenticated #entryGate{display:none}
+@media(max-width:700px){.entry-top{height:128px;padding:15px 28px}.entry-screen{padding:40px 29px 25px;min-height:calc(100vh - 220px)}.entry-heading{font-size:31px;margin-bottom:42px}.entry-oath{font-size:25px;line-height:1.95;margin-bottom:58px}.entry-pledge{font-size:21px;padding:20px 14px;margin-bottom:56px}.entry-genders{gap:20px;padding:0 8%}.entry-gender{height:225px;border-radius:27px}.entry-gender span{font-size:70px}.entry-gender b{font-size:21px}.entry-gender i{right:25%;font-size:32px}.entry-login-form>label{font-size:22px;margin-bottom:48px}.entry-login-form input{height:82px}.entry-switch{font-size:22px}.entry-bottom{height:94px}}
+@media(max-width:390px){.entry-oath{font-size:21px}.entry-genders{padding:0 2%;gap:12px}.entry-gender{height:190px}.entry-gender b{font-size:18px}.entry-pledge{font-size:18px}.entry-login-options{font-size:17px}}
+</style>
+</head>
 <body>
+<div id="entryGate" dir="rtl">
+  <div class="entry-top">
+    <button class="entry-lang" type="button">⌄ &nbsp; Ar 🇸🇦</button>
+    <div class="entry-logo"><span>♥</span><b>MITHAQ</b></div>
+    <button class="entry-menu" type="button" aria-label="القائمة">☰</button>
+  </div>
+  <section id="entrySignup" class="entry-screen">
+    <h1 class="entry-heading">قسم التسجيل</h1>
+    <p class="entry-oath">أقسم بالله العظيم أني أدخل ميثاق إلا بهدف الزواج الشرعي وليس لأي هدف آخر؛ وأعاهد الله ثم أعاهدكم على أن أكون ملتزماً بشروط وقوانين الموقع، عسى ربي يكتب لي الخير في هذا المكان.</p>
+    <label class="entry-pledge"><input id="entryAgree" type="checkbox"> <span>لقد قمت بأداء القسم، وسألتزم به</span></label>
+    <div class="entry-genders">
+      <button type="button" class="entry-gender wife" data-gender="wife"><span>👩🏻</span><b>التسجيل كزوجة</b><i>＋</i></button>
+      <button type="button" class="entry-gender husband" data-gender="husband"><span>👨🏻</span><b>التسجيل كزوج</b><i>＋</i></button>
+    </div>
+    <div id="entrySignupForm" class="entry-form" hidden>
+      <h2>إنشاء حساب جديد</h2>
+      <form id="entryCreateForm">
+        <label>البريد الإلكتروني<input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
+        <label>كلمة المرور<input id="entrySignupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="كلمة المرور (8 أحرف على الأقل)"></label>
+        <button class="entry-submit" type="submit">إنشاء حساب</button>
+      </form>
+      <p id="entrySignupStatus" class="entry-status" aria-live="polite"></p>
+    </div>
+    <p class="entry-switch">لديك حساب؟ <button type="button" data-entry="login">تسجيل الدخول</button></p>
+  </section>
+  <section id="entryLogin" class="entry-screen" hidden>
+    <h1 class="entry-heading login-heading">تسجيل الدخول</h1>
+    <form id="entryLoginForm" class="entry-login-form">
+      <label>اسم المستخدم / البريد الإلكتروني<input id="entryLoginEmail" type="email" required autocomplete="username" placeholder="أدخل بريدك الإلكتروني"></label>
+      <label>كلمة المرور<input id="entryLoginPassword" type="password" required autocomplete="current-password" placeholder="كلمة المرور"></label>
+      <div class="entry-login-options"><label class="entry-remember"><input type="checkbox"> الدخول الخفي</label><button id="entryForgot" type="button">نسيت كلمة المرور</button></div>
+      <button class="entry-submit login-submit" type="submit">الدخول</button>
+    </form>
+    <p id="entryLoginStatus" class="entry-status" aria-live="polite"></p>
+    <p class="entry-switch">عضو جديد؟ <button type="button" data-entry="signup">اشترك مجاناً الآن</button></p>
+  </section>
+  <div class="entry-bottom">
+    <button type="button" data-entry="signup"><span>💗</span>إنشاء حساب</button>
+    <button type="button" data-entry="signup"><span>👫</span>الأعضاء</button>
+    <button type="button" data-entry="login"><span>🚪</span>الدخول</button>
+  </div>
+</div>
+
 <header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
@@ -124,6 +210,16 @@ footer{color:#8a9aad}
 </main><footer>ميثاق • التعارف الجاد يبدأ بالاحترام والخصوصية</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+const entryGate=document.getElementById('entryGate');
+function showEntry(which){document.getElementById('entrySignup').hidden=which!=='signup';document.getElementById('entryLogin').hidden=which!=='login';window.scrollTo(0,0);}
+document.querySelectorAll('[data-entry]').forEach(b=>b.addEventListener('click',()=>showEntry(b.dataset.entry)));
+let chosenEntryGender='';
+document.querySelectorAll('[data-gender]').forEach(b=>b.addEventListener('click',()=>{if(!document.getElementById('entryAgree').checked){document.getElementById('entrySignupStatus').textContent='يرجى تأكيد أداء القسم والالتزام به أولاً.';return;}chosenEntryGender=b.dataset.gender;document.getElementById('entrySignupForm').hidden=false;document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'center'});}));
+document.getElementById('entryCreateForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entrySignupStatus');if(!chosenEntryGender){status.textContent='اختر التسجيل كزوج أو كزوجة أولاً.';return;}if(!supabaseClient){status.textContent='التسجيل غير متاح حالياً. تحقق من اتصال الخدمة.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';try{const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/'}});if(error)throw error;if(data.session){document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();}else{status.textContent='تم إنشاء طلب الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول.';}}catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}finally{btn.disabled=false;}});
+document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();await showAuthSession();}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
+document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
+
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_9stWwK7GGAJOHWSBrGGYTA_Lyvkhwdy';
 const authReady=SUPABASE_PUBLISHABLE_KEY!=='PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
