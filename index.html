@@ -562,6 +562,12 @@ function applyAuthenticatedSession(session){
   box.hidden=true;
  }
 }
+async function showAuthSession(){
+ if(!supabaseClient)return;
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error){console.error('MITHAQ auth session:',error.message);return;}
+ applyAuthenticatedSession(data.session||null);
+}
 async function restoreAuthSession(){
  if(!supabaseClient)return;
  const {data,error}=await supabaseClient.auth.getSession();
