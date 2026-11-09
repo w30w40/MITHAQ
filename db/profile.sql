@@ -158,3 +158,26 @@ SET
   region = COALESCE(NULLIF(public.profiles.region, ''), EXCLUDED.region),
   marriage_type = COALESCE(NULLIF(public.profiles.marriage_type, ''), EXCLUDED.marriage_type),
   life_text = COALESCE(NULLIF(public.profiles.life_text, ''), EXCLUDED.life_text);
+
+
+-- Direct member-to-member messaging. Each participant can read only their own conversations.
+CREATE TABLE IF NOT EXISTS public.messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  sender_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  recipient_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  body text NOT NULL CHECK (char_length(body) BETWEEN 1 AND 2000),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  read_at timestamptz,
+  CONSTRAINT messages_no_self_message CHECK (sender_id <> recipient_id)
+);
+CREATE INDEX IF NOT EXISTS messages_sender_created_idx ON public.messages(sender_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS messages_recipient_created_idx ON public.messages(recipient_id, created_at DESC);
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "members_read_own_messages" ON public.messages;
+CREATE POLICY "members_read_own_messages" ON public.messages FOR SELECT TO authenticated
+USING (sender_id = auth.uid() OR recipient_id = auth.uid());
+DROP POLICY IF EXISTS "members_send_messages" ON public.messages;
+CREATE POLICY "members_send_messages" ON public.messages FOR INSERT TO authenticated
+WITH CHECK (sender_id = auth.uid() AND recipient_id <> auth.uid());
+GRANT SELECT, INSERT ON public.messages TO authenticated;
+REVOKE ALL ON public.messages FROM anon;
