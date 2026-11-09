@@ -526,7 +526,7 @@ function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
 document.getElementById('memberMenuOpen').addEventListener('click',()=>document.body.classList.add('drawer-open'));
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
-document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='myprofile')refreshProfileAccess();if(id==='favorites')renderFavoriteProfiles();}));
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
 
 function show(id){tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
@@ -617,25 +617,13 @@ async function refreshProfileAccess(){
  else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
  gate.textContent='هذه هي المعلومات التي أدخلتها عند إنشاء حسابك.';
  form.hidden=false;
- const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,is_published').eq('id',session.user.id).maybeSingle();
- if(error){status.textContent='تعذر تحميل بيانات الملف الإضافية: '+error.message;return;}
- if(data){
-  document.getElementById('displayName').value=data.display_name||meta.username||'';
-  document.getElementById('profileCountry').value=data.country||meta.country||'';
-  document.getElementById('profileRegion').value=data.region||meta.city||'';
-  document.getElementById('marriageType').value=data.marriage_type||meta.marriage_type||'';
-  document.getElementById('profileLifeText').value=data.life_text||meta.about||'';
-  document.getElementById('publishProfile').checked=!!data.is_published;
-  status.textContent='تم تحميل بياناتك المحفوظة.';
- }else{
-  document.getElementById('displayName').value=meta.username||'';
-  document.getElementById('profileCountry').value=meta.country||'';
-  document.getElementById('profileRegion').value=meta.city||'';
-  document.getElementById('marriageType').value=meta.marriage_type||'';
-  document.getElementById('profileLifeText').value=meta.about||'';
-  document.getElementById('publishProfile').checked=false;
-  status.textContent='مواصفات التسجيل معروضة أعلاه. يمكنك الآن إنشاء ملفك العام وحفظه.';
- }
+ document.getElementById('displayName').value=meta.username||'';
+ document.getElementById('profileCountry').value=meta.country||'';
+ document.getElementById('profileRegion').value=meta.city||'';
+ document.getElementById('marriageType').value=meta.marriage_type||'';
+ document.getElementById('profileLifeText').value=meta.about||'';
+ document.getElementById('publishProfile').checked=false;
+ status.textContent='تم تحميل بيانات حسابك. يمكنك تعديلها وحفظها من هنا.';
 }
 const lifeWordsOnly=/^[\p{L}\s]+$/u;
 document.getElementById('profileLifeText').addEventListener('input',e=>{
@@ -649,25 +637,32 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  if(!session){status.textContent='انتهت جلستك؛ سجّل الدخول من جديد.';return;}
  const life=document.getElementById('profileLifeText').value.trim();
  if(!lifeWordsOnly.test(life)){status.textContent='النبذة تقبل الحروف والمسافات فقط.';return;}
- const record={id:session.user.id,display_name:document.getElementById('displayName').value.trim(),country:document.getElementById('profileCountry').value.trim()||null,region:document.getElementById('profileRegion').value.trim()||null,marriage_type:document.getElementById('marriageType').value,life_text:life,is_published:document.getElementById('publishProfile').checked,updated_at:new Date().toISOString()};
- if(!record.display_name){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
- btn.disabled=true;status.textContent='جارٍ حفظ ملفك...';
+ const {data:userData,error:userError}=await supabaseClient.auth.getUser();
+ if(userError){status.textContent='تعذر قراءة بيانات حسابك: '+userError.message;return;}
+ const previous=userData.user?.user_metadata||session.user.user_metadata||{};
+ const updated={
+  ...previous,
+  username:document.getElementById('displayName').value.trim(),
+  country:document.getElementById('profileCountry').value.trim(),
+  city:document.getElementById('profileRegion').value.trim(),
+  marriage_type:document.getElementById('marriageType').value,
+  about:life
+ };
+ if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
+ btn.disabled=true;status.textContent='جارٍ حفظ تعديلات ملفك...';
  try{
-  const {data:existing,error:readError}=await supabaseClient.from('profiles').select('id').eq('id',session.user.id).maybeSingle();
-  if(readError)throw readError;
-  let result;
-  if(existing){result=await supabaseClient.from('profiles').update(record).eq('id',session.user.id);}
-  else{record.created_at=new Date().toISOString();result=await supabaseClient.from('profiles').insert(record);}
-  if(result.error)throw result.error;
-  status.textContent=record.is_published?'تم حفظ ملفك ونشره للمستخدمين المسجلين.':'تم حفظ ملفك بشكل خاص، ولن يظهر في الاستكشاف.';
- }catch(err){status.textContent='تعذر حفظ الملف: '+(err.message||'خطأ غير معروف');}
+  const {data,error}=await supabaseClient.auth.updateUser({data:updated});
+  if(error)throw error;
+  if(data.user)applyAuthenticatedSession((await supabaseClient.auth.getSession()).data.session);
+  status.textContent='تم حفظ تعديلات ملفك الشخصي بنجاح.';
+  await refreshProfileAccess();
+ }catch(err){status.textContent='تعذر حفظ التعديلات: '+(err.message||'خطأ غير معروف');}
  finally{btn.disabled=false;}
 });
 
-document.querySelector('button[data-tab="myprofile"]').addEventListener('click',refreshProfileAccess);
-// يتم تحميل بيانات الملف عند فتح تبويبه؛ لا نستدعي طلبات الشبكة داخل onAuthStateChange.
+// يتم تحميل الملف من show() عند فتح تبويبه.
 
-document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='myprofile')refreshProfileAccess();if(id==='messages')loadConversations();}));
+document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='messages')loadConversations();}));
 document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){document.getElementById('signedInBox').hidden=true;document.body.classList.remove('authenticated');showEntry('signup');}});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
