@@ -677,8 +677,9 @@ const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUP
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
-function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
-document.getElementById('memberMenuOpen').addEventListener('click',()=>document.body.classList.add('drawer-open'));
+function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');}
+document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
+document.getElementById('memberMenuOpen').addEventListener('click',()=>{const isOpen=document.body.classList.toggle('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded',String(isOpen));});
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
