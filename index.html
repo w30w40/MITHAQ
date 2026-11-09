@@ -498,28 +498,22 @@ body.authenticated #entryGate{display:none}
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
   <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
-  <button class="drawer-link" data-menu-go="search"><span>⌕</span>بحث</button>
-  <button class="drawer-link" data-menu-go="favorites"><span>♡</span>الملفات المفضلة</button>
   <button class="drawer-link" data-menu-go="messages"><span>✉</span>المراسلات</button>
   <button class="drawer-link" data-menu-go="myprofile"><span>👤</span>ملفي الشخصي</button>
   <div class="drawer-separator"></div>
-  <button class="drawer-link" data-menu-go="safety"><span>♧</span>الأمان والخصوصية</button>
   <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
   <button class="drawer-link" data-menu-go="help"><span>؟</span>مساعدة</button>
   <button class="drawer-link" data-menu-go="about"><span>ⓘ</span>نبذة عن ميثاق</button>
   <div class="drawer-separator"></div>
   <p class="drawer-note">ميثاق للتعارف الجاد باحترام وخصوصية</p>
 </aside>
-<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="search">الأعضاء</button><button data-tab="messages">المراسلات</button><button data-tab="myprofile">ملفي</button></nav>
+<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="messages">المراسلات</button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
   <div class="member-page-title"><div><small>مرحباً بك في ميثاق</small><h1>الرئيسية</h1></div><span class="member-title-heart">♥</span></div>
   <div class="member-section-heading"><h2>خدمات ميثاق</h2><span>اختر القسم الذي تريده</span></div>
   <div class="member-service-grid">
     <button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
-    <button class="member-service" data-go="search"><span class="service-icon">🔎</span><strong>استكشاف الأعضاء</strong><small>ابحث عن شريك مناسب</small></button>
     <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات</strong><small>محادثاتك الخاصة</small></button>
-    <button class="member-service" data-go="favorites"><span class="service-icon">♡</span><strong>المفضلة</strong><small>الملفات التي حفظتها</small></button>
-    <button class="member-service" data-go="safety"><span class="service-icon">🛡️</span><strong>الأمان والخصوصية</strong><small>إعدادات حماية حسابك</small></button>
   </div>
   <div class="member-info-card"><strong>خصوصيتك أولاً</strong><p>لا تشارك رقم هاتفك أو معلوماتك الشخصية الحساسة في ملفك. لا تبدأ المراسلة إلا بعد قبول طلب التعارف.</p></div>
 </section>
@@ -579,19 +573,16 @@ body.authenticated #entryGate{display:none}
 <div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 <div id="memberPublicDetail" hidden></div>
 </section>
-<section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
 <section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="settings" class="tab hidden">
 <div class="card"><div class="section-kicker">حسابك في ميثاق</div><h2>الإعدادات</h2><p class="muted">إدارة حسابك وملفك وخصوصيتك من مكان واحد.</p></div>
 <div class="card settings-list">
 <button class="settings-item" type="button" data-settings-go="myprofile"><span class="settings-icon">👤</span><span><strong>إدارة الملف الشخصي</strong><small>تعديل بياناتك والنبذة ونشر الملف</small></span><span class="settings-arrow">‹</span></button>
-<button class="settings-item" type="button" data-settings-go="safety"><span class="settings-icon">🔒</span><span><strong>الخصوصية والأمان</strong><small>حماية معلوماتك واستخدام المنصة</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item" type="button" data-settings-go="messages"><span class="settings-icon">✉️</span><span><strong>المراسلات</strong><small>محادثاتك المقبولة داخل ميثاق</small></span><span class="settings-arrow">‹</span></button>
 <div class="settings-item settings-static"><span class="settings-icon">🌐</span><span><strong>اللغة</strong><small>العربية</small></span></div>
 <button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
-</div></section>
-<section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
+</div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
 </main><footer>ميثاق • التعارف الجاد يبدأ بالاحترام والخصوصية</footer>
 <div class="language-popover" id="languagePicker" role="dialog" aria-modal="true" aria-labelledby="languagePickerTitle">
@@ -846,7 +837,7 @@ document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
 document.getElementById('memberMenuOpen').addEventListener('click',()=>{const isOpen=document.body.classList.toggle('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded',String(isOpen));});
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
-document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
 
 function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
@@ -1107,7 +1098,7 @@ function filter(){if(searchExecuted)renderPublishedProfiles();}
 let searchExecuted=false;
 document.getElementById('runSearch').addEventListener('click',()=>{searchExecuted=true;if(!publishedProfiles.length){loadPublishedProfiles().then(renderPublishedProfiles);}else renderPublishedProfiles();});
 document.getElementById('resetSearch').addEventListener('click',()=>{document.querySelectorAll('#search input').forEach(x=>{if(x.type==='checkbox')x.checked=false;else x.value='';});document.querySelectorAll('#search select').forEach(x=>x.selectedIndex=0);searchExecuted=false;document.getElementById('profiles').innerHTML='<p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p>';document.getElementById('searchMsg').textContent='';});
-document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);document.querySelector('button[data-tab="favorites"]').addEventListener('click',()=>{loadPublishedProfiles().then(renderFavoriteProfiles)});
+
 let activeChatUser=null,activeChatName='';
 async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
