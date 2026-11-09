@@ -40,7 +40,7 @@ h2{font-size:19px;margin:0 0 10px}.profile{display:flex;justify-content:space-be
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
-<section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p class="muted">طلبات الوصول والاهتمام لم تُفعّل بعد؛ هذه الصفحة للعرض فقط.</p><div id="requestList" class="muted">لا توجد طلبات تجريبية بعد.</div></div></section>
+<section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p id="requestIntro" class="muted">طلبات الوصول الخاصة بك ستظهر هنا بعد تسجيل الدخول.</p><div id="requestList" class="muted">سجّل الدخول لعرض طلباتك.</div></div></section>
 <section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا يظهر رقم واتساب عند مشاهدة الملف أو إبداء الاهتمام.</li><li>لا يُكشف الرقم إلا بعد موافقة منفصلة وصريحة من الطرفين.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>يمكن إيقاف الكشف مستقبلاً، لكن لا يمكن استرجاع ما حفظه الطرف الآخر سابقاً.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
 </main><footer>ميثاق — حفظ الملف الشخصي متاح للحساب المسجل؛ بقية وظائف التعارف قيد التطوير والاختبار.</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -113,6 +113,21 @@ supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
 
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
+let currentUserId=null;
+async function createContactRequest(recipientId,button){
+ const msg=document.getElementById('searchMsg');
+ if(!supabaseClient){msg.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){msg.textContent='سجّل الدخول أولاً لإرسال طلب وصول.';return;}
+ if(session.user.id===recipientId){msg.textContent='لا يمكنك إرسال طلب إلى ملفك الشخصي.';return;}
+ button.disabled=true;button.textContent='جارٍ إرسال الطلب...';
+ try{
+  const {data,error}=await supabaseClient.rpc('create_contact_request',{p_recipient_id:recipientId});
+  if(error)throw error;
+  button.textContent='تم إرسال طلب الوصول';
+  msg.textContent='تم إرسال طلب الوصول. لن يُكشف أي رقم واتساب بهذه الخطوة.';
+ }catch(err){button.disabled=false;button.textContent='إرسال طلب وصول';msg.textContent='تعذر إرسال الطلب: '+(err.message||'حدث خطأ غير معروف');}
+}
 function renderPublishedProfiles(){
  const c=document.getElementById('country').value,k=document.getElementById('kind').value,host=document.getElementById('profiles');
  host.replaceChildren();let count=0;
@@ -126,6 +141,7 @@ function renderPublishedProfiles(){
   meta.textContent=[p.country,p.region,type].filter(Boolean).join(' · ');
   info.append(name,meta);head.append(avatar,info);card.append(head);
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
+  if(p.id && p.id!==currentUserId){const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);card.append(actions);}
   host.append(card);
  });
  document.getElementById('searchMsg').textContent='عدد الملفات المنشورة المعروضة: '+count;
@@ -135,14 +151,64 @@ async function loadPublishedProfiles(){
  const host=document.getElementById('profiles');
  if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
+ if(!session){currentUserId=null;host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
+ currentUserId=session.user.id;
  host.textContent='جارٍ تحميل الملفات المنشورة...';
- const {data,error}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text').eq('is_published',true);
+ const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text').eq('is_published',true);
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
  publishedProfiles=data||[];renderPublishedProfiles();
 }
 function filter(){renderPublishedProfiles();}
 document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);
 document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);
+function requestStatusLabel(status){return status==='accepted'?'تم قبول طلب الوصول':status==='rejected'?'تم رفض طلب الوصول':'بانتظار رد صاحب الملف';}
+async function loadMyContactRequests(){
+ const host=document.getElementById('requestList');
+ const intro=document.getElementById('requestIntro');
+ if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){intro.textContent='سجّل الدخول لعرض طلباتك.';host.textContent='لا يمكن عرض الطلبات قبل تسجيل الدخول.';return;}
+ intro.textContent='هذه الطلبات خاصة بحسابك. رقم واتساب لا يظهر إلا بعد موافقة الطرفين وتوفر الرقم بشكل خاص.';
+ host.textContent='جارٍ تحميل طلباتك...';
+ const {data,error}=await supabaseClient.rpc('get_my_contact_requests');
+ if(error){host.textContent='تعذر تحميل الطلبات: '+(error.message||'حدث خطأ');return;}
+ host.replaceChildren();
+ if(!data||data.length===0){host.textContent='لا توجد طلبات وصول حتى الآن.';return;}
+ data.forEach(item=>{
+  const card=document.createElement('div');card.className='card';
+  const title=document.createElement('h3');title.textContent=item.other_display_name||'عضو ميثاق';
+  const direction=document.createElement('p');direction.className='muted';direction.textContent=item.request_direction==='sent'?'طلب أرسلته':'طلب وصلك';
+  const status=document.createElement('p');status.className='muted';status.textContent=requestStatusLabel(item.access_status);
+  card.append(title,direction,status);
+  if(item.access_status==='accepted'){
+   const consent=document.createElement('p');consent.className='muted';consent.textContent='موافقتك على كشف التواصل: '+(item.my_approved?'موافق':'لم توافق')+' — موافقة الطرف الآخر: '+(item.other_approved?'موافق':'لم يوافق');card.append(consent);
+   const consentButton=document.createElement('button');consentButton.className=item.my_approved?'secondary':'primary';consentButton.textContent=item.my_approved?'سحب موافقتي':'أوافق على كشف التواصل';
+   consentButton.addEventListener('click',async()=>{
+    consentButton.disabled=true;
+    const {error:consentError}=await supabaseClient.rpc('set_contact_disclosure_consent',{p_request_id:item.request_id,p_approve:!item.my_approved});
+    if(consentError){consentButton.disabled=false;alert('تعذر تحديث الموافقة: '+consentError.message);return;}
+    await loadMyContactRequests();
+   });card.append(consentButton);
+   if(item.my_approved&&item.other_approved){
+    const revealButton=document.createElement('button');revealButton.className='primary';revealButton.style.marginInlineStart='8px';revealButton.textContent='عرض رقم واتساب';
+    revealButton.addEventListener('click',async()=>{
+     revealButton.disabled=true;revealButton.textContent='جارٍ التحقق...';
+     const {data:contactData,error:contactError}=await supabaseClient.rpc('get_consented_whatsapp',{p_request_id:item.request_id});
+     if(contactError){revealButton.disabled=false;revealButton.textContent='عرض رقم واتساب';alert('لم يمكن إظهار الرقم. قد لا يكون الرقم محفوظاً بشكل خاص بعد، أو تعذر التحقق من الموافقات.');return;}
+     const number=Array.isArray(contactData)&&contactData.length?contactData[0].whatsapp_number:null;
+     if(number){const numberText=document.createElement('p');numberText.className='auth-status';numberText.textContent='رقم واتساب للطرف الآخر: '+number;card.append(numberText);revealButton.textContent='تم عرض الرقم';}
+     else{revealButton.disabled=false;revealButton.textContent='عرض رقم واتساب';alert('لا يوجد رقم متاح محفوظ بشكل خاص للطرف الآخر.');}
+    });card.append(revealButton);
+   }
+  }else if(item.request_direction==='received'&&item.access_status==='pending'){
+   const accept=document.createElement('button');accept.className='primary';accept.textContent='قبول طلب الوصول';
+   const reject=document.createElement('button');reject.className='secondary';reject.style.marginInlineStart='8px';reject.textContent='رفض الطلب';
+   async function respond(approved){accept.disabled=true;reject.disabled=true;const {error:responseError}=await supabaseClient.rpc('respond_contact_request',{p_request_id:item.request_id,p_accept:approved});if(responseError){accept.disabled=false;reject.disabled=false;alert('تعذر تحديث الطلب: '+responseError.message);return;}await loadMyContactRequests();}
+   accept.addEventListener('click',()=>respond(true));reject.addEventListener('click',()=>respond(false));card.append(accept,reject);
+  }
+  host.append(card);
+ });
+}
+document.querySelector('button[data-tab="requests"]').addEventListener('click',loadMyContactRequests);
 document.getElementById('lifeText').addEventListener('input',e=>{const bad=/[0-9٠-٩۰-۹\\p{S}\\p{P}\\p{Emoji_Presentation}]/u.test(e.target.value);document.getElementById('lifeMsg').textContent=bad?'تذكير: قسم حياتي في التصميم النهائي مخصص للحروف والكلمات فقط. لا يتم حفظ النص.':'معاينة محلية فقط؛ لم يتم حفظ النص.';});
 </script></body></html>
