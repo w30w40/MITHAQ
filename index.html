@@ -501,12 +501,12 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  try{
   const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
   if(error)throw error;
-  if(data.session){document.body.classList.add('authenticated');show('home');}
+  if(data.session){applyAuthenticatedSession(data.session);show('home');}
   else{status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. بيانات التسجيل محفوظة مع حسابك.';}
  }catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
 });
-document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;document.body.classList.add('authenticated');show('home');await showAuthSession();}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
+document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;applyAuthenticatedSession(data.session);show('home');status.textContent='تم تسجيل الدخول بنجاح.';}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
 document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
 
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
@@ -589,7 +589,9 @@ async function refreshProfileAccess(){
  if(!supabaseClient){gate.textContent='تعذر الاتصال بالخدمة حالياً.';form.hidden=true;return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){gate.textContent='سجّل الدخول أولاً لعرض ملفك الشخصي.';form.hidden=true;details.textContent='لا توجد جلسة دخول.';return;}
- const meta=session.user.user_metadata||{};
+ const {data:userData,error:userError}=await supabaseClient.auth.getUser();
+ if(userError){gate.textContent='تعذر جلب بيانات حسابك: '+userError.message;form.hidden=true;return;}
+ const meta=userData.user?.user_metadata||session.user.user_metadata||{};
  const profileFields=[
   ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
   ['مكان الإقامة',meta.country],['الجنسية',meta.nationality],['المدينة',meta.city],['الأصل',meta.origin],
@@ -657,7 +659,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
 });
 
 document.querySelector('button[data-tab="myprofile"]').addEventListener('click',refreshProfileAccess);
-supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
+// يتم تحميل بيانات الملف عند فتح تبويبه؛ لا نستدعي طلبات الشبكة داخل onAuthStateChange.
 
 document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='myprofile')refreshProfileAccess();if(id==='messages')loadConversations();}));
 document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){document.getElementById('signedInBox').hidden=true;document.body.classList.remove('authenticated');showEntry('signup');}});
