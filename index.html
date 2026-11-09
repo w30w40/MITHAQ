@@ -21,7 +21,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 <header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>منصة للتعارف بقصد الزواج المعلن أو المسيار، بملفات واضحة وخصوصية وموافقة متبادلة.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. أنشئ ملفك الشخصي، واستكشف الملفات المناسبة، وتواصل بعد قبول طلب التعارف.</div>
-<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
+<nav aria-label="التنقل"><button class="active" data-tab="home">الرئيسية</button><button data-tab="search">استكشاف</button><button data-tab="favorites">المفضلة</button><button data-tab="life">حياتي</button><button data-tab="myprofile">ملفي</button><button data-tab="requests">طلباتي</button><button data-tab="messages">المراسلات</button><button data-tab="safety">الأمان</button></nav>
 <section id="home" class="tab">
 <div class="home-grid">
 <div class="card welcome"><div class="eyebrow">أهلاً بك في ميثاق</div><h2>ابدأ رحلة تعارف<br>واضحة ومحترمة</h2><p class="muted">أنشئ ملفك، تعرّف على الملفات المناسبة، وأرسل طلب تعارف. لا تبدأ المراسلة إلا بعد قبول الطرف الآخر.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div></div>
@@ -52,9 +52,10 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 
 </div></section>
 <section id="search" class="tab hidden">
-<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
+<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
+<section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
 <section id="life" class="tab hidden"><div class="card"><h2>حياتي</h2><p class="muted">المبدأ المعتمد: نص مكتوب فقط، بلا صور أو فيديو أو أرقام أو رموز أو إيموجي. احفظ نبذتك من قسم «ملفي» بعد تسجيل الدخول.</p><label for="lifeText">مساحة كتابة تجريبية</label><textarea id="lifeText" placeholder="اكتب نصاً وهمياً للتجربة فقط"></textarea><p id="lifeMsg" class="notice" aria-live="polite">لم يتم حفظ أي شيء.</p></div></section>
 <section id="requests" class="tab hidden"><div class="card"><h2>الاهتمامات وطلبات الوصول</h2><p id="requestIntro" class="muted">طلبات الوصول الخاصة بك ستظهر هنا بعد تسجيل الدخول.</p><div id="requestList" class="muted">سجّل الدخول لعرض طلباتك.</div></div></section>
 <section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
@@ -132,6 +133,10 @@ supabaseClient?.auth.onAuthStateChange(()=>refreshProfileAccess());
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
+function favoriteIds(){try{return JSON.parse(localStorage.getItem('mithaq_favorites_'+(currentUserId||'guest'))||'[]')}catch(_){return []}}
+function saveFavoriteIds(ids){localStorage.setItem('mithaq_favorites_'+(currentUserId||'guest'),JSON.stringify([...new Set(ids)]));}
+function toggleFavorite(id){const ids=favoriteIds();const next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];saveFavoriteIds(next);renderPublishedProfiles();renderFavoriteProfiles();}
+function renderFavoriteProfiles(){const host=document.getElementById('favoriteProfiles');if(!host)return;host.replaceChildren();const ids=favoriteIds();const rows=publishedProfiles.filter(p=>ids.includes(p.id));if(!rows.length){host.textContent='لم تحفظ ملفات مفضلة بعد. افتح استكشاف واضغط إضافة للمفضلة.';return;}rows.forEach(p=>{const card=document.createElement('div');card.className='card';const title=document.createElement('strong');title.textContent=p.display_name||'عضو ميثاق';const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');const remove=document.createElement('button');remove.className='secondary';remove.textContent='إزالة من المفضلة';remove.addEventListener('click',()=>toggleFavorite(p.id));card.append(title,meta,remove);host.append(card);});}
 async function createContactRequest(recipientId,button){
  const msg=document.getElementById('searchMsg');
  if(!supabaseClient){msg.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
@@ -147,9 +152,9 @@ async function createContactRequest(recipientId,button){
  }catch(err){button.disabled=false;button.textContent='إرسال طلب وصول';msg.textContent='تعذر إرسال الطلب: '+(err.message||'حدث خطأ غير معروف');}
 }
 function renderPublishedProfiles(){
- const c=document.getElementById('country').value,k=document.getElementById('kind').value,host=document.getElementById('profiles');
+ const c=document.getElementById('country').value,k=document.getElementById('kind').value,q=(document.getElementById('searchText')?.value||'').trim().toLocaleLowerCase('ar'),host=document.getElementById('profiles');
  host.replaceChildren();let count=0;
- publishedProfiles.filter(p=>(c==='all'||(p.country||'')===c)&&(k==='all'||p.marriage_type===k)).forEach(p=>{
+ publishedProfiles.filter(p=>(c==='all'||(p.country||'')===c)&&(k==='all'||p.marriage_type===k)&&(!q||[p.display_name,p.country,p.region,p.life_text].join(' ').toLocaleLowerCase('ar').includes(q))).forEach(p=>{
   count++;const card=document.createElement('div');card.className='card profile-card';
   const head=document.createElement('div');head.className='profile';
   const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
@@ -159,10 +164,11 @@ function renderPublishedProfiles(){
   meta.textContent=[p.country,p.region,type].filter(Boolean).join(' · ');
   info.append(name,meta);head.append(avatar,info);card.append(head);
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
-  if(p.id && p.id!==currentUserId){const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);card.append(actions);}
+  const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id && p.id!==currentUserId){actions.className='row';actions.style.marginTop='10px';const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);
   host.append(card);
  });
  document.getElementById('searchMsg').textContent='عدد الملفات المنشورة المعروضة: '+count;
+ renderFavoriteProfiles();
  if(!count){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد ملفات منشورة تطابق اختياراتك حالياً.';host.append(empty);}
 }
 async function loadPublishedProfiles(){
@@ -177,8 +183,8 @@ async function loadPublishedProfiles(){
  publishedProfiles=data||[];renderPublishedProfiles();
 }
 function filter(){renderPublishedProfiles();}
-document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);
-document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);
+document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);document.getElementById('searchText').addEventListener('input',filter);
+document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);document.querySelector('button[data-tab="favorites"]').addEventListener('click',()=>{loadPublishedProfiles().then(renderFavoriteProfiles)});
 function requestStatusLabel(status){return status==='accepted'?'تم قبول طلب الوصول':status==='rejected'?'تم رفض طلب الوصول':'بانتظار رد صاحب الملف';}
 async function loadMyContactRequests(){
  const host=document.getElementById('requestList');
