@@ -113,6 +113,8 @@ body.authenticated .card h2{color:#246b98}
 @media(max-width:600px){.member-profile-cover{padding:17px}.member-profile-avatar{width:62px;height:62px;font-size:30px}.member-profile-card{padding:15px}.member-profile-details{grid-template-columns:1fr}.member-profile-card-head h2{font-size:17px}}
 
 .mithaq-section-back{display:inline-flex;align-items:center;gap:7px;margin:0 0 15px;padding:10px 17px;border:1px solid #dce8f2;border-radius:12px;background:#fff;color:#246b98;font-weight:700;box-shadow:0 3px 12px #183e3008}.mithaq-section-back:active{transform:scale(.98)}
+
+#memberPublicDetail[hidden]{display:none!important}.public-profile-back{margin-bottom:14px}.public-profile-open{width:100%;margin-top:12px}.profile-card{cursor:pointer}.profile-card button{position:relative;z-index:1}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -562,6 +564,7 @@ body.authenticated #entryGate{display:none}
 <div class="row search-actions"><button class="primary" id="runSearch" type="button">بحث</button><button class="secondary" id="resetSearch" type="button">إعادة ضبط</button></div>
 <p class="notice">تظهر في البحث المواصفات التي وافق العضو على نشرها في ملفه فقط.</p>
 <div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
+<div id="memberPublicDetail" hidden></div>
 </section>
 <section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
 
@@ -869,6 +872,34 @@ async function createContactRequest(recipientId,button){
   msg.textContent='تم إرسال طلب الوصول. لن تتم مشاركة بيانات شخصية بهذه الخطوة.';
  }catch(err){button.disabled=false;button.textContent='إرسال طلب وصول';msg.textContent='تعذر إرسال الطلب: '+(err.message||'حدث خطأ غير معروف');}
 }
+function openPublicMemberProfile(p){
+ const list=document.querySelector('#search .search-card'),detail=document.getElementById('memberPublicDetail');
+ list.hidden=true;detail.hidden=false;detail.replaceChildren();
+ const back=document.createElement('button');back.type='button';back.className='secondary public-profile-back';back.textContent='← العودة إلى الأعضاء';back.addEventListener('click',()=>{detail.hidden=true;list.hidden=false;});
+ const cover=document.createElement('div');cover.className='member-profile-cover';
+ const avatar=document.createElement('div');avatar.className='member-profile-avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
+ const intro=document.createElement('div');const brand=document.createElement('span');brand.className='member-eyebrow';brand.textContent='MITHAQ • ميثاق';
+ const title=document.createElement('h2');title.textContent=p.display_name||'عضو ميثاق';
+ const sub=document.createElement('p');sub.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' • ');
+ intro.append(brand,title,sub);cover.append(avatar,intro);detail.append(back,cover);
+ const groups=[
+  ['المعلومات الأساسية',[['الجنس',p.gender],['العمر',p.age],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['مكان الإقامة',p.country],['المدينة / المنطقة',p.region],['الجنسية',p.nationality],['نوع الزواج',p.marriage_type]]],
+  ['الدراسة والعمل',[['المستوى التعليمي',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work]]],
+  ['التوافق ونمط الحياة',[['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]]]
+ ];
+ groups.forEach(([heading,items])=>{
+  const card=document.createElement('div');card.className='member-profile-card';
+  const h=document.createElement('div');h.className='member-profile-card-head';const t=document.createElement('h2');t.textContent=heading;h.append(t);card.append(h);
+  const grid=document.createElement('div');grid.className='member-profile-details';let n=0;
+  items.forEach(([label,value])=>{if(value===null||value===undefined||String(value).trim()==='')return;const item=document.createElement('div');item.className='member-detail-item';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');v.textContent=String(value);item.append(l,v);grid.append(item);n++;});
+  if(n)card.append(grid);else{const empty=document.createElement('p');empty.className='muted';empty.textContent='لم يضف العضو معلومات في هذا القسم.';card.append(empty);}detail.append(card);
+ });
+ const about=document.createElement('div');about.className='member-profile-card';const h=document.createElement('div');h.className='member-profile-card-head';const ht=document.createElement('h2');ht.textContent='نبذة العضو';h.append(ht);const body=document.createElement('p');body.className='member-profile-about';body.textContent=p.life_text||'لم يضف العضو نبذة شخصية.';about.append(h,body);detail.append(about);
+ const actions=document.createElement('div');actions.className='row';actions.style.margin='14px 0';
+ const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>{toggleFavorite(p.id);fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';});actions.append(fav);
+ if(p.id&&p.id!==currentUserId){const req=document.createElement('button');req.className='primary';req.textContent='إرسال طلب وصول';req.addEventListener('click',()=>createContactRequest(p.id,req));actions.append(req);}
+ detail.append(actions);detail.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function searchValue(id){return (document.getElementById(id)?.value||'').trim().toLocaleLowerCase('ar');}
 function renderPublishedProfiles(){
  const host=document.getElementById('profiles');host.replaceChildren();let count=0;
@@ -899,7 +930,7 @@ function renderPublishedProfiles(){
   if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
   const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['الجنسية',p.nationality],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work],['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]].filter(x=>x[1]!==null&&x[1]!==undefined&&String(x[1]).trim()!=='');
   if(details.length){const line=document.createElement('p');line.className='notice';line.textContent=details.map(x=>x.join(': ')).join(' · ');card.append(line);}
-  const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id&&p.id!==currentUserId){const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);host.append(card);
+  const open=document.createElement('button');open.type='button';open.className='secondary public-profile-open';open.textContent='عرض الملف الشخصي كاملاً';open.addEventListener('click',()=>openPublicMemberProfile(p));card.append(open);const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);if(p.id&&p.id!==currentUserId){const requestButton=document.createElement('button');requestButton.className='primary';requestButton.textContent='إرسال طلب وصول';requestButton.addEventListener('click',()=>createContactRequest(p.id,requestButton));actions.append(requestButton);}card.append(actions);host.append(card);
  });
  document.getElementById('searchMsg').textContent='عدد الملفات المطابقة: '+count;
  renderFavoriteProfiles();
