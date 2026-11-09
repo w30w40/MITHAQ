@@ -520,7 +520,7 @@ body.authenticated #entryGate{display:none}
 <p id="profileGate" class="muted">جارٍ تحميل ملفك الشخصي...</p>
 <div id="profileReadView">
 <div class="member-profile-card">
-<div class="member-profile-card-head"><h2>معلوماتي الشخصية</h2><span>كما أدخلتها عند التسجيل</span></div>
+
 <div id="myProfileDetails" class="member-profile-details"><p class="muted">جارٍ تحميل المواصفات...</p></div>
 </div>
 <div class="member-profile-card">
@@ -905,7 +905,7 @@ async function refreshProfileAccess(){
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
  else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
- gate.textContent='هذه هي المعلومات المحفوظة في ملفك المرتبط بحسابك.';
+ gate.textContent='';
  form.hidden=false;
  showProfileReadView();
  document.getElementById('displayName').value=meta.username||'';
