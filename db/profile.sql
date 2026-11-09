@@ -94,7 +94,7 @@ FOR EACH ROW
 EXECUTE FUNCTION public.mithaq_create_private_profile();
 
 -- Backfill existing accounts without overwriting any profile details already saved.
-INSERT INTO public.profile_details (id, details)
+INSERT INTO public.profile_details AS pd (id, details)
 SELECT id, COALESCE(raw_user_meta_data, '{}'::jsonb)
 FROM auth.users
 ON CONFLICT (id) DO NOTHING;
@@ -114,7 +114,7 @@ SELECT
 FROM auth.users AS u
 ON CONFLICT (id) DO UPDATE
 SET
-  display_name = COALESCE(NULLIF(public.profiles.display_name, ''), NULLIF(public.profiles.display_name, 'عضو ميثاق'), EXCLUDED.display_name),
+  display_name = COALESCE(NULLIF(NULLIF(public.profiles.display_name, ''), 'عضو ميثاق'), EXCLUDED.display_name),
   country = COALESCE(NULLIF(public.profiles.country, ''), EXCLUDED.country),
   region = COALESCE(NULLIF(public.profiles.region, ''), EXCLUDED.region),
   marriage_type = COALESCE(NULLIF(public.profiles.marriage_type, ''), EXCLUDED.marriage_type),
