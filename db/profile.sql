@@ -109,7 +109,7 @@ SELECT
   NULLIF(u.raw_user_meta_data->>'country', ''),
   NULLIF(u.raw_user_meta_data->>'city', ''),
   NULLIF(u.raw_user_meta_data->>'marriage_type', ''),
-  NULLIF(u.raw_user_meta_data->>'about', ''),
+  COALESCE(NULLIF(u.raw_user_meta_data->>'about', ''), ''),
   false
 FROM auth.users AS u
 ON CONFLICT (id) DO NOTHING;
