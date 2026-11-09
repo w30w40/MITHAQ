@@ -982,7 +982,7 @@ document.getElementById('settingsSignOut').addEventListener('click',async()=>{co
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
-let publishedProfiles=[]; let currentUserId=null; async function loadConversations(){
+  async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
  panel.hidden=true;
  if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
