@@ -93,11 +93,13 @@ AFTER INSERT ON auth.users
 FOR EACH ROW
 EXECUTE FUNCTION public.mithaq_create_private_profile();
 
--- Backfill existing accounts without overwriting any profile details already saved.
+-- Backfill registration metadata for existing accounts.
+-- Existing saved profile fields win; missing fields are filled from Auth metadata.
 INSERT INTO public.profile_details AS pd (id, details)
 SELECT id, COALESCE(raw_user_meta_data, '{}'::jsonb)
 FROM auth.users
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE
+SET details = COALESCE(EXCLUDED.details, '{}'::jsonb) || COALESCE(pd.details, '{}'::jsonb);
 
 -- Create/update the public summary for existing users only when it has no row yet.
 -- Full personal details remain in profile_details and are never exposed by discovery.
