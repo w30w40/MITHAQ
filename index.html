@@ -545,35 +545,8 @@ body.authenticated #entryGate{display:none}
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
 </div>
 </section>
-<section id="search" class="tab hidden">
-<div class="member-page-title"><div><small>اكتشف الأعضاء</small><h1>بحث</h1></div><span class="member-title-heart">⌕</span></div>
-<div class="card search-card">
-<div class="section-kicker">البحث المتقدم</div><h2>ابحث عن العضو المناسب</h2>
-<div class="field"><label for="searchText">اسم المستخدم أو كلمة من النبذة</label><input id="searchText" type="search" placeholder="اكتب اسم المستخدم"></div>
-<div class="search-filter-grid">
-<div class="field"><label for="genderFilter">الجنس</label><select id="genderFilter"><option value="">الكل</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select></div>
-<div class="field"><label for="country">الدولة</label><select id="country" onchange="fillAreaSelect(document.getElementById('cityFilter'),this.value==='all'?'':this.value,'كل المدن / المناطق')"><option value="all">كل الدول</option><option>السعودية</option><option>الإمارات العربية المتحدة</option><option>الكويت</option><option>قطر</option><option>البحرين</option><option>عمان</option><option>أفغانستان</option><option>ألبانيا</option><option>الجزائر</option><option>أندورا</option><option>أنغولا</option><option>أنتيغوا وباربودا</option><option>الأرجنتين</option><option>أرمينيا</option><option>أستراليا</option><option>النمسا</option><option>أذربيجان</option><option>الباهاما</option><option>بنغلاديش</option><option>باربادوس</option><option>بيلاروس</option><option>بلجيكا</option><option>بليز</option><option>بنين</option><option>بوتان</option><option>بوليفيا</option><option>البوسنة والهرسك</option><option>بوتسوانا</option><option>البرازيل</option><option>بروناي</option><option>بلغاريا</option><option>بوركينا فاسو</option><option>بوروندي</option><option>الرأس الأخضر</option><option>كمبوديا</option><option>الكاميرون</option><option>كندا</option><option>جمهورية أفريقيا الوسطى</option><option>تشاد</option><option>تشيلي</option><option>الصين</option><option>كولومبيا</option><option>جزر القمر</option><option>الكونغو</option><option>كوستاريكا</option><option>كرواتيا</option><option>كوبا</option><option>قبرص</option><option>التشيك</option><option>الدنمارك</option><option>جيبوتي</option><option>دومينيكا</option><option>جمهورية الدومينيكان</option><option>الإكوادور</option><option>مصر</option><option>السلفادور</option><option>غينيا الاستوائية</option><option>إريتريا</option><option>إستونيا</option><option>إسواتيني</option><option>إثيوبيا</option><option>فيجي</option><option>فنلندا</option><option>فرنسا</option><option>الغابون</option><option>غامبيا</option><option>جورجيا</option><option>ألمانيا</option><option>غانا</option><option>اليونان</option><option>غرينادا</option><option>غواتيمالا</option><option>غينيا</option><option>غينيا بيساو</option><option>غيانا</option><option>هايتي</option><option>هندوراس</option><option>المجر</option><option>آيسلندا</option><option>الهند</option><option>إندونيسيا</option><option>إيران</option><option>العراق</option><option>أيرلندا</option><option>إيطاليا</option><option>جامايكا</option><option>اليابان</option><option>الأردن</option><option>كازاخستان</option><option>كينيا</option><option>كيريباتي</option><option>كوريا الشمالية</option><option>كوريا الجنوبية</option><option>قيرغيزستان</option><option>لاوس</option><option>لاتفيا</option><option>لبنان</option><option>ليسوتو</option><option>ليبيريا</option><option>ليبيا</option><option>ليختنشتاين</option><option>ليتوانيا</option><option>لوكسمبورغ</option><option>مدغشقر</option><option>مالاوي</option><option>ماليزيا</option><option>جزر المالديف</option><option>مالي</option><option>مالطا</option><option>جزر مارشال</option><option>موريتانيا</option><option>موريشيوس</option><option>المكسيك</option><option>ميكرونيزيا</option><option>مولدوفا</option><option>موناكو</option><option>منغوليا</option><option>الجبل الأسود</option><option>المغرب</option><option>موزمبيق</option><option>ميانمار</option><option>ناميبيا</option><option>ناورو</option><option>نيبال</option><option>هولندا</option><option>نيوزيلندا</option><option>نيكاراغوا</option><option>النيجر</option><option>نيجيريا</option><option>مقدونيا الشمالية</option><option>النرويج</option><option>باكستان</option><option>بالاو</option><option>فلسطين</option><option>بنما</option><option>بابوا غينيا الجديدة</option><option>باراغواي</option><option>بيرو</option><option>الفلبين</option><option>بولندا</option><option>البرتغال</option><option>رومانيا</option><option>روسيا</option><option>رواندا</option><option>سانت كيتس ونيفيس</option><option>سانت لوسيا</option><option>سانت فنسنت والغرينادين</option><option>ساموا</option><option>سان مارينو</option><option>ساو تومي وبرينسيب</option><option>السنغال</option><option>صربيا</option><option>سيشل</option><option>سيراليون</option><option>سنغافورة</option><option>سلوفاكيا</option><option>سلوفينيا</option><option>جزر سليمان</option><option>الصومال</option><option>جنوب أفريقيا</option><option>جنوب السودان</option><option>إسبانيا</option><option>سريلانكا</option><option>السودان</option><option>سورينام</option><option>السويد</option><option>سويسرا</option><option>سوريا</option><option>طاجيكستان</option><option>تنزانيا</option><option>تايلاند</option><option>تيمور الشرقية</option><option>توغو</option><option>تونغا</option><option>ترينيداد وتوباغو</option><option>تونس</option><option>تركيا</option><option>تركمانستان</option><option>توفالو</option><option>أوغندا</option><option>أوكرانيا</option><option>المملكة المتحدة</option><option>الولايات المتحدة الأمريكية</option><option>أوروغواي</option><option>أوزبكستان</option><option>فانواتو</option><option>الفاتيكان</option><option>فنزويلا</option><option>فيتنام</option><option>اليمن</option><option>زامبيا</option><option>زيمبابوي</option></select></div>
-<div class="field"><label for="cityFilter">المدينة / المنطقة</label><select id="cityFilter"><option value="">كل المدن</option></select></div>
-<div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option value="الزواج المعلن">الزواج المعلن</option><option value="معلن">معلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option><option value="زواج عادي">زواج عادي</option><option value="زوجة ثانية">زوجة ثانية</option></select></div>
-<div class="field"><label for="ageFrom">العمر من</label><input id="ageFrom" type="number" min="18" max="100" placeholder="أي عمر"></div>
-<div class="field"><label for="ageTo">العمر إلى</label><input id="ageTo" type="number" min="18" max="100" placeholder="أي عمر"></div>
-<div class="field"><label for="familyFilter">الحالة الاجتماعية</label><select id="familyFilter"><option value="">الكل</option><option>أعزب</option><option>عزباء</option><option>متزوج</option><option>متزوجة</option><option>مطلق</option><option>مطلقة</option><option>أرمل</option><option>أرملة</option><option>آنسة</option></select></div>
-<div class="field"><label for="childrenFilter">عدد الأطفال</label><select id="childrenFilter"><option value="">الكل</option><option>بدون أطفال</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5 فأكثر</option></select></div>
-<div class="field"><label for="nationalityFilter">الجنسية</label><input id="nationalityFilter" placeholder="كل الجنسيات"></div>
-<div class="field"><label for="educationFilter">المستوى التعليمي</label><select id="educationFilter"><option value="">الكل</option><option>ابتدائي</option><option>متوسط</option><option>ثانوي</option><option>دبلوم</option><option>جامعي</option><option>ماجستير</option><option>دكتوراه</option></select></div>
-<div class="field"><label for="workFieldFilter">مجال العمل</label><input id="workFieldFilter" placeholder="كل المجالات"></div>
-<div class="field"><label for="workFilter">الوظيفة</label><input id="workFilter" placeholder="كل الوظائف"></div>
-<div class="field"><label for="religiosityFilter">التدين</label><input id="religiosityFilter" placeholder="الكل"></div>
-<div class="field"><label for="prayerFilter">الصلاة</label><input id="prayerFilter" placeholder="الكل"></div>
-<div class="field"><label for="smokingFilter">التدخين</label><select id="smokingFilter"><option value="">الكل</option><option>غير مدخن</option><option>مدخن</option><option>لا أدخن</option><option>أدخن</option></select></div>
-</div>
-<div class="search-online-row"><label><input id="onlineOnly" type="checkbox"> المتواجدون الآن فقط</label></div>
-<div class="row search-actions"><button class="primary" id="runSearch" type="button">بحث</button><button class="secondary" id="resetSearch" type="button">إعادة ضبط</button></div>
-<p class="notice">تظهر في البحث المواصفات التي وافق العضو على نشرها في ملفه فقط.</p>
-<div id="profiles"><p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
-<div id="memberPublicDetail" hidden></div>
-</section>
-<section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق، لا تظهر إلا للطرفين بعد قبول طلب التعارف. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
+
+<section id="messages" class="tab hidden"><div class="card"><h2>المراسلات</h2><p class="muted">مراسلات خاصة داخل ميثاق بين الأعضاء. لا تشارك بياناتك الحساسة.</p><div id="conversationList" class="muted">سجّل الدخول لعرض مراسلاتك.</div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" maxlength="2000" rows="3" required placeholder="اكتب رسالتك باحترام"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="settings" class="tab hidden">
 <div class="card"><div class="section-kicker">حسابك في ميثاق</div><h2>الإعدادات</h2><p class="muted">إدارة حسابك وملفك وخصوصيتك من مكان واحد.</p></div>
 <div class="card settings-list">
@@ -841,7 +814,7 @@ document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click
 
 function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
- ['myprofile','search','favorites','messages','settings','safety','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
+ ['myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
 function showProfileEditView(){document.getElementById('profileReadView').hidden=true;document.getElementById('profileEditView').hidden=false;document.getElementById('profileEditView').scrollIntoView({behavior:'smooth',block:'start'});}
 document.getElementById('editProfileOpen').addEventListener('click',showProfileEditView);
@@ -1009,98 +982,7 @@ document.getElementById('settingsSignOut').addEventListener('click',async()=>{co
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
 let currentUserId=null;
-function favoriteIds(){try{return JSON.parse(localStorage.getItem('mithaq_favorites_'+(currentUserId||'guest'))||'[]')}catch(_){return []}}
-function saveFavoriteIds(ids){localStorage.setItem('mithaq_favorites_'+(currentUserId||'guest'),JSON.stringify([...new Set(ids)]));}
-function toggleFavorite(id){const ids=favoriteIds();const next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];saveFavoriteIds(next);renderPublishedProfiles();renderFavoriteProfiles();}
-function renderFavoriteProfiles(){const host=document.getElementById('favoriteProfiles');if(!host)return;host.replaceChildren();const ids=favoriteIds();const rows=publishedProfiles.filter(p=>ids.includes(p.id));if(!rows.length){host.textContent='لم تحفظ ملفات مفضلة بعد. افتح استكشاف واضغط إضافة للمفضلة.';return;}rows.forEach(p=>{const card=document.createElement('div');card.className='card';const title=document.createElement('strong');title.textContent=p.display_name||'عضو ميثاق';const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');const remove=document.createElement('button');remove.className='secondary';remove.textContent='إزالة من المفضلة';remove.addEventListener('click',()=>toggleFavorite(p.id));card.append(title,meta,remove);host.append(card);});}
-function openPublicMemberProfile(p){
- const list=document.querySelector('#search .search-card'),detail=document.getElementById('memberPublicDetail');
- list.hidden=true;detail.hidden=false;detail.replaceChildren();
- const back=document.createElement('button');back.type='button';back.className='secondary public-profile-back';back.textContent='← العودة إلى الأعضاء';back.addEventListener('click',()=>{detail.hidden=true;list.hidden=false;});
- const cover=document.createElement('div');cover.className='member-profile-cover';
- const avatar=document.createElement('div');avatar.className='member-profile-avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
- const intro=document.createElement('div');const brand=document.createElement('span');brand.className='member-eyebrow';brand.textContent='MITHAQ • ميثاق';
- const title=document.createElement('h2');title.textContent=p.display_name||'عضو ميثاق';
- const sub=document.createElement('p');sub.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' • ');
- intro.append(brand,title,sub);cover.append(avatar,intro);detail.append(back,cover);
- const groups=[
-  ['المعلومات الأساسية',[['الجنس',p.gender],['العمر',p.age],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['مكان الإقامة',p.country],['المدينة / المنطقة',p.region],['الجنسية',p.nationality],['نوع الزواج',p.marriage_type]]],
-  ['الدراسة والعمل',[['المستوى التعليمي',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work]]],
-  ['التوافق ونمط الحياة',[['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]]]
- ];
- groups.forEach(([heading,items])=>{
-  const card=document.createElement('div');card.className='member-profile-card';
-  const h=document.createElement('div');h.className='member-profile-card-head';const t=document.createElement('h2');t.textContent=heading;h.append(t);card.append(h);
-  const grid=document.createElement('div');grid.className='member-profile-details';let n=0;
-  items.forEach(([label,value])=>{if(value===null||value===undefined||String(value).trim()==='')return;const item=document.createElement('div');item.className='member-detail-item';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');v.textContent=String(value);item.append(l,v);grid.append(item);n++;});
-  if(n)card.append(grid);else{const empty=document.createElement('p');empty.className='muted';empty.textContent='لم يضف العضو معلومات في هذا القسم.';card.append(empty);}detail.append(card);
- });
- const about=document.createElement('div');about.className='member-profile-card';const h=document.createElement('div');h.className='member-profile-card-head';const ht=document.createElement('h2');ht.textContent='نبذة العضو';h.append(ht);const body=document.createElement('p');body.className='member-profile-about';body.textContent=p.life_text||'لم يضف العضو نبذة شخصية.';about.append(h,body);detail.append(about);
- const actions=document.createElement('div');actions.className='row';actions.style.margin='14px 0';
- const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>{toggleFavorite(p.id);fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';});actions.append(fav);
- 
- detail.append(actions);detail.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function searchValue(id){return (document.getElementById(id)?.value||'').trim().toLocaleLowerCase('ar');}
-function renderPublishedProfiles(){
- const host=document.getElementById('profiles');host.replaceChildren();let count=0;
- const q=searchValue('searchText'),country=document.getElementById('country').value,kind=document.getElementById('kind').value;
- const from=Number(document.getElementById('ageFrom').value||0),to=Number(document.getElementById('ageTo').value||999);
- const textMatch=(value,filter)=>!filter||String(value||'').toLocaleLowerCase('ar').includes(filter);
- const rows=publishedProfiles.filter(p=>{
-  const online=!document.getElementById('onlineOnly').checked||(p.last_seen_at&&Date.now()-new Date(p.last_seen_at).getTime()<5*60*1000);
-  const searchable=[p.display_name,p.life_text,p.country,p.region,p.marriage_type,p.gender,p.family_status,p.age,p.children,p.nationality,p.education,p.work_field,p.work,p.religiosity,p.prayer,p.smoking].join(' ');
-  return online&&(country==='all'||(p.country||'')===country)&&(kind==='all'||p.marriage_type===kind)&&
-   textMatch(searchable,q)&&textMatch(p.region,searchValue('cityFilter'))&&
-   (!searchValue('genderFilter')||p.gender===searchValue('genderFilter'))&&
-   (!from||Number(p.age||0)>=from)&&(!to||Number(p.age||0)<=to)&&
-   textMatch(p.family_status,searchValue('familyFilter'))&&textMatch(p.children,searchValue('childrenFilter'))&&
-   textMatch(p.nationality,searchValue('nationalityFilter'))&&textMatch(p.education,searchValue('educationFilter'))&&
-   textMatch(p.work_field,searchValue('workFieldFilter'))&&textMatch(p.work,searchValue('workFilter'))&&
-   textMatch(p.religiosity,searchValue('religiosityFilter'))&&textMatch(p.prayer,searchValue('prayerFilter'))&&
-   textMatch(p.smoking,searchValue('smokingFilter'));
- });
- rows.forEach(p=>{
-  count++;const card=document.createElement('div');card.className='card profile-card';
-  const head=document.createElement('div');head.className='profile';
-  const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);
-  const info=document.createElement('div');info.style.flex='1';
-  const name=document.createElement('h3');name.textContent=p.display_name||'عضو ميثاق';
-  const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.age?p.age+' سنة':'',p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');
-  const online=!!(p.last_seen_at&&Date.now()-new Date(p.last_seen_at).getTime()<5*60*1000);
-  const presence=document.createElement('p');presence.className='muted';presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل';
-  info.append(name,meta,presence);head.append(avatar,info);card.append(head);
-  if(p.life_text){const life=document.createElement('p');life.className='muted';life.textContent=p.life_text;card.append(life);}
-  const details=[['الجنس',p.gender],['الحالة الاجتماعية',p.family_status],['عدد الأطفال',p.children],['الجنسية',p.nationality],['التعليم',p.education],['مجال العمل',p.work_field],['الوظيفة',p.work],['التدين',p.religiosity],['الصلاة',p.prayer],['التدخين',p.smoking]].filter(x=>x[1]!==null&&x[1]!==undefined&&String(x[1]).trim()!=='');
-  if(details.length){const line=document.createElement('p');line.className='notice';line.textContent=details.map(x=>x.join(': ')).join(' · ');card.append(line);}
-  const open=document.createElement('button');open.type='button';open.className='secondary public-profile-open';open.textContent='عرض الملف الشخصي كاملاً';open.addEventListener('click',()=>openPublicMemberProfile(p));card.append(open);const actions=document.createElement('div');actions.className='row';actions.style.marginTop='10px';const fav=document.createElement('button');fav.className='secondary';fav.textContent=favoriteIds().includes(p.id)?'♥ إزالة من المفضلة':'♡ إضافة للمفضلة';fav.addEventListener('click',()=>toggleFavorite(p.id));actions.append(fav);card.append(actions);host.append(card);
- });
- document.getElementById('searchMsg').textContent='عدد الملفات المطابقة: '+count;
- renderFavoriteProfiles();
- if(!count){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد ملفات منشورة تطابق اختياراتك حالياً.';host.append(empty);}
-}
-async function loadPublishedProfiles(){
- const host=document.getElementById('profiles');
- if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
- const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){currentUserId=null;host.textContent='سجّل الدخول لعرض الملفات المنشورة.';return;}
- currentUserId=session.user.id;
- // Refresh the signed-in member's presence while the site remains open.
- const touchPresence=()=>supabaseClient.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',session.user.id);
- await touchPresence();
- if(!window.mithaqPresenceTimer)window.mithaqPresenceTimer=setInterval(()=>{if(document.visibilityState==='visible')touchPresence();},120000);
- host.textContent='جارٍ تحميل الملفات المنشورة...';
- const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,gender,family_status,age,children,nationality,education,work_field,work,religiosity,prayer,smoking,last_seen_at');
- if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
- publishedProfiles=data||[];searchExecuted=true;renderPublishedProfiles();
-}
-function filter(){if(searchExecuted)renderPublishedProfiles();}
-let searchExecuted=false;
-document.getElementById('runSearch').addEventListener('click',()=>{searchExecuted=true;if(!publishedProfiles.length){loadPublishedProfiles().then(renderPublishedProfiles);}else renderPublishedProfiles();});
-document.getElementById('resetSearch').addEventListener('click',()=>{document.querySelectorAll('#search input').forEach(x=>{if(x.type==='checkbox')x.checked=false;else x.value='';});document.querySelectorAll('#search select').forEach(x=>x.selectedIndex=0);searchExecuted=false;document.getElementById('profiles').innerHTML='<p class="muted">حدّد خيارات البحث ثم اضغط «بحث» لعرض الأعضاء.</p>';document.getElementById('searchMsg').textContent='';});
-
-let activeChatUser=null,activeChatName='';
-async function loadConversations(){
+let publishedProfiles=[]; let currentUserId=null; async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
  panel.hidden=true;
  if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
