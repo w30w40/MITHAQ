@@ -78,19 +78,28 @@ RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
-AS $$
+AS $
 BEGIN
   INSERT INTO public.profile_details (id, details)
   VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data, '{}'::jsonb))
-  ON CONFLICT (id) DO NOTHING;
+  ON CONFLICT (id) DO UPDATE
+  SET details = COALESCE(EXCLUDED.details, '{}'::jsonb) || COALESCE(public.profile_details.details, '{}'::jsonb),
+      updated_at = now();
   RETURN NEW;
 END;
-$$;
+$;
 
 DROP TRIGGER IF EXISTS mithaq_auth_user_profile_created ON auth.users;
+DROP TRIGGER IF EXISTS mithaq_auth_user_profile_metadata_updated ON auth.users;
 CREATE TRIGGER mithaq_auth_user_profile_created
 AFTER INSERT ON auth.users
 FOR EACH ROW
+EXECUTE FUNCTION public.mithaq_create_private_profile();
+
+CREATE TRIGGER mithaq_auth_user_profile_metadata_updated
+AFTER UPDATE OF raw_user_meta_data ON auth.users
+FOR EACH ROW
+WHEN (OLD.raw_user_meta_data IS DISTINCT FROM NEW.raw_user_meta_data)
 EXECUTE FUNCTION public.mithaq_create_private_profile();
 
 -- Backfill registration metadata for existing accounts.
