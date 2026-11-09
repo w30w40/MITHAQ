@@ -54,7 +54,7 @@ body.authenticated .mooda-nav{display:none}
 .member-section-heading{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 13px}
 .member-section-heading h2{font-size:21px;color:#246b98;margin:0}
 .member-section-heading span{font-size:12px;color:#87929b}
-.home-search-card{margin:18px 0 25px}.home-search-card h2{margin:5px 0 8px;color:#246b98}.home-search-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.home-member-preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.home-member-preview .card{margin:0}.home-member-preview .profile{display:flex;align-items:center;gap:10px}.home-member-preview .avatar{width:42px;height:42px;flex:none}.home-member-preview h3{margin:0;font-size:16px}.home-member-preview p{margin:5px 0 0}@media(max-width:700px){.home-search-fields,.home-member-preview{grid-template-columns:1fr}}.member-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.member-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .member-service{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:right;padding:18px;background:#fff;border:1px solid #f0e3e6;border-radius:16px;color:#34434e;box-shadow:0 5px 18px #963a4a08}
 .member-service:active{transform:scale(.985)}
 .service-icon{width:43px;height:43px;border-radius:13px;background:#e5f2fa;color:#246b98;display:grid;place-items:center;font-size:22px}
@@ -474,7 +474,7 @@ body.authenticated #entryGate{display:none}
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
   <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
-  <button class="drawer-link" data-menu-go="search"><span>⌕</span>الأعضاء</button>
+  <button class="drawer-link" data-menu-go="search"><span>⌕</span>بحث</button>
   <button class="drawer-link" data-menu-go="favorites"><span>♡</span>الملفات المفضلة</button>
   <button class="drawer-link" data-menu-go="requests"><span>♧</span>طلبات التعارف</button>
   <button class="drawer-link" data-menu-go="messages"><span>✉</span>المراسلات</button>
@@ -490,18 +490,6 @@ body.authenticated #entryGate{display:none}
 <nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="search">الأعضاء</button><button data-tab="requests">الطلبات</button><button data-tab="messages">المراسلات</button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
   <div class="member-page-title"><div><small>مرحباً بك في ميثاق</small><h1>الرئيسية</h1></div><span class="member-title-heart">♥</span></div>
-  <div class="card home-search-card">
-    <div class="section-kicker">ابدأ البحث</div><h2>ابحث عن شريك الحياة المناسب</h2>
-    <p class="muted">حدّد ما يناسبك ثم استعرض الملفات المنشورة في ميثاق.</p>
-    <div class="home-search-fields">
-      <div class="field"><label for="homeSearchText">الاسم أو النبذة</label><input id="homeSearchText" type="search" placeholder="ابحث بكلمة"></div>
-      <div class="field"><label for="homeCountry">الدولة</label><select id="homeCountry"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div>
-      <div class="field"><label for="homeKind">نوع الزواج</label><select id="homeKind"><option value="all">الكل</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option></select></div>
-    </div>
-    <button class="primary" id="homeSearchButton" type="button">بحث عن الأعضاء</button>
-  </div>
-  <div class="member-section-heading"><h2>ملفات الأعضاء المنشورة</h2><button class="secondary" type="button" data-go="search">عرض جميع الأعضاء ←</button></div>
-  <div id="homeMemberPreview" class="home-member-preview"><p class="muted">تظهر هنا الملفات المنشورة بعد تحميلها.</p></div>
   <div class="member-section-heading"><h2>خدمات ميثاق</h2><span>اختر القسم الذي تريده</span></div>
   <div class="member-service-grid">
     <button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
@@ -542,7 +530,8 @@ body.authenticated #entryGate{display:none}
 </div>
 </section>
 <section id="search" class="tab hidden">
-<div class="card"><h2>استكشاف الملفات</h2><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
+<div class="member-page-title"><div><small>اكتشف الأعضاء</small><h1>بحث</h1></div><span class="member-title-heart">⌕</span></div>
+<div class="card"><div class="section-kicker">ابدأ البحث</div><h2>ابحث عن شريك الحياة المناسب</h2><p class="muted">حدّد خيارات البحث لعرض الملفات المنشورة في ميثاق.</p><div class="field"><label for="searchText">بحث بالاسم أو النبذة</label><input id="searchText" type="search" placeholder="اكتب كلمة للبحث"></div><div class="field"><label for="country">الدولة</label><select id="country"><option value="all">كل الدول</option><option>السعودية</option><option>دولة أخرى</option></select></div><div class="field"><label for="kind">نوع الزواج</label><select id="kind"><option value="all">الكل</option><option>الزواج المعلن</option><option>زواج المسيار</option></select></div>
 <div id="profiles"><p class="muted">جارٍ تحميل الملفات المنشورة...</p></div><p id="searchMsg" class="muted" aria-live="polite"></p></div>
 </section>
 <section id="favorites" class="tab hidden"><div class="card"><h2>الملفات المفضلة</h2><p class="muted">الملفات التي تحفظها تظهر هنا على هذا الجهاز بعد تسجيل الدخول.</p><div id="favoriteProfiles" class="muted">لم تحفظ ملفات مفضلة بعد.</div></div></section>
@@ -662,7 +651,7 @@ document.getElementById('memberMenuClose').addEventListener('click',closeMemberD
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='favorites')renderFavoriteProfiles();}));
 
-function show(id,fromBack=false){if(id==='home'&&typeof loadPublishedProfiles==='function')loadPublishedProfiles();const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
+function show(id,fromBack=false){const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['myprofile','search','favorites','requests','messages','settings','safety','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -876,13 +865,6 @@ async function loadPublishedProfiles(){
  if(error){host.textContent='تعذر تحميل الملفات: '+error.message;return;}
  publishedProfiles=data||[];renderPublishedProfiles();renderHomeMemberPreview();
 }
-function renderHomeMemberPreview(){
- const host=document.getElementById('homeMemberPreview');if(!host)return;host.replaceChildren();
- const list=(publishedProfiles||[]).filter(p=>p.id!==currentUserId).slice(0,3);
- if(!list.length){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد ملفات أعضاء منشورة للعرض حالياً.';host.append(empty);return;}
- list.forEach(p=>{const card=document.createElement('div');card.className='card';const head=document.createElement('div');head.className='profile';const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=(p.display_name||'م').trim().charAt(0);const info=document.createElement('div');const name=document.createElement('h3');name.textContent=p.display_name||'عضو ميثاق';const meta=document.createElement('p');meta.className='muted';meta.textContent=[p.country,p.region,p.marriage_type].filter(Boolean).join(' · ');info.append(name,meta);head.append(avatar,info);card.append(head);const button=document.createElement('button');button.className='secondary';button.type='button';button.textContent='استعراض الأعضاء';button.addEventListener('click',()=>show('search'));card.append(button);host.append(card);});
-}
-document.getElementById('homeSearchButton').addEventListener('click',()=>{document.getElementById('searchText').value=document.getElementById('homeSearchText').value;document.getElementById('country').value=document.getElementById('homeCountry').value;document.getElementById('kind').value=document.getElementById('homeKind').value;show('search');loadPublishedProfiles();});
 function filter(){renderPublishedProfiles();}
 document.getElementById('country').addEventListener('change',filter);document.getElementById('kind').addEventListener('change',filter);document.getElementById('searchText').addEventListener('input',filter);
 document.querySelector('button[data-tab="search"]').addEventListener('click',loadPublishedProfiles);document.querySelector('button[data-tab="favorites"]').addEventListener('click',()=>{loadPublishedProfiles().then(renderFavoriteProfiles)});
