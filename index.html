@@ -380,7 +380,7 @@ body.authenticated #entryGate{display:none}
 <body>
 <div id="entryGate" dir="rtl">
   <div class="entry-top">
-    <button class="entry-lang js-language-open" type="button" aria-haspopup="dialog" onclick="if(window.openMithaqLanguagePicker){window.openMithaqLanguagePicker();}else{var p=document.getElementById('languagePicker');if(p){p.style.display='flex';p.classList.add('open');}}">⌄ &nbsp; AR 🇸🇦</button>
+    
     <div class="entry-logo"><span>♥</span><b>MITHAQ</b></div>
     <button class="entry-menu" type="button" aria-label="القائمة">☰</button>
   </div>
@@ -487,7 +487,7 @@ body.authenticated #entryGate{display:none}
 
 <header>
 <div class="member-topbar">
-  <button class="member-language js-language-open" type="button" aria-haspopup="dialog" onclick="if(window.openMithaqLanguagePicker){window.openMithaqLanguagePicker();}else{var p=document.getElementById('languagePicker');if(p){p.style.display='flex';p.classList.add('open');}}">⌄ AR 🇸🇦</button>
+  
   <div class="member-brand"><span class="member-mark">♥</span><strong>MITHAQ</strong></div>
   <button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button>
 </div>
@@ -555,15 +555,6 @@ body.authenticated #entryGate{display:none}
 </div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
 </main>
-<div class="language-popover" id="languagePicker" role="dialog" aria-modal="true" aria-labelledby="languagePickerTitle">
- <div class="language-panel">
-  <div class="language-panel-head"><h2 id="languagePickerTitle">اختر لغة الموقع</h2><button type="button" class="language-close" id="languagePickerClose" aria-label="إغلاق">×</button></div>
-  <input class="language-search" id="languageSearch" type="search" placeholder="ابحث عن لغة..." autocomplete="off">
-  <div class="language-options" id="languageOptions"></div>
-  <p class="notice" id="languageStatus">سيُحفظ اختيارك على هذا الجهاز.</p>
- </div>
-</div>
-
 <script>
 /* Robust global language selector: never let storage errors disable the picker. */
 (()=>{
