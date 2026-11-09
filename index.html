@@ -23,6 +23,74 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 #entrySignupForm .wizard-actions button{box-sizing:border-box;max-width:100%;white-space:normal}
 #entrySignupForm .wizard-actions #entryFinish{min-width:250px}
 @media(max-width:420px){#entrySignupForm .wizard-actions{gap:10px}#entrySignupForm .wizard-actions #entryFinish{width:100%;min-width:0}}
+ 
+/* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
+.member-topbar{display:none}
+.member-drawer,.member-drawer-backdrop{display:none}
+body.authenticated{background:#fff9fa;color:#343b43}
+body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
+body.authenticated header:after{display:none}
+body.authenticated header .hero{display:none}
+body.authenticated .member-topbar{height:112px;max-width:1180px;margin:auto;padding:12px 28px;display:flex;align-items:center;justify-content:space-between}
+.member-language{background:#e4f5ff;color:#28678d;border-radius:28px;padding:10px 17px;font-size:15px}
+.member-brand{display:grid;justify-items:center;gap:0;color:white;line-height:1}
+.member-brand strong{font-size:12px;letter-spacing:1.8px}
+.member-mark{font-size:48px;color:#d51f47;text-shadow:-8px 2px #176b91}
+.member-menu-button{background:transparent;color:#fff;font-size:36px;padding:0 8px}
+body.authenticated main.wrap{max-width:1120px;margin:0 auto;padding:26px 20px 45px}
+body.authenticated .demo{display:none}
+body.authenticated .mooda-nav{display:none}
+.member-page-title{display:flex;align-items:center;justify-content:space-between;margin:5px 0 22px}
+.member-page-title small{color:#bd5770;font-weight:700;font-size:14px}
+.member-page-title h1{font-size:29px;margin:5px 0;color:#246b98}
+.member-title-heart{font-size:35px;color:#dc5475}
+.member-hero-card{display:flex;align-items:center;gap:20px;padding:25px;border-radius:20px;background:linear-gradient(110deg,#fff,#fff0f3);border:1px solid #f2dce2;box-shadow:0 8px 24px #963a4a0b}
+.member-hero-icon{width:74px;height:74px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8dce4;color:#d94368;font-size:40px}
+.member-eyebrow{font-size:12px;font-weight:800;letter-spacing:1px;color:#d04f70}
+.member-hero-card h2{margin:6px 0;color:#246b98;font-size:25px}
+.member-hero-card p{margin:0;color:#697783;font-size:14px;line-height:1.9}
+.member-hero-action{background:linear-gradient(110deg,#155d91,#278fbd);color:#fff;border-radius:40px;padding:13px 21px;white-space:nowrap}
+.member-section-heading{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 13px}
+.member-section-heading h2{font-size:21px;color:#246b98;margin:0}
+.member-section-heading span{font-size:12px;color:#87929b}
+.member-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.member-service{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:right;padding:18px;background:#fff;border:1px solid #f0e3e6;border-radius:16px;color:#34434e;box-shadow:0 5px 18px #963a4a08}
+.member-service:active{transform:scale(.985)}
+.service-icon{width:43px;height:43px;border-radius:13px;background:#e5f2fa;color:#246b98;display:grid;place-items:center;font-size:22px}
+.member-service strong{font-size:15px}
+.member-service small{font-size:12px;color:#87929b;font-weight:400}
+.member-info-card{margin-top:17px;background:#e3f1fa;border-radius:16px;padding:17px 19px;color:#36566c;line-height:1.9}
+.member-info-card strong{color:#246b98}
+.member-info-card p{margin:5px 0 0;font-size:13px}
+.member-drawer-backdrop{position:fixed;inset:0;background:#17202b66;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.member-drawer{display:block;position:fixed;z-index:51;top:0;bottom:0;right:0;width:min(390px,88vw);overflow-y:auto;background:#fff8fa;padding:17px 19px 30px;transform:translateX(105%);transition:transform .24s;box-shadow:-8px 0 30px #0002}
+body.drawer-open .member-drawer{transform:translateX(0)}
+body.drawer-open .member-drawer-backdrop{opacity:1;pointer-events:auto}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 0 18px;border-bottom:1px solid #f0dfe4;margin-bottom:8px}
+.drawer-brand{display:flex;align-items:center;gap:10px;color:#246b98;font-size:22px}
+.drawer-brand span{font-size:30px;color:#d94368}
+.drawer-head button{background:transparent;color:#52616b;font-size:32px;padding:0 8px}
+.drawer-link{display:flex;width:100%;align-items:center;gap:14px;text-align:right;background:transparent;color:#343f48;padding:14px 6px;border-radius:0;border-bottom:1px solid #f1e7e9;font-size:16px;font-weight:650}
+.drawer-link span{width:32px;text-align:center;color:#d45b78;font-size:21px}
+.drawer-link:active{background:#fbe9ee}
+.drawer-separator{height:10px;border-bottom:1px solid #eadde1;margin-bottom:7px}
+.drawer-note{text-align:center;color:#9a8790;font-size:12px;padding:15px}
+body.authenticated .card{border-color:#f0e3e6}
+body.authenticated .card h2{color:#246b98}
+@media(max-width:700px){
+ body.authenticated .member-topbar{height:104px;padding:10px 20px}
+ body.authenticated main.wrap{padding:21px 15px 35px}
+ .member-hero-card{align-items:flex-start;flex-wrap:wrap;padding:19px;gap:13px}
+ .member-hero-icon{width:56px;height:56px;font-size:31px}
+ .member-hero-card h2{font-size:21px}
+ .member-hero-card>div:nth-child(2){flex:1;min-width:180px}
+ .member-hero-action{margin-right:auto}
+ .member-service-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .member-service{padding:14px;min-height:125px}
+ .member-page-title h1{font-size:26px}
+ .member-section-heading h2{font-size:19px}
+}
+@media(max-width:370px){.member-service strong{font-size:13px}.member-service small{font-size:11px}}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -261,24 +329,50 @@ body.authenticated #entryGate{display:none}
   </div>
 </div>
 
-<header><div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
+<header>
+<div class="member-topbar">
+  <button class="member-language" type="button">⌄ Ar 🇸🇦</button>
+  <div class="member-brand"><span class="member-mark">♥</span><strong>MITHAQ</strong></div>
+  <button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button>
+</div>
+<div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
 <div class="demo">مرحباً بك في ميثاق. تعارف جاد يبدأ بملف واضح، واختيار متبادل، وخصوصية محفوظة.</div>
-<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="requests">إرسال</button><button data-tab="search">الأعضاء</button><button data-tab="myprofile">الملف</button><button data-tab="settings">الإعدادات</button></nav>
+<div class="member-drawer-backdrop" id="memberDrawerBackdrop"></div>
+<aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
+  <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
+  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
+  <button class="drawer-link" data-menu-go="search"><span>⌕</span>الأعضاء</button>
+  <button class="drawer-link" data-menu-go="favorites"><span>♡</span>الملفات المفضلة</button>
+  <button class="drawer-link" data-menu-go="requests"><span>♧</span>طلبات التعارف</button>
+  <button class="drawer-link" data-menu-go="messages"><span>✉</span>المراسلات</button>
+  <button class="drawer-link" data-menu-go="myprofile"><span>👤</span>ملفي الشخصي</button>
+  <div class="drawer-separator"></div>
+  <button class="drawer-link" data-menu-go="safety"><span>♧</span>الأمان والخصوصية</button>
+  <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
+  <button class="drawer-link" data-menu-go="help"><span>؟</span>مساعدة</button>
+  <button class="drawer-link" data-menu-go="about"><span>ⓘ</span>نبذة عن ميثاق</button>
+  <div class="drawer-separator"></div>
+  <p class="drawer-note">ميثاق للتعارف الجاد باحترام وخصوصية</p>
+</aside>
+<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="search">الأعضاء</button><button data-tab="requests">الطلبات</button><button data-tab="messages">المراسلات</button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
-<div class="home-grid">
-<div class="card welcome"><div class="eyebrow">أهلاً بك في ميثاق</div><h2>ابدأ رحلة تعارف<br>واضحة ومحترمة</h2><p class="muted">أنشئ ملفك، تعرّف على الملفات المناسبة، وأرسل طلب تعارف. لا تبدأ المراسلة إلا بعد قبول الطرف الآخر.</p><div class="auth-actions"><button class="primary" id="openSignup">إنشاء حساب جديد</button><button class="secondary" id="openLogin">تسجيل الدخول</button></div><div id="authPanel" class="auth-panel"><hr><h2 id="authTitle">إنشاء حساب جديد</h2><form id="authForm"><div class="field"><label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" required></div><div class="field"><label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" minlength="8" autocomplete="new-password" required></div><button class="primary" id="authSubmit" type="submit">إنشاء حساب</button><button class="secondary" id="resetPassword" type="button">نسيت كلمة المرور؟</button><button class="secondary" id="closeAuth" type="button">إغلاق</button></form><p id="authStatus" class="auth-status" aria-live="polite">التسجيل يتطلب ربط المفتاح العام للمشروع أولاً.</p></div><div id="signedInBox" class="auth-status" hidden></div></div>
-<div class="card"><div class="section-kicker">مبادئ ميثاق</div><h2>خصوصيتك وقرارك أولاً</h2><div class="feature-list">
-<div class="feature"><div class="feature-icon">♡</div><div><strong>الاختيار بيدك</strong><span>لا يتم التواصل إلا بعد قبول طلب التعارف.</span></div></div>
-<div class="feature"><div class="feature-icon">⌑</div><div><strong>ملف يحترم خصوصيتك</strong><span>تحكم في نشر ملفك والمعلومات التي تظهر.</span></div></div>
-<div class="feature"><div class="feature-icon">✉</div><div><strong>مراسلات داخلية</strong><span>التواصل داخل ميثاق بعد قبول الطلب.</span></div></div>
-</div></div></div>
-<div class="card"><div class="section-kicker">رحلتك في ميثاق</div><h2>ثلاث خطوات للتعارف</h2><div class="steps">
-<div class="step"><b>01</b><strong>أنشئ ملفك</strong><p>اكتب نبذة عنك وحدد نوع الزواج والمعلومات التي ترغب بعرضها.</p></div>
-<div class="step"><b>02</b><strong>استكشف وأرسل طلباً</strong><p>ابحث في الملفات المنشورة وأرسل طلب تعارف مناسباً.</p></div>
-<div class="step"><b>03</b><strong>ابدأ المراسلة</strong><p>بعد قبول الطرف الآخر، يمكنكما بدء محادثة خاصة داخل ميثاق.</p></div>
-</div></div>
-<div class="row"><button class="secondary" data-go="search">استكشاف الملفات</button><button class="secondary" data-go="myprofile">إنشاء ملفي الشخصي</button><button class="secondary" data-go="safety">مركز الأمان والخصوصية</button></div>
+  <div class="member-page-title"><div><small>مرحباً بك في ميثاق</small><h1>الرئيسية</h1></div><span class="member-title-heart">♥</span></div>
+  <div class="member-hero-card">
+    <div class="member-hero-icon">♥</div>
+    <div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2>التعارف الجاد يبدأ بالاحترام</h2><p>أكمل ملفك الشخصي، واستكشف الأعضاء، وتابع طلبات التعارف والمراسلات من مكان واحد.</p></div>
+    <button class="member-hero-action" data-go="myprofile">أكمل ملفك الشخصي ←</button>
+  </div>
+  <div class="member-section-heading"><h2>خدمات ميثاق</h2><span>اختر القسم الذي تريده</span></div>
+  <div class="member-service-grid">
+    <button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
+    <button class="member-service" data-go="search"><span class="service-icon">🔎</span><strong>استكشاف الأعضاء</strong><small>ابحث عن شريك مناسب</small></button>
+    <button class="member-service" data-go="requests"><span class="service-icon">🤝</span><strong>طلبات التعارف</strong><small>الطلبات المرسلة والواردة</small></button>
+    <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات</strong><small>محادثاتك الخاصة</small></button>
+    <button class="member-service" data-go="favorites"><span class="service-icon">♡</span><strong>المفضلة</strong><small>الملفات التي حفظتها</small></button>
+    <button class="member-service" data-go="safety"><span class="service-icon">🛡️</span><strong>الأمان والخصوصية</strong><small>إعدادات حماية حسابك</small></button>
+  </div>
+  <div class="member-info-card"><strong>خصوصيتك أولاً</strong><p>لا تشارك رقم هاتفك أو معلوماتك الشخصية الحساسة في ملفك. لا تبدأ المراسلة إلا بعد قبول طلب التعارف.</p></div>
 </section>
 <section id="myprofile" class="tab hidden">
 <div class="card"><h2>ملفي الشخصي</h2>
@@ -313,7 +407,8 @@ body.authenticated #entryGate{display:none}
 <button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
 </div></section>
-<section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section>
+<section id="safety" class="tab hidden"><div class="card"><h2>خصوصيتك أولاً</h2><ul class="muted"><li>لا تُعرض بيانات الاتصال الشخصية داخل الملفات.</li><li>لا تطلب من الآخرين مشاركة بيانات شخصية حساسة.</li><li>طلب الوصول ليس موافقة على الزواج.</li><li>شارك معلوماتك الشخصية بحذر، ولا تنشرها في ملفك العام.</li></ul></div><div class="card"><h2>تنبيه قانوني</h2><p class="muted">ميثاق منصة مستقلة وليس جهة حكومية أو مأذوناً أو محكمة. تخضع الخدمات الفعلية لمراجعة قانونية وأمنية في كل دولة قبل الإطلاق.</p></div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
+<section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
 </main><footer>ميثاق • التعارف الجاد يبدأ بالاحترام والخصوصية</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -378,12 +473,12 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  try{
   const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
   if(error)throw error;
-  if(data.session){document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();}
+  if(data.session){document.body.classList.add('authenticated');show('home');}
   else{status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. بيانات التسجيل محفوظة مع حسابك.';}
  }catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
 });
-document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;document.body.classList.add('authenticated');show('search');await loadPublishedProfiles();await showAuthSession();}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
+document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;document.body.classList.add('authenticated');show('home');await showAuthSession();}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
 document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
 
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
@@ -391,6 +486,13 @@ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_9stWwK7GGAJOHWSBrGGYTA_Lyvkhwdy';
 const authReady=SUPABASE_PUBLISHABLE_KEY!=='PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
 const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+const drawer=document.getElementById('memberDrawer');
+function closeMemberDrawer(){document.body.classList.remove('drawer-open');}
+document.getElementById('memberMenuOpen').addEventListener('click',()=>document.body.classList.add('drawer-open'));
+document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
+document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='search')loadPublishedProfiles();if(id==='requests')loadMyContactRequests();if(id==='messages')loadConversations();if(id==='myprofile')refreshProfileAccess();if(id==='favorites')renderFavoriteProfiles();}));
+
 function show(id){tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));}
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 const authPanel=document.getElementById('authPanel'),authTitle=document.getElementById('authTitle'),authSubmit=document.getElementById('authSubmit'),authStatus=document.getElementById('authStatus'),authForm=document.getElementById('authForm');
