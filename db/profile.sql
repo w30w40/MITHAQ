@@ -78,7 +78,7 @@ RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
-AS $
+AS $function$
 BEGIN
   INSERT INTO public.profile_details (id, details)
   VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data, '{}'::jsonb))
@@ -87,7 +87,7 @@ BEGIN
       updated_at = now();
   RETURN NEW;
 END;
-$;
+$function$;
 
 DROP TRIGGER IF EXISTS mithaq_auth_user_profile_created ON auth.users;
 DROP TRIGGER IF EXISTS mithaq_auth_user_profile_metadata_updated ON auth.users;
