@@ -291,3 +291,22 @@ alter table public.messages
     char_length(btrim(coalesce(body, ''))) >= 1
     or attachment_path is not null
   );
+
+ 
+-- Keep the public profile constraint aligned with the registration wizard.
+-- The wizard currently offers these values for the marriage type field.
+alter table public.profiles
+  drop constraint if exists profiles_marriage_type_check;
+alter table public.profiles
+  add constraint profiles_marriage_type_check
+  check (
+    marriage_type is null
+    or marriage_type = any (array[
+      'معلن',
+      'مسيار',
+      'الوحيدة',
+      'لا مانع من التعدد',
+      'زواج عادي',
+      'زوجة ثانية'
+    ]::text[])
+  );
