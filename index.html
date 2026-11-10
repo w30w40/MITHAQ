@@ -571,7 +571,7 @@ body.authenticated #entryGate{display:none}
   <div id="mithaqAdminStats" class="mithaq-admin-stats"></div>
 </div>
 <div class="card mithaq-admin-card">
-  <div class="mithaq-admin-heading"><div><h2>حسابات الأعضاء</h2><p class="muted">تعطيل الحساب يمنع ظهوره وإرسال الرسائل واستقبالها عبر الموقع</p></div><button id="mithaqAdminReload" class="secondary" type="button">تحديث</button></div>
+  <div class="mithaq-admin-heading"><div><h2>حسابات الأعضاء</h2><p class="muted">تعليق العضوية يخفي الحساب من قائمة الأعضاء ويمنع المراسلات. لا يعطّل تسجيل الدخول نفسه</p></div><button id="mithaqAdminReload" class="secondary" type="button">تحديث</button></div>
   <div id="mithaqAdminMembers" class="mithaq-admin-members"></div>
 </div>
 </section>
@@ -960,16 +960,16 @@ async function loadMithaqAdminPanel(){
   const meta=document.createElement('small');meta.textContent=[person.country||'الدولة غير محددة',person.created_at?new Date(person.created_at).toLocaleDateString('ar'):'' ].filter(Boolean).join(' • ');
   info.append(name,meta);
   const actions=document.createElement('div');actions.className='mithaq-admin-member-actions';
-  const badge=document.createElement('span');badge.className='mithaq-admin-status'+(person.account_status==='suspended'?' suspended':'');badge.textContent=person.account_status==='suspended'?'موقوف':'نشط';
+  const badge=document.createElement('span');badge.className='mithaq-admin-status'+(person.account_status==='suspended'?' suspended':'');badge.textContent=person.account_status==='suspended'?'معلّق':'نشط';
   const btn=document.createElement('button');btn.type='button';btn.className=person.account_status==='suspended'?'primary':'secondary';
-  btn.textContent=person.account_status==='suspended'?'إعادة التفعيل':'إيقاف الحساب';
+  btn.textContent=person.account_status==='suspended'?'إعادة التفعيل':'تعليق العضوية';
   btn.addEventListener('click',async()=>{
    const next=person.account_status==='suspended'?'active':'suspended';
-   if(!confirm(next==='suspended'?'هل تريد إيقاف هذا الحساب؟':'هل تريد إعادة تفعيل هذا الحساب؟'))return;
+   if(!confirm(next==='suspended'?'هل تريد تعليق هذه العضوية؟':'هل تريد إعادة تفعيل هذه العضوية؟'))return;
    btn.disabled=true;
    const {error}=await supabaseClient.rpc('mithaq_admin_set_account_status',{p_user_id:person.id,p_status:next});
    if(error){status.textContent='تعذر تغيير حالة الحساب: '+error.message;btn.disabled=false;return;}
-   status.textContent=next==='suspended'?'تم إيقاف الحساب.':'تمت إعادة تفعيل الحساب.';
+   status.textContent=next==='suspended'?'تم تعليق العضوية.':'تمت إعادة تفعيل العضوية.';
    await loadMithaqAdminPanel();
   });
   actions.append(badge,btn);row.append(info,actions);membersHost.append(row);
