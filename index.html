@@ -1222,23 +1222,17 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
- const published=false; // New or edited biographies require admin approval before public listing.
  btn.disabled=true;status.textContent='جارٍ حفظ ملفك في قاعدة البيانات...';
  try{
   const {error:authError}=await supabaseClient.auth.updateUser({data:updated});
   if(authError)throw authError;
   const {error:privateError}=await supabaseClient.from('profile_details').upsert({id:session.user.id,details:updated,updated_at:new Date().toISOString()},{onConflict:'id'});
   if(privateError)throw privateError;
+  // Detailed profile fields belong in profile_details.details, not public.profiles columns.
   const {error:publicError}=await supabaseClient.from('profiles').upsert({
    id:session.user.id,display_name:updated.username,country:updated.country||null,
    region:updated.city||null,marriage_type:updated.marriage_type||null,
-   life_text:updated.about||'',
-   gender:published?(updated.gender||null):null,family_status:published?(updated.family_status||null):null,
-   age:published&&updated.age?Number(updated.age):null,children:published?(updated.children||null):null,
-   nationality:published?(updated.nationality||null):null,education:published?(updated.education||null):null,
-   work_field:published?(updated.work_field||null):null,work:published?(updated.work||null):null,
-   religiosity:published?(updated.religiosity||null):null,prayer:published?(updated.prayer||null):null,
-   smoking:published?(updated.smoking||null):null,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()
+   life_text:updated.about||'',last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()
   },{onConflict:'id'});
   if(publicError)throw publicError;
   const {data:{session:latestSession}}=await supabaseClient.auth.getSession();
