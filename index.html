@@ -886,11 +886,11 @@ nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 /* Legacy authentication modal removed: MITHAQ now uses the dedicated five-step signup form and the dedicated login form above. Keeping this obsolete block caused null-element errors and interrupted session restoration. */
 async function touchMithaqLastSeen(session){if(!session||!supabaseClient)return;const {error}=await supabaseClient.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',session.user.id);if(error)console.warn('MITHAQ last-seen update:',error.message);}
 function applyAuthenticatedSession(session){
- if(!session){isMithaqAdmin=false;const adminLink=document.getElementById('mithaqAdminMenuLink');if(adminLink)adminLink.hidden=true;}
+ if(!session){isMithaqAdmin=false;setupMithaqPresence(null);if(mithaqLiveChannel&&supabaseClient){supabaseClient.removeChannel(mithaqLiveChannel);mithaqLiveChannel=null;}updateMithaqUnreadBadges(0);const adminLink=document.getElementById('mithaqAdminMenuLink');if(adminLink)adminLink.hidden=true;}
  const box=document.getElementById('signedInBox');
  if(session){
   document.body.classList.add('authenticated');
-  touchMithaqLastSeen(session);
+  setupMithaqPresence(session);
   setupMithaqLiveUpdates(session);
   // The old signed-in banner is not part of the current MITHAQ layout.
   // Session state must still update even when that optional element is absent.
@@ -1140,6 +1140,17 @@ let activeChatName='';
 let activeChatChannel=null;
 let mithaqLiveChannel=null;
 let mithaqUnreadCount=0;
+let mithaqPresenceTimer=null;
+let mithaqFeedTimer=null;
+function setupMithaqPresence(session){
+ if(mithaqPresenceTimer)clearInterval(mithaqPresenceTimer);
+ if(mithaqFeedTimer)clearInterval(mithaqFeedTimer);
+ mithaqPresenceTimer=null;mithaqFeedTimer=null;
+ if(!session)return;
+ touchMithaqLastSeen(session);
+ mithaqPresenceTimer=setInterval(()=>touchMithaqLastSeen(session),120000);
+ mithaqFeedTimer=setInterval(()=>{const home=document.getElementById('home');if(home&&!home.classList.contains('hidden'))loadMithaqHomeFeed();},60000);
+}
 function updateMithaqUnreadBadges(count){
  mithaqUnreadCount=Number(count)||0;
  ['navUnreadBadge','drawerUnreadBadge','homeUnreadBadge'].forEach(id=>{
