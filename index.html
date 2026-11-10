@@ -116,6 +116,19 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-section-back{display:inline-flex;align-items:center;gap:7px;margin:0 0 15px;padding:10px 17px;border:1px solid #dce8f2;border-radius:12px;background:#fff;color:#246b98;font-weight:700;box-shadow:0 3px 12px #183e3008}.mithaq-section-back:active{transform:scale(.98)}
 
 #memberPublicDetail[hidden]{display:none!important}.public-profile-back{margin-bottom:14px}.public-profile-open{width:100%;margin-top:12px}.profile-card{cursor:pointer}.profile-card button{position:relative;z-index:1}
+
+.mithaq-home-feed-card{background:#fff;border:1px solid #f0e3e6;border-radius:18px;padding:18px;margin:0 0 18px;box-shadow:0 5px 18px #963a4a08}
+.mithaq-live-feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
+.mithaq-live-member{position:relative;background:#fff9fa;border:1px solid #f2e4e8;border-radius:15px;padding:14px;min-width:0}
+.mithaq-live-member h3{font-size:15px;color:#246b98;margin:0 0 7px;overflow-wrap:anywhere}
+.mithaq-live-member p{font-size:12px;color:#718096;line-height:1.7;margin:5px 0;overflow-wrap:anywhere}
+.mithaq-online-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#16a34a;margin-left:6px;box-shadow:0 0 0 3px #16a34a20}
+.mithaq-offline-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9ca3af;margin-left:6px}
+.mithaq-admin-home-widget{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(110deg,#edf6ff,#fff);border:1px solid #cfe4f5;border-right:4px solid #246b98;border-radius:16px;padding:16px 18px;margin:0 0 18px}
+.mithaq-admin-home-widget[hidden]{display:none!important}.mithaq-admin-home-widget>div{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:3px 8px}.mithaq-admin-home-widget>div>span{grid-row:span 2;font-size:25px}.mithaq-admin-home-widget strong{color:#1e5d91}.mithaq-admin-home-widget small{color:#718096}.mithaq-admin-home-widget button{background:#1e5d91;color:#fff;border-radius:30px;padding:11px 16px;min-height:44px}
+.mithaq-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#dc3545;color:#fff;font-size:11px;font-weight:800;line-height:1;vertical-align:middle;margin-inline-start:5px}
+.mithaq-unread-badge[hidden]{display:none!important}
+@media(max-width:600px){.mithaq-admin-home-widget{align-items:flex-start;flex-direction:column}.mithaq-admin-home-widget button{width:100%}.mithaq-live-feed{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -518,18 +531,19 @@ body.authenticated #entryGate{display:none}
 <div class="member-drawer-backdrop" id="memberDrawerBackdrop"></div>
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
-  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button><button class="drawer-link" data-menu-go="members"><span>👥</span>الأعضاء</button><button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
+  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button><button class="drawer-link" data-menu-go="members"><span>👥</span>الأعضاء</button><button class="drawer-link" data-menu-go="messages"><span>💬</span>الرسائل <span class="mithaq-unread-badge" id="drawerUnreadBadge" hidden>0</span></button><button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
   <div class="drawer-separator"></div>
   <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
   <div class="drawer-separator"></div>
 </aside>
-<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="members">الأعضاء</button><button data-tab="messages">الرسائل</button><button data-tab="myprofile">ملفي</button></nav>
+<nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="members">الأعضاء</button><button data-tab="messages">الرسائل <span class="mithaq-unread-badge" id="navUnreadBadge" hidden>0</span></button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
-  
-  
+  <div class="member-page-title"><div><small>مرحباً بك في ميثاق</small><h1>بداية طريق المودة</h1></div><span class="member-title-heart">♥</span></div>
+  <div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>ملفات معتمدة فقط</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
+  <div id="mithaqAdminHomeWidget" class="mithaq-admin-home-widget" hidden><div><span>🛡️</span><strong>لوحة التحكم والمراقبة</strong><small>إدارة الأعضاء ومراجعة المنصة</small></div><button type="button" id="mithaqAdminHomeOpen">فتح لوحة الإدارة</button></div>
   <div class="member-service-grid">
     <button class="member-service" data-go="members"><span class="service-icon">👥</span><strong>الأعضاء</strong><small>تصفح أعضاء ميثاق</small></button><button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
-    <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات</strong><small>محادثاتك الخاصة</small></button>
+    <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات <span class="mithaq-unread-badge" id="homeUnreadBadge" hidden>0</span></strong><small>محادثاتك الخاصة</small></button>
   </div>
   
 </section>
@@ -860,12 +874,13 @@ document.getElementById('memberMenuClose').addEventListener('click',closeMemberD
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
 
-function show(id,fromBack=false,verifiedAdmin=false){if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='myprofile')refreshProfileAccess();if(id==='members')loadMembers();if(id==='messages')loadConversations();if(id==='admin')loadMithaqAdminPanel();}
+function show(id,fromBack=false,verifiedAdmin=false){if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members')loadMembers();if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='admin')loadMithaqAdminPanel();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
 function showProfileEditView(){document.getElementById('profileReadView').hidden=true;document.getElementById('profileEditView').hidden=false;document.getElementById('profileEditView').scrollIntoView({behavior:'smooth',block:'start'});}
 document.getElementById('editProfileOpen').addEventListener('click',showProfileEditView);
+document.getElementById('mithaqAdminHomeOpen').addEventListener('click',()=>show('admin'));
 document.getElementById('cancelProfileEdit').addEventListener('click',showProfileReadView);
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 /* Legacy authentication modal removed: MITHAQ now uses the dedicated five-step signup form and the dedicated login form above. Keeping this obsolete block caused null-element errors and interrupted session restoration. */
@@ -876,6 +891,7 @@ function applyAuthenticatedSession(session){
  if(session){
   document.body.classList.add('authenticated');
   touchMithaqLastSeen(session);
+  setupMithaqLiveUpdates(session);
   // The old signed-in banner is not part of the current MITHAQ layout.
   // Session state must still update even when that optional element is absent.
   if(!box)return;
@@ -923,6 +939,7 @@ async function refreshMithaqAdminAccess(){
  const {data,error}=await supabaseClient.rpc('mithaq_is_admin');
  isMithaqAdmin=!error&&data===true;
  if(link)link.hidden=!isMithaqAdmin;
+ const homeWidget=document.getElementById('mithaqAdminHomeWidget');if(homeWidget)homeWidget.hidden=!isMithaqAdmin;
  if(error)console.error('MITHAQ admin authorization check failed:',error.message);
  const active=document.querySelector('.tab:not(.hidden)');
  if(!isMithaqAdmin&&active?.id==='admin')show('home');
@@ -1121,6 +1138,59 @@ let currentUserId=null;
 let activeChatUser=null;
 let activeChatName='';
 let activeChatChannel=null;
+let mithaqLiveChannel=null;
+let mithaqUnreadCount=0;
+function updateMithaqUnreadBadges(count){
+ mithaqUnreadCount=Number(count)||0;
+ ['navUnreadBadge','drawerUnreadBadge','homeUnreadBadge'].forEach(id=>{
+  const badge=document.getElementById(id);if(!badge)return;
+  badge.textContent=mithaqUnreadCount>99?'99+':String(mithaqUnreadCount);
+  badge.hidden=mithaqUnreadCount===0;
+ });
+}
+async function loadMithaqUnreadCount(){
+ if(!supabaseClient)return;
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){updateMithaqUnreadBadges(0);return;}
+ const {count,error}=await supabaseClient.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',session.user.id).is('read_at',null);
+ if(error){console.warn('MITHAQ unread count:',error.message);return;}
+ updateMithaqUnreadBadges(count||0);
+}
+async function setupMithaqLiveUpdates(session){
+ if(!supabaseClient||!session)return;
+ if(mithaqLiveChannel){await supabaseClient.removeChannel(mithaqLiveChannel);mithaqLiveChannel=null;}
+ mithaqLiveChannel=supabaseClient.channel('mithaq-live-'+session.user.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
+   loadMithaqUnreadCount();
+   if(payload.eventType==='INSERT'&&activeChatUser===payload.new.sender_id)refreshChat();
+  })
+  .subscribe();
+ await loadMithaqUnreadCount();
+}
+async function loadMithaqHomeFeed(){
+ const host=document.getElementById('homeLiveFeed'),status=document.getElementById('homeFeedStatus');
+ if(!host||!status)return;
+ host.replaceChildren();
+ if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
+ status.textContent='جارٍ تحميل الملفات المعتمدة...';
+ const {data,error}=await supabaseClient.rpc('mithaq_home_feed');
+ if(error){status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
+ if(!data?.length){status.textContent='لا توجد ملفات معتمدة أخرى حتى الآن.';return;}
+ data.forEach(person=>{
+  const card=document.createElement('article');card.className='mithaq-live-member';
+  const name=document.createElement('h3');
+  const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
+  name.append(dot,document.createTextNode(person.display_name||'عضو ميثاق'));
+  const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.country,person.city].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const about=document.createElement('p');about.textContent=(person.life_text||'').slice(0,115)+(person.life_text?.length>115?'…':'');
+  const action=document.createElement('button');action.type='button';action.className='secondary';action.textContent='عرض الملف / مراسلة';action.style.marginTop='7px';
+  action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
+  card.append(name,meta);if(about.textContent)card.append(about);card.append(action);host.append(card);
+ });
+ status.textContent='أحدث الملفات المعتمدة. تظهر علامة الاتصال عند وجود نشاط خلال آخر 5 دقائق.';
+}
 async function loadMembers(){
  const host=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
  host.replaceChildren();
@@ -1167,6 +1237,7 @@ async function loadMembers(){
 async function openChat(userId,name){
  activeChatUser=userId;activeChatName=name;
  document.getElementById('chatPanel').hidden=false;document.getElementById('chatTitle').textContent='محادثة مع '+name;
+ const {error:readError}=await supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});if(readError)console.warn('MITHAQ mark-read:',readError.message);else loadMithaqUnreadCount();
  await refreshChat();
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session)return;
