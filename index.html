@@ -968,6 +968,7 @@ let publishedProfiles=[];
 let currentUserId=null;
 let activeChatUser=null;
 let activeChatName='';
+let activeChatChannel=null;
 async function loadMembers(){
  const host=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
  host.replaceChildren();
@@ -1015,6 +1016,20 @@ async function openChat(userId,name){
  activeChatUser=userId;activeChatName=name;
  document.getElementById('chatPanel').hidden=false;document.getElementById('chatTitle').textContent='محادثة مع '+name;
  await refreshChat();
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session)return;
+ if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
+ const channelName='mithaq-chat-'+[session.user.id,userId].sort().join('-');
+ activeChatChannel=supabaseClient.channel(channelName)
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
+   const m=payload.new;
+   if(m.sender_id===userId&&activeChatUser===userId)refreshChat();
+  })
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
+   const m=payload.new;
+   if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
+  })
+  .subscribe();
 }
 async function refreshChat(){
  const box=document.getElementById('chatMessages'),status=document.getElementById('messageStatus');
