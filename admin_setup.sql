@@ -183,7 +183,7 @@ commit;
 -- Approved public member feed: exposes only the limited fields shown on the home page.
 create or replace function public.mithaq_home_feed()
 returns table (
-  id uuid, display_name text, age text, country text, city text,
+  id uuid, display_name text, gender text, age text, country text, city text,
   life_text text, last_seen_at timestamptz, is_online boolean
 )
 language plpgsql stable security definer set search_path = ''
@@ -193,8 +193,9 @@ begin
     raise exception 'authentication_required' using errcode = '42501';
   end if;
   return query
-  select p.id, p.display_name, coalesce(d.details->>'age',''),
-    p.country, coalesce(nullif(d.details->>'city',''),p.region,''),
+  select p.id, p.display_name, coalesce(d.details->>'gender',''),
+    coalesce(d.details->>'age',''), p.country,
+    coalesce(nullif(d.details->>'city',''),p.region,''),
     coalesce(p.life_text,''), p.last_seen_at,
     (p.last_seen_at is not null and p.last_seen_at >= now()-interval '5 minutes')
   from public.profiles p
