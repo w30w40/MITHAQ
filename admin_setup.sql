@@ -17,6 +17,10 @@ revoke all on private.admin_users from public, anon, authenticated;
 
 alter table public.profiles
   add column if not exists account_status text not null default 'active';
+alter table public.profiles add column if not exists bio_review_status text not null default 'pending';
+alter table public.profiles drop constraint if exists profiles_bio_review_status_check;
+alter table public.profiles add constraint profiles_bio_review_status_check check (bio_review_status in ('pending','approved','rejected'));
+update public.profiles set bio_review_status='approved' where is_published=true and bio_review_status='pending';
 alter table public.profiles drop constraint if exists profiles_account_status_check;
 alter table public.profiles
   add constraint profiles_account_status_check check (account_status in ('active','suspended'));
@@ -34,14 +38,14 @@ drop policy if exists "members_read_published_profiles_or_own" on public.profile
 drop policy if exists "mithaq_admin_read_all_profiles" on public.profiles;
 create policy "mithaq_profiles_visible_to_members_and_admin"
 on public.profiles for select to authenticated
-using ((is_published = true and account_status = 'active')
+using ((is_published = true and bio_review_status = 'approved' and account_status = 'active')
        or id = (select auth.uid())
        or (select public.mithaq_is_admin()));
 
 -- Clients cannot change account_status directly. They may update only profile fields.
 revoke update on table public.profiles from public, anon, authenticated;
 grant update (id, display_name, country, region, marriage_type, life_text,
-              is_published, updated_at, last_seen_at)
+              updated_at, last_seen_at)
 on public.profiles to authenticated;
 
 create or replace function public.mithaq_admin_stats()
@@ -98,6 +102,58 @@ with check (
   and exists (select 1 from public.profiles p where p.id = (select auth.uid()) and p.account_status = 'active')
   and exists (select 1 from public.profiles p where p.id = recipient_id and p.account_status = 'active')
 );
+
+
+revoke update (is_published, bio_review_status) on public.profiles from public, anon, authenticated;
+
+create or replace function public.mithaq_admin_list_members()
+returns table (id uuid, display_name text, country text, region text, marriage_type text,
+  life_text text, account_status text, bio_review_status text, created_at timestamptz, details jsonb)
+language plpgsql security definer set search_path = public, private, auth
+as $
+begin
+  if not public.mithaq_is_admin() then raise exception 'not_authorized' using errcode='42501'; end if;
+  return query select p.id,p.display_name,p.country,p.region,p.marriage_type,p.life_text,
+    p.account_status,p.bio_review_status,p.created_at,coalesce(d.details,'{}'::jsonb)
+  from public.profiles p left join public.profile_details d on d.id=p.id
+  order by p.created_at desc limit 500;
+end;
+$;
+revoke all on function public.mithaq_admin_list_members() from public, anon;
+grant execute on function public.mithaq_admin_list_members() to authenticated;
+
+create or replace function public.mithaq_admin_review_bio(p_user_id uuid,p_approve boolean)
+returns void language plpgsql security definer set search_path = public, private, auth
+as $
+begin
+  if not public.mithaq_is_admin() then raise exception 'not_authorized' using errcode='42501'; end if;
+  update public.profiles set bio_review_status=case when p_approve then 'approved' else 'rejected' end,
+    is_published=p_approve,updated_at=now() where id=p_user_id;
+  if not found then raise exception 'profile_not_found' using errcode='P0002'; end if;
+end;
+$;
+revoke all on function public.mithaq_admin_review_bio(uuid,boolean) from public, anon;
+grant execute on function public.mithaq_admin_review_bio(uuid,boolean) to authenticated;
+
+create or replace function public.mithaq_sync_public_profile()
+returns trigger language plpgsql security definer set search_path = public, pg_temp
+as $
+declare v_name text;
+begin
+  v_name := nullif(btrim(coalesce(new.raw_user_meta_data->>'username',new.raw_user_meta_data->>'display_name',new.raw_user_meta_data->>'name','')),'');
+  if v_name is not null then
+    insert into public.profiles (id,display_name,country,region,marriage_type,life_text,is_published,bio_review_status,updated_at)
+    values (new.id,v_name,nullif(btrim(coalesce(new.raw_user_meta_data->>'country','')),''),
+      nullif(btrim(coalesce(new.raw_user_meta_data->>'city','')),''),
+      nullif(btrim(coalesce(new.raw_user_meta_data->>'marriage_type','')),''),
+      coalesce(new.raw_user_meta_data->>'about',''),false,'pending',now())
+    on conflict (id) do update set display_name=excluded.display_name,country=excluded.country,
+      region=excluded.region,marriage_type=excluded.marriage_type,life_text=excluded.life_text,
+      is_published=false,bio_review_status='pending',updated_at=now();
+  end if;
+  return new;
+end;
+$;
 
 commit;
 
