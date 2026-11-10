@@ -1,0 +1,108 @@
+-- MITHAQ Admin Foundation
+-- Run as the Supabase database owner. The first administrator is intentionally NOT
+-- auto-assigned. Add the owner's confirmed Auth user UUID to private.admin_users
+-- only after verifying the owner identity.
+
+begin;
+
+create schema if not exists private;
+revoke all on schema private from public, anon, authenticated;
+
+create table if not exists private.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+revoke all on private.admin_users from public, anon, authenticated;
+
+alter table public.profiles
+  add column if not exists account_status text not null default 'active';
+alter table public.profiles drop constraint if exists profiles_account_status_check;
+alter table public.profiles
+  add constraint profiles_account_status_check check (account_status in ('active','suspended'));
+
+create or replace function public.mithaq_is_admin()
+returns boolean language sql stable security definer set search_path = ''
+as $$
+  select exists (select 1 from private.admin_users a where a.user_id = (select auth.uid()));
+$$;
+revoke all on function public.mithaq_is_admin() from public, anon;
+grant execute on function public.mithaq_is_admin() to authenticated;
+
+drop policy if exists "View published profiles or own" on public.profiles;
+drop policy if exists "members_read_published_profiles_or_own" on public.profiles;
+drop policy if exists "mithaq_admin_read_all_profiles" on public.profiles;
+create policy "mithaq_profiles_visible_to_members_and_admin"
+on public.profiles for select to authenticated
+using ((is_published = true and account_status = 'active')
+       or id = (select auth.uid())
+       or (select public.mithaq_is_admin()));
+
+-- Clients cannot change account_status directly. They may update only profile fields.
+revoke update on table public.profiles from public, anon, authenticated;
+grant update (display_name, country, region, marriage_type, life_text,
+              is_published, updated_at, last_seen_at)
+on public.profiles to authenticated;
+
+create or replace function public.mithaq_admin_stats()
+returns jsonb language plpgsql stable security definer set search_path = ''
+as $$
+begin
+  if not public.mithaq_is_admin() then
+    raise exception 'not_authorized' using errcode = '42501';
+  end if;
+  return jsonb_build_object(
+    'members_total', (select count(*) from public.profiles),
+    'members_active', (select count(*) from public.profiles where account_status = 'active'),
+    'members_suspended', (select count(*) from public.profiles where account_status = 'suspended'),
+    'messages_total', (select count(*) from public.messages)
+  );
+end;
+$$;
+revoke all on function public.mithaq_admin_stats() from public, anon;
+grant execute on function public.mithaq_admin_stats() to authenticated;
+
+create or replace function public.mithaq_admin_set_account_status(p_user_id uuid, p_status text)
+returns boolean language plpgsql security definer set search_path = ''
+as $$
+begin
+  if not public.mithaq_is_admin() then
+    raise exception 'not_authorized' using errcode = '42501';
+  end if;
+  if p_status not in ('active','suspended') then
+    raise exception 'invalid_status' using errcode = '22023';
+  end if;
+  if p_user_id = (select auth.uid()) and p_status = 'suspended' then
+    raise exception 'cannot_suspend_self' using errcode = '22023';
+  end if;
+  update public.profiles set account_status = p_status, updated_at = now() where id = p_user_id;
+  if not found then raise exception 'member_not_found' using errcode = 'P0002'; end if;
+  return true;
+end;
+$$;
+revoke all on function public.mithaq_admin_set_account_status(uuid,text) from public, anon;
+grant execute on function public.mithaq_admin_set_account_status(uuid,text) to authenticated;
+
+drop policy if exists "members read their own messages" on public.messages;
+drop policy if exists "members send direct messages" on public.messages;
+create policy "mithaq_active_members_read_own_messages"
+on public.messages for select to authenticated
+using (
+  (sender_id = (select auth.uid()) or recipient_id = (select auth.uid()))
+  and exists (select 1 from public.profiles p where p.id = (select auth.uid()) and p.account_status = 'active')
+);
+create policy "mithaq_active_members_send_direct_messages"
+on public.messages for insert to authenticated
+with check (
+  sender_id = (select auth.uid()) and recipient_id <> (select auth.uid())
+  and exists (select 1 from public.profiles p where p.id = (select auth.uid()) and p.account_status = 'active')
+  and exists (select 1 from public.profiles p where p.id = recipient_id and p.account_status = 'active')
+);
+
+commit;
+
+-- ONE-TIME ADMIN BOOTSTRAP (intentionally not run automatically):
+-- Replace with the verified project-owner email and execute separately.
+-- insert into private.admin_users(user_id)
+-- select id from auth.users
+-- where lower(email) = lower('OWNER_CONFIRMED_EMAIL') and email_confirmed_at is not null
+-- on conflict (user_id) do nothing;
