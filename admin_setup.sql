@@ -12,6 +12,7 @@ create table if not exists private.admin_users (
   user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
+create unique index if not exists admin_users_single_admin on private.admin_users ((true));
 revoke all on private.admin_users from public, anon, authenticated;
 
 alter table public.profiles
