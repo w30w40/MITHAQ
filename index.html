@@ -750,7 +750,7 @@ document.getElementById('entryBack').addEventListener('click',()=>{
 document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  e.preventDefault();const status=document.getElementById('entrySignupStatus');
  const error=validateWizardStep();if(error){status.textContent=error;return;}
- if(!supabaseClient){status.textContent='التسجيل غير متاح حالياً. تحقق من اتصال الخدمة.';return;}
+ if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
  const profile={public_listing_consent:true,username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
@@ -769,23 +769,38 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
   }else{
    status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. سيُربط ملف التسجيل بحسابك تلقائياً.';
   }
- }catch(err){status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
+ }catch(err){console.error('MITHAQ signup failed:',err);status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
 });
-document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent='تسجيل الدخول غير متاح حالياً.';return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;applyAuthenticatedSession(data.session);show('home');status.textContent='تم تسجيل الدخول بنجاح.';}catch(err){status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
-document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
+document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent=authUnavailableMessage();return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;applyAuthenticatedSession(data.session);show('home');status.textContent='تم تسجيل الدخول بنجاح.';}catch(err){console.error('MITHAQ login failed:',err);status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
+document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!supabaseClient){status.textContent=authUnavailableMessage();return;}if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
 
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_9stWwK7GGAJOHWSBrGGYTA_Lyvkhwdy';
 const authReady=SUPABASE_PUBLISHABLE_KEY!=='PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
-const supabaseClient=authReady&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
- auth:{
-  persistSession:true,
-  autoRefreshToken:true,
-  detectSessionInUrl:true,
-  storage:window.localStorage
- }
-}):null;
+let supabaseClient=null;
+let supabaseInitError=null;
+try{
+ if(!authReady)throw new Error('مفتاح Supabase غير مضبوط.');
+ if(!window.supabase||typeof window.supabase.createClient!=='function')throw new Error('تعذر تحميل مكتبة Supabase من شبكة CDN.');
+ supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+  auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:true,
+   storage:window.localStorage
+  }
+ });
+ console.info('MITHAQ: Supabase client initialized.');
+}catch(err){
+ supabaseInitError=err;
+ console.error('MITHAQ Supabase initialization failed:',err);
+}
+function authUnavailableMessage(){
+ const detail=supabaseInitError?.message||'تعذر تهيئة اتصال Supabase.';
+ console.error('MITHAQ authentication unavailable:',supabaseInitError||detail);
+ return 'تعذر الاتصال بخدمة التسجيل: '+detail+' يرجى إعادة تحميل الصفحة والمحاولة لاحقاً.';
+}
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
