@@ -39,7 +39,7 @@ using ((is_published = true and account_status = 'active')
 
 -- Clients cannot change account_status directly. They may update only profile fields.
 revoke update on table public.profiles from public, anon, authenticated;
-grant update (display_name, country, region, marriage_type, life_text,
+grant update (id, display_name, country, region, marriage_type, life_text,
               is_published, updated_at, last_seen_at)
 on public.profiles to authenticated;
 
