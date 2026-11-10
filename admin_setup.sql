@@ -106,19 +106,34 @@ with check (
 
 revoke update (is_published, bio_review_status) on public.profiles from public, anon, authenticated;
 
-create or replace function public.mithaq_admin_list_members()
-returns table (id uuid, display_name text, country text, region text, marriage_type text,
-  life_text text, account_status text, bio_review_status text, created_at timestamptz, details jsonb)
-language plpgsql security definer set search_path = public, private, auth
-as $
+drop function if exists public.mithaq_admin_list_members();
+create function public.mithaq_admin_list_members()
+returns table (
+  id uuid, display_name text, country text, region text, marriage_type text,
+  life_text text, account_status text, bio_review_status text,
+  created_at timestamptz, email text, last_seen_at timestamptz,
+  auth_last_sign_in_at timestamptz, details jsonb
+)
+language plpgsql security definer set search_path = ''
+as $$
 begin
-  if not public.mithaq_is_admin() then raise exception 'not_authorized' using errcode='42501'; end if;
-  return query select p.id,p.display_name,p.country,p.region,p.marriage_type,p.life_text,
-    p.account_status,p.bio_review_status,p.created_at,coalesce(d.details,'{}'::jsonb)
-  from public.profiles p left join public.profile_details d on d.id=p.id
-  order by p.created_at desc limit 500;
+  if (select auth.uid()) is null or not exists (
+    select 1 from private.admin_users a where a.user_id = (select auth.uid())
+  ) then
+    raise exception 'not_authorized' using errcode = '42501';
+  end if;
+  return query
+  select p.id, p.display_name, p.country, p.region, p.marriage_type,
+    p.life_text, p.account_status, p.bio_review_status, p.created_at,
+    u.email::text, p.last_seen_at, u.last_sign_in_at,
+    coalesce(d.details, '{}'::jsonb)
+  from public.profiles p
+  join auth.users u on u.id = p.id
+  left join public.profile_details d on d.id = p.id
+  order by p.created_at desc
+  limit 500;
 end;
-$;
+$$;
 revoke all on function public.mithaq_admin_list_members() from public, anon;
 grant execute on function public.mithaq_admin_list_members() to authenticated;
 
