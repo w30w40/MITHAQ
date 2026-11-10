@@ -1196,7 +1196,7 @@ async function loadMithaqHomeFeed(){
   name.append(dot,document.createTextNode(person.display_name||'عضو ميثاق'));
   const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.country,person.city].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const about=document.createElement('p');about.textContent=(person.life_text||'').slice(0,115)+(person.life_text?.length>115?'…':'');
-  const action=document.createElement('button');action.type='button';action.className='secondary';action.textContent='عرض الملف / مراسلة';action.style.marginTop='7px';
+  const action=document.createElement('button');action.type='button';action.className='secondary';action.textContent='مراسلة العضو';action.style.marginTop='7px';
   action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
   card.append(name,meta);if(about.textContent)card.append(about);card.append(action);host.append(card);
  });
