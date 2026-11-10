@@ -1355,6 +1355,9 @@ async function openChat(userId,name){
   })
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
    const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
+  })
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
+   const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
   }).subscribe();
 }
 document.getElementById('chatBack').addEventListener('click',async()=>{
