@@ -233,3 +233,58 @@ end;
 $$;
 revoke all on function public.mithaq_mark_messages_read(uuid) from public, anon;
 grant execute on function public.mithaq_mark_messages_read(uuid) to authenticated;
+
+
+-- Private chat attachments and voice messages (safe to re-run).
+alter table public.messages
+  add column if not exists attachment_path text,
+  add column if not exists attachment_name text,
+  add column if not exists attachment_mime text,
+  add column if not exists attachment_size bigint,
+  add column if not exists attachment_kind text;
+
+insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
+values (
+  'mithaq-chat','mithaq-chat',false,26214400,
+  array[
+    'image/jpeg','image/png','image/webp','image/gif',
+    'video/mp4','video/webm','video/quicktime',
+    'audio/webm','audio/ogg','audio/mp4','audio/mpeg','audio/wav','audio/aac',
+    'application/pdf','text/plain','text/csv',
+    'application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/zip'
+  ]::text[]
+)
+on conflict (id) do update set
+  public=false,file_size_limit=excluded.file_size_limit,
+  allowed_mime_types=excluded.allowed_mime_types;
+
+drop policy if exists mithaq_chat_upload_own_conversation_files on storage.objects;
+create policy mithaq_chat_upload_own_conversation_files
+on storage.objects for insert to authenticated
+with check (
+  bucket_id='mithaq-chat'
+  and (storage.foldername(name))[1]=(select auth.uid())::text
+  and exists (select 1 from public.profiles p
+    where p.id=((storage.foldername(name))[2])::uuid and p.account_status='active')
+  and exists (select 1 from public.profiles me
+    where me.id=(select auth.uid()) and me.account_status='active')
+);
+
+drop policy if exists mithaq_chat_read_conversation_files on storage.objects;
+create policy mithaq_chat_read_conversation_files
+on storage.objects for select to authenticated
+using (
+  bucket_id='mithaq-chat'
+  and exists (select 1 from public.messages m
+    where m.attachment_path=storage.objects.name
+      and (m.sender_id=(select auth.uid()) or m.recipient_id=(select auth.uid())))
+);
+
+drop policy if exists mithaq_chat_delete_own_files on storage.objects;
+create policy mithaq_chat_delete_own_files
+on storage.objects for delete to authenticated
+using (bucket_id='mithaq-chat'
+  and (storage.foldername(name))[1]=(select auth.uid())::text);
