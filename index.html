@@ -453,6 +453,26 @@ body.mithaq-chat-open #messages>.mithaq-section-back{display:none!important}
 .mithaq-conversation-row .mithaq-unread-badge{flex:none}
 @media(max-width:600px){.mithaq-chat-compose{gap:5px!important}.mithaq-chat-compose .mithaq-chat-tool,.mithaq-chat-compose .mithaq-chat-send{width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;flex-basis:38px!important}.mithaq-chat-compose textarea{font-size:16px!important}}
 </style>
+<style id="mithaq-conversations-v3">
+.mithaq-messages-card{padding:12px!important}
+.mithaq-conversation-row{display:flex!important;align-items:center!important;justify-content:stretch!important;gap:12px!important;width:100%!important;min-height:76px!important;margin:0!important;padding:11px 10px!important;text-align:right!important;background:#fff!important;color:#263b34!important;border:0!important;border-bottom:1px solid #e9efeb!important;border-radius:0!important;box-shadow:none!important}
+.mithaq-conversation-avatar{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:50%;background:#eaf2ed;font-size:27px}
+.mithaq-conversation-main{display:grid;gap:6px;min-width:0;flex:1}
+.mithaq-conversation-main strong{font-size:15px;color:#243b32}
+.mithaq-conversation-main small{font-size:12px;color:#78867f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mithaq-conversation-side{display:flex;flex:0 0 auto;min-width:54px;align-items:flex-end;gap:7px;flex-direction:column}
+.mithaq-conversation-time{font-size:10px;color:#84928b;white-space:nowrap}
+.mithaq-conversation-side .mithaq-unread-badge{background:#20a56b;min-width:20px;height:20px;margin:0}
+#chatPanel:not([hidden]){position:fixed!important;inset:0!important;z-index:2147482000!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;border-radius:0!important;overflow:hidden!important}
+#chatPanel .mithaq-chat-header{display:flex!important;align-items:center!important;gap:10px!important;width:100%!important;min-height:64px!important;box-sizing:border-box!important;flex:0 0 64px!important;background:#087e69!important;color:#fff!important;padding:8px 12px!important}
+#chatPanel .mithaq-chat-back{display:grid!important;place-items:center!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-width:40px!important;padding:0!important;border:0!important;background:transparent!important;color:#fff!important;font-size:30px!important;line-height:1!important}
+#chatPanel .mithaq-chat-avatar-wrap{flex:0 0 42px!important}
+#chatPanel .mithaq-chat-head-copy{flex:1;min-width:0}
+#chatPanel .mithaq-chat-title-button{display:block!important;color:#fff!important}
+#chatPanel .mithaq-chat-compose{display:flex!important;align-items:center!important;flex:0 0 auto!important;width:100%!important;box-sizing:border-box!important;padding:9px max(9px,env(safe-area-inset-right)) calc(9px + env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important;background:#f5f7f5!important}
+#chatPanel .mithaq-chat-compose .field{flex:1 1 auto!important;min-width:0!important}
+#chatPanel .mithaq-chat-compose textarea{width:100%!important;box-sizing:border-box!important;min-height:42px!important;max-height:110px!important;border:0!important;background:#fff!important;border-radius:24px!important}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -1281,20 +1301,29 @@ async function loadMembers(){
  if(error){host.textContent='تعذر تحميل المراسلات. تأكد من تنفيذ إعداد قاعدة بيانات المراسلات. '+error.message;return;}
  const ids=[...new Set((data||[]).map(m=>m.sender_id===session.user.id?m.recipient_id:m.sender_id))];
  if(!ids.length){host.textContent='لا توجد رسائل بعد. افتح قسم الأعضاء واختر عضواً لإرسال رسالة.';return;}
- const {data:people,error:peopleError}=await supabaseClient.from('profiles').select('id,display_name').in('id',ids);
+ const {data:people,error:peopleError}=await supabaseClient.from('profiles').select('id,display_name,last_seen_at').in('id',ids);
  if(peopleError){host.textContent='تعذر تحميل أسماء المستخدمين: '+peopleError.message;return;}
+ const {data:detailRows}=await supabaseClient.from('profile_details').select('id,details').in('id',ids);
+ const detailsById=new Map((detailRows||[]).map(row=>[row.id,row.details||{}]));
  host.replaceChildren();
  ids.forEach(id=>{
   const person=(people||[]).find(p=>p.id===id),name=person?.display_name||'عضو ميثاق';
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
+  const gender=String(detailsById.get(id)?.gender||'').trim().toLowerCase();
+  const avatar=document.createElement('span');avatar.className='mithaq-conversation-avatar';avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   const b=document.createElement('button');b.type='button';b.className='mithaq-conversation-row';
   const main=document.createElement('span');main.className='mithaq-conversation-main';
   const title=document.createElement('strong');title.textContent=name;
   const preview=last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
   const summary=document.createElement('small');summary.textContent=preview.slice(0,90);
-  main.append(title,summary);b.append(main);
+  main.append(title,summary);
+  const side=document.createElement('span');side.className='mithaq-conversation-side';
+  const stamp=document.createElement('time');stamp.className='mithaq-conversation-time';
+  if(last?.created_at){const dt=new Date(last.created_at);stamp.dateTime=dt.toISOString();stamp.textContent=dt.toLocaleDateString('ar',{day:'numeric',month:'short'})+' '+dt.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});}
   const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at).length;
-  if(unread){const badge=document.createElement('span');badge.className='mithaq-unread-badge';badge.textContent=unread>99?'99+':String(unread);badge.setAttribute('aria-label',unread+' رسائل غير مقروءة');b.append(badge);}
+  side.append(stamp);
+  if(unread){const badge=document.createElement('span');badge.className='mithaq-unread-badge';badge.textContent=unread>99?'99+':String(unread);badge.setAttribute('aria-label',unread+' رسائل غير مقروءة');side.append(badge);}
+  b.append(avatar,main,side);
   b.addEventListener('click',()=>openChat(id,name));host.append(b);
  });
 }
