@@ -118,17 +118,32 @@ body.authenticated .card h2{color:#246b98}
 #memberPublicDetail[hidden]{display:none!important}.public-profile-back{margin-bottom:14px}.public-profile-open{width:100%;margin-top:12px}.profile-card{cursor:pointer}.profile-card button{position:relative;z-index:1}
 
 .mithaq-home-feed-card{background:#fff;border:1px solid #f0e3e6;border-radius:18px;padding:18px;margin:0 0 18px;box-shadow:0 5px 18px #963a4a08}
-.mithaq-live-feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
-.mithaq-live-member{position:relative;background:#fff9fa;border:1px solid #f2e4e8;border-radius:15px;padding:14px;min-width:0}
-.mithaq-live-member h3{font-size:15px;color:#246b98;margin:0 0 7px;overflow-wrap:anywhere}
-.mithaq-live-member p{font-size:12px;color:#718096;line-height:1.7;margin:5px 0;overflow-wrap:anywhere}
-.mithaq-online-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#16a34a;margin-left:6px;box-shadow:0 0 0 3px #16a34a20}
-.mithaq-offline-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9ca3af;margin-left:6px}
+.mithaq-live-feed{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}
+.mithaq-live-member{position:relative;flex:0 0 116px;min-width:116px;max-width:116px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;background:#fff;border:1px solid #f0e3e6;border-radius:15px;padding:12px 8px;scroll-snap-align:start}
+.mithaq-live-avatar-wrap{position:relative;width:62px;height:62px;margin:0 auto 3px}
+.mithaq-live-avatar{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f8edf0;border:2px solid #f0dce2;font-size:34px;line-height:1}
+.mithaq-live-member h3{font-size:12px;color:#246b98;line-height:1.45;margin:0;width:100%;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mithaq-live-member p{font-size:11px;color:#718096;line-height:1.5;margin:0;width:100%;overflow-wrap:anywhere}
+.mithaq-online-dot,.mithaq-offline-dot{position:absolute;top:1px;right:1px;width:11px;height:11px;border:2px solid #fff;border-radius:50%}
+.mithaq-online-dot{background:#16a34a;box-shadow:0 0 0 2px #16a34a24}
+.mithaq-offline-dot{background:#9ca3af}
+.mithaq-live-member .mithaq-live-message{font-size:11px;line-height:1.2;padding:6px 8px;min-height:0;width:100%;margin-top:3px;border-radius:18px}
+.mithaq-chat-messages{display:flex;flex-direction:column;gap:8px;max-height:55vh;min-height:90px;overflow-y:auto;padding:12px;background:#f6f7f9;border:1px solid #edf0f3;border-radius:14px}
+.mithaq-chat-bubble{width:fit-content;max-width:84%;padding:9px 12px;border-radius:15px;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;box-shadow:0 1px 2px #0000000a}
+.mithaq-chat-bubble.mine{align-self:flex-start;background:#e5f3e9;color:#244b32;border-bottom-right-radius:4px}
+.mithaq-chat-bubble.theirs{align-self:flex-end;background:#fff;color:#344054;border:1px solid #e8ebef;border-bottom-left-radius:4px}
+.mithaq-chat-compose{display:flex;align-items:flex-end;gap:8px;margin-top:10px}
+.mithaq-chat-compose .field{flex:1;margin:0}
+.mithaq-chat-compose textarea{min-height:44px;max-height:120px;resize:vertical;padding:10px 12px;border-radius:20px}
+.mithaq-chat-compose button{width:auto;min-width:76px;min-height:42px;padding:9px 16px;border-radius:22px}
+#chatPanel{margin-top:14px}
+#chatPanel[hidden]{display:none!important}
+
 .mithaq-admin-home-widget{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(110deg,#edf6ff,#fff);border:1px solid #cfe4f5;border-right:4px solid #246b98;border-radius:16px;padding:16px 18px;margin:0 0 18px}
 .mithaq-admin-home-widget[hidden]{display:none!important}.mithaq-admin-home-widget>div{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:3px 8px}.mithaq-admin-home-widget>div>span{grid-row:span 2;font-size:25px}.mithaq-admin-home-widget strong{color:#1e5d91}.mithaq-admin-home-widget small{color:#718096}.mithaq-admin-home-widget button{background:#1e5d91;color:#fff;border-radius:30px;padding:11px 16px;min-height:44px}
 .mithaq-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#dc3545;color:#fff;font-size:11px;font-weight:800;line-height:1;vertical-align:middle;margin-inline-start:5px}
 .mithaq-unread-badge[hidden]{display:none!important}
-@media(max-width:600px){.mithaq-admin-home-widget{align-items:flex-start;flex-direction:column}.mithaq-admin-home-widget button{width:100%}.mithaq-live-feed{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.mithaq-admin-home-widget{align-items:flex-start;flex-direction:column}.mithaq-admin-home-widget button{width:100%}.mithaq-live-member{flex-basis:108px;min-width:108px;max-width:108px}.mithaq-chat-messages{max-height:52vh}}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -577,7 +592,7 @@ body.authenticated #entryGate{display:none}
 </div>
 </section>
 
-<section id="messages" class="tab hidden"><div class="card"><div id="conversationList" class="muted"></div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" style="max-height:320px;overflow:auto;padding:8px;background:#f5f8f5;border-radius:12px"></div><form id="messageForm"><div class="field"><label for="messageText">رسالتك</label><textarea id="messageText" rows="3" required placeholder="اكتب رسالتك بحرية"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال الرسالة</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
+<section id="messages" class="tab hidden"><div class="card"><div id="conversationList" class="muted"></div><div id="chatPanel" hidden><hr><h3 id="chatTitle">المحادثة</h3><div id="chatMessages" class="mithaq-chat-messages" aria-live="polite"></div><form id="messageForm" class="mithaq-chat-compose"><div class="field"><label for="messageText" class="visually-hidden">رسالتك</label><textarea id="messageText" rows="1" required placeholder="اكتب رسالتك..." aria-label="اكتب رسالتك"></textarea></div><button class="primary" id="sendMessage" type="submit">إرسال</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="admin" class="tab hidden">
 <div class="card mithaq-admin-card">
   <div class="mithaq-admin-heading"><div><span class="member-eyebrow">MITHAQ • ADMIN</span><h2>لوحة إدارة ميثاق</h2><p class="muted">إدارة الأعضاء ومراجعة الملفات والنبذات قبل نشرها</p></div><span class="mithaq-admin-shield">🛡️</span></div>
@@ -1191,16 +1206,20 @@ async function loadMithaqHomeFeed(){
  if(!data?.length){status.textContent='لا توجد ملفات معتمدة أخرى حتى الآن.';return;}
  data.forEach(person=>{
   const card=document.createElement('article');card.className='mithaq-live-member';
-  const name=document.createElement('h3');
+  const avatarWrap=document.createElement('div');avatarWrap.className='mithaq-live-avatar-wrap';
+  const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
+  const gender=String(person.gender||'').trim().toLowerCase();
+  avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
-  name.append(dot,document.createTextNode(person.display_name||'عضو ميثاق'));
-  const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.country,person.city].filter(Boolean).join(' • ')||'عضو في ميثاق';
-  const about=document.createElement('p');about.textContent=(person.life_text||'').slice(0,115)+(person.life_text?.length>115?'…':'');
-  const action=document.createElement('button');action.type='button';action.className='secondary';action.textContent='مراسلة العضو';action.style.marginTop='7px';
+  dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);
+  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
+  const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.city||person.country||''].filter(Boolean).join(' • ')||'عضو ميثاق';
+  const action=document.createElement('button');action.type='button';action.className='secondary mithaq-live-message';action.textContent='مراسلة';
   action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  card.append(name,meta);if(about.textContent)card.append(about);card.append(action);host.append(card);
+  card.append(avatarWrap,name,meta,action);host.append(card);
  });
- status.textContent='أحدث الملفات المعتمدة. تظهر علامة الاتصال عند وجود نشاط خلال آخر 5 دقائق.';
+ status.textContent='الأعضاء المعروضون ملفات معتمدة. علامة الاتصال تعكس آخر نشاط مسجل خلال 5 دقائق.';
 }
 async function loadMembers(){
  const host=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
@@ -1272,7 +1291,7 @@ async function refreshChat(){
  const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at').or('and(sender_id.eq.'+session.user.id+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+session.user.id+')').order('created_at',{ascending:true}).limit(200);
  if(error){status.textContent='تعذر تحميل الرسائل: '+error.message;return;}
  box.replaceChildren();
- (data||[]).forEach(m=>{const p=document.createElement('p');p.style.cssText='padding:9px 12px;border-radius:12px;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere;background:'+(m.sender_id===session.user.id?'#dceee2':'#fff')+';margin:7px 0 '+(m.sender_id===session.user.id?'7px auto':'7px 0');p.textContent=m.body;box.append(p);});
+ (data||[]).forEach(m=>{const p=document.createElement('p');p.className='mithaq-chat-bubble '+(m.sender_id===session.user.id?'mine':'theirs');p.textContent=m.body;box.append(p);});
  box.scrollTop=box.scrollHeight;status.textContent='';
 }
 document.getElementById('messageForm').addEventListener('submit',async e=>{
