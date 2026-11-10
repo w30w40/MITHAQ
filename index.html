@@ -870,7 +870,7 @@ document.getElementById('cancelProfileEdit').addEventListener('click',showProfil
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 /* Legacy authentication modal removed: MITHAQ now uses the dedicated five-step signup form and the dedicated login form above. Keeping this obsolete block caused null-element errors and interrupted session restoration. */
 function applyAuthenticatedSession(session){
- if(session){refreshMithaqAdminAccess();}else{isMithaqAdmin=false;const adminLink=document.getElementById('mithaqAdminMenuLink');if(adminLink)adminLink.hidden=true;}
+ if(!session){isMithaqAdmin=false;const adminLink=document.getElementById('mithaqAdminMenuLink');if(adminLink)adminLink.hidden=true;}
  const box=document.getElementById('signedInBox');
  if(session){
   document.body.classList.add('authenticated');
@@ -897,6 +897,7 @@ async function restoreAuthSession(){
  if(data.session){
   applyAuthenticatedSession(data.session);
   show('home');
+  await refreshMithaqAdminAccess();
  }else{
   applyAuthenticatedSession(null);
  }
@@ -904,6 +905,7 @@ async function restoreAuthSession(){
 if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((event,session)=>{
   applyAuthenticatedSession(session);
+  Promise.resolve().then(()=>refreshMithaqAdminAccess());
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
    if(!document.querySelector('.tab:not(.hidden)'))show('home');
   }
