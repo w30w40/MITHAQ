@@ -514,6 +514,24 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
  position:fixed!important;top:76px!important;left:10px!important;right:10px!important;
  z-index:2147483002!important;max-height:65dvh!important;
 }
+
+/* Full member profile page opened from the conversation header. */
+.mithaq-full-member-profile{position:fixed!important;inset:0!important;z-index:2147483600!important;display:flex!important;flex-direction:column!important;background:#f6f8f7!important;color:#26352f!important;overflow:hidden!important}
+.mithaq-full-member-profile-header{position:relative!important;display:flex!important;align-items:center!important;gap:16px!important;flex:0 0 64px!important;min-height:64px!important;padding:8px 14px!important;background:#087e69!important;color:#fff!important;box-shadow:0 2px 10px #0002!important}
+.mithaq-full-member-profile-header strong{font-size:17px!important}
+.mithaq-full-member-profile-back{border:0!important;background:#ffffff20!important;color:#fff!important;border-radius:22px!important;padding:9px 13px!important;min-height:40px!important;font-weight:700!important}
+.mithaq-full-member-profile-content{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:16px!important;padding-bottom:max(20px,env(safe-area-inset-bottom))!important}
+.mithaq-full-member-profile-hero{display:flex!important;align-items:center!important;gap:14px!important;padding:18px!important;margin-bottom:14px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:18px!important}
+.mithaq-full-member-profile-avatar{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:58px!important;height:58px!important;border-radius:50%!important;background:#e7f1ed!important;font-size:32px!important}
+.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}
+.mithaq-full-member-profile-hero p{margin:0!important;color:#68776f!important;font-size:13px!important}
+.mithaq-full-member-profile-section{margin:0 0 14px!important;padding:16px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:16px!important}
+.mithaq-full-member-profile-section h3{margin:0 0 12px!important;color:#176b58!important;font-size:16px!important}
+.mithaq-full-member-profile-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))!important;gap:10px!important}
+.mithaq-full-member-profile-item{min-width:0!important;padding:10px!important;background:#f7faf8!important;border-radius:11px!important}
+.mithaq-full-member-profile-item small{display:block!important;color:#718078!important;font-size:12px!important;margin-bottom:5px!important}
+.mithaq-full-member-profile-item p{margin:0!important;color:#273b31!important;font-size:14px!important;overflow-wrap:anywhere!important;white-space:pre-wrap!important}
+@media(max-width:480px){.mithaq-full-member-profile-content{padding:11px!important}.mithaq-full-member-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
 </head>
 <body>
@@ -1410,23 +1428,69 @@ document.getElementById('chatBack').addEventListener('click',async()=>{
 
 async function showChatMemberProfile(){
  if(!activeChatUser)return;
- const card=document.getElementById('chatProfileCard'),host=document.getElementById('chatProfileContent');
- host.textContent='جارٍ تحميل الملف الشخصي...';card.hidden=false;
- const [{data:profile,error:profileError},{data:detailRow,error:detailError}]=await Promise.all([
-  supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text').eq('id',activeChatUser).maybeSingle(),
-  supabaseClient.from('profile_details').select('details').eq('id',activeChatUser).maybeSingle()
- ]);
- if(profileError||detailError){host.textContent='تعذر تحميل مواصفات العضو.';return;}
- host.replaceChildren();
- const addLine=(label,value)=>{if(value===null||value===undefined||String(value).trim()==='')return;const row=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+' : ';row.append(strong,document.createTextNode(String(value)));host.append(row);};
- addLine('الاسم',profile?.display_name||activeChatName);
- addLine('الدولة',profile?.country);addLine('المنطقة / المدينة',profile?.region);
- addLine('نوع الزواج',profile?.marriage_type);
- const details=detailRow?.details&&typeof detailRow.details==='object'?detailRow.details:{};
- const labels={age:'العمر',gender:'الجنس',city:'المدينة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',marital_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',height:'الطول',weight:'الوزن',smoking:'التدخين'};
- Object.entries(labels).forEach(([key,label])=>addLine(label,details[key]));
- addLine('نبذة عن العضو',profile?.life_text);
- if(!host.childElementCount){const p=document.createElement('p');p.textContent='لا توجد مواصفات إضافية منشورة لهذا العضو.';host.append(p);}
+ const userId=activeChatUser;
+ const existing=document.getElementById('mithaqFullMemberProfile');
+ if(existing)existing.remove();
+ const page=document.createElement('section');
+ page.id='mithaqFullMemberProfile';
+ page.className='mithaq-full-member-profile';
+ page.setAttribute('dir','rtl');
+ page.setAttribute('aria-label','الملف الشخصي للعضو');
+ const header=document.createElement('header');
+ header.className='mithaq-full-member-profile-header';
+ const back=document.createElement('button');
+ back.type='button';back.className='mithaq-full-member-profile-back';
+ back.textContent='← رجوع للمحادثة';back.setAttribute('aria-label','العودة إلى المحادثة');
+ back.addEventListener('click',()=>page.remove());
+ const heading=document.createElement('strong');
+ heading.textContent='الملف الشخصي';
+ header.append(back,heading);
+ const content=document.createElement('div');
+ content.className='mithaq-full-member-profile-content';
+ const loading=document.createElement('p');loading.className='muted';loading.textContent='جارٍ تحميل الملف الشخصي الكامل...';
+ content.append(loading);page.append(header,content);document.body.append(page);
+ try{
+  const [{data:profile,error:profileError},{data:detailRow,error:detailError}]=await Promise.all([
+   supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text').eq('id',userId).maybeSingle(),
+   supabaseClient.from('profile_details').select('details').eq('id',userId).maybeSingle()
+  ]);
+  if(page.isConnected===false)return;
+  if(profileError||detailError)throw profileError||detailError;
+  content.replaceChildren();
+  const hero=document.createElement('div');hero.className='mithaq-full-member-profile-hero';
+  const avatar=document.createElement('div');avatar.className='mithaq-full-member-profile-avatar';avatar.textContent=document.getElementById('chatHeaderAvatar').textContent||'👤';
+  const identity=document.createElement('div');
+  const name=document.createElement('h2');name.textContent=profile?.display_name||activeChatName||'عضو ميثاق';
+  const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  identity.append(name,sub);hero.append(avatar,identity);content.append(hero);
+  const details=detailRow?.details&&typeof detailRow.details==='object'&&!Array.isArray(detailRow.details)?detailRow.details:{};
+  const labels={age:'العمر',gender:'الجنس',city:'المدينة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',marital_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',height:'الطول',weight:'الوزن',smoking:'التدخين',religion:'الديانة',tribe:'القبيلة',origin:'الأصل',residence:'مكان الإقامة',income:'الدخل',housing:'السكن',health:'الحالة الصحية',marriage_type:'نوع الزواج',about:'نبذة',username:'الاسم'};
+  const formatValue=value=>{
+   if(value===null||value===undefined||value==='')return '';
+   if(Array.isArray(value))return value.map(v=>typeof v==='object'?JSON.stringify(v):String(v)).join('، ');
+   if(typeof value==='object')return Object.entries(value).map(([k,v])=>k+': '+String(v)).join('، ');
+   if(typeof value==='boolean')return value?'نعم':'لا';
+   return String(value);
+  };
+  const addSection=(title,entries)=>{
+   const rows=entries.filter(([,v])=>formatValue(v)!=='');
+   if(!rows.length)return;
+   const section=document.createElement('section');section.className='mithaq-full-member-profile-section';
+   const h=document.createElement('h3');h.textContent=title;section.append(h);
+   const grid=document.createElement('div');grid.className='mithaq-full-member-profile-grid';
+   rows.forEach(([label,value])=>{const item=document.createElement('div');item.className='mithaq-full-member-profile-item';const key=document.createElement('small');key.textContent=label;const val=document.createElement('p');val.textContent=formatValue(value);item.append(key,val);grid.append(item);});
+   section.append(grid);content.append(section);
+  };
+  addSection('المعلومات الأساسية',[
+   ['الدولة',profile?.country],['المنطقة / المدينة',profile?.region],['نوع الزواج',profile?.marriage_type]
+  ]);
+  const detailEntries=Object.entries(details).filter(([key])=>!/(^_|password|token|secret|email|phone|mobile|address|private|consent)/i.test(key)).map(([key,value])=>[labels[key]||key.replace(/[_-]+/g,' '),value]);
+  addSection('المواصفات الشخصية',detailEntries);
+  addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
+  if(content.childElementCount<=1){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد مواصفات إضافية منشورة لهذا العضو حالياً.';content.append(empty);}
+ }catch(error){
+  if(page.isConnected!==false){content.replaceChildren();const message=document.createElement('p');message.className='notice';message.textContent='تعذر تحميل الملف الشخصي: '+(error?.message||'حاول مرة أخرى');content.append(message);}
+ }
 }
 document.getElementById('chatTitle').addEventListener('click',showChatMemberProfile);
 document.getElementById('chatHeaderAvatar').addEventListener('click',showChatMemberProfile);
