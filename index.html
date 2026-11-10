@@ -755,19 +755,37 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  const username=document.getElementById('entryUsername').value.trim();
  const profile={public_listing_consent:true,username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
-  const {data,error}=await supabaseClient.auth.signUp({email:document.getElementById('entrySignupEmail').value.trim(),password:document.getElementById('entrySignupPassword').value,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
+  const email=document.getElementById('entrySignupEmail').value.trim();
+  const password=document.getElementById('entrySignupPassword').value;
+  const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:'https://w30w40.github.io/MITHAQ/',data:profile}});
   if(error)throw error;
-  // When Supabase returns an active session, explicitly persist the five-step registration
-  // in the private profile table as well as Auth metadata. Email-confirmation signups
-  // are captured by the database trigger in db/profile.sql.
-  if(data.session&&data.user?.id){
-   const {error:profileSaveError}=await supabaseClient.from('profile_details').upsert({id:data.user.id,details:profile,updated_at:new Date().toISOString()},{onConflict:'id'});
+  let session=data.session||null;
+  // If signup succeeded but Supabase did not return a session, try signing in
+  // with the same credentials. This recovers cases where immediate session
+  // creation was unavailable, while preserving the email-confirmation flow.
+  if(!session&&data.user?.id){
+   status.textContent='تم إنشاء الحساب، جارٍ محاولة تسجيل الدخول...';
+   const {data:loginData,error:loginError}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(loginError){
+    const message=String(loginError.message||'');
+    if(/email.*confirm|confirm.*email|not confirmed/i.test(message)){
+     status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط تأكيد البريد الإلكتروني، ثم سجّل الدخول.';
+     return;
+    }
+    throw loginError;
+   }
+   session=loginData.session||null;
+  }
+  if(session?.user?.id){
+   const userId=session.user.id;
+   const {error:profileSaveError}=await supabaseClient.from('profile_details').upsert({id:userId,details:profile,updated_at:new Date().toISOString()},{onConflict:'id'});
    if(profileSaveError)throw profileSaveError;
-   const {error:publicProfileError}=await supabaseClient.from('profiles').upsert({id:data.user.id,display_name:profile.username,country:profile.country||null,region:profile.city||null,marriage_type:profile.marriage_type||null,life_text:profile.about||'',is_published:true,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'id'});
+   const {error:publicProfileError}=await supabaseClient.from('profiles').upsert({id:userId,display_name:profile.username,country:profile.country||null,region:profile.city||null,marriage_type:profile.marriage_type||null,life_text:profile.about||'',is_published:true,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'id'});
    if(publicProfileError)throw publicProfileError;
-   applyAuthenticatedSession(data.session);show('home');
+   applyAuthenticatedSession(session);show('home');
+   status.textContent='تم إنشاء الحساب وتسجيل الدخول بنجاح.';
   }else{
-   status.textContent='تم إنشاء الحساب. افتح بريدك واضغط رابط التأكيد، ثم سجّل الدخول. سيُربط ملف التسجيل بحسابك تلقائياً.';
+   status.textContent='تم إنشاء الحساب، لكن لم تُفتح جلسة دخول. تحقق من بريدك إن طُلب التأكيد، ثم سجّل الدخول.';
   }
  }catch(err){console.error('MITHAQ signup failed:',err);status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
