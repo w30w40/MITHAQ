@@ -236,6 +236,8 @@ grant execute on function public.mithaq_mark_messages_read(uuid) to authenticate
 
 
 -- Private chat attachments and voice messages (safe to re-run).
+-- Accept any content type at bucket level; frontend blocks active/executable formats.
+-- Keep the bucket private, participant-only RLS policies, and 25 MB per-file limit.
 alter table public.messages
   add column if not exists attachment_path text,
   add column if not exists attachment_name text,
@@ -246,16 +248,7 @@ alter table public.messages
 insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
 values (
   'mithaq-chat','mithaq-chat',false,26214400,
-  array[
-    'image/jpeg','image/png','image/webp','image/gif',
-    'video/mp4','video/webm','video/quicktime',
-    'audio/webm','audio/ogg','audio/mp4','audio/mpeg','audio/wav','audio/aac',
-    'application/pdf','text/plain','text/csv',
-    'application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'application/zip'
-  ]::text[]
+  null
 )
 on conflict (id) do update set
   public=false,file_size_limit=excluded.file_size_limit,
