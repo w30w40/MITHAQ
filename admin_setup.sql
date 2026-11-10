@@ -181,6 +181,7 @@ commit;
 
 
 -- Approved public member feed: exposes only the limited fields shown on the home page.
+drop function if exists public.mithaq_home_feed();
 create or replace function public.mithaq_home_feed()
 returns table (
   id uuid, display_name text, gender text, age text, country text, city text,
