@@ -178,3 +178,56 @@ commit;
 -- select id from auth.users
 -- where lower(email) = lower('OWNER_CONFIRMED_EMAIL') and email_confirmed_at is not null
 -- on conflict (user_id) do nothing;
+
+
+-- Approved public member feed: exposes only the limited fields shown on the home page.
+create or replace function public.mithaq_home_feed()
+returns table (
+  id uuid, display_name text, age text, country text, city text,
+  life_text text, last_seen_at timestamptz, is_online boolean
+)
+language plpgsql stable security definer set search_path = ''
+as $$
+begin
+  if (select auth.uid()) is null then
+    raise exception 'authentication_required' using errcode = '42501';
+  end if;
+  return query
+  select p.id, p.display_name, coalesce(d.details->>'age',''),
+    p.country, coalesce(nullif(d.details->>'city',''),p.region,''),
+    coalesce(p.life_text,''), p.last_seen_at,
+    (p.last_seen_at is not null and p.last_seen_at >= now()-interval '5 minutes')
+  from public.profiles p
+  left join public.profile_details d on d.id=p.id
+  where p.id <> (select auth.uid())
+    and p.account_status='active'
+    and p.bio_review_status='approved'
+    and p.is_published=true
+  order by (p.last_seen_at >= now()-interval '5 minutes') desc nulls last,
+    p.created_at desc
+  limit 12;
+end;
+$$;
+revoke all on function public.mithaq_home_feed() from public, anon;
+grant execute on function public.mithaq_home_feed() to authenticated;
+
+-- Mark only messages addressed to the current user as read; clients cannot update messages directly.
+create or replace function public.mithaq_mark_messages_read(p_sender_id uuid default null)
+returns integer language plpgsql security definer set search_path = ''
+as $$
+declare affected integer;
+begin
+  if (select auth.uid()) is null then
+    raise exception 'authentication_required' using errcode = '42501';
+  end if;
+  update public.messages
+  set read_at=now()
+  where recipient_id=(select auth.uid())
+    and read_at is null
+    and (p_sender_id is null or sender_id=p_sender_id);
+  get diagnostics affected = row_count;
+  return affected;
+end;
+$$;
+revoke all on function public.mithaq_mark_messages_read(uuid) from public, anon;
+grant execute on function public.mithaq_mark_messages_read(uuid) to authenticated;
