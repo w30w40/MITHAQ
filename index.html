@@ -1251,7 +1251,7 @@ async function loadMembers(){
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){host.textContent='سجّل الدخول لعرض مراسلاتك.';return;}
  host.textContent='جارٍ تحميل المراسلات...';
- const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300);
+ const {data,error}=await supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at,attachment_name,attachment_kind').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300);
  if(error){host.textContent='تعذر تحميل المراسلات. تأكد من تنفيذ إعداد قاعدة بيانات المراسلات. '+error.message;return;}
  const ids=[...new Set((data||[]).map(m=>m.sender_id===session.user.id?m.recipient_id:m.sender_id))];
  if(!ids.length){host.textContent='لا توجد رسائل بعد. افتح قسم الأعضاء واختر عضواً لإرسال رسالة.';return;}
@@ -1262,7 +1262,8 @@ async function loadMembers(){
   const person=(people||[]).find(p=>p.id===id),name=person?.display_name||'عضو ميثاق';
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
   const b=document.createElement('button');b.className='secondary';b.style.display='block';b.style.width='100%';b.style.textAlign='right';b.style.margin='7px 0';
-  b.textContent=name+' — '+(last?.body||'ابدأ المحادثة').slice(0,70);
+  const preview=last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
+  b.textContent=name+' — '+preview.slice(0,70);
   b.addEventListener('click',()=>openChat(id,name));host.append(b);
  });
 }
