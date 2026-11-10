@@ -1332,8 +1332,9 @@ async function uploadChatAttachment(file,kind){
  if(!file||!activeChatUser)return;
  const maxBytes=25*1024*1024;if(file.size>maxBytes){status.textContent='حجم الملف أكبر من 25 ميغابايت.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session){status.textContent='سجّل الدخول أولاً.';return;}
- const ext=(file.name.split('.').pop()||'').toLowerCase(),mime=file.type||chatMimeByExt[ext]||'';
- const supported=mime.startsWith('image/')||mime.startsWith('video/')||mime.startsWith('audio/')||Object.values(chatMimeByExt).includes(mime);
+ const ext=(file.name.split('.').pop()||'').toLowerCase(),mime=(file.type||chatMimeByExt[ext]||'').split(';')[0].trim().toLowerCase();
+ const allowedChatMimes=Object.values(chatMimeByExt);
+ const supported=allowedChatMimes.includes(mime);
  if(!supported){status.textContent='نوع الملف غير مدعوم لأسباب أمنية.';return;}
  const safeName=(file.name||('voice-'+Date.now()+'.webm')).replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,90);
  const path=session.user.id+'/'+activeChatUser+'/'+Date.now()+'-'+crypto.randomUUID()+'-'+safeName;
