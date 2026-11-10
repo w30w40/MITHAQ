@@ -43,6 +43,9 @@ alter table public.profiles enable row level security;
 alter table public.profile_details enable row level security;
 alter table public.messages enable row level security;
 
+drop policy if exists "mithaq_members_read_published_profiles" on public.profiles;
+drop policy if exists "mithaq_members_insert_own_profile" on public.profiles;
+drop policy if exists "mithaq_members_update_own_profile" on public.profiles;
 drop policy if exists "View published profiles or own" on public.profiles;
 drop policy if exists "Create own profile" on public.profiles;
 drop policy if exists "Update own profile" on public.profiles;
@@ -56,6 +59,9 @@ create policy "mithaq_members_insert_own_profile" on public.profiles
 create policy "mithaq_members_update_own_profile" on public.profiles
   for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
+drop policy if exists "mithaq_read_own_profile_details" on public.profile_details;
+drop policy if exists "mithaq_insert_own_profile_details" on public.profile_details;
+drop policy if exists "mithaq_update_own_profile_details" on public.profile_details;
 drop policy if exists "members_read_own_profile_details" on public.profile_details;
 drop policy if exists "members_insert_own_profile_details" on public.profile_details;
 drop policy if exists "members_update_own_profile_details" on public.profile_details;
@@ -66,6 +72,8 @@ create policy "mithaq_insert_own_profile_details" on public.profile_details
 create policy "mithaq_update_own_profile_details" on public.profile_details
   for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
+drop policy if exists "mithaq_members_read_direct_messages" on public.messages;
+drop policy if exists "mithaq_members_send_direct_messages" on public.messages;
 drop policy if exists "members read their own messages" on public.messages;
 drop policy if exists "members send direct messages" on public.messages;
 create policy "mithaq_members_read_direct_messages" on public.messages
