@@ -281,3 +281,13 @@ create policy mithaq_chat_delete_own_files
 on storage.objects for delete to authenticated
 using (bucket_id='mithaq-chat'
   and (storage.foldername(name))[1]=(select auth.uid())::text);
+
+-- Allow media-only messages while rejecting completely empty messages.
+-- A message must contain readable text or a stored attachment.
+alter table public.messages drop constraint if exists messages_body_check;
+alter table public.messages
+  add constraint messages_body_check
+  check (
+    char_length(btrim(coalesce(body, ''))) >= 1
+    or attachment_path is not null
+  );
