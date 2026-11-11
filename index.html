@@ -630,6 +630,19 @@ body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;gri
 .mithaq-bottom-nav .mithaq-unread-badge{position:absolute;margin:-31px 0 0 25px;border:1px solid #1687c3}
 @media(max-width:600px){.mithaq-live-feed,#membersGrid{grid-template-columns:1fr}.mithaq-live-member{grid-template-columns:48px minmax(0,1fr)}.mithaq-live-avatar-wrap,.mithaq-live-avatar{width:46px;height:46px}.mithaq-live-avatar{font-size:25px}.member-home-welcome h2{font-size:17px}.member-home-note{padding:16px 13px}}
 @media(min-width:900px){body.authenticated .mithaq-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(620px,90vw);border-radius:18px 18px 0 0}}
+
+/* Keep the conversation composer visible and hide app navigation while chatting. */
+body.mithaq-chat-open #mithaqBottomNav{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+body.mithaq-chat-open #chatPanel:not([hidden])>.mithaq-chat-compose{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ position:relative!important;z-index:2147483001!important;
+ flex:0 0 auto!important;min-height:64px!important;
+}
+body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
+ display:block!important;visibility:visible!important;flex:0 0 auto!important;
+}
 </style>
 </head>
 <body>
