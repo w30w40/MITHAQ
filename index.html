@@ -802,13 +802,15 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
 <button type="button" data-member-shortcut="activity">الأحدث نشاطاً</button>
 <button type="button" data-member-shortcut="name">حسب الاسم</button>
 </div>
+<div id="mithaqMemberResults" hidden>
 <div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div>
 <div class="mithaq-member-filters" dir="rtl">
 <label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
 <label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
 <label>نوع الزواج<select id="mithaqMarriageFilter"><option value="all">كل الأنواع</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
 <label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="name">حسب الاسم</option></select></label>
-</div><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div></div></section>
+</div><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div>
+</div></div></section>
 <section id="myprofile" class="tab hidden">
 
 <div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
@@ -1244,7 +1246,7 @@ document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMe
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
 
 
-function show(id,fromBack=false,verifiedAdmin=false){if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members')loadMembers();if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='admin')loadMithaqAdminPanel();}
+function show(id,fromBack=false,verifiedAdmin=false){if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='admin')loadMithaqAdminPanel();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -1636,17 +1638,32 @@ function populateMithaqCountryFilter(){
 }
 populateMithaqCountryFilter();
 const memberShortcutButtons=[...document.querySelectorAll('[data-member-shortcut]')];
+function resetMemberEntry(){
+ const results=document.getElementById('mithaqMemberResults');
+ const grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
+ if(results)results.hidden=true;
+ if(grid)grid.hidden=true;
+ if(status)status.hidden=true;
+ memberShortcutButtons.forEach(button=>button.classList.remove('active'));
+}
 function activateMemberShortcut(key){
+ const results=document.getElementById('mithaqMemberResults'),grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
  const presence=document.getElementById('mithaqPresenceFilter'),country=document.getElementById('mithaqCountryFilter'),marriage=document.getElementById('mithaqMarriageFilter'),sort=document.getElementById('mithaqMemberSort');
- if(!presence||!country||!marriage||!sort)return;
+ if(!results||!grid||!status||!presence||!country||!marriage||!sort)return;
+ results.hidden=false;
+ grid.hidden=key==='country'||key==='marriage';
+ status.hidden=false;
  if(key==='all'){presence.value='all';country.value='all';marriage.value='all';sort.value='activity';}
  if(key==='online'||key==='offline'){presence.value=key;}
  if(key==='activity'||key==='name'){sort.value=key;}
  memberShortcutButtons.forEach(button=>button.classList.toggle('active',button.dataset.memberShortcut===key));
  if(key==='country'||key==='marriage'){
+  status.textContent=key==='country'?'اختر الدولة أولاً لعرض الأعضاء.':'اختر نوع الزواج أولاً لعرض الأعضاء.';
   const target=key==='country'?country:marriage;
+  target.value='all';
   target.scrollIntoView({behavior:'smooth',block:'center'});
   target.focus({preventScroll:true});
+  return;
  }
  renderMithaqMembers();
 }
@@ -1654,6 +1671,12 @@ memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>activa
 ['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
  const active=document.querySelector('[data-member-shortcut].active');
  if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
+ if((active?.dataset.memberShortcut==='country'&&id==='mithaqCountryFilter')||(active?.dataset.memberShortcut==='marriage'&&id==='mithaqMarriageFilter')){
+  const chosen=document.getElementById(id).value!=='all';
+  const grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
+  if(!chosen){grid.hidden=true;status.textContent='اختر قيمة من القائمة لعرض الأعضاء.';return;}
+  grid.hidden=false;status.hidden=false;
+ }
  if(id!=='mithaqMemberSearch')memberShortcutButtons.forEach(button=>button.classList.remove('active'));
  renderMithaqMembers();
 }));
