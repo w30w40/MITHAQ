@@ -1607,7 +1607,19 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
   }else{
    status.textContent='تم إنشاء الحساب، لكن لم تُفتح جلسة دخول. تحقق من بريدك إن طُلب التأكيد، ثم سجّل الدخول.';
   }
- }catch(err){console.error('MITHAQ signup failed:',err);status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
+ }catch(err){
+  console.error('MITHAQ signup failed:',err);
+  const signupError=String(err?.message||'');
+  if(signupError.includes('MITHAQ_USERNAME_ALREADY_EXISTS')){
+   status.textContent='اسم المستخدم مستخدم بالفعل. اختر اسماً آخر لم يسجّل به أحد.';
+  }else if(/already registered|user already exists|email.*already|already.*email/i.test(signupError)){
+   status.textContent='هذا البريد الإلكتروني مسجّل مسبقاً. سجّل الدخول إلى حسابك بدلاً من إنشاء حساب جديد.';
+  }else if(signupError.includes('MITHAQ_USERNAME_TOO_LONG')){
+   status.textContent='اسم المستخدم يجب ألا يتجاوز 14 حرفاً.';
+  }else{
+   status.textContent='تعذر إنشاء الحساب: '+(signupError||'حدث خطأ');
+  }
+}
  finally{btn.disabled=false;}
 });
 function mithaqFriendlyLoginError(err){
