@@ -1606,8 +1606,8 @@ async function openChat(userId,name){
  document.getElementById('chatPresenceText').textContent='عضو ميثاق';
  try{
   const {data:profile}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,last_seen_at').eq('id',userId).maybeSingle();
-  const {data:details}=await supabaseClient.from('profile_details').select('details').eq('id',userId).maybeSingle();
-  const gender=String(details?.details?.gender||'').trim().toLowerCase();
+  const {data:publicRows}=await supabaseClient.rpc('mithaq_public_member_profiles',{p_user_ids:[userId]});
+  const gender=String(publicRows?.[0]?.details?.gender||'').trim().toLowerCase();
   document.getElementById('chatHeaderAvatar').textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   const online=!!profile?.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
   document.getElementById('chatPresenceDot').hidden=!online;
