@@ -611,6 +611,7 @@ body.authenticated main.wrap{padding-bottom:112px}
 .mithaq-live-member h3{grid-column:2;grid-row:1;text-align:right;font-size:13px}
 .mithaq-live-member p{grid-column:2;grid-row:2;text-align:right;font-size:11px}
 .mithaq-live-member .mithaq-live-message{grid-column:2;grid-row:3;width:auto;justify-self:start;margin-top:5px;padding:6px 13px}
+.mithaq-member-filters select{max-height:48px;cursor:pointer}.mithaq-member-filters select option{padding:8px}
 .mithaq-member-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:12px 0 16px}.mithaq-member-filters label{display:grid;gap:5px;color:#64748b;font-size:13px}.mithaq-member-filters select{width:100%;min-height:42px;border:1px solid #dce5ec;border-radius:12px;background:#fff;color:#334155;padding:8px;font:inherit}.mithaq-bottom-nav button{cursor:pointer;touch-action:manipulation}.mithaq-bottom-nav button:focus-visible{outline:3px solid #fff;outline-offset:-5px}
 .mithaq-member-search{position:relative;margin:0 0 14px}
 .mithaq-member-search input{border-radius:28px;background:#fff;border:1px solid #f0dce3;padding:13px 44px 13px 15px}
@@ -769,6 +770,7 @@ body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;gri
 </section>
 <section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2><div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div>
 <div class="mithaq-member-filters" dir="rtl">
+<label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
 <label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
 <label>نوع الزواج<select id="mithaqMarriageFilter"><option value="all">كل الأنواع</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
 <label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="name">حسب الاسم</option></select></label>
@@ -1539,14 +1541,25 @@ function renderMithaqMembers(){
  const query=(document.getElementById('mithaqMemberSearch')?.value||'').trim().toLocaleLowerCase('ar');
  const presenceFilter=document.getElementById('mithaqPresenceFilter')?.value||'all';
  const marriageFilter=document.getElementById('mithaqMarriageFilter')?.value||'all';
+ const countryFilter=document.getElementById('mithaqCountryFilter')?.value||'all';
  const sortMode=document.getElementById('mithaqMemberSort')?.value||'activity';
  const isOnline=person=>!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);
+ const normalizeCountry=value=>String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/[\u064B-\u065F\u0670]/g,'').replace(/^(المملكة العربية المتحدة|المملكة العربية السعودية|جمهورية|دولة)\s*/,'').trim();
+ const countryAliases={'المملكة العربية السعودية':['السعودية','المملكه العربيه السعوديه','saudi arabia'],'المملكة المتحدة':['بريطانيا','انجلترا','إنجلترا','uk','united kingdom'],'الإمارات العربية المتحدة':['الإمارات','الامارات','uae'],'اليمن':['اليمنية','yemen'],'مصر':['جمهورية مصر العربية','egypt'],'الولايات المتحدة':['امريكا','أمريكا','usa','united states']};
+ const matchesCountry=person=>{
+  if(countryFilter==='all')return true;
+  const selected=normalizeCountry(countryFilter),actual=normalizeCountry(person.country);
+  if(!actual)return false;
+  if(actual===selected||actual.includes(selected)||selected.includes(actual))return true;
+  return (countryAliases[countryFilter]||[]).some(alias=>normalizeCountry(alias)===actual||actual.includes(normalizeCountry(alias)));
+ };
  const people=mithaqMemberCache.filter(person=>{
   const matchesQuery=[person.display_name,person.country,person.region,person.marriage_type,person.details?.age].some(v=>String(v||'').toLocaleLowerCase('ar').includes(query));
+  const matchesSelectedCountry=matchesCountry(person);
   const matchesPresence=presenceFilter==='all'||(presenceFilter==='online'?isOnline(person):!isOnline(person));
   const type=String(person.marriage_type||person.details?.marriage_type||'');
   const matchesMarriage=marriageFilter==='all'||type.includes(marriageFilter)||(marriageFilter==='معلن'&&type.includes('الزواج المعلن'))||(marriageFilter==='مسيار'&&type.includes('زواج المسيار'));
-  return matchesQuery&&matchesPresence&&matchesMarriage;
+  return matchesQuery&&matchesSelectedCountry&&matchesPresence&&matchesMarriage;
  });
  people.sort((a,b)=>sortMode==='name'?String(a.display_name||'').localeCompare(String(b.display_name||''),'ar'):(new Date(b.last_seen_at||0).getTime()-new Date(a.last_seen_at||0).getTime()));
  host.replaceChildren();
@@ -1576,7 +1589,17 @@ async function loadMembers(){
  renderMithaqMembers();
  if(!mithaqMemberCache.length)status.textContent='لا يوجد أعضاء متاحون للعرض حالياً.';
 }
-['mithaqMemberSearch','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',renderMithaqMembers));
+function populateMithaqCountryFilter(){
+ const select=document.getElementById('mithaqCountryFilter');if(!select||typeof phoneCountryRows==='undefined')return;
+ const current=select.value;select.replaceChildren();
+ const all=document.createElement('option');all.value='all';all.textContent='جميع الدول';select.appendChild(all);
+ phoneCountryRows.slice().sort((a,b)=>a[1].localeCompare(b[1],'ar')).forEach(([iso,name])=>{
+  const option=document.createElement('option');option.value=name;option.textContent=name;select.appendChild(option);
+ });
+ if([...select.options].some(option=>option.value===current))select.value=current;
+}
+populateMithaqCountryFilter();
+['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',renderMithaqMembers));
   async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
  panel.hidden=true;
