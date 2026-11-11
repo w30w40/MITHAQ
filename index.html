@@ -2548,7 +2548,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   }
 
   async function callPush(action, extra = {}) {
-    if (!window.supabaseClient) throw new Error("تعذر الاتصال بخدمة الحساب.");
+    if (typeof supabaseClient === "undefined" || !supabaseClient) throw new Error("تعذر الاتصال بخدمة الحساب.");
     const { data, error } = await supabaseClient.functions.invoke("mithaq-push", {
       body: { action, ...extra }
     });
