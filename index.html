@@ -1574,7 +1574,7 @@ function renderMithaqMembers(){
   const meta=document.createElement('p');meta.textContent=[person.details?.age?person.details.age+' سنة':'',person.country,person.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل حالياً';
   const button=document.createElement('button');button.type='button';button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';avatar.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));card.append(avatar,name,meta,presence,button);
+  avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';avatar.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));card.append(avatar,name,meta,presence,button);host.append(card);
  });
 }
 async function loadMembers(){
