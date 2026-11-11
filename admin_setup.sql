@@ -310,3 +310,66 @@ alter table public.profiles
       'زوجة ثانية'
     ]::text[])
   );
+
+
+
+-- Public directory visibility for active members who opted in.
+create or replace function private.mithaq_can_list_profile(p_user_id uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $$
+ select exists (
+  select 1 from public.profiles p
+  left join public.profile_details d on d.id=p.id
+  where p.id=p_user_id and p.account_status='active'
+   and (p.is_published=true or coalesce(d.details->>'public_listing_consent','false')='true')
+ );
+$$;
+revoke all on function private.mithaq_can_list_profile(uuid) from public, anon;
+grant usage on schema private to authenticated;
+grant execute on function private.mithaq_can_list_profile(uuid) to authenticated;
+
+drop policy if exists mithaq_profiles_visible_to_members_and_admin on public.profiles;
+create policy mithaq_profiles_visible_to_members_and_admin on public.profiles
+for select to authenticated
+using (id=(select auth.uid()) or (select private.mithaq_can_list_profile(id)) or (select public.mithaq_is_admin()));
+
+create or replace function public.mithaq_public_member_profiles(p_user_ids uuid[] default null)
+returns table(id uuid,display_name text,country text,region text,marriage_type text,life_text text,last_seen_at timestamptz,created_at timestamptz,details jsonb)
+language plpgsql stable security definer set search_path = ''
+as $$
+begin
+ if (select auth.uid()) is null then raise exception 'authentication_required' using errcode='42501'; end if;
+ return query
+ select p.id,p.display_name,p.country,p.region,p.marriage_type,
+  case when p.bio_review_status='approved' then coalesce(p.life_text,'') else '' end,
+  p.last_seen_at,p.created_at,
+  coalesce(d.details,'{}'::jsonb)-array['email','email_verified','phone_number','phone_verified','full_name','health','monthly_income','financial_status','public_listing_consent','sub','password','token','secret']::text[]
+ from public.profiles p left join public.profile_details d on d.id=p.id
+ where p.id<>(select auth.uid()) and p.account_status='active'
+  and (p.is_published=true or coalesce(d.details->>'public_listing_consent','false')='true')
+  and (p_user_ids is null or p.id=any(p_user_ids))
+ order by p.created_at desc;
+end;
+$$;
+revoke all on function public.mithaq_public_member_profiles(uuid[]) from public, anon;
+grant execute on function public.mithaq_public_member_profiles(uuid[]) to authenticated;
+
+create or replace function public.mithaq_home_feed()
+returns table(id uuid,display_name text,gender text,age text,country text,city text,life_text text,last_seen_at timestamptz,is_online boolean)
+language plpgsql stable security definer set search_path = ''
+as $$
+begin
+ if (select auth.uid()) is null then raise exception 'authentication_required' using errcode='42501'; end if;
+ return query
+ select p.id,p.display_name,coalesce(d.details->>'gender',''),coalesce(d.details->>'age',''),p.country,
+  coalesce(nullif(d.details->>'city',''),p.region,''),
+  case when p.bio_review_status='approved' then coalesce(p.life_text,'') else '' end,
+  p.last_seen_at,(p.last_seen_at is not null and p.last_seen_at>=now()-interval '5 minutes')
+ from public.profiles p left join public.profile_details d on d.id=p.id
+ where p.id<>(select auth.uid()) and p.account_status='active'
+  and (p.is_published=true or coalesce(d.details->>'public_listing_consent','false')='true')
+ order by (p.last_seen_at>=now()-interval '5 minutes') desc nulls last,p.created_at desc;
+end;
+$$;
+revoke all on function public.mithaq_home_feed() from public, anon;
+grant execute on function public.mithaq_home_feed() to authenticated;
