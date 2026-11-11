@@ -1650,7 +1650,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
  header.className='mithaq-full-member-profile-header';
  const back=document.createElement('button');
  back.type='button';back.className='mithaq-full-member-profile-back';
- back.textContent=backTarget==='chat'?'← رجوع للمحادثة':'← رجوع للأعضاء';back.setAttribute('aria-label',backTarget==='chat'?'العودة إلى المحادثة':'العودة إلى قائمة الأعضاء');
+ back.textContent=backTarget==='chat'?'← رجوع للمحادثة':(backTarget==='home'?'← رجوع للرئيسية':'← رجوع للأعضاء');back.setAttribute('aria-label',backTarget==='chat'?'العودة إلى المحادثة':(backTarget==='home'?'العودة إلى الرئيسية':'العودة إلى قائمة الأعضاء'));
  back.addEventListener('click',()=>page.remove());
  const heading=document.createElement('strong');
  heading.textContent='الملف الشخصي';
