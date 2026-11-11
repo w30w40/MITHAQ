@@ -293,6 +293,37 @@ body.authenticated #entryGate{display:none}
 #entrySignupForm .wizard-panel[data-step-panel="5"] .muted{background:#eef5f8;border-radius:12px;padding:14px;line-height:1.8}
 #entrySignupForm .wizard-panel[data-step-panel="6"]{background:#fff;border:1px solid #e6e9ec;border-radius:20px;padding:22px;margin:24px 0}
 @media(max-width:520px){#entrySignupForm .wizard-panel[data-step-panel="5"]{padding:16px 12px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label{grid-template-columns:1fr;gap:8px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label input{grid-column:1;grid-row:2}#entrySignupForm .wizard-panel[data-step-panel="5"]>label .required-star{grid-column:1;grid-row:1}}
+
+/* Mawada-inspired colour system: soft distinct colours for every registration section and app menu. */
+#entrySignupForm .wizard-panel{border:1px solid #eadde4;border-radius:20px;padding:22px;margin:22px 0;box-shadow:0 5px 18px rgba(120,65,88,.055)}
+#entrySignupForm .wizard-panel[data-step-panel="1"]{background:#fff1f5;border-color:#f1cbd8}
+#entrySignupForm .wizard-panel[data-step-panel="2"]{background:#eff7ff;border-color:#cfe3f3}
+#entrySignupForm .wizard-panel[data-step-panel="3"]{background:#f5f1ff;border-color:#ded3f5}
+#entrySignupForm .wizard-panel[data-step-panel="4"]{background:#effaf5;border-color:#cde9dc}
+#entrySignupForm .wizard-panel[data-step-panel="5"]{background:#fff5ed;border-color:#f1d9c8}
+#entrySignupForm .wizard-panel[data-step-panel="6"]{background:#fff9e9;border-color:#eadfb9}
+#entrySignupForm .wizard-panel h2{color:#b63863;border-bottom:2px solid #e8bfd0;padding-bottom:12px}
+#entrySignupForm .wizard-panel input:not([type=checkbox]),#entrySignupForm .wizard-panel select,#entrySignupForm .wizard-panel textarea{border:1px solid #d9dfe8;border-radius:14px;background:#fff;box-shadow:inset 0 1px 2px #24384a08}
+#entrySignupForm .entry-phone-wrap{position:relative;display:grid;grid-template-columns:minmax(130px,auto) minmax(0,1fr);gap:8px;align-items:stretch;grid-column:1/-1}
+#entrySignupForm .entry-phone-country-button{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:12px 14px;border:1px solid #e5bfd0;border-radius:14px;background:#fff0f5;color:#7e3150;font:inherit;font-size:16px;cursor:pointer}
+#entrySignupForm .entry-phone-country-button span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#entrySignupForm .entry-phone-wrap>input#entryPhone{min-width:0;width:100%}
+#entrySignupForm .entry-phone-country-menu{position:absolute;z-index:1000;top:calc(100% + 8px);right:0;left:0;background:#fff;border:1px solid #e6c6d3;border-radius:18px;box-shadow:0 14px 36px #44202d2b;padding:12px;max-height:340px;display:flex;flex-direction:column;gap:9px}
+#entrySignupForm .entry-phone-country-menu[hidden]{display:none!important}
+#entrySignupForm .entry-phone-country-menu>input{width:100%;height:48px;padding:10px 14px;border:1px solid #d9e5ee;border-radius:12px;background:#f6fbff}
+#entrySignupForm .entry-phone-country-options{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:4px;max-height:255px}
+#entrySignupForm .entry-phone-country-option{width:100%;text-align:right;padding:11px 12px;border:0;border-radius:10px;background:#fff;color:#3d5265;font:inherit;font-size:15px;cursor:pointer}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+1){background:#fff1f5}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+2){background:#eff7ff}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+3){background:#f4f0ff}
+#entrySignupForm .entry-phone-country-option:nth-child(4n){background:#effaf5}
+#entrySignupForm .entry-phone-country-option:active{outline:2px solid #d94b78}
+#entrySignupForm .entry-phone-country-empty{padding:12px;color:#7b8792;text-align:center}
+body.authenticated nav button:nth-child(4n+1),body.authenticated .member-drawer button:nth-child(4n+1){background:#fff0f5;color:#a8325c;border-color:#f0cbd8}
+body.authenticated nav button:nth-child(4n+2),body.authenticated .member-drawer button:nth-child(4n+2){background:#edf6ff;color:#28668f;border-color:#cfe2f2}
+body.authenticated nav button:nth-child(4n+3),body.authenticated .member-drawer button:nth-child(4n+3){background:#f3efff;color:#65518f;border-color:#ddd3f3}
+body.authenticated nav button:nth-child(4n),body.authenticated .member-drawer button:nth-child(4n){background:#eff9f3;color:#34775a;border-color:#d0e8d8}
+@media(max-width:520px){#entrySignupForm .wizard-panel{padding:16px 12px;margin:16px 0}#entrySignupForm .entry-phone-wrap{grid-template-columns:1fr}#entrySignupForm .entry-phone-country-button{min-height:54px}#entrySignupForm .entry-phone-wrap>input#entryPhone{min-height:60px}}
 </style>
 
 <style id="mithaq-profile-responsive-fix">
@@ -623,7 +654,7 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
         <section class="wizard-panel" data-step-panel="5" hidden>
           <h2>المعلومات الشخصية</h2>
           <label>الاسم الكامل <b class="required-star">*</b><input id="entryFullName" type="text" maxlength="100" required autocomplete="name" placeholder="أدخل اسمك الكامل"></label>
-          <label>رقم الهاتف <b class="required-star">*</b><input id="entryPhone" type="tel" maxlength="25" required autocomplete="tel" inputmode="tel" placeholder="أدخل رقم الهاتف مع مفتاح الدولة"></label>
+          <label class="entry-phone-label">رقم الهاتف <b class="required-star">*</b><div class="entry-phone-wrap"><button type="button" id="entryPhoneCountryButton" class="entry-phone-country-button" aria-expanded="false"><span id="entryPhoneCountryCurrent">🇸🇦 السعودية +966</span><span aria-hidden="true">⌄</span></button><input id="entryPhoneCountryCode" type="hidden" value="+966"><input id="entryPhone" type="tel" maxlength="20" required autocomplete="tel-national" inputmode="tel" placeholder="أدخل رقم الهاتف بدون مفتاح الدولة"><div id="entryPhoneCountryMenu" class="entry-phone-country-menu" hidden><input id="entryPhoneCountrySearch" type="search" placeholder="ابحث عن الدولة أو مفتاح الاتصال"><div id="entryPhoneCountryOptions" class="entry-phone-country-options" role="listbox"></div></div></div></label>
           <label>البريد الإلكتروني <b class="required-star">*</b><input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
           <p class="muted">بيانات الاسم والهاتف تُحفظ ضمن بيانات الحساب الخاصة، ولا تُعرض كجزء من الملف العام.</p>
         </section>
@@ -935,6 +966,42 @@ document.getElementById('entryBack').addEventListener('click',()=>{
  currentWizardStep=Math.max(1,currentWizardStep-1);document.getElementById('entrySignupStatus').textContent='';renderWizard();
  document.getElementById('entrySignupForm').scrollIntoView({behavior:'smooth',block:'start'});
 });
+
+// International phone country picker (ISO country/territory calling codes).
+const phoneCountryRows="IS|آيسلندا|354~AZ|أذربيجان|994~AM|أرمينيا|374~AW|أروبا|297~AU|أستراليا|61~AF|أفغانستان|93~AL|ألبانيا|355~DE|ألمانيا|49~AG|أنتيغوا وبربودا|1268~AO|أنغولا|244~AI|أنغويلا|1264~UY|أوروغواي|598~UZ|أوزبكستان|998~UG|أوغندا|256~UA|أوكرانيا|380~IE|أيرلندا|353~ET|إثيوبيا|251~ER|إريتريا|291~ES|إسبانيا|34~EE|إستونيا|372~IL|إسرائيل|972~SZ|إسواتيني|268~ID|إندونيسيا|62~IR|إيران|98~IT|إيطاليا|39~AR|الأرجنتين|54~JO|الأردن|962~IO|الإقليم البريطاني في المحيط الهندي|246~EC|الإكوادور|593~AE|الإمارات العربية المتحدة|971~BH|البحرين|973~BR|البرازيل|55~PT|البرتغال|351~BA|البوسنة والهرسك|387~CZ|التشيك|420~DZ|الجزائر|213~DK|الدانمرك|45~CV|الرأس الأخضر|238~SV|السلفادور|503~SN|السنغال|221~SD|السودان|249~SE|السويد|46~EH|الصحراء الغربية|212~SO|الصومال|252~CN|الصين|86~IQ|العراق|964~GA|الغابون|241~PH|الفلبين|63~CM|الكاميرون|237~CG|الكونغو - برازافيل|242~CD|الكونغو - كينشاسا|243~KW|الكويت|965~MA|المغرب|212~MX|المكسيك|52~SA|المملكة العربية السعودية|966~GB|المملكة المتحدة|44~NO|النرويج|47~AT|النمسا|43~NE|النيجر|227~IN|الهند|91~US|الولايات المتحدة|1~JP|اليابان|81~YE|اليمن|967~GR|اليونان|30~PG|بابوا غينيا الجديدة|675~PY|باراغواي|595~PK|باكستان|92~PW|بالاو|680~BB|بربادوس|1246~BM|برمودا|1441~BN|بروناي|673~BE|بلجيكا|32~BG|بلغاريا|359~BZ|بليز|501~BD|بنغلاديش|880~PA|بنما|507~BJ|بنين|229~BT|بوتان|975~BW|بوتسوانا|267~PR|بورتوريكو|1787~BF|بوركينا فاسو|226~BI|بوروندي|257~PL|بولندا|48~BO|بوليفيا|591~PF|بولينيزيا الفرنسية|689~PE|بيرو|51~BY|بيلاروس|375~TH|تايلاند|66~TW|تايوان|886~TM|تركمانستان|993~TR|تركيا|90~TT|ترينيداد وتوباغو|1868~TD|تشاد|235~CL|تشيلي|56~TZ|تنزانيا|255~TG|توغو|228~TV|توفالو|688~TK|توكيلاو|690~TN|تونس|216~TO|تونغا|676~TL|تيمور الشرقية|670~JM|جامايكا|1876~GI|جبل طارق|350~BS|جزر البهاما|1242~KM|جزر القمر|269~MQ|مارتينيك|596~MV|جزر المالديف|960~PN|جزر بيتكيرن|64~SB|جزر سليمان|677~FO|جزر فارو|298~FK|جزر فوكلاند|500~KY|جزر كايمان|1345~CK|جزر كوك|682~CC|جزر كوكوس|61~MH|جزر مارشال|692~MP|جزر ماريانا الشمالية|1670~WF|واليس وفوتونا|681~CX|جزيرة كريسماس|61~IM|جزيرة مان|44~NF|جزيرة نورفولك|672~CF|جمهورية أفريقيا الوسطى|236~DO|جمهورية الدومينيكان|1809~ZA|جنوب أفريقيا|27~SS|جنوب السودان|211~GE|جورجيا|995~GS|جورجيا الجنوبية|500~DJ|جيبوتي|253~JE|جيرسي|44~DM|دومينيكا|1767~RW|رواندا|250~RU|روسيا|7~RO|رومانيا|40~RE|ريونيون|262~ZM|زامبيا|260~ZW|زيمبابوي|263~CI|ساحل العاج|225~WS|ساموا|685~AS|ساموا الأمريكية|1684~PM|سان بيير وميكلون|508~SM|سان مارينو|378~VC|سانت فنسنت والغرينادين|1784~KN|سانت كيتس ونيفيس|1869~LC|سانت لوسيا|1758~SH|سانت هيلينا|290~ST|ساو تومي وبرينسيبي|239~LK|سريلانكا|94~SJ|سفالبارد ويان ماين|47~SK|سلوفاكيا|421~SI|سلوفينيا|386~SG|سنغافورة|65~SY|سوريا|963~SR|سورينام|597~CH|سويسرا|41~SL|سيراليون|232~SC|سيشل|248~TJ|طاجيكستان|992~OM|عُمان|968~GM|غامبيا|220~GH|غانا|233~GD|غرينادا|1473~GL|غرينلاند|299~GT|غواتيمالا|502~GP|غوادلوب|590~GU|غوام|1671~GF|غويانا الفرنسية|594~GY|غيانا|592~GG|غيرنزي|44~GN|غينيا|224~GQ|غينيا الاستوائية|240~GW|غينيا بيساو|245~VU|فانواتو|678~FR|فرنسا|33~VE|فنزويلا|58~FI|فنلندا|358~VN|فيتنام|84~FJ|فيجي|679~CY|قبرص|357~QA|قطر|974~KG|قيرغيزستان|996~KZ|كازاخستان|7~NC|كاليدونيا الجديدة|687~HR|كرواتيا|385~KH|كمبوديا|855~CA|كندا|1~XK|كوسوفو|383~CU|كوبا|53~KR|كوريا الجنوبية|82~KP|كوريا الشمالية|850~CR|كوستاريكا|506~CO|كولومبيا|57~KI|كيريباتي|686~KE|كينيا|254~LV|لاتفيا|371~LA|لاوس|856~LB|لبنان|961~LU|لوكسمبورغ|352~LY|ليبيا|218~LR|ليبيريا|231~LT|ليتوانيا|370~LI|ليختنشتاين|423~LS|ليسوتو|266~MT|مالطا|356~ML|مالي|223~MY|ماليزيا|60~YT|مايوت|262~MG|مدغشقر|261~EG|مصر|20~MK|مقدونيا الشمالية|389~MW|ملاوي|265~MO|ماكاو|853~MN|منغوليا|976~MR|موريتانيا|222~MU|موريشيوس|230~MZ|موزمبيق|258~MD|مولدوفا|373~MC|موناكو|377~MS|مونتسرات|1664~FM|ميكرونيزيا|691~NA|ناميبيا|264~NR|ناورو|674~NP|نيبال|977~NG|نيجيريا|234~NI|نيكاراغوا|505~NZ|نيوزيلندا|64~NU|نيوي|683~HT|هايتي|509~HN|هندوراس|504~HU|هنغاريا|36~NL|هولندا|31~HK|هونغ كونغ|852".split('~').map(row=>row.split('|'));
+const phoneCountryButton=document.getElementById('entryPhoneCountryButton');
+const phoneCountryMenu=document.getElementById('entryPhoneCountryMenu');
+const phoneCountrySearch=document.getElementById('entryPhoneCountrySearch');
+const phoneCountryOptions=document.getElementById('entryPhoneCountryOptions');
+const phoneCountryCode=document.getElementById('entryPhoneCountryCode');
+const phoneCountryCurrent=document.getElementById('entryPhoneCountryCurrent');
+function phoneCountryFlag(iso){return String.fromCodePoint(...iso.toUpperCase().split('').map(ch=>127397+ch.charCodeAt(0)));}
+function renderPhoneCountryOptions(query=''){
+ const q=query.trim().toLocaleLowerCase('ar');
+ const filtered=phoneCountryRows.filter(([iso,name,code])=>name.toLocaleLowerCase('ar').includes(q)||iso.toLowerCase().includes(q)||('+'+code).includes(q));
+ phoneCountryOptions.replaceChildren();
+ filtered.forEach(([iso,name,code])=>{
+  const option=document.createElement('button');option.type='button';option.className='entry-phone-country-option';option.setAttribute('role','option');
+  option.textContent=phoneCountryFlag(iso)+' '+name+'  +'+code;
+  option.addEventListener('click',()=>{
+   phoneCountryCode.value='+'+code;phoneCountryCurrent.textContent=phoneCountryFlag(iso)+' '+name+' +'+code;
+   phoneCountryMenu.hidden=true;phoneCountryButton.setAttribute('aria-expanded','false');
+  });
+  phoneCountryOptions.appendChild(option);
+ });
+ if(!filtered.length){const empty=document.createElement('p');empty.className='entry-phone-country-empty';empty.textContent='لا توجد دولة مطابقة';phoneCountryOptions.appendChild(empty);}
+}
+renderPhoneCountryOptions();
+phoneCountryButton.addEventListener('click',()=>{
+ phoneCountryMenu.hidden=!phoneCountryMenu.hidden;
+ phoneCountryButton.setAttribute('aria-expanded',String(!phoneCountryMenu.hidden));
+ if(!phoneCountryMenu.hidden){phoneCountrySearch.value='';renderPhoneCountryOptions();phoneCountrySearch.focus();}
+});
+phoneCountrySearch.addEventListener('input',()=>renderPhoneCountryOptions(phoneCountrySearch.value));
+document.addEventListener('click',event=>{
+ if(!event.target.closest('.entry-phone-wrap')){phoneCountryMenu.hidden=true;phoneCountryButton.setAttribute('aria-expanded','false');}
+});
+
 document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  e.preventDefault();const status=document.getElementById('entrySignupStatus');
  let error='';
@@ -950,7 +1017,7 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
- const profile={public_listing_consent:true,username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhone').value.trim(),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ const profile={public_listing_consent:true,username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhoneCountryCode').value+document.getElementById('entryPhone').value.replace(/\\D/g,'').replace(/^0+/, ''),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
   const email=document.getElementById('entrySignupEmail').value.trim();
   const password=document.getElementById('entrySignupPassword').value;
