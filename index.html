@@ -1105,7 +1105,7 @@ a{color:#c2185b}
           <label>الوضع المادي <b class="required-star">*</b><select id="entryFinancial" required><option value="">إختر ..</option><option>محدود</option><option>متوسط</option><option>جيد</option><option>ميسور</option><option>ممتاز</option></select></label>
           <label>مجال العمل <b class="required-star">*</b><select id="entryWorkField" required><option value="">إختر ..</option><option>لا أعمل</option><option>القطاع الحكومي</option><option>القطاع الخاص</option><option>أعمال حرة</option><option>التعليم</option><option>الصحة</option><option>الهندسة</option><option>التجارة</option><option>إدارة وأعمال</option><option>شيء آخر</option></select></label>
           <label>الوظيفة <b class="required-star">*</b><input id="entryWork" required placeholder="ادخل الوظيفة"></label>
-          <label>الدخل الشهري <b class="required-star">*</b><select id="entryMonthlyIncome" required><option value="">إختر ..</option><option>بدون دخل شهري</option><option>أقل من 200 دولار</option><option>بين 200 و500 دولار</option><option>بين 500 و800 دولار</option><option>بين 800 و1200 دولار</option><option>بين 1200 و1800 دولار</option><option>بين 1800 و2500 دولار</option><option>بين 2500 و3500 دولار</option><option>أكثر من 3500 دولار</option></select></label>
+          <label>الدخل الشهري <b class="required-star">*</b><select id="entryMonthlyIncome" required><option value="">اختر الدخل الشهري</option></select><small class="muted">تُعرض شرائح الدخل بعملة بلد الإقامة، والقيم تقريبية.</small></label>
           <label>الحالة الصحية <b class="required-star">*</b><select id="entryHealth" required><option value="">إختر ..</option><option>بصحة جيدة والحمد لله</option><option>لدي حالة صحية وأفضل توضيحها لاحقاً</option></select></label>
         </section>
         <section class="wizard-panel" data-step-panel="4" hidden>
@@ -1440,6 +1440,42 @@ function showEntry(which){document.getElementById('entrySignup').hidden=which!==
 document.querySelectorAll('[data-entry]').forEach(b=>b.addEventListener('click',()=>showEntry(b.dataset.entry)));
 let chosenEntryGender='',currentWizardStep=1;
 const wizardPanels=[...document.querySelectorAll('[data-step-panel]')];
+const mithaqIncomeCurrencies={
+ 'السعودية':['SAR',3.75],'مصر':['EGP',50],'الأردن':['JOD',0.709],'المغرب':['MAD',10],
+ 'الجزائر':['DZD',135],'تونس':['TND',3.1],'سوريا':['SYP',13000],'العراق':['IQD',1310],
+ 'فلسطين':['ILS',3.7],'لبنان':['LBP',89500],'اليمن':['YER',540],'الإمارات':['AED',3.6725],
+ 'قطر':['QAR',3.64],'الكويت':['KWD',0.307],'البحرين':['BHD',0.377],'عمان':['OMR',0.385],
+ 'ليبيا':['LYD',4.85],'السودان':['SDG',2500],'موريتانيا':['MRU',39],
+ 'فرنسا':['EUR',0.92],'ألمانيا':['EUR',0.92],'بلجيكا':['EUR',0.92],'هولندا':['EUR',0.92],
+ 'إسبانيا':['EUR',0.92],'إيطاليا':['EUR',0.92],'المملكة المتحدة':['GBP',0.79],
+ 'كندا':['CAD',1.38],'أمريكا':['USD',1],'تركيا':['TRY',42]
+};
+function populateMithaqIncomeOptions(select,country,selectedValue=''){
+ if(!select)return;
+ const [currency,rate]=mithaqIncomeCurrencies[country]||['USD',1];
+ const format=amount=>{try{return new Intl.NumberFormat('ar',{style:'currency',currency,maximumFractionDigits:0}).format(Math.round(amount*rate));}catch{return Math.round(amount*rate).toLocaleString('ar')+' '+currency;}};
+ const options=[
+  ['','اختر الدخل الشهري'],['بدون دخل شهري','بدون دخل شهري'],
+  ['أقل من '+format(200),'أقل من '+format(200)],
+  ['بين '+format(200)+' و'+format(500),'بين '+format(200)+' و'+format(500)],
+  ['بين '+format(500)+' و'+format(800),'بين '+format(500)+' و'+format(800)],
+  ['بين '+format(800)+' و'+format(1200),'بين '+format(800)+' و'+format(1200)],
+  ['بين '+format(1200)+' و'+format(1800),'بين '+format(1200)+' و'+format(1800)],
+  ['بين '+format(1800)+' و'+format(2500),'بين '+format(1800)+' و'+format(2500)],
+  ['بين '+format(2500)+' و'+format(3500),'بين '+format(2500)+' و'+format(3500)],
+  ['أكثر من '+format(3500),'أكثر من '+format(3500)],
+  ['أحب أن لا أقول','أحب أن لا أقول']
+ ];
+ select.replaceChildren();
+ options.forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option);});
+ if(selectedValue&&!options.some(([value])=>value===selectedValue)){const legacy=document.createElement('option');legacy.value=selectedValue;legacy.textContent=selectedValue;select.append(legacy);}
+ select.value=selectedValue||'';select.dataset.currency=currency;
+}
+const entryIncomeSelect=document.getElementById('entryMonthlyIncome');
+const entryCountrySelect=document.getElementById('entryCountry');
+const refreshEntryIncome=()=>populateMithaqIncomeOptions(entryIncomeSelect,entryCountrySelect?.value||'',entryIncomeSelect?.value||'');
+entryCountrySelect?.addEventListener('change',refreshEntryIncome);
+refreshEntryIncome();
 function renderWizard(){
  // Show all registration sections together on one page.
  wizardPanels.forEach(p=>{p.hidden=false;p.classList.add('wizard-panel-card');});
@@ -2004,7 +2040,8 @@ async function refreshProfileAccess(){
  document.getElementById('myProfileSubline').textContent=[meta.age?meta.age+' سنة':'',meta.country,meta.city].filter(Boolean).join(' • ')||'بياناتك ومواصفاتك الشخصية';
  const extraHost=document.getElementById('profileExtraFields');extraHost.replaceChildren();
  const extraFields=[['gender','الجنس'],['family_status','الحالة الاجتماعية'],['age','العمر'],['children','عدد الأطفال'],['nationality','الجنسية'],['origin','الأصل'],['weight','الوزن'],['height','الطول'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية'],['partner_preferences','مواصفات شريك الحياة']];
- extraFields.forEach(([key,label])=>{const wrap=document.createElement('div');wrap.className='field';const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;const input=document.createElement(key==='partner_preferences'?'textarea':'input');input.id='edit_'+key;input.dataset.profileKey=key;input.value=meta[key]??'';if(key!=='partner_preferences')input.maxLength=120;wrap.append(caption,input);extraHost.append(wrap);});
+ extraFields.forEach(([key,label])=>{const wrap=document.createElement('div');wrap.className='field';const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;const input=document.createElement(key==='partner_preferences'?'textarea':key==='monthly_income'?'select':'input');input.id='edit_'+key;input.dataset.profileKey=key;if(key==='monthly_income'){populateMithaqIncomeOptions(input,meta.country||'',meta[key]??'');const hint=document.createElement('small');hint.className='muted';hint.textContent='تُعرض شرائح الدخل بعملة بلد الإقامة، والقيم تقريبية.';wrap.append(caption,input,hint);}else{input.value=meta[key]??'';if(key!=='partner_preferences')input.maxLength=120;wrap.append(caption,input);}extraHost.append(wrap);});
+document.getElementById('profileCountry')?.addEventListener('change',()=>{const income=document.getElementById('edit_monthly_income');if(income){const previous=income.value;populateMithaqIncomeOptions(income,document.getElementById('profileCountry').value.trim(),previous);}});
  const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]);
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
