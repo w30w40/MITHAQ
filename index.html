@@ -144,6 +144,15 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#dc3545;color:#fff;font-size:11px;font-weight:800;line-height:1;vertical-align:middle;margin-inline-start:5px}
 .mithaq-unread-badge[hidden]{display:none!important}
 @media(max-width:600px){.mithaq-admin-home-widget{align-items:flex-start;flex-direction:column}.mithaq-admin-home-widget button{width:100%}.mithaq-live-member{flex-basis:108px;min-width:108px;max-width:108px}.mithaq-chat-messages{max-height:52vh}}
+
+/* قائمة فرعية للأعضاء داخل القائمة الرئيسية، بتمرير عمودي مثل قائمة الدول */
+.drawer-member-options{max-height:42vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:5px 12px 10px 4px;margin:0 0 8px 0;border-right:3px solid #e6a0b2;background:#fff0f4;border-radius:0 0 12px 12px;scrollbar-width:thin}
+.drawer-member-options[hidden]{display:none!important}
+.drawer-member-options button{display:flex;width:100%;min-height:46px;align-items:center;text-align:right;background:transparent;color:#43515d;border-bottom:1px solid #f1dfe5;border-radius:0;padding:11px 13px;font-size:14px;font-weight:600;touch-action:pan-y}
+.drawer-member-options button:last-child{border-bottom:0}
+.drawer-member-options button.active{background:#e4f2fa;color:#176493;border-radius:9px}
+.drawer-submenu-arrow{margin-right:auto!important;width:auto!important;color:#fff!important;font-size:18px!important;transition:transform .2s}
+#memberDrawerMembersToggle[aria-expanded="true"] .drawer-submenu-arrow{transform:rotate(180deg)}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -767,7 +776,18 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
 <div class="member-drawer-backdrop" id="memberDrawerBackdrop"></div>
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
-  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button><button class="drawer-link" data-menu-go="members"><span>👥</span>الأعضاء</button><button class="drawer-link" data-menu-go="messages"><span>💬</span>الرسائل <span class="mithaq-unread-badge" id="drawerUnreadBadge" hidden>0</span></button><button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
+  <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
+  <button class="drawer-link" id="memberDrawerMembersToggle" type="button" aria-expanded="false" aria-controls="memberDrawerMembersOptions"><span>👥</span>الأعضاء <span class="drawer-submenu-arrow" aria-hidden="true">⌄</span></button>
+  <div class="drawer-member-options" id="memberDrawerMembersOptions" hidden aria-label="خيارات الأعضاء">
+    <button type="button" data-member-menu-shortcut="all" class="active">الكل</button>
+    <button type="button" data-member-menu-shortcut="online">المتصلون الآن</button>
+    <button type="button" data-member-menu-shortcut="offline">غير المتصلين</button>
+    <button type="button" data-member-menu-shortcut="country">الدولة</button>
+    <button type="button" data-member-menu-shortcut="marriage">نوع الزواج</button>
+    <button type="button" data-member-menu-shortcut="activity">الأحدث نشاطاً</button>
+    <button type="button" data-member-menu-shortcut="name">حسب الاسم</button>
+  </div>
+  <button class="drawer-link" data-menu-go="messages"><span>💬</span>الرسائل <span class="mithaq-unread-badge" id="drawerUnreadBadge" hidden>0</span></button><button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
   <div class="drawer-separator"></div>
   <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
   <div class="drawer-separator"></div>
@@ -786,15 +806,6 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
   
 </section>
 <section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2>
-<nav class="mithaq-member-shortcuts" aria-label="خيارات تصفح الأعضاء" dir="rtl">
-<button type="button" data-member-shortcut="all" class="active">الكل</button>
-<button type="button" data-member-shortcut="online">المتصلون الآن</button>
-<button type="button" data-member-shortcut="offline">غير المتصلين</button>
-<button type="button" data-member-shortcut="country">الدولة</button>
-<button type="button" data-member-shortcut="marriage">نوع الزواج</button>
-<button type="button" data-member-shortcut="activity">الأحدث نشاطاً</button>
-<button type="button" data-member-shortcut="name">حسب الاسم</button>
-</nav>
 <div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div>
 <div class="mithaq-member-filters" dir="rtl">
 <label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
@@ -1234,6 +1245,12 @@ document.getElementById('memberMenuOpen').addEventListener('click',()=>{const is
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
+document.getElementById('memberDrawerMembersToggle').addEventListener('click',()=>{
+ const panel=document.getElementById('memberDrawerMembersOptions');
+ const expanded=document.getElementById('memberDrawerMembersToggle').getAttribute('aria-expanded')==='true';
+ panel.hidden=expanded;
+ document.getElementById('memberDrawerMembersToggle').setAttribute('aria-expanded',String(!expanded));
+});
 
 function show(id,fromBack=false,verifiedAdmin=false){if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members')loadMembers();if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='admin')loadMithaqAdminPanel();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
@@ -1626,23 +1643,32 @@ function populateMithaqCountryFilter(){
  if([...select.options].some(option=>option.value===current))select.value=current;
 }
 populateMithaqCountryFilter();
-const memberShortcutButtons=[...document.querySelectorAll('[data-member-shortcut]')];
+const memberShortcutButtons=[...document.querySelectorAll('[data-member-menu-shortcut]')];
 function activateMemberShortcut(key){
  const presence=document.getElementById('mithaqPresenceFilter'),country=document.getElementById('mithaqCountryFilter'),marriage=document.getElementById('mithaqMarriageFilter'),sort=document.getElementById('mithaqMemberSort');
  if(!presence||!country||!marriage||!sort)return;
  if(key==='all'){presence.value='all';country.value='all';marriage.value='all';sort.value='activity';}
  if(key==='online'||key==='offline'){presence.value=key;}
  if(key==='activity'||key==='name'){sort.value=key;}
- memberShortcutButtons.forEach(button=>button.classList.toggle('active',button.dataset.memberShortcut===key));
+ memberShortcutButtons.forEach(button=>button.classList.toggle('active',button.dataset.memberMenuShortcut===key));
  if(key==='country'||key==='marriage'){
   const target=key==='country'?country:marriage;
   target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true});
  }
  renderMithaqMembers();
 }
-memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>activateMemberShortcut(button.dataset.memberShortcut)));
+memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>{
+ const key=button.dataset.memberMenuShortcut;
+ activateMemberShortcut(key);
+ show('members');
+ closeMemberDrawer();
+ if(key==='country'||key==='marriage'){
+  const target=document.getElementById(key==='country'?'mithaqCountryFilter':'mithaqMarriageFilter');
+  requestAnimationFrame(()=>{target?.scrollIntoView({behavior:'smooth',block:'center'});target?.focus({preventScroll:true});target?.click();});
+ }
+}));
 ['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
- const active=document.querySelector('[data-member-shortcut].active');
+ const active=document.querySelector('[data-member-menu-shortcut].active');
  if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
  if(id!=='mithaqMemberSearch')memberShortcutButtons.forEach(button=>button.classList.remove('active'));
  renderMithaqMembers();
