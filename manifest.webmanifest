@@ -1,0 +1,29 @@
+{
+  "id": "./",
+  "name": "ميثاق | تعارف جاد باحترام وخصوصية",
+  "short_name": "ميثاق",
+  "description": "منصة ميثاق للتعارف الجاد بقصد الزواج.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#fff7fa",
+  "theme_color": "#ec1764",
+  "categories": [
+    "social",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "./icons/mithaq-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
