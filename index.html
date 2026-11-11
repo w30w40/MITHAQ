@@ -709,6 +709,185 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
 @media(max-width:420px){.member-entry-chooser{padding:13px;margin:14px 0 18px;border-radius:14px}.member-entry-grid{gap:7px}.member-entry-grid button{min-height:55px;padding:9px 10px;gap:8px;font-size:12px}.member-entry-grid button span{width:30px;height:30px;font-size:15px}.member-entry-heading strong{font-size:16px}}
 </style>
 
+
+<style id="mithaq-public-profile-design">
+/* Visual-only refresh for the public member profile. Existing profile data and actions stay unchanged. */
+#mithaqFullMemberProfile{
+ background:#f4f7fb!important;
+ background-image:radial-gradient(ellipse at 90% 0%,#f8e8ee 0,transparent 34%),radial-gradient(ellipse at 0% 45%,#e5f1f9 0,transparent 36%)!important;
+ color:#263b50!important;
+ font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-header{
+ flex:0 0 auto!important;min-height:76px!important;padding:12px max(18px,calc((100vw - 900px)/2))!important;
+ background:linear-gradient(112deg,#173e62 0%,#245783 58%,#d65c7b 150%)!important;
+ box-shadow:0 5px 22px #173e6226!important;border:0!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-header strong{
+ font-size:18px!important;font-weight:800!important;letter-spacing:.1px!important;color:#fff!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-back{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+ min-height:44px!important;padding:9px 15px!important;border:1px solid #ffffff42!important;
+ border-radius:13px!important;background:#ffffff18!important;color:#fff!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-back:active{background:#ffffff30!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-content{
+ width:100%!important;max-width:900px!important;margin:0 auto!important;padding:22px 20px 38px!important;
+ overscroll-behavior:contain!important;scrollbar-width:thin!important;scrollbar-color:#c5d4df transparent!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;gap:18px!important;
+ min-height:132px!important;padding:25px!important;margin:0 0 17px!important;
+ border:1px solid #e5eaf0!important;border-radius:22px!important;
+ background:linear-gradient(112deg,#fff 0%,#fff 56%,#f9edf1 100%)!important;
+ box-shadow:0 10px 30px #173e620d!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero:after{
+ content:"م"!important;position:absolute!important;z-index:-1!important;left:20px!important;bottom:-75px!important;
+ color:#24578308!important;font-size:190px!important;font-weight:900!important;line-height:1!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-avatar{
+ flex:0 0 82px!important;width:82px!important;height:82px!important;border-radius:25px!important;
+ border:3px solid #fff!important;background:linear-gradient(145deg,#e5f1f8,#f8e6ec)!important;
+ color:#245783!important;font-size:42px!important;box-shadow:0 5px 18px #24578318!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero>div:nth-child(2){min-width:0!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero h2{
+ margin:0 0 8px!important;color:#1e5278!important;font-size:clamp(21px,3vw,27px)!important;
+ font-weight:850!important;line-height:1.4!important;overflow-wrap:anywhere!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero p{
+ display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;
+ color:#73818d!important;font-size:13px!important;line-height:1.8!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta,
+#mithaqFullMemberProfile .mithaq-profile-actions-panel,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section{
+ margin:0 0 16px!important;padding:19px!important;background:#fff!important;
+ border:1px solid #e5eaf0!important;border-radius:19px!important;
+ box-shadow:0 7px 23px #173e6209!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta h3,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ margin:0 0 15px!important;padding-bottom:12px!important;border-bottom:1px solid #edf1f5!important;
+ color:#245783!important;font-size:16px!important;font-weight:800!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta h3:before,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3:before{
+ content:""!important;width:4px!important;height:19px!important;border-radius:5px!important;background:#d65c7b!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row{
+ display:grid!important;grid-template-columns:minmax(105px,.7fr) minmax(0,1.3fr)!important;
+ align-items:center!important;gap:12px!important;padding:12px 2px!important;
+ border-bottom:1px solid #f0f3f6!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row:last-of-type{border-bottom:0!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>span{color:#7a8995!important;font-weight:600!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>strong{
+ justify-self:start!important;color:#245783!important;font-size:13px!important;font-weight:800!important;
+ cursor:pointer!important;text-align:right!important;line-height:1.7!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>strong:focus-visible{outline:2px solid #d65c7b!important;outline-offset:3px!important;border-radius:4px!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row .meta-secondary{
+ grid-column:2!important;color:#179568!important;font-size:11px!important;margin-top:-8px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta .notice{
+ margin:11px 0 0!important;padding:9px 11px!important;border-radius:10px!important;
+ background:#f5f8fb!important;color:#85919a!important;font-size:11px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3{font-size:16px!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item{
+ padding:13px 14px!important;border:1px solid #edf1f5!important;border-radius:13px!important;
+ background:linear-gradient(145deg,#fbfcfe,#f6f9fc)!important;min-height:68px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item small{
+ color:#84919b!important;font-size:11px!important;font-weight:650!important;margin-bottom:6px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item p{
+ color:#344b5d!important;font-size:14px!important;font-weight:650!important;line-height:1.75!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;
+ padding:16px!important;position:relative!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button{
+ min-height:48px!important;border-radius:13px!important;font-size:13px!important;font-weight:800!important;
+ box-shadow:none!important;transition:filter .15s,transform .15s!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button:active{transform:scale(.985)!important}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.primary{
+ background:linear-gradient(110deg,#245783,#347eaa)!important;color:#fff!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.secondary{
+ background:#f8edf1!important;color:#b64b69!important;border:1px solid #f1dce3!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu-wrap{grid-column:1/-1!important;flex:auto!important}
+#mithaqFullMemberProfile .mithaq-profile-menu-trigger{
+ min-height:46px!important;border:1px solid #e5eaf0!important;border-radius:12px!important;
+ background:#f7f9fc!important;color:#52697b!important;font-weight:750!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu{
+ gap:7px!important;margin-top:8px!important;padding:9px!important;
+ border:1px solid #e5eaf0!important;border-radius:14px!important;
+ background:#fff!important;box-shadow:0 10px 25px #173e6214!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu button{
+ min-height:45px!important;padding:11px 13px!important;border-radius:10px!important;
+ background:#f7f9fc!important;color:#40576a!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu button.danger{background:#fff2f1!important;color:#b42318!important}
+#mithaqFullMemberProfile .mithaq-profile-interest-choice,
+#mithaqFullMemberProfile .mithaq-profile-report-form{
+ grid-column:1/-1!important;width:100%!important;padding:15px!important;
+ border:1px solid #e5eaf0!important;border-radius:14px!important;background:#f8fafc!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-interest-choice p{
+ margin:0!important;color:#40576a!important;font-size:13px!important;line-height:1.8!important;font-weight:700!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-choice-buttons{gap:9px!important;margin-top:12px!important}
+#mithaqFullMemberProfile .mithaq-profile-choice-buttons button,
+#mithaqFullMemberProfile .mithaq-profile-report-form button{
+ min-height:44px!important;border-radius:11px!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-report-form{gap:11px!important}
+#mithaqFullMemberProfile .mithaq-profile-report-form label{color:#536b7d!important;font-size:12px!important}
+#mithaqFullMemberProfile .mithaq-profile-report-form select,
+#mithaqFullMemberProfile .mithaq-profile-report-form textarea{
+ border:1px solid #dce5ec!important;border-radius:11px!important;background:#fff!important;
+ color:#344b5d!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-report-form textarea{min-height:92px!important}
+#mithaqFullMemberProfile .mithaq-profile-action-status{
+ grid-column:1/-1!important;margin:0!important;padding:0 3px!important;
+ color:#247451!important;font-size:12px!important;line-height:1.8!important;
+}
+@media(max-width:600px){
+ #mithaqFullMemberProfile .mithaq-full-member-profile-header{min-height:68px!important;padding:9px 14px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-content{padding:13px 12px calc(24px + env(safe-area-inset-bottom))!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-hero{min-height:112px!important;padding:17px!important;gap:13px!important;border-radius:18px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-avatar{flex-basis:68px!important;width:68px!important;height:68px!important;border-radius:21px!important;font-size:35px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-hero h2{font-size:21px!important}
+ #mithaqFullMemberProfile .mithaq-profile-meta,#mithaqFullMemberProfile .mithaq-profile-actions-panel,#mithaqFullMemberProfile .mithaq-full-member-profile-section{padding:15px!important;border-radius:16px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-item{padding:11px!important;min-height:64px!important}
+ #mithaqFullMemberProfile .mithaq-profile-meta-row{grid-template-columns:minmax(92px,.75fr) minmax(0,1.25fr)!important}
+ #mithaqFullMemberProfile .mithaq-profile-actions-panel{gap:8px!important}
+}
+@media(max-width:360px){
+ #mithaqFullMemberProfile .mithaq-full-member-profile-grid{grid-template-columns:1fr!important}
+ #mithaqFullMemberProfile .mithaq-profile-actions-panel{grid-template-columns:1fr!important}
+ #mithaqFullMemberProfile .mithaq-profile-menu-wrap,#mithaqFullMemberProfile .mithaq-profile-interest-choice,#mithaqFullMemberProfile .mithaq-profile-report-form,#mithaqFullMemberProfile .mithaq-profile-action-status{grid-column:1!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #mithaqFullMemberProfile *{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
