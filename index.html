@@ -1652,7 +1652,7 @@ function activateMemberShortcut(key){
 memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>activateMemberShortcut(button.dataset.memberShortcut)));
 ['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
  const active=document.querySelector('[data-member-shortcut].active');
- if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberMenuShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberMenuShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberMenuShortcut==='name'&&id==='mithaqMemberSort')))return;
+ if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
  if(id!=='mithaqMemberSearch')memberShortcutButtons.forEach(button=>button.classList.remove('active'));
  renderMithaqMembers();
 }));
