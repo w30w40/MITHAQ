@@ -1919,7 +1919,10 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   [['تاريخ آخر زيارة',online?'🟢 متواجد الآن':relativeDate(profile.last_seen_at),profile.last_seen_at],['تاريخ التسجيل',relativeDate(profile.created_at),profile.created_at]].forEach(([label,value,stamp])=>{
    const line=document.createElement('div');line.className='mithaq-profile-meta-row';
    const key=document.createElement('span');key.textContent=label;
-   const val=document.createElement('strong');val.textContent=value;val.title=fullDate(stamp);
+   const val=document.createElement('strong');val.textContent=value;val.title=fullDate(stamp);val.tabIndex=0;val.setAttribute('role','button');val.setAttribute('aria-label',label+'، '+fullDate(stamp));
+   const relative=value;let showingFull=false;
+   const toggleDate=()=>{showingFull=!showingFull;val.textContent=showingFull?fullDate(stamp):relative;};
+   val.addEventListener('click',toggleDate);val.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDate();}});
    line.append(key,val);metaCard.append(line);
   });
   const dateHint=document.createElement('p');dateHint.className='notice';dateHint.textContent='مرّر المؤشر أو اضغط مطولاً على التاريخ لمعرفة اليوم والوقت بالتفصيل.';metaCard.append(dateHint);
@@ -1940,6 +1943,9 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    const {error}=await supabaseClient.rpc('mithaq_manage_member_action',{p_target_id:userId,p_action:action,p_enabled:enabled});
    if(error)throw error;
   };
+  supabaseClient.rpc('mithaq_get_member_actions',{p_target_id:userId}).then(({data,error})=>{
+   if(!error){isInterested=!!data?.interest;interestButton.textContent=isInterested?'♥ تمت الإضافة للاهتمام':'♡ إضافة للاهتمام';}
+  }).catch(error=>console.warn('MITHAQ member action status:',error));
   interestButton.addEventListener('click',()=>{interestQuestion.textContent=isInterested?'هل تريد إزالة هذا العضو من قائمة الاهتمام؟':'هل تريد إضافة هذا العضو إلى قائمة الاهتمام؟';interestChoice.hidden=false;});
   interestYes.addEventListener('click',async()=>{interestYes.disabled=true;try{await setMemberAction('interest',!isInterested);isInterested=!isInterested;interestButton.textContent=isInterested?'♥ تمت الإضافة للاهتمام':'♡ إضافة للاهتمام';actionStatus.textContent=isInterested?'تمت إضافة العضو إلى اهتماماتك.':'تمت إزالة العضو من اهتماماتك.';interestChoice.hidden=true;}catch(error){actionStatus.textContent='تعذر حفظ الاهتمام: '+(error.message||'حاول مرة أخرى');}finally{interestYes.disabled=false;}});
   interestNo.addEventListener('click',()=>{interestChoice.hidden=true;});
