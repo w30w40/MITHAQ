@@ -1022,6 +1022,16 @@ a{color:#c2185b}
 .mithaq-notification-copy small{color:#9a8790;font-size:11px}
 @media(max-width:500px){.mithaq-notifications-heading{align-items:flex-start}.mithaq-notifications-heading button{width:100%}}
 </style>
+<style id="mithaq-main-menu-v2">
+.member-drawer{max-height:100dvh;overscroll-behavior:contain}
+.member-drawer .drawer-link{min-height:48px;padding:10px 6px}
+.mithaq-main-menu-grid .member-service{min-height:132px}
+.mithaq-feature-page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mithaq-feature-page-head>span{font-size:34px;background:#fff0f4;border-radius:14px;padding:8px}
+.mithaq-feature-content{margin-top:18px;padding:16px;border:1px solid #f0dfe5;border-radius:14px;background:#fffafd;line-height:1.9;color:#59636b}
+.mithaq-feature-content strong{color:#c83e68}
+@media(max-width:700px){.mithaq-main-menu-grid .member-service{min-height:118px}.mithaq-main-menu-grid .member-service strong{font-size:14px}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -1142,11 +1152,23 @@ a{color:#c2185b}
 <aside class="member-drawer" id="memberDrawer" aria-label="قائمة الموقع" dir="rtl">
   <div class="drawer-head"><div class="drawer-brand"><span>♥</span><strong>ميثاق</strong></div><button id="memberMenuClose" type="button" aria-label="إغلاق القائمة">×</button></div>
   <button class="drawer-link" data-menu-go="home"><span>⌂</span>الرئيسية</button>
-  <button class="drawer-link" data-menu-go="members"><span>👥</span>الأعضاء</button>
-  <button class="drawer-link" data-menu-go="notifications"><span>🔔</span>الإشعارات <span class="mithaq-notification-badge" id="drawerNotificationBadge" hidden>0</span></button><button class="drawer-link" data-menu-go="messages"><span>💬</span>الرسائل <span class="mithaq-unread-badge" id="drawerUnreadBadge" hidden>0</span></button><button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
+  <button class="drawer-link" data-menu-go="notifications"><span>🔔</span>الإشعارات <span class="mithaq-notification-badge" id="drawerNotificationBadge" hidden>0</span></button>
+  <button class="drawer-link" data-menu-go="myprofile"><span>👤</span>حسابي</button>
+  <button class="drawer-link" data-menu-action="search"><span>🔍</span>بحث</button>
+  <button class="drawer-link" data-menu-feature="interest"><span>💗</span>قائمة الاهتمام</button>
+  <button class="drawer-link" data-menu-feature="interestedBy"><span>💞</span>من يهتم بي</button>
+  <button class="drawer-link" data-menu-feature="mutualInterest"><span>💕</span>توافق الاهتمام</button>
+  <button class="drawer-link" data-menu-feature="ignored"><span>🚫</span>قائمة التجاهل</button>
+  <button class="drawer-link" data-menu-action="photos"><span>🖼️</span>صور الأعضاء</button>
+  <button class="drawer-link" data-menu-feature="success"><span>🌷</span>قصص النجاح</button>
+  <button class="drawer-link" data-menu-feature="blog"><span>📝</span>مدونة ميثاق</button>
+  <button class="drawer-link" data-menu-feature="card"><span>💌</span>بطاقة ميثاق</button>
+  <button class="drawer-link" data-menu-action="share"><span>📤</span>مشاركة التطبيق</button>
+  <button class="drawer-link" data-menu-action="logout"><span>↪</span>تسجيل الخروج</button>
   <div class="drawer-separator"></div>
+  <button class="drawer-link" data-menu-go="messages"><span>💬</span>الرسائل <span class="mithaq-unread-badge" id="drawerUnreadBadge" hidden>0</span></button>
+  <button class="drawer-link" id="mithaqAdminMenuLink" data-menu-go="admin" hidden><span>🛡</span>لوحة الإدارة</button>
   <button class="drawer-link" data-menu-go="settings"><span>⚙</span>الإعدادات</button>
-  <div class="drawer-separator"></div>
 </aside>
 <nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="members">الأعضاء</button><button data-tab="messages">الرسائل <span class="mithaq-unread-badge" id="navUnreadBadge" hidden>0</span></button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
@@ -1167,9 +1189,23 @@ a{color:#c2185b}
   </section>
   <div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>الأعضاء المتاحون</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
   <div id="mithaqAdminHomeWidget" class="mithaq-admin-home-widget" hidden><div><span>🛡️</span><strong>لوحة التحكم والمراقبة</strong><small>إدارة الأعضاء ومراجعة المنصة</small></div><button type="button" id="mithaqAdminHomeOpen">فتح لوحة الإدارة</button></div>
-  <div class="member-service-grid">
-    <button class="member-service" data-go="members"><span class="service-icon">👥</span><strong>الأعضاء</strong><small>تصفح أعضاء ميثاق</small></button><button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
-    <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>المراسلات <span class="mithaq-unread-badge" id="homeUnreadBadge" hidden>0</span></strong><small>محادثاتك الخاصة</small></button>
+  <div class="member-section-heading"><h2>القائمة الرئيسية</h2><span>كل خدمات ميثاق في مكان واحد</span></div>
+  <div class="member-service-grid mithaq-main-menu-grid">
+    <button class="member-service" data-go="notifications"><span class="service-icon">🔔</span><strong>الإشعارات</strong><small>تنبيهات حسابك</small></button>
+    <button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>حسابي</strong><small>ملفك وبياناتك</small></button>
+    <button class="member-service" data-home-action="search"><span class="service-icon">🔍</span><strong>بحث</strong><small>ابحث عن الأعضاء</small></button>
+    <button class="member-service" data-home-feature="interest"><span class="service-icon">💗</span><strong>قائمة الاهتمام</strong><small>الأعضاء الذين تهتم بهم</small></button>
+    <button class="member-service" data-home-feature="interestedBy"><span class="service-icon">💞</span><strong>من يهتم بي</strong><small>طلبات الاهتمام الواردة</small></button>
+    <button class="member-service" data-home-feature="mutualInterest"><span class="service-icon">💕</span><strong>توافق الاهتمام</strong><small>الاهتمام المتبادل</small></button>
+    <button class="member-service" data-home-feature="ignored"><span class="service-icon">🚫</span><strong>قائمة التجاهل</strong><small>الأعضاء المستبعدون</small></button>
+    <button class="member-service" data-home-action="photos"><span class="service-icon">🖼️</span><strong>صور الأعضاء</strong><small>استعراض ملفات الأعضاء</small></button>
+    <button class="member-service" data-home-feature="success"><span class="service-icon">🌷</span><strong>قصص النجاح</strong><small>تجارب ميثاق</small></button>
+    <button class="member-service" data-home-feature="blog"><span class="service-icon">📝</span><strong>مدونة ميثاق</strong><small>مقالات وإرشادات</small></button>
+    <button class="member-service" data-home-feature="card"><span class="service-icon">💌</span><strong>بطاقة ميثاق</strong><small>تعريف بالمنصة</small></button>
+    <button class="member-service" data-home-action="share"><span class="service-icon">📤</span><strong>مشاركة التطبيق</strong><small>شارك ميثاق مع الآخرين</small></button>
+    <button class="member-service" data-home-action="logout"><span class="service-icon">↪</span><strong>تسجيل الخروج</strong><small>الخروج من حسابك</small></button>
+    <button class="member-service" data-go="messages"><span class="service-icon">💬</span><strong>الرسائل <span class="mithaq-unread-badge" id="homeUnreadBadge" hidden>0</span></strong><small>محادثاتك الخاصة</small></button>
+    <button class="member-service" data-go="members"><span class="service-icon">👥</span><strong>الأعضاء</strong><small>تصفح جميع الأعضاء</small></button>
   </div>
   
 </section>
@@ -1236,6 +1272,8 @@ a{color:#c2185b}
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
 </div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
+<section id="menuFeature" class="tab hidden"><div class="card"><div class="mithaq-feature-page-head"><button type="button" class="secondary" data-feature-back>← الرئيسية</button><span id="mithaqFeatureIcon">💗</span></div><h2 id="mithaqFeatureTitle">قائمة الاهتمام</h2><p id="mithaqFeatureDescription" class="muted"></p><div id="mithaqFeatureContent" class="mithaq-feature-content"></div></div></section>
+
 </main>
 <div class="mithaq-bottom-nav" id="mithaqBottomNav" aria-label="التنقل السفلي">
 <button type="button" data-bottom-go="messages"><span class="bottom-icon">✉️</span><span>البريد الداخلي</span><span class="mithaq-unread-badge" id="bottomUnreadBadge" hidden>0</span></button>
@@ -1623,6 +1661,44 @@ document.getElementById('memberMenuOpen').addEventListener('click',()=>{const is
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
+const mithaqFeaturePages={
+ interest:{title:'قائمة الاهتمام',icon:'💗',description:'هنا ستظهر قائمة الأعضاء الذين أضفتهم إلى اهتمامك.',content:'إضافة الاهتمام من ملف العضو تعمل من خلال زر «إضافة للاهتمام». عرض القائمة الكاملة يحتاج ربط صفحة القائمة بقراءة العلاقات المحفوظة في قاعدة البيانات.'},
+ interestedBy:{title:'من يهتم بي',icon:'💞',description:'هنا ستظهر حسابات الأعضاء الذين أضافوك إلى قائمة اهتمامهم.',content:'سيتم عرض الاهتمامات الواردة هنا بعد تجهيز قراءة آمنة ومخصصة لهذه القائمة.'},
+ mutualInterest:{title:'توافق الاهتمام',icon:'💕',description:'قائمة تجمع بينك وبين الأعضاء الذين يوجد بينكم اهتمام متبادل.',content:'سيتم عرض التطابق عندما يكون كل طرف قد أضاف الطرف الآخر إلى قائمة اهتمامه، بعد ربط القائمة ببيانات العلاقات.'},
+ ignored:{title:'قائمة التجاهل',icon:'🚫',description:'هنا ستظهر الحسابات التي أضفتها إلى قائمة التجاهل.',content:'إضافة عضو إلى التجاهل من خيارات ملفه الشخصي متاحة. عرض القائمة وإدارة عناصرها يحتاج صفحة مخصصة.'},
+ success:{title:'قصص النجاح',icon:'🌷',description:'مساحة لقصص وتجارب الزواج الناجحة عبر ميثاق.',content:'لم تُنشر قصص موثقة بعد. لن نعرض قصصاً أو أسماء أشخاص دون موافقتهم.'},
+ blog:{title:'مدونة ميثاق',icon:'📝',description:'مقالات ونصائح حول التعارف الجاد والاستعداد للزواج.',content:'قسم المدونة أُضيف إلى القائمة، ومحتواه التحريري لم يُنشر بعد.'},
+ card:{title:'بطاقة ميثاق',icon:'💌',description:'ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين الأعضاء.',content:'ميثاق — تعارف جاد، خصوصية، واحترام متبادل. شارك التطبيق مع من قد يستفيد منه.'}
+};
+function openMithaqFeature(key){
+ const item=mithaqFeaturePages[key];if(!item)return;
+ document.getElementById('mithaqFeatureIcon').textContent=item.icon;
+ document.getElementById('mithaqFeatureTitle').textContent=item.title;
+ document.getElementById('mithaqFeatureDescription').textContent=item.description;
+ const content=document.getElementById('mithaqFeatureContent');content.textContent=item.content;
+ show('menuFeature');closeMemberDrawer();
+}
+document.querySelectorAll('[data-menu-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.menuFeature)));
+document.querySelectorAll('[data-home-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.homeFeature)));
+function openMithaqMemberSearch(){
+ show('members',false,false,true);closeMemberDrawer();
+ setTimeout(()=>document.getElementById('mithaqMemberSearch')?.focus(),120);
+}
+document.querySelectorAll('[data-menu-action="search"],[data-home-action="search"]').forEach(b=>b.addEventListener('click',openMithaqMemberSearch));
+document.querySelectorAll('[data-menu-action="photos'],[data-home-action="photos"]').forEach(b=>b.addEventListener('click',()=>{show('members',false,false,true);closeMemberDrawer();}));
+async function shareMithaqApp(){
+ const url='https://w30w40.github.io/MITHAQ/';
+ const shareData={title:'ميثاق',text:'انضم إلى ميثاق للتعارف الجاد بقصد الزواج',url};
+ try{
+  if(navigator.share)await navigator.share(shareData);
+  else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);alert('تم نسخ رابط تطبيق ميثاق لمشاركته.');}
+  else{window.prompt('انسخ رابط ميثاق للمشاركة:',url);}
+ }catch(error){if(error?.name!=='AbortError')alert('تعذرت المشاركة من هذا الجهاز. يمكنك نسخ الرابط: '+url);}
+}
+document.querySelectorAll('[data-menu-action="share"],[data-home-action="share"]').forEach(b=>b.addEventListener('click',shareMithaqApp));
+document.querySelectorAll('[data-menu-action="logout"],[data-home-action="logout"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('settingsSignOut')?.click()));
+document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('click',()=>show('home')));
+
 
 
 function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();}
