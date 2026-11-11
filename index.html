@@ -1032,6 +1032,23 @@ a{color:#c2185b}
 .mithaq-feature-content strong{color:#c83e68}
 @media(max-width:700px){.mithaq-main-menu-grid .member-service{min-height:118px}.mithaq-main-menu-grid .member-service strong{font-size:14px}}
 </style>
+<style id="mithaq-member-lists-search">
+.mithaq-feature-member-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;margin:8px 0;border:1px solid #f0dfe5;border-radius:14px;background:#fff}
+.mithaq-feature-member-info{display:grid;gap:5px;min-width:0;flex:1}
+.mithaq-feature-member-info strong{color:#246b98;cursor:pointer;overflow-wrap:anywhere}
+.mithaq-feature-member-info small{color:#87929b;font-size:11px;line-height:1.6}
+.mithaq-interest-action{background:#fff0f4;color:#d33c68;border:1px solid #f0c9d5;white-space:nowrap;min-width:100px}
+.mithaq-interest-action.active{background:#eaf7ef;color:#187344;border-color:#ccebd7}
+.mithaq-search-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.mithaq-auto-search{display:flex;align-items:center;gap:7px;font-size:12px;color:#687782}
+.mithaq-auto-search input{width:18px;height:18px;accent-color:#d94368}
+.mithaq-search-tools button{min-width:92px}
+.mithaq-quick-search{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+.mithaq-quick-search strong{font-size:12px;color:#65737e}
+.mithaq-quick-search button{background:#fff0f4;color:#b83f62;border:1px solid #f0d4dd;padding:8px 11px;font-size:12px;border-radius:20px}
+#mithaqNotificationsBack{margin-bottom:12px}
+@media(max-width:520px){.mithaq-feature-member-row{align-items:flex-start;flex-wrap:wrap}.mithaq-interest-action,.mithaq-feature-member-row>button{width:100%}.mithaq-search-tools{align-items:flex-start}.mithaq-quick-search button{flex:1}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -1157,6 +1174,7 @@ a{color:#c2185b}
   <button class="drawer-link" data-menu-action="search"><span>🔍</span>بحث</button>
   <button class="drawer-link" data-menu-feature="interest"><span>💗</span>قائمة الاهتمام</button>
   <button class="drawer-link" data-menu-feature="interestedBy"><span>💞</span>من يهتم بي</button>
+  <button class="drawer-link" data-menu-feature="visitors"><span>👁️</span>من زار بياناتي</button>
   <button class="drawer-link" data-menu-feature="mutualInterest"><span>💕</span>توافق الاهتمام</button>
   <button class="drawer-link" data-menu-feature="ignored"><span>🚫</span>قائمة التجاهل</button>
   <button class="drawer-link" data-menu-action="photos"><span>🖼️</span>صور الأعضاء</button>
@@ -1195,10 +1213,15 @@ a{color:#c2185b}
   </div>
   
 </section>
-<section id="notifications" class="tab hidden"><div class="card"><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><div class="card" style="margin:12px 0;padding:14px"><p class="muted" style="margin:0 0 10px">فعّل إشعارات الهاتف لتصلك تنبيهات ميثاق حتى عندما يكون التطبيق مغلقاً.</p><div class="row"><button type="button" class="primary" id="mithaqEnablePush">تفعيل إشعارات الهاتف</button><button type="button" class="secondary" id="mithaqTestPush" disabled>إرسال إشعار تجريبي</button></div><p class="notice" id="mithaqPushStatus" role="status" aria-live="polite"></p></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
+<section id="notifications" class="tab hidden"><div class="card"><button type="button" class="mithaq-section-back" id="mithaqNotificationsBack">← رجوع</button><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><div class="card" style="margin:12px 0;padding:14px"><p class="muted" style="margin:0 0 10px">فعّل إشعارات الهاتف لتصلك تنبيهات ميثاق حتى عندما يكون التطبيق مغلقاً.</p><div class="row"><button type="button" class="primary" id="mithaqEnablePush">تفعيل إشعارات الهاتف</button><button type="button" class="secondary" id="mithaqTestPush" disabled>إرسال إشعار تجريبي</button></div><p class="notice" id="mithaqPushStatus" role="status" aria-live="polite"></p></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
 <section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2>
 <div id="mithaqMemberResults" hidden>
-<div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div>
+<div class="mithaq-member-search">
+<label for="mithaqMemberSearch">بحث باسم المستخدم / اسم الحساب</label>
+<input id="mithaqMemberSearch" type="search" placeholder="اكتب اسم المستخدم أو اسم الحساب" aria-label="بحث باسم المستخدم">
+<div class="mithaq-search-tools"><label class="mithaq-auto-search"><input id="mithaqAutoSearch" type="checkbox" checked> بحث آلي أثناء الكتابة</label><button type="button" class="primary" id="mithaqRunSearch">بحث</button></div>
+<div class="mithaq-quick-search"><strong>البحث السريع:</strong><button type="button" data-member-quick="all">كل الأعضاء</button><button type="button" data-member-quick="online">المتصلون الآن</button><button type="button" data-member-quick="recent">الأحدث نشاطاً</button><button type="button" data-member-quick="name">ترتيب أبجدي</button></div>
+</div>
 <div class="mithaq-member-filters" dir="rtl">
 <label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
 <label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
@@ -1258,7 +1281,7 @@ a{color:#c2185b}
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
 </div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
-<section id="menuFeature" class="tab hidden"><div class="card"><div class="mithaq-feature-page-head"><button type="button" class="secondary" data-feature-back>← الرئيسية</button><span id="mithaqFeatureIcon">💗</span></div><h2 id="mithaqFeatureTitle">قائمة الاهتمام</h2><p id="mithaqFeatureDescription" class="muted"></p><div id="mithaqFeatureContent" class="mithaq-feature-content"></div></div></section>
+<section id="menuFeature" class="tab hidden"><div class="card"><div class="mithaq-feature-page-head"><button type="button" class="secondary" data-feature-back>← رجوع</button><span id="mithaqFeatureIcon">💗</span></div><h2 id="mithaqFeatureTitle">قائمة الاهتمام</h2><p id="mithaqFeatureDescription" class="muted"></p><div id="mithaqFeatureContent" class="mithaq-feature-content"><p id="mithaqFeatureStatus"></p><div id="mithaqFeatureList"></div></div></div></section>
 
 </main>
 <div class="mithaq-bottom-nav" id="mithaqBottomNav" aria-label="التنقل السفلي">
@@ -1647,9 +1670,65 @@ document.getElementById('memberMenuOpen').addEventListener('click',()=>{const is
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
+async function loadMithaqInterestedBy(){
+ const status=document.getElementById('mithaqFeatureStatus'),host=document.getElementById('mithaqFeatureList');
+ if(!status||!host||!supabaseClient)return;
+ host.replaceChildren();status.textContent='جارٍ تحميل الأعضاء الذين يهتمون بك...';
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){status.textContent='سجّل الدخول لعرض القائمة.';return;}
+ const {data,error}=await supabaseClient.rpc('mithaq_list_interested_by');
+ if(error){status.textContent='تعذر تحميل القائمة: '+error.message;return;}
+ if(!data?.length){status.textContent='لا يوجد أعضاء أضافوك إلى قائمة اهتمامهم حتى الآن.';return;}
+ status.textContent='عدد الأعضاء المهتمين بك: '+data.length;
+ data.forEach(person=>{
+  const row=document.createElement('article');row.className='mithaq-feature-member-row';
+  const info=document.createElement('div');info.className='mithaq-feature-member-info';
+  const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
+  const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.country,person.region].filter(Boolean).join(' • ');
+  info.append(name,meta);
+  const interest=document.createElement('button');interest.type='button';interest.className='mithaq-interest-action';interest.textContent='♡ اهتمام';
+  interest.addEventListener('click',async()=>{
+   interest.disabled=true;
+   const {error:saveError}=await supabaseClient.rpc('mithaq_manage_member_action',{p_target_id:person.id,p_action:'interest',p_enabled:true});
+   if(saveError){status.textContent='تعذر تسجيل اهتمامك: '+saveError.message;interest.disabled=false;return;}
+   interest.textContent='♥ تمت إضافة الاهتمام';interest.classList.add('active');
+  });
+  row.append(info,interest);host.append(row);
+ });
+}
+async function loadMithaqProfileVisitors(){
+ const status=document.getElementById('mithaqFeatureStatus'),host=document.getElementById('mithaqFeatureList');
+ if(!status||!host||!supabaseClient)return;
+ host.replaceChildren();status.textContent='جارٍ تحميل الأعضاء الذين زاروا ملفك...';
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){status.textContent='سجّل الدخول لعرض الزيارات.';return;}
+ const {data:events,error}=await supabaseClient.from('mithaq_notifications').select('actor_id,actor_name,created_at')
+  .eq('recipient_id',session.user.id).eq('notification_type','profile_view').not('actor_id','is',null).order('created_at',{ascending:false}).limit(200);
+ if(error){status.textContent='تعذر تحميل الزيارات: '+error.message;return;}
+ const latest=new Map();
+ (events||[]).forEach(event=>{if(event.actor_id&&!latest.has(event.actor_id))latest.set(event.actor_id,event);});
+ const ids=[...latest.keys()];
+ if(!ids.length){status.textContent='لم يزر أحد ملفك الشخصي بعد.';return;}
+ const {data:profiles,error:profileError}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:ids});
+ if(profileError){status.textContent='تعذر تحميل أسماء الزوار: '+profileError.message;return;}
+ const byId=new Map((profiles||[]).map(person=>[person.id,person]));
+ let count=0;
+ ids.forEach(id=>{
+  const event=latest.get(id),person=byId.get(id);if(!person)return;count++;
+  const row=document.createElement('article');row.className='mithaq-feature-member-row';
+  const info=document.createElement('div');info.className='mithaq-feature-member-info';
+  const name=document.createElement('strong');name.textContent=person.display_name||event.actor_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||event.actor_name||'عضو ميثاق','menuFeature'));
+  const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),'آخر زيارة: '+new Date(event.created_at).toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'})].join(' • ');
+  info.append(name,meta);
+  const open=document.createElement('button');open.type='button';open.className='secondary';open.textContent='عرض الملف';open.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
+  row.append(info,open);host.append(row);
+ });
+ status.textContent=count?'عدد الأعضاء الذين زاروا ملفك: '+count:'لا توجد زيارات متاحة للعرض حالياً.';
+}
 const mithaqFeaturePages={
- interest:{title:'قائمة الاهتمام',icon:'💗',description:'هنا ستظهر قائمة الأعضاء الذين أضفتهم إلى اهتمامك.',content:'إضافة الاهتمام من ملف العضو تعمل من خلال زر «إضافة للاهتمام». عرض القائمة الكاملة يحتاج ربط صفحة القائمة بقراءة العلاقات المحفوظة في قاعدة البيانات.'},
- interestedBy:{title:'من يهتم بي',icon:'💞',description:'هنا ستظهر حسابات الأعضاء الذين أضافوك إلى قائمة اهتمامهم.',content:'سيتم عرض الاهتمامات الواردة هنا بعد تجهيز قراءة آمنة ومخصصة لهذه القائمة.'},
+ interest:{title:'قائمة الاهتمام',icon:'💗',description:'الأعضاء الذين أضفتهم إلى قائمة اهتمامك.',content:'يمكنك فتح ملف أي عضو من القائمة.'},
+ interestedBy:{title:'من يهتم بي',icon:'💞',description:'الأعضاء الذين أضافوك إلى قائمة اهتمامهم، ويمكنك إظهار اهتمامك بهم أيضاً.',content:'جارٍ تحميل الأعضاء الذين أضافوك إلى اهتمامهم.'},
+ visitors:{title:'من زار بياناتي',icon:'👁️',description:'الأعضاء الذين زاروا ملفك الشخصي في ميثاق.',content:'جارٍ تحميل زيارات ملفك الشخصي.'},
  mutualInterest:{title:'توافق الاهتمام',icon:'💕',description:'قائمة تجمع بينك وبين الأعضاء الذين يوجد بينكم اهتمام متبادل.',content:'سيتم عرض التطابق عندما يكون كل طرف قد أضاف الطرف الآخر إلى قائمة اهتمامه، بعد ربط القائمة ببيانات العلاقات.'},
  ignored:{title:'قائمة التجاهل',icon:'🚫',description:'هنا ستظهر الحسابات التي أضفتها إلى قائمة التجاهل.',content:'إضافة عضو إلى التجاهل من خيارات ملفه الشخصي متاحة. عرض القائمة وإدارة عناصرها يحتاج صفحة مخصصة.'},
  success:{title:'قصص النجاح',icon:'🌷',description:'مساحة لقصص وتجارب الزواج الناجحة عبر ميثاق.',content:'لم تُنشر قصص موثقة بعد. لن نعرض قصصاً أو أسماء أشخاص دون موافقتهم.'},
@@ -1661,8 +1740,12 @@ function openMithaqFeature(key){
  document.getElementById('mithaqFeatureIcon').textContent=item.icon;
  document.getElementById('mithaqFeatureTitle').textContent=item.title;
  document.getElementById('mithaqFeatureDescription').textContent=item.description;
- const content=document.getElementById('mithaqFeatureContent');content.textContent=item.content;
+ const content=document.getElementById('mithaqFeatureContent');
+ content.replaceChildren();const status=document.createElement('p');status.id='mithaqFeatureStatus';status.className='muted';status.textContent=item.content;
+ const list=document.createElement('div');list.id='mithaqFeatureList';content.append(status,list);
  show('menuFeature');closeMemberDrawer();
+ if(key==='interestedBy')loadMithaqInterestedBy();
+ if(key==='visitors')loadMithaqProfileVisitors();
 }
 document.querySelectorAll('[data-menu-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.menuFeature)));
 document.querySelectorAll('[data-home-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.homeFeature)));
@@ -1683,13 +1766,14 @@ async function shareMithaqApp(){
 }
 document.querySelectorAll('[data-menu-action="share"],[data-home-action="share"]').forEach(b=>b.addEventListener('click',shareMithaqApp));
 document.querySelectorAll('[data-menu-action="logout"],[data-home-action="logout"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('settingsSignOut')?.click()));
-document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('click',()=>show('home')));
+document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('click',goBack));
+document.getElementById('mithaqNotificationsBack')?.addEventListener('click',goBack);
 
 
 
 function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
- ['members','myprofile','messages','settings','help','about'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
+ ['members','myprofile','messages','settings','help','about','notifications'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
 function showProfileEditView(){document.getElementById('profileReadView').hidden=true;document.getElementById('profileEditView').hidden=false;document.getElementById('profileEditView').scrollIntoView({behavior:'smooth',block:'start'});}
 document.getElementById('editProfileOpen').addEventListener('click',showProfileEditView);
@@ -2134,7 +2218,7 @@ function renderMithaqMembers(){
   return (countryAliases[countryFilter]||[]).some(alias=>normalizeCountry(alias)===actual||actual.includes(normalizeCountry(alias)));
  };
  const people=mithaqMemberCache.filter(person=>{
-  const matchesQuery=[person.display_name,person.country,person.region,person.marriage_type,person.details?.age].some(v=>String(v||'').toLocaleLowerCase('ar').includes(query));
+  const matchesQuery=!query||String(person.display_name||'').toLocaleLowerCase('ar').includes(query);
   const matchesSelectedCountry=matchesCountry(person);
   const matchesPresence=presenceFilter==='all'||(presenceFilter==='online'?isOnline(person):!isOnline(person));
   const type=String(person.marriage_type||person.details?.marriage_type||'');
@@ -2220,7 +2304,17 @@ if(memberEntryCountryList){
  });
 }
 document.querySelectorAll('#memberEntryChooser [data-member-choice]').forEach(button=>button.addEventListener('click',()=>openMemberResults(button.dataset.memberChoice)));
-['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
+let mithaqSearchTimer=null;
+const mithaqSearchInput=document.getElementById('mithaqMemberSearch');
+const mithaqAutoSearch=document.getElementById('mithaqAutoSearch');
+const runMithaqSearch=()=>{renderMithaqMembers();};
+mithaqSearchInput?.addEventListener('input',()=>{
+ if(!mithaqAutoSearch?.checked)return;
+ clearTimeout(mithaqSearchTimer);mithaqSearchTimer=setTimeout(runMithaqSearch,250);
+});
+mithaqSearchInput?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();runMithaqSearch();}});
+document.getElementById('mithaqRunSearch')?.addEventListener('click',runMithaqSearch);
+['mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{
  const active=document.querySelector('[data-member-parent].active');
  if(active&&((active.dataset.memberParent==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
  if((active?.dataset.memberShortcut==='country'&&id==='mithaqCountryFilter')||(active?.dataset.memberShortcut==='marriage'&&id==='mithaqMarriageFilter')){
@@ -2229,7 +2323,19 @@ document.querySelectorAll('#memberEntryChooser [data-member-choice]').forEach(bu
   if(!chosen){grid.hidden=true;status.textContent='اختر قيمة من القائمة لعرض الأعضاء.';return;}
   grid.hidden=false;status.hidden=false;
  }
- if(id!=='mithaqMemberSearch')memberShortcutButtons.forEach(button=>button.classList.remove('active'));
+ memberShortcutButtons.forEach(button=>button.classList.remove('active'));
+ renderMithaqMembers();
+}));
+document.querySelectorAll('[data-member-quick]').forEach(button=>button.addEventListener('click',()=>{
+ const mode=button.dataset.memberQuick;
+ if(mithaqSearchInput)mithaqSearchInput.value='';
+ document.getElementById('mithaqCountryFilter').value='all';
+ document.getElementById('mithaqMarriageFilter').value='all';
+ document.getElementById('mithaqPresenceFilter').value=mode==='online'?'online':'all';
+ document.getElementById('mithaqMemberSort').value=mode==='name'?'name':'activity';
+ memberShortcutButtons.forEach(item=>item.classList.remove('active'));
+ document.getElementById('membersGrid').hidden=false;
+ document.getElementById('membersStatus').hidden=false;
  renderMithaqMembers();
 }));
   async function loadConversations(){
