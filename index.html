@@ -999,6 +999,12 @@ a{color:#c2185b}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icons/mithaq-icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ميثاق">
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -2436,5 +2442,14 @@ searchCountrySelect.addEventListener('change',()=>fillAreaSelect(searchCitySelec
 
 
 
+</script>
+
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .catch(error => console.warn('تعذر تسجيل خدمة تطبيق ميثاق:', error));
+  });
+}
 </script>
 </body></html>
