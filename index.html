@@ -1213,7 +1213,7 @@ a{color:#c2185b}
   </div>
   
 </section>
-<section id="notifications" class="tab hidden"><div class="card"><button type="button" class="mithaq-section-back" id="mithaqNotificationsBack">← رجوع</button><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><div class="card" style="margin:12px 0;padding:14px"><p class="muted" style="margin:0 0 10px">فعّل إشعارات الهاتف لتصلك تنبيهات ميثاق حتى عندما يكون التطبيق مغلقاً.</p><div class="row"><button type="button" class="primary" id="mithaqEnablePush">تفعيل إشعارات الهاتف</button><button type="button" class="secondary" id="mithaqTestPush" disabled>إرسال إشعار تجريبي</button></div><p class="notice" id="mithaqPushStatus" role="status" aria-live="polite"></p></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
+<section id="notifications" class="tab hidden"><div class="card"><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><div class="card" style="margin:12px 0;padding:14px"><p class="muted" style="margin:0 0 10px">فعّل إشعارات الهاتف لتصلك تنبيهات ميثاق حتى عندما يكون التطبيق مغلقاً.</p><div class="row"><button type="button" class="primary" id="mithaqEnablePush">تفعيل إشعارات الهاتف</button><button type="button" class="secondary" id="mithaqTestPush" disabled>إرسال إشعار تجريبي</button></div><p class="notice" id="mithaqPushStatus" role="status" aria-live="polite"></p></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
 <section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2>
 <div id="mithaqMemberResults" hidden>
 <div class="mithaq-member-search">
@@ -1767,7 +1767,6 @@ async function shareMithaqApp(){
 document.querySelectorAll('[data-menu-action="share"],[data-home-action="share"]').forEach(b=>b.addEventListener('click',shareMithaqApp));
 document.querySelectorAll('[data-menu-action="logout"],[data-home-action="logout"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('settingsSignOut')?.click()));
 document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('click',goBack));
-document.getElementById('mithaqNotificationsBack')?.addEventListener('click',goBack);
 
 
 
