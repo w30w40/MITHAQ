@@ -1636,9 +1636,9 @@ document.getElementById('chatBack').addEventListener('click',async()=>{
  activeChatUser=null;loadConversations();
 });
 
-async function showChatMemberProfile(){
- if(!activeChatUser)return;
- const userId=activeChatUser;
+async function showChatMemberProfile(requestedUserId=activeChatUser,requestedName='',backTarget='chat'){
+ if(!requestedUserId)return;
+ const userId=requestedUserId;
  const existing=document.getElementById('mithaqFullMemberProfile');
  if(existing)existing.remove();
  const page=document.createElement('section');
