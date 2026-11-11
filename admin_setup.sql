@@ -333,17 +333,25 @@ create policy mithaq_profiles_visible_to_members_and_admin on public.profiles
 for select to authenticated
 using (id=(select auth.uid()) or (select private.mithaq_can_list_profile(id)) or (select public.mithaq_is_admin()));
 
+
 create or replace function public.mithaq_public_member_profiles(p_user_ids uuid[] default null)
-returns table(id uuid,display_name text,country text,region text,marriage_type text,life_text text,last_seen_at timestamptz,created_at timestamptz,details jsonb)
+returns table(
+ id uuid, display_name text, country text, region text, marriage_type text,
+ life_text text, last_seen_at timestamptz, created_at timestamptz, details jsonb
+)
 language plpgsql stable security definer set search_path = ''
 as $$
 begin
- if (select auth.uid()) is null then raise exception 'authentication_required' using errcode='42501'; end if;
+ if (select auth.uid()) is null then
+  raise exception 'authentication_required' using errcode='42501';
+ end if;
  return query
  select p.id,p.display_name,p.country,p.region,p.marriage_type,
   case when p.bio_review_status='approved' then coalesce(p.life_text,'') else '' end,
   p.last_seen_at,p.created_at,
-  coalesce(d.details,'{}'::jsonb)-array['email','email_verified','phone_number','phone_verified','full_name','health','monthly_income','financial_status','public_listing_consent','sub','password','token','secret']::text[]
+  (coalesce(d.details,'{}'::jsonb)
+   - array['email','email_verified','phone','phone_number','phone_verified','mobile','full_name','address','private','health','monthly_income','financial_status','public_listing_consent','sub','password','token','secret']::text[])
+   - case when p.bio_review_status='approved' then array[]::text[] else array['about']::text[] end
  from public.profiles p left join public.profile_details d on d.id=p.id
  where p.id<>(select auth.uid()) and p.account_status='active'
   and (p.is_published=true or coalesce(d.details->>'public_listing_consent','false')='true')
