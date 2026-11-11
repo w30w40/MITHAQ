@@ -283,6 +283,16 @@ body.authenticated #entryGate{display:none}
 #entrySignupForm .wizard-actions{margin:26px 0 18px}
 #entrySignupForm .wizard-actions #entryFinish{display:block;width:100%;min-width:0}
 @media(max-width:520px){#entrySignupForm .wizard-panel-card{padding:17px 14px;margin-bottom:16px}#entrySignupForm .wizard-panel>label{font-size:18px;margin-bottom:24px}#entrySignupForm .wizard-panel input:not([type=checkbox]),#entrySignupForm .wizard-panel select,#entrySignupForm .wizard-panel textarea{font-size:18px;height:64px}}
+
+/* Personal details section styled like the reference registration form */
+#entrySignupForm .wizard-panel[data-step-panel="5"]{background:#fff9fa;border:1px solid #e7cbd4;border-radius:20px;padding:22px;margin:28px 0}
+#entrySignupForm .wizard-panel[data-step-panel="5"] h2{background:#eef5f8;border:1px solid #dce8ee;border-radius:8px;padding:12px 16px;margin:0 0 28px;font-size:23px}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,auto);align-items:center;gap:12px;margin:0 0 22px}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label input{grid-column:1;grid-row:1}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label .required-star{grid-column:2;grid-row:1}
+#entrySignupForm .wizard-panel[data-step-panel="5"] .muted{background:#eef5f8;border-radius:12px;padding:14px;line-height:1.8}
+#entrySignupForm .wizard-panel[data-step-panel="6"]{background:#fff;border:1px solid #e6e9ec;border-radius:20px;padding:22px;margin:24px 0}
+@media(max-width:520px){#entrySignupForm .wizard-panel[data-step-panel="5"]{padding:16px 12px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label{grid-template-columns:1fr;gap:8px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label input{grid-column:1;grid-row:2}#entrySignupForm .wizard-panel[data-step-panel="5"]>label .required-star{grid-column:1;grid-row:1}}
 </style>
 
 <style id="mithaq-profile-responsive-fix">
@@ -563,20 +573,11 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
     </div>
     <div id="entrySignupForm" class="entry-form" hidden>
       <h1 id="wizardHeading" class="entry-heading">تسجيل زوجة</h1>
-      <div class="wizard-progress" aria-label="مراحل التسجيل">
-        <div class="wizard-track"></div>
-        <div class="wizard-step active" data-step-dot="1"><span>1</span></div>
-        <div class="wizard-step" data-step-dot="2"><span>2</span></div>
-        <div class="wizard-step" data-step-dot="3"><span>3</span></div>
-        <div class="wizard-step" data-step-dot="4"><span>4</span></div>
-        <div class="wizard-step" data-step-dot="5"><span>5</span></div>
-      </div>
       <form id="entryCreateForm" novalidate>
         <section class="wizard-panel" data-step-panel="1">
           <h2>معلومات تسجيل الدخول</h2>
           <label>اسم المستخدم <b class="required-star">*</b><input id="entryUsername" type="text" maxlength="14" required autocomplete="username" placeholder="أدخل اسم المستخدم الخاص بك"></label>
           <div class="field-help"><strong>اسم المستخدم:</strong><ul><li>يجب أن يكون أقل من 15 حرفاً</li><li>يجب أن يكون محترماً ولا يتضمن إساءة أو ألفاظاً غير لائقة</li><li>سيظهر للأعضاء</li></ul></div>
-          <label>البريد الإلكتروني <b class="required-star">*</b><input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
           <label>كلمة المرور <b class="required-star">*</b><input id="entrySignupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="كلمة المرور"></label>
           <label>تأكيد كلمة المرور <b class="required-star">*</b><input id="entrySignupConfirm" type="password" minlength="8" required autocomplete="new-password" placeholder="إعادة كتابة كلمة المرور"></label>
           <h2>الحالة الاجتماعية</h2>
@@ -620,6 +621,13 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
           <p class="notice">لا تكتب رقم هاتفك أو عنوانك أو أي معلومات شخصية حساسة في النبذة.</p>
         </section>
         <section class="wizard-panel" data-step-panel="5" hidden>
+          <h2>المعلومات الشخصية</h2>
+          <label>الاسم الكامل <b class="required-star">*</b><input id="entryFullName" type="text" maxlength="100" required autocomplete="name" placeholder="أدخل اسمك الكامل"></label>
+          <label>رقم الهاتف <b class="required-star">*</b><input id="entryPhone" type="tel" maxlength="25" required autocomplete="tel" inputmode="tel" placeholder="أدخل رقم الهاتف مع مفتاح الدولة"></label>
+          <label>البريد الإلكتروني <b class="required-star">*</b><input id="entrySignupEmail" type="email" required autocomplete="email" placeholder="أدخل بريدك الإلكتروني"></label>
+          <p class="muted">بيانات الاسم والهاتف تُحفظ ضمن بيانات الحساب الخاصة، ولا تُعرض كجزء من الملف العام.</p>
+        </section>
+        <section class="wizard-panel" data-step-panel="6" hidden>
           <h2>إنهاء التسجيل</h2>
           <p class="muted">راجع بياناتك ووافق على الشروط قبل إنشاء الحساب.</p>
           <label class="wizard-check"><input id="entryTerms" type="checkbox" required> أوافق على شروط الاستخدام وسياسة الخصوصية، وأتعهد باستخدام ميثاق لغرض التعارف الجاد بقصد الزواج.</label>
@@ -882,9 +890,9 @@ document.querySelectorAll('[data-entry]').forEach(b=>b.addEventListener('click',
 let chosenEntryGender='',currentWizardStep=1;
 const wizardPanels=[...document.querySelectorAll('[data-step-panel]')];
 function renderWizard(){
- // Show all five registration sections together on one page.
+ // Show all registration sections together on one page.
  wizardPanels.forEach(p=>{p.hidden=false;p.classList.add('wizard-panel-card');});
- document.querySelectorAll('[data-step-dot]').forEach(dot=>{dot.classList.add('active','done');});
+ document.querySelectorAll('[data-step-dot]').forEach(dot=>dot.remove());
  document.getElementById('entryBack').hidden=true;
  document.getElementById('entryNext').hidden=true;
  document.getElementById('entryFinish').hidden=false;
@@ -896,7 +904,7 @@ function validateWizardStep(stepNumber=currentWizardStep){
   if(field.type==='checkbox'&&!field.checked&&field.required){field.focus();return 'يرجى الموافقة على الحقول المطلوبة للمتابعة.';}
   if(field.required&&!field.checkValidity()){field.reportValidity();return 'يرجى إكمال الحقول المطلوبة بشكل صحيح.';}
  }
- if(currentWizardStep===1){
+ if(stepNumber===1){
   const username=document.getElementById('entryUsername').value.trim();
   if(username.length<3||username.length>=15)return 'اسم المستخدم يجب أن يكون من 3 إلى 14 حرفاً.';
   if(!/^[\p{L}0-9_]+$/u.test(username))return 'اسم المستخدم يقبل الحروف والأرقام والشرطة السفلية فقط.';
@@ -930,7 +938,7 @@ document.getElementById('entryBack').addEventListener('click',()=>{
 document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  e.preventDefault();const status=document.getElementById('entrySignupStatus');
  let error='';
- for(let stepNumber=1;stepNumber<=5;stepNumber++){
+ for(let stepNumber=1;stepNumber<=6;stepNumber++){
   error=validateWizardStep(stepNumber);
   if(error){
    status.textContent='القسم '+stepNumber+': '+error;
@@ -942,7 +950,7 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
- const profile={public_listing_consent:true,username,gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ const profile={public_listing_consent:true,username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhone').value.trim(),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),origin:document.getElementById('entryOrigin').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
   const email=document.getElementById('entrySignupEmail').value.trim();
   const password=document.getElementById('entrySignupPassword').value;
