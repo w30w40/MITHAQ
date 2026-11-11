@@ -1173,7 +1173,7 @@ a{color:#c2185b}
   </div>
   
 </section>
-<section id="notifications" class="tab hidden"><div class="card"><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
+<section id="notifications" class="tab hidden"><div class="card"><div class="mithaq-notifications-heading"><div><h2>الإشعارات</h2><p class="muted">آخر التنبيهات الخاصة بحسابك</p></div><button type="button" class="secondary" id="mithaqMarkAllNotificationsRead">تحديد الكل كمقروء</button></div><div class="card" style="margin:12px 0;padding:14px"><p class="muted" style="margin:0 0 10px">فعّل إشعارات الهاتف لتصلك تنبيهات ميثاق حتى عندما يكون التطبيق مغلقاً.</p><div class="row"><button type="button" class="primary" id="mithaqEnablePush">تفعيل إشعارات الهاتف</button><button type="button" class="secondary" id="mithaqTestPush" disabled>إرسال إشعار تجريبي</button></div><p class="notice" id="mithaqPushStatus" role="status" aria-live="polite"></p></div><p class="muted" id="mithaqNotificationsStatus">جارٍ تحميل الإشعارات...</p><div id="mithaqNotificationsList" class="mithaq-notifications-list"></div></div></section>
 <section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2>
 <div id="mithaqMemberResults" hidden>
 <div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div>
@@ -2531,4 +2531,73 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   });
 }
 </script>
+
+<script>
+(() => {
+  const publicVapidKey = "BMl3asdyrzFlUhMu2o4UYBUahh14WvoqvAa09w2ggKMXt7C91bI7tEeANfOrFlNDWDcZyeIktH2k1cPdDbGqARE";
+  const enableButton = document.getElementById("mithaqEnablePush");
+  const testButton = document.getElementById("mithaqTestPush");
+  const status = document.getElementById("mithaqPushStatus");
+  if (!enableButton || !testButton || !status) return;
+
+  function decodeVapidKey(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const raw = atob(base64);
+    return Uint8Array.from(raw, char => char.charCodeAt(0));
+  }
+
+  async function callPush(action, extra = {}) {
+    if (!window.supabaseClient) throw new Error("تعذر الاتصال بخدمة الحساب.");
+    const { data, error } = await supabaseClient.functions.invoke("mithaq-push", {
+      body: { action, ...extra }
+    });
+    if (error) throw new Error(data?.error || error.message || "تعذر تنفيذ طلب الإشعارات.");
+    if (data?.error) throw new Error(data.error);
+    return data;
+  }
+
+  enableButton.addEventListener("click", async () => {
+    enableButton.disabled = true;
+    status.textContent = "جارٍ طلب إذن الإشعارات...";
+    try {
+      if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+        throw new Error("هذا المتصفح لا يدعم إشعارات الهاتف.");
+      }
+      if (!supabaseClient) throw new Error("سجّل الدخول إلى حسابك أولاً.");
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") throw new Error("لم يتم السماح بالإشعارات. يمكنك تفعيلها من إعدادات المتصفح.");
+      const registration = await navigator.serviceWorker.ready;
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: decodeVapidKey(publicVapidKey)
+        });
+      }
+      await callPush("subscribe", { subscription: subscription.toJSON() });
+      testButton.disabled = false;
+      status.textContent = "تم تفعيل هذا الجهاز. اضغط «إرسال إشعار تجريبي» للتأكد من وصوله.";
+    } catch (error) {
+      status.textContent = error.message || "تعذر تفعيل الإشعارات.";
+    } finally {
+      enableButton.disabled = false;
+    }
+  });
+
+  testButton.addEventListener("click", async () => {
+    testButton.disabled = true;
+    status.textContent = "جارٍ إرسال إشعار تجريبي...";
+    try {
+      const result = await callPush("test");
+      status.textContent = result?.ok ? "تم إرسال الإشعار التجريبي. تحقق من إشعارات هاتفك." : "لم يتم تأكيد وصول الإشعار.";
+    } catch (error) {
+      status.textContent = error.message || "تعذر إرسال الإشعار التجريبي.";
+    } finally {
+      testButton.disabled = false;
+    }
+  });
+})();
+</script>
+
 </body></html>
