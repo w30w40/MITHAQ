@@ -1685,7 +1685,7 @@ function openMithaqMemberSearch(){
  setTimeout(()=>document.getElementById('mithaqMemberSearch')?.focus(),120);
 }
 document.querySelectorAll('[data-menu-action="search"],[data-home-action="search"]').forEach(b=>b.addEventListener('click',openMithaqMemberSearch));
-document.querySelectorAll('[data-menu-action="photos'],[data-home-action="photos"]').forEach(b=>b.addEventListener('click',()=>{show('members',false,false,true);closeMemberDrawer();}));
+document.querySelectorAll('[data-menu-action="photos"],[data-home-action="photos"]').forEach(b=>b.addEventListener('click',()=>{show('members',false,false,true);closeMemberDrawer();}));
 async function shareMithaqApp(){
  const url='https://w30w40.github.io/MITHAQ/';
  const shareData={title:'ميثاق',text:'انضم إلى ميثاق للتعارف الجاد بقصد الزواج',url};
