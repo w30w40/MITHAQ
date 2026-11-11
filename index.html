@@ -1710,8 +1710,8 @@ if(memberEntryCountryList){
 }
 document.querySelectorAll('#memberEntryChooser [data-member-choice]').forEach(button=>button.addEventListener('click',()=>openMemberResults(button.dataset.memberChoice)));
 ['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
- const active=document.querySelector('[data-member-shortcut].active');
- if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
+ const active=document.querySelector('[data-member-parent].active');
+ if(active&&((active.dataset.memberParent==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
  if((active?.dataset.memberShortcut==='country'&&id==='mithaqCountryFilter')||(active?.dataset.memberShortcut==='marriage'&&id==='mithaqMarriageFilter')){
   const chosen=document.getElementById(id).value!=='all';
   const grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
