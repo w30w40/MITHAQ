@@ -585,6 +585,50 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 .mithaq-full-member-profile-item p{margin:0!important;color:#273b31!important;font-size:14px!important;overflow-wrap:anywhere!important;white-space:pre-wrap!important}
 @media(max-width:480px){.mithaq-full-member-profile-content{padding:11px!important}.mithaq-full-member-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
+<style id="mithaq-home-redesign">
+/* Mawada-inspired home dashboard and fixed member navigation */
+body.authenticated .member-topbar{height:78px;padding:8px 18px;max-width:1180px}
+.member-topbar-actions{display:flex;align-items:center;gap:10px}
+.member-topbar-icon{width:42px;height:42px;padding:0;border-radius:50%;display:grid;place-items:center;background:#ffffff20;color:#fff;font-size:21px}
+.member-mark{font-size:42px}
+body.authenticated main.wrap{padding-bottom:112px}
+.member-page-title{margin:2px 0 16px;padding:8px 3px 13px;border-bottom:1px solid #f5dce3}
+.member-page-title h1{font-size:26px}
+.member-home-welcome{display:flex;align-items:center;gap:13px;padding:17px 18px;margin-bottom:15px;border-radius:17px;background:linear-gradient(115deg,#fff0f4,#fff 68%,#eaf6fc);border:1px solid #f1dce3}
+.member-home-welcome .welcome-symbol{width:54px;height:54px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8dce5;color:#d94368;font-size:29px}
+.member-home-welcome h2{margin:0 0 5px;color:#286d96;font-size:19px}
+.member-home-welcome p{margin:0;color:#78838b;font-size:12px;line-height:1.8}
+.member-home-note{padding:19px 18px;margin:0 0 17px;border-radius:17px;background:#fff;border:1px solid #f1e2e6;box-shadow:0 5px 18px #963a4a08;text-align:center}
+.member-home-note .note-icon{font-size:24px;color:#40a7c6}
+.member-home-note p{max-width:560px;margin:8px auto 13px;color:#687781;font-size:14px;line-height:1.95}
+.member-home-note button{background:linear-gradient(110deg,#d94368,#ef7897);color:#fff;border-radius:9px;min-width:190px}
+.member-section-heading{margin:20px 0 12px}
+.mithaq-home-feed-card{padding:16px}
+.mithaq-live-feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;gap:10px;padding:0}
+.mithaq-live-member{min-width:0;max-width:none;width:100%;flex:auto;display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:10px;align-items:center;text-align:right;padding:12px;scroll-snap-align:none}
+.mithaq-live-avatar-wrap{grid-column:1;grid-row:1/4;width:50px;height:50px;margin:0}
+.mithaq-live-avatar{width:50px;height:50px;font-size:28px}
+.mithaq-live-member h3{grid-column:2;grid-row:1;text-align:right;font-size:13px}
+.mithaq-live-member p{grid-column:2;grid-row:2;text-align:right;font-size:11px}
+.mithaq-live-member .mithaq-live-message{grid-column:2;grid-row:3;width:auto;justify-self:start;margin-top:5px;padding:6px 13px}
+.mithaq-member-search{position:relative;margin:0 0 14px}
+.mithaq-member-search input{border-radius:28px;background:#fff;border:1px solid #f0dce3;padding:13px 44px 13px 15px}
+.mithaq-member-search:before{content:'⌕';position:absolute;right:16px;top:5px;color:#d65b79;font-size:25px;z-index:1}
+#membersGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mithaq-directory-card{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#fff;border:1px solid #f0e3e6;border-radius:16px;padding:13px;box-shadow:0 5px 16px #963a4a08;min-width:0}
+.mithaq-directory-avatar{position:relative;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f9e9ee;font-size:27px;grid-row:span 3}
+.mithaq-directory-card h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere}
+.mithaq-directory-card p{margin:2px 0;color:#7c8790;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.mithaq-directory-card button{justify-self:start;margin-top:4px;padding:7px 13px;border-radius:22px;background:#e8f4fb;color:#286d96;font-size:11px}
+.mithaq-bottom-nav{display:none}
+body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;bottom:0;left:0;right:0;padding:9px max(12px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));background:linear-gradient(110deg,#1264a0,#1687c3);box-shadow:0 -5px 20px #174b7225;border-radius:17px 17px 0 0}
+.mithaq-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px;min-height:62px;border-radius:12px;background:transparent;color:#fff;font-size:11px}
+.mithaq-bottom-nav button .bottom-icon{font-size:27px;line-height:1.15}
+.mithaq-bottom-nav button.active{background:#ffffff20}
+.mithaq-bottom-nav .mithaq-unread-badge{position:absolute;margin:-31px 0 0 25px;border:1px solid #1687c3}
+@media(max-width:600px){.mithaq-live-feed,#membersGrid{grid-template-columns:1fr}.mithaq-live-member{grid-template-columns:48px minmax(0,1fr)}.mithaq-live-avatar-wrap,.mithaq-live-avatar{width:46px;height:46px}.mithaq-live-avatar{font-size:25px}.member-home-welcome h2{font-size:17px}.member-home-note{padding:16px 13px}}
+@media(min-width:900px){body.authenticated .mithaq-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(620px,90vw);border-radius:18px 18px 0 0}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -695,8 +739,8 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 <header>
 <div class="member-topbar">
   
+  <div class="member-topbar-actions"><button class="member-topbar-icon" id="memberSearchOpen" type="button" aria-label="البحث عن الأعضاء">⌕</button><button class="member-topbar-icon" id="memberMessagesOpen" type="button" aria-label="الرسائل">♧</button><button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button></div>
   <div class="member-brand"><span class="member-mark">♥</span><strong>MITHAQ</strong></div>
-  <button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button>
 </div>
 <div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
 <main class="wrap">
@@ -711,7 +755,9 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 </aside>
 <nav class="mooda-nav" aria-label="التنقل الرئيسي"><button data-tab="home">الرئيسية</button><button data-tab="members">الأعضاء</button><button data-tab="messages">الرسائل <span class="mithaq-unread-badge" id="navUnreadBadge" hidden>0</span></button><button data-tab="myprofile">ملفي</button></nav>
 <section id="home" class="tab">
-  <div class="member-page-title"><div><small>مرحباً بك في ميثاق</small><h1>بداية طريق المودة</h1></div><span class="member-title-heart">♥</span></div>
+  <div class="member-page-title"><div><small>الرئيسية</small><h1>أهلاً بك في ميثاق</h1></div><span class="member-title-heart">♥</span></div>
+  <div class="member-home-welcome"><span class="welcome-symbol">♥</span><div><h2>أهلاً بك في صفحة حسابك</h2><p>ابدأ بالتعرّف على الأعضاء والملفات الجادة، واختر التواصل باحترام وخصوصية.</p></div></div>
+  <div class="member-home-note"><div class="note-icon">ℹ️</div><p>شكراً لاستخدامك ميثاق للتعارف الجاد بقصد الزواج. نعمل على توفير تجربة واضحة تحفظ خصوصية الأعضاء وتساعدك على الوصول إلى الملف المناسب.</p><button type="button" id="homeExploreMembers">استعراض الأعضاء</button></div>
   <div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>ملفات معتمدة فقط</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
   <div id="mithaqAdminHomeWidget" class="mithaq-admin-home-widget" hidden><div><span>🛡️</span><strong>لوحة التحكم والمراقبة</strong><small>إدارة الأعضاء ومراجعة المنصة</small></div><button type="button" id="mithaqAdminHomeOpen">فتح لوحة الإدارة</button></div>
   <div class="member-service-grid">
@@ -720,7 +766,7 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
   </div>
   
 </section>
-<section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div></div></section>
+<section id="members" class="tab hidden"><div class="card"><h2>الأعضاء</h2><div class="mithaq-member-search"><input id="mithaqMemberSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المدينة" aria-label="ابحث عن عضو"></div><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div></div></section>
 <section id="myprofile" class="tab hidden">
 
 <div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
@@ -770,6 +816,12 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 </div></section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
 <section id="about" class="tab hidden"><div class="card"><h2>نبذة عن ميثاق</h2><p class="muted">ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين المستخدمين.</p></div></section>
 </main>
+<div class="mithaq-bottom-nav" id="mithaqBottomNav" aria-label="التنقل السفلي">
+<button type="button" data-bottom-go="messages"><span class="bottom-icon">✉️</span><span>البريد الداخلي</span><span class="mithaq-unread-badge" id="bottomUnreadBadge" hidden>0</span></button>
+<button type="button" data-bottom-go="members"><span class="bottom-icon">👥</span><span>الأعضاء</span></button>
+<button type="button" data-bottom-go="myprofile"><span class="bottom-icon">👤</span><span>ملفي الشخصي</span></button>
+</div>
+
 <script>
 /* Robust global language selector: never let storage errors disable the picker. */
 (()=>{
@@ -1086,7 +1138,12 @@ function authUnavailableMessage(){
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
-function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');}
+function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
+document.getElementById('memberSearchOpen')?.addEventListener('click',()=>{show('members');setTimeout(()=>document.getElementById('mithaqMemberSearch')?.focus(),80);});
+document.getElementById('memberMessagesOpen')?.addEventListener('click',()=>show('messages'));
+document.getElementById('homeExploreMembers')?.addEventListener('click',()=>show('members'));
+document.querySelectorAll('[data-bottom-go]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.bottomGo;show(id);document.querySelectorAll('[data-bottom-go]').forEach(item=>item.classList.toggle('active',item===button));}));
+}
 document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
 document.getElementById('memberMenuOpen').addEventListener('click',()=>{const isOpen=document.body.classList.toggle('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded',String(isOpen));});
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
@@ -1366,7 +1423,7 @@ function setupMithaqPresence(session){
 }
 function updateMithaqUnreadBadges(count){
  mithaqUnreadCount=Number(count)||0;
- ['navUnreadBadge','drawerUnreadBadge','homeUnreadBadge'].forEach(id=>{
+ ['navUnreadBadge','drawerUnreadBadge','homeUnreadBadge','bottomUnreadBadge'].forEach(id=>{
   const badge=document.getElementById(id);if(!badge)return;
   badge.textContent=mithaqUnreadCount>99?'99+':String(mithaqUnreadCount);
   badge.hidden=mithaqUnreadCount===0;
@@ -1419,27 +1476,44 @@ async function loadMithaqHomeFeed(){
  });
  status.textContent='الأعضاء المعروضون ملفات معتمدة. علامة الاتصال تعكس آخر نشاط مسجل خلال 5 دقائق.';
 }
-async function loadMembers(){
+let mithaqMemberCache=[];
+function renderMithaqMembers(){
  const host=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
+ if(!host||!status)return;
+ const query=(document.getElementById('mithaqMemberSearch')?.value||'').trim().toLocaleLowerCase('ar');
+ const people=mithaqMemberCache.filter(person=>[person.display_name,person.country,person.region,person.marriage_type,person.details?.age].some(v=>String(v||'').toLocaleLowerCase('ar').includes(query)));
  host.replaceChildren();
+ if(!people.length){status.textContent=query?'لا توجد نتائج مطابقة لبحثك.':'لا يوجد أعضاء آخرون حالياً.';return;}
+ status.textContent='عدد الأعضاء: '+people.length;
+ people.forEach(person=>{
+  const card=document.createElement('article');card.className='mithaq-directory-card';
+  const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
+  const gender=String(person.details?.gender||'').trim().toLowerCase();
+  avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
+  const meta=document.createElement('p');meta.textContent=[person.details?.age?person.details.age+' سنة':'',person.country,person.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const presence=document.createElement('p');const online=!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل حالياً';
+  const button=document.createElement('button');button.type='button';button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
+  card.append(avatar,name,meta,presence,button);host.append(card);
+ });
+}
+async function loadMembers(){
+ const status=document.getElementById('membersStatus');
  if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
  status.textContent='جارٍ تحميل الأعضاء...';
- const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text').order('created_at',{ascending:false}).limit(500);
+ const {data,error}=await supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,last_seen_at,created_at').order('created_at',{ascending:false}).limit(500);
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
  const people=(data||[]).filter(person=>person.id!==session.user.id);
- if(!people.length){status.textContent='لا يوجد أعضاء آخرون حالياً.';return;}
- status.textContent='عدد الأعضاء: '+people.length;
- people.forEach(person=>{
-  const card=document.createElement('article');card.className='member-profile-card';card.style.margin='0';
-  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.style.color='#246b98';
-  const info=document.createElement('p');info.className='muted';info.textContent=[person.country,person.region,person.marriage_type].filter(Boolean).join(' • ')||'عضو في ميثاق';
-  const about=document.createElement('p');about.className='member-profile-about';about.textContent=person.life_text||'';
-  const button=document.createElement('button');button.className='primary';button.type='button';button.textContent='إرسال رسالة';button.style.marginTop='10px';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  card.append(name,info);if(person.life_text)card.append(about);card.append(button);host.append(card);
- });
+ const ids=people.map(person=>person.id);
+ const {data:detailRows,error:detailError}=ids.length?await supabaseClient.from('profile_details').select('id,details').in('id',ids):{data:[],error:null};
+ if(detailError)console.warn('MITHAQ member details:',detailError.message);
+ const detailsById=new Map((detailRows||[]).map(row=>[row.id,row.details||{}]));
+ mithaqMemberCache=people.map(person=>({...person,details:detailsById.get(person.id)||{}}));
+ renderMithaqMembers();
 }
+document.getElementById('mithaqMemberSearch')?.addEventListener('input',renderMithaqMembers);
   async function loadConversations(){
  const host=document.getElementById('conversationList'),panel=document.getElementById('chatPanel');
  panel.hidden=true;
