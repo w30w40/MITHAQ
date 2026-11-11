@@ -2719,12 +2719,12 @@ function fillAreaSelect(select,country,placeholder){
  if(!list.length){const o=document.createElement('option');o.value='';o.textContent='لا توجد قائمة جاهزة لهذه الدولة حالياً';select.append(o);}
  select.disabled=!list.length;
 }
-const entryCountrySelect=document.getElementById('entryCountry');
-const entryCitySelect=document.getElementById('entryCity');
-entryCountrySelect.addEventListener('change',()=>fillAreaSelect(entryCitySelect,entryCountrySelect.value,'اختر المدينة / المنطقة'));
-const searchCountrySelect=document.getElementById('country');
-const searchCitySelect=document.getElementById('cityFilter');
-searchCountrySelect.addEventListener('change',()=>fillAreaSelect(searchCitySelect,searchCountrySelect.value==='all'?'':searchCountrySelect.value,'كل المدن / المناطق'));
+const entryCountryForCitySelect=document.getElementById('entryCountry');
+const entryCityForCountrySelect=document.getElementById('entryCity');
+entryCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(entryCityForCountrySelect,entryCountryForCitySelect.value,'اختر المدينة / المنطقة'));
+const searchCountryForCitySelect=document.getElementById('country');
+const searchCityForCountrySelect=document.getElementById('cityFilter');
+searchCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(searchCityForCountrySelect,searchCountryForCitySelect.value==='all'?'':searchCountryForCitySelect.value,'كل المدن / المناطق'));
 
 
 
