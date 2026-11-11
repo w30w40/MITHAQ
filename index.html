@@ -1229,6 +1229,7 @@ function authUnavailableMessage(){
  return 'تعذر الاتصال بخدمة التسجيل: '+detail+' يرجى إعادة تحميل الصفحة والمحاولة لاحقاً.';
 }
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+nav.forEach(button=>button.addEventListener('click',()=>show(button.dataset.tab)));
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
 function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');}
