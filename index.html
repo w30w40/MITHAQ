@@ -1106,7 +1106,44 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  }catch(err){console.error('MITHAQ signup failed:',err);status.textContent='تعذر إنشاء الحساب: '+(err.message||'حدث خطأ');}
  finally{btn.disabled=false;}
 });
-document.getElementById('entryLoginForm').addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('entryLoginStatus');if(!supabaseClient){status.textContent=authUnavailableMessage();return;}const btn=e.submitter;btn.disabled=true;status.textContent='جارٍ تسجيل الدخول...';try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('entryLoginEmail').value.trim(),password:document.getElementById('entryLoginPassword').value});if(error)throw error;applyAuthenticatedSession(data.session);show('home');status.textContent='تم تسجيل الدخول بنجاح.';}catch(err){console.error('MITHAQ login failed:',err);status.textContent='تعذر تسجيل الدخول: '+(err.message||'تحقق من البريد وكلمة المرور');}finally{btn.disabled=false;}});
+function mithaqFriendlyLoginError(err){
+ const message=String(err?.message||err||'');
+ if(/failed to fetch|networkerror|load failed|fetch failed|timeout|timed out/i.test(message)){
+  return 'تعذر الوصول إلى خادم تسجيل الدخول. أعدنا المحاولة تلقائياً، لكن الاتصال لم يستجب. تحقق من الإنترنت أو بدّل بين بيانات الهاتف والواي فاي ثم حاول مجدداً.';
+ }
+ if(/email not confirmed|email.*confirm|confirm.*email|not confirmed/i.test(message)){
+  return 'حسابك موجود، لكن البريد الإلكتروني لم يتم تأكيده بعد. افتح رسالة التأكيد في بريدك ثم ارجع لتسجيل الدخول.';
+ }
+ if(/invalid login credentials/i.test(message)){
+  return 'البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من كتابتهما أو استخدم «نسيت كلمة المرور».';
+ }
+ if(/too many requests|rate limit/i.test(message)){
+  return 'محاولات الدخول كثيرة خلال وقت قصير. انتظر قليلاً ثم حاول مرة أخرى.';
+ }
+ return 'تعذر تسجيل الدخول: '+(message||'حدث خطأ غير معروف. حاول مرة أخرى.');
+}
+document.getElementById('entryLoginForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const status=document.getElementById('entryLoginStatus');
+ if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
+ const btn=e.submitter||document.querySelector('#entryLoginForm button[type="submit"]');
+ btn.disabled=true;
+ status.textContent='جارٍ الاتصال بخدمة الدخول...';
+ try{
+  const {data,error}=await supabaseClient.auth.signInWithPassword({
+   email:document.getElementById('entryLoginEmail').value.trim(),
+   password:document.getElementById('entryLoginPassword').value
+  });
+  if(error)throw error;
+  if(!data.session)throw new Error('لم يتم إنشاء جلسة دخول. حاول مرة أخرى.');
+  applyAuthenticatedSession(data.session);
+  show('home');
+  status.textContent='تم تسجيل الدخول بنجاح.';
+ }catch(err){
+  console.error('MITHAQ login failed:',err);
+  status.textContent=mithaqFriendlyLoginError(err);
+ }finally{btn.disabled=false;}
+});
 document.getElementById('entryForgot').addEventListener('click',async()=>{const status=document.getElementById('entryLoginStatus'),email=document.getElementById('entryLoginEmail').value.trim();if(!supabaseClient){status.textContent=authUnavailableMessage();return;}if(!email){status.textContent='اكتب بريدك الإلكتروني أولاً.';return;}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://w30w40.github.io/MITHAQ/'});status.textContent=error?'تعذر إرسال رابط الاستعادة: '+error.message:'إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.';});
 
 const SUPABASE_URL='https://lkunvbmxmwewruzpcjji.supabase.co';
@@ -1117,7 +1154,21 @@ let supabaseInitError=null;
 try{
  if(!authReady)throw new Error('مفتاح Supabase غير مضبوط.');
  if(!window.supabase||typeof window.supabase.createClient!=='function')throw new Error('تعذر تحميل مكتبة Supabase من شبكة CDN.');
+ const mithaqFetchWithRetry=async(input,init)=>{
+  const requestUrl=String(input instanceof Request?input.url:input);
+  const isAuthToken=requestUrl.includes('/auth/v1/token');
+  for(let attempt=0;;attempt++){
+   try{return await window.fetch(input,init);}
+   catch(networkError){
+    if(!isAuthToken||attempt>=2)throw networkError;
+    const delay=700*(attempt+1);
+    console.warn('MITHAQ: temporary Auth network failure; retry',attempt+1,'after',delay,'ms');
+    await new Promise(resolve=>setTimeout(resolve,delay));
+   }
+  }
+ };
  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+  global:{fetch:mithaqFetchWithRetry},
   auth:{
    persistSession:true,
    autoRefreshToken:true,
