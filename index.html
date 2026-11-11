@@ -272,6 +272,17 @@ body.authenticated #entryGate{display:none}
  .field-help{font-size:18px}
 }
 @media(max-width:390px){.wizard-step{width:58px;height:58px;font-size:22px}.wizard-track{left:9%;right:9%}.wizard-actions .entry-submit{min-width:0;flex:1}}
+
+/* Single-page five-section registration layout */
+#entrySignupForm .wizard-panel[hidden]{display:block!important}
+#entrySignupForm .wizard-panel-card{display:block;background:#fff;border:1px solid #e6e9ec;border-radius:20px;padding:22px 20px;margin:0 0 22px;box-shadow:0 4px 16px rgba(32,75,100,.06)}
+#entrySignupForm .wizard-panel-card h2{margin:0 0 24px;padding:0 0 14px;border-bottom:2px solid #e6f0f6;font-size:23px}
+#entrySignupForm .wizard-progress{margin-bottom:30px}
+#entrySignupForm .wizard-step{width:48px;height:48px;font-size:20px}
+#entrySignupForm .wizard-track{height:5px}
+#entrySignupForm .wizard-actions{margin:26px 0 18px}
+#entrySignupForm .wizard-actions #entryFinish{display:block;width:100%;min-width:0}
+@media(max-width:520px){#entrySignupForm .wizard-panel-card{padding:17px 14px;margin-bottom:16px}#entrySignupForm .wizard-panel>label{font-size:18px;margin-bottom:24px}#entrySignupForm .wizard-panel input:not([type=checkbox]),#entrySignupForm .wizard-panel select,#entrySignupForm .wizard-panel textarea{font-size:18px;height:64px}}
 </style>
 
 <style id="mithaq-profile-responsive-fix">
@@ -871,15 +882,16 @@ document.querySelectorAll('[data-entry]').forEach(b=>b.addEventListener('click',
 let chosenEntryGender='',currentWizardStep=1;
 const wizardPanels=[...document.querySelectorAll('[data-step-panel]')];
 function renderWizard(){
- wizardPanels.forEach(p=>p.hidden=Number(p.dataset.stepPanel)!==currentWizardStep);
- document.querySelectorAll('[data-step-dot]').forEach(dot=>{const n=Number(dot.dataset.stepDot);dot.classList.toggle('active',n===currentWizardStep);dot.classList.toggle('done',n<currentWizardStep);});
- document.getElementById('entryBack').hidden=currentWizardStep===1;
- document.getElementById('entryNext').hidden=currentWizardStep===5;
- document.getElementById('entryFinish').hidden=currentWizardStep!==5;
+ // Show all five registration sections together on one page.
+ wizardPanels.forEach(p=>{p.hidden=false;p.classList.add('wizard-panel-card');});
+ document.querySelectorAll('[data-step-dot]').forEach(dot=>{dot.classList.add('active','done');});
+ document.getElementById('entryBack').hidden=true;
+ document.getElementById('entryNext').hidden=true;
+ document.getElementById('entryFinish').hidden=false;
  document.getElementById('wizardHeading').textContent=chosenEntryGender==='wife'?'تسجيل زوجة':'تسجيل زوج';
 }
-function validateWizardStep(){
- const panel=wizardPanels.find(p=>Number(p.dataset.stepPanel)===currentWizardStep);
+function validateWizardStep(stepNumber=currentWizardStep){
+ const panel=wizardPanels.find(p=>Number(p.dataset.stepPanel)===stepNumber);
  for(const field of panel.querySelectorAll('input,select,textarea')){
   if(field.type==='checkbox'&&!field.checked&&field.required){field.focus();return 'يرجى الموافقة على الحقول المطلوبة للمتابعة.';}
   if(field.required&&!field.checkValidity()){field.reportValidity();return 'يرجى إكمال الحقول المطلوبة بشكل صحيح.';}
@@ -917,7 +929,16 @@ document.getElementById('entryBack').addEventListener('click',()=>{
 });
 document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  e.preventDefault();const status=document.getElementById('entrySignupStatus');
- const error=validateWizardStep();if(error){status.textContent=error;return;}
+ let error='';
+ for(let stepNumber=1;stepNumber<=5;stepNumber++){
+  error=validateWizardStep(stepNumber);
+  if(error){
+   status.textContent='القسم '+stepNumber+': '+error;
+   const invalidPanel=wizardPanels.find(p=>Number(p.dataset.stepPanel)===stepNumber);
+   invalidPanel?.scrollIntoView({behavior:'smooth',block:'center'});
+   return;
+  }
+ }
  if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
