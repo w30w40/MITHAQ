@@ -156,6 +156,7 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-profile-meta-row:last-child{border-bottom:0}
 .mithaq-profile-meta-row span{color:#718078}
 .mithaq-profile-meta-row strong{color:#263b32;text-align:left}
+.mithaq-profile-meta-row .meta-secondary{display:block;color:#718078;font-size:11px;margin-top:4px;text-align:left}
 .mithaq-profile-actions-panel{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px;padding:14px;background:#fff;border:1px solid #e5ecef;border-radius:15px}
 .mithaq-profile-actions-panel>button{flex:1 1 135px;min-height:44px}
 .mithaq-profile-interest-choice,.mithaq-profile-report-form{width:100%;padding:13px;border:1px solid #e4ecef;border-radius:12px;background:#f8fbfa}
@@ -1923,7 +1924,8 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    const relative=value;let showingFull=false;
    const toggleDate=()=>{showingFull=!showingFull;val.textContent=showingFull?fullDate(stamp):relative;};
    val.addEventListener('click',toggleDate);val.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDate();}});
-   line.append(key,val);metaCard.append(line);
+   if(label==='تاريخ آخر زيارة'&&online){const secondary=document.createElement('small');secondary.className='meta-secondary';secondary.textContent='آخر نشاط '+relativeDate(stamp);line.append(key,val,secondary);}else line.append(key,val);
+   metaCard.append(line);
   });
   const dateHint=document.createElement('p');dateHint.className='notice';dateHint.textContent='مرّر المؤشر أو اضغط مطولاً على التاريخ لمعرفة اليوم والوقت بالتفصيل.';metaCard.append(dateHint);
   content.append(metaCard);
