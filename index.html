@@ -1753,8 +1753,8 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   if(page.isConnected!==false){content.replaceChildren();const message=document.createElement('p');message.className='notice';message.textContent='تعذر تحميل الملف الشخصي: '+(error?.message||'حاول مرة أخرى');content.append(message);}
  }
 }
-document.getElementById('chatTitle').addEventListener('click',showChatMemberProfile);
-document.getElementById('chatHeaderAvatar').addEventListener('click',showChatMemberProfile);
+document.getElementById('chatTitle').addEventListener('click',()=>showChatMemberProfile(activeChatUser,activeChatName,'chat'));
+document.getElementById('chatHeaderAvatar').addEventListener('click',()=>showChatMemberProfile(activeChatUser,activeChatName,'chat'));
 document.getElementById('chatProfileClose').addEventListener('click',()=>{document.getElementById('chatProfileCard').hidden=true;});
 
 async function refreshChat(){
