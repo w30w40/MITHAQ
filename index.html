@@ -666,6 +666,18 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
 .member-entry-grid button span{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:#eaf2f8;font-size:17px}
 .member-entry-grid button strong{font-weight:650}
 .member-entry-grid button:active{background:#edf5fb;border-color:#c8dbe9}
+.member-entry-option{min-width:0;display:flex;flex-direction:column;gap:5px}
+.member-entry-grid .member-entry-parent{width:100%;justify-content:flex-start;position:relative}
+.member-entry-parent>b{margin-right:auto;color:#8b744d;font-size:17px;font-weight:700}
+.member-entry-parent[aria-expanded="true"]{background:#eaf3fa;border-color:#9fc2dc;color:#1e5d91}
+.member-entry-submenu{display:flex;flex-direction:column;gap:3px;max-height:190px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding:6px;border:1px solid #dce7ef;border-right:3px solid #c5a46a;border-radius:11px;background:#f9fbfd}
+.member-entry-submenu[hidden]{display:none!important}
+.member-entry-grid .member-entry-submenu button{display:flex;flex:0 0 auto;width:100%;min-height:42px;justify-content:flex-start;text-align:right;padding:9px 11px;background:#fff;border:1px solid #edf1f4;border-radius:8px;color:#42586a;font-size:12px;font-weight:600}
+.member-entry-grid .member-entry-submenu button:active,.member-entry-grid .member-entry-submenu button.selected{background:#e5f2fa;border-color:#b7d3e6;color:#155d91}
+.member-entry-country-list{display:flex;flex-direction:column;gap:3px}
+.member-entry-country-list button{width:100%}
+@media(max-width:420px){.member-entry-submenu{max-height:175px}}
+
 @media(max-width:420px){.member-entry-chooser{padding:13px;margin:14px 0 18px;border-radius:14px}.member-entry-grid{gap:7px}.member-entry-grid button{min-height:55px;padding:9px 10px;gap:8px;font-size:12px}.member-entry-grid button span{width:30px;height:30px;font-size:15px}.member-entry-heading strong{font-size:16px}}
 </style>
 
@@ -803,13 +815,13 @@ body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
   <section id="memberEntryChooser" class="member-entry-chooser" hidden aria-label="اختر طريقة استعراض الأعضاء">
    <div class="member-entry-heading"><span>👥</span><div><strong>استعراض الأعضاء</strong><small>اختر طريقة العرض للمتابعة</small></div></div>
    <div class="member-entry-grid">
-    <button type="button" data-member-shortcut="all"><span>👥</span><strong>كل الأعضاء</strong></button>
-    <button type="button" data-member-shortcut="online"><span>🟢</span><strong>المتصلون الآن</strong></button>
-    <button type="button" data-member-shortcut="offline"><span>⚪</span><strong>غير المتصلين</strong></button>
-    <button type="button" data-member-shortcut="country"><span>🌍</span><strong>حسب الدولة</strong></button>
-    <button type="button" data-member-shortcut="marriage"><span>💍</span><strong>نوع الزواج</strong></button>
-    <button type="button" data-member-shortcut="activity"><span>🕒</span><strong>الأحدث نشاطاً</strong></button>
-    <button type="button" data-member-shortcut="name"><span>🔤</span><strong>حسب الاسم</strong></button>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="all" aria-expanded="false"><span>👥</span><strong>كل الأعضاء</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="all" hidden><button type="button" data-member-choice="all">عرض جميع الأعضاء</button><button type="button" data-member-choice="activity">الأحدث نشاطاً</button><button type="button" data-member-choice="name">ترتيب حسب الاسم</button></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="online" aria-expanded="false"><span>🟢</span><strong>المتصلون الآن</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="online" hidden><button type="button" data-member-choice="online">عرض المتصلين الآن</button><button type="button" data-member-choice="online-name">ترتيب المتصلين حسب الاسم</button></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="offline" aria-expanded="false"><span>⚪</span><strong>غير المتصلين</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="offline" hidden><button type="button" data-member-choice="offline">عرض غير المتصلين</button><button type="button" data-member-choice="offline-name">ترتيب غير المتصلين حسب الاسم</button></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="country" aria-expanded="false"><span>🌍</span><strong>حسب الدولة</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="country" hidden><button type="button" data-member-choice="country-all">جميع الدول</button><div class="member-entry-country-list" id="memberEntryCountryList"></div></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="marriage" aria-expanded="false"><span>💍</span><strong>نوع الزواج</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="marriage" hidden><button type="button" data-member-choice="marriage-all">كل أنواع الزواج</button><button type="button" data-member-choice="marriage-معلن">الزواج المعلن</button><button type="button" data-member-choice="marriage-مسيار">زواج المسيار</button><button type="button" data-member-choice="marriage-الوحيدة">الوحيدة</button><button type="button" data-member-choice="marriage-لا مانع من التعدد">لا مانع من التعدد</button></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="activity" aria-expanded="false"><span>🕒</span><strong>الأحدث نشاطاً</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="activity" hidden><button type="button" data-member-choice="activity">الأحدث نشاطاً أولاً</button><button type="button" data-member-choice="activity-online">الأحدث نشاطاً من المتصلين</button><button type="button" data-member-choice="activity-offline">الأحدث نشاطاً من غير المتصلين</button></div></div>
+    <div class="member-entry-option"><button type="button" class="member-entry-parent" data-member-parent="name" aria-expanded="false"><span>🔤</span><strong>حسب الاسم</strong><b>⌄</b></button><div class="member-entry-submenu" data-member-submenu="name" hidden><button type="button" data-member-choice="name">ترتيب أبجدي</button><button type="button" data-member-choice="name-online">أسماء المتصلين أبجدياً</button><button type="button" data-member-choice="name-offline">أسماء غير المتصلين أبجدياً</button></div></div>
    </div>
   </section>
   <div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>الأعضاء المتاحون</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
@@ -1656,37 +1668,47 @@ function populateMithaqCountryFilter(){
  if([...select.options].some(option=>option.value===current))select.value=current;
 }
 populateMithaqCountryFilter();
-const memberShortcutButtons=[...document.querySelectorAll('#memberEntryChooser [data-member-shortcut]')];
+const memberShortcutButtons=[...document.querySelectorAll('#memberEntryChooser [data-member-parent]')];
 function resetMemberEntry(){
  const results=document.getElementById('mithaqMemberResults');
  const grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
  if(results)results.hidden=true;
  if(grid)grid.hidden=true;
  if(status)status.hidden=true;
- memberShortcutButtons.forEach(button=>button.classList.remove('active'));
+ memberShortcutButtons.forEach(button=>{button.classList.remove('active');button.setAttribute('aria-expanded','false');});
+ document.querySelectorAll('#memberEntryChooser .member-entry-submenu').forEach(menu=>menu.hidden=true);
 }
-function activateMemberShortcut(key){
+function openMemberResults(choice){
  const results=document.getElementById('mithaqMemberResults'),grid=document.getElementById('membersGrid'),status=document.getElementById('membersStatus');
  const presence=document.getElementById('mithaqPresenceFilter'),country=document.getElementById('mithaqCountryFilter'),marriage=document.getElementById('mithaqMarriageFilter'),sort=document.getElementById('mithaqMemberSort');
  if(!results||!grid||!status||!presence||!country||!marriage||!sort)return;
- results.hidden=false;
- grid.hidden=key==='country'||key==='marriage';
- status.hidden=false;
- if(key==='all'){presence.value='all';country.value='all';marriage.value='all';sort.value='activity';}
- if(key==='online'||key==='offline'){presence.value=key;}
- if(key==='activity'||key==='name'){sort.value=key;}
- memberShortcutButtons.forEach(button=>button.classList.toggle('active',button.dataset.memberShortcut===key));
- if(key==='country'||key==='marriage'){
-  status.textContent=key==='country'?'اختر الدولة أولاً لعرض الأعضاء.':'اختر نوع الزواج أولاً لعرض الأعضاء.';
-  const target=key==='country'?country:marriage;
-  target.value='all';
-  target.scrollIntoView({behavior:'smooth',block:'center'});
-  target.focus({preventScroll:true});
-  return;
- }
+ show('members',false,false,true);
+ presence.value='all';country.value='all';marriage.value='all';sort.value='activity';
+ if(['online','offline'].includes(choice))presence.value=choice;
+ if(['online-name','activity-online','name-online'].includes(choice))presence.value='online';
+ if(['offline-name','activity-offline','name-offline'].includes(choice))presence.value='offline';
+ if(['name','online-name','offline-name','name-online','name-offline'].includes(choice))sort.value='name';
+ if(choice.startsWith('marriage-'))marriage.value=choice==='marriage-all'?'all':choice.slice(9);
+ if(choice.startsWith('country-'))country.value=choice==='country-all'?'all':choice.slice(8);
+ results.hidden=false;grid.hidden=false;status.hidden=false;
+ const chooser=document.getElementById('memberEntryChooser');if(chooser)chooser.hidden=true;
  renderMithaqMembers();
 }
-memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>{const key=button.dataset.memberShortcut;const chooser=document.getElementById('memberEntryChooser');if(chooser)chooser.hidden=true;show('members',false,false,true);activateMemberShortcut(key);}));
+memberShortcutButtons.forEach(button=>button.addEventListener('click',()=>{
+ const key=button.dataset.memberParent,menu=document.querySelector('[data-member-submenu="'+key+'"]'),opening=!!menu?.hidden;
+ document.querySelectorAll('#memberEntryChooser .member-entry-submenu').forEach(item=>item.hidden=true);
+ memberShortcutButtons.forEach(item=>item.setAttribute('aria-expanded','false'));
+ if(menu){menu.hidden=!opening;button.setAttribute('aria-expanded',String(opening));}
+ memberShortcutButtons.forEach(item=>item.classList.toggle('active',item===button&&opening));
+}));
+const memberEntryCountryList=document.getElementById('memberEntryCountryList');
+if(memberEntryCountryList){
+ const sourceCountry=document.getElementById('mithaqCountryFilter');
+ [...(sourceCountry?.options||[])].filter(option=>option.value&&option.value!=='all').forEach(option=>{
+  const item=document.createElement('button');item.type='button';item.textContent=option.textContent;item.dataset.memberChoice='country-'+option.value;memberEntryCountryList.append(item);
+ });
+}
+document.querySelectorAll('#memberEntryChooser [data-member-choice]').forEach(button=>button.addEventListener('click',()=>openMemberResults(button.dataset.memberChoice)));
 ['mithaqMemberSearch','mithaqCountryFilter','mithaqPresenceFilter','mithaqMarriageFilter','mithaqMemberSort'].forEach(id=>document.getElementById(id)?.addEventListener(id==='mithaqMemberSearch'?'input':'change',()=>{
  const active=document.querySelector('[data-member-shortcut].active');
  if(active&&((active.dataset.memberShortcut==='online'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='offline'&&id==='mithaqPresenceFilter')||(active.dataset.memberShortcut==='activity'&&id==='mithaqMemberSort')||(active.dataset.memberShortcut==='name'&&id==='mithaqMemberSort')))return;
