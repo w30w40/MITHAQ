@@ -1820,7 +1820,7 @@ async function refreshProfileAccess(){
  const uid=session.user.id;
  const [{data:privateRow,error:privateError},{data:publicRow,error:publicError}]=await Promise.all([
   supabaseClient.from('profile_details').select('details').eq('id',uid).maybeSingle(),
-  supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published').eq('id',uid).maybeSingle()
+  supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published,member_number').eq('id',uid).maybeSingle()
  ]);
  const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
  const savedDetails=privateRow?.details||{};
@@ -1846,7 +1846,7 @@ async function refreshProfileAccess(){
   meta.about=meta.about||publicRow.life_text||'';
  }
  const profileFields=[
-  ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
+  ['رقم العضوية',publicRow?.member_number??'غير متاح'],['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
   ['مكان الإقامة',meta.country],['الجنسية',meta.nationality],['المدينة',meta.city],['الأصل',meta.origin],
   ['الوزن',meta.weight],['الطول',meta.height],['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
   ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
@@ -2089,7 +2089,7 @@ function renderMithaqMembers(){
   const gender=String(person.details?.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
-  const meta=document.createElement('p');meta.textContent=[person.details?.age?person.details.age+' سنة':'',person.country,person.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const meta=document.createElement('p');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل حالياً';
   const button=document.createElement('button');button.type='button';button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
   avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';avatar.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));card.append(avatar,name,meta,presence,button);host.append(card);
@@ -2101,7 +2101,7 @@ async function loadMembers(){
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
  status.textContent='جارٍ تحميل جميع الأعضاء المتاحين...';
- const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles',{p_user_ids:null});
+ const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
  mithaqMemberCache=(data||[]).map(person=>({...person,details:person.details||{}}));
  renderMithaqMembers();
@@ -2181,7 +2181,7 @@ document.querySelectorAll('#memberEntryChooser [data-member-choice]').forEach(bu
  if(error){host.textContent='تعذر تحميل المراسلات. تأكد من تنفيذ إعداد قاعدة بيانات المراسلات. '+error.message;return;}
  const ids=[...new Set((data||[]).map(m=>m.sender_id===session.user.id?m.recipient_id:m.sender_id))];
  if(!ids.length){host.textContent='لا توجد رسائل بعد. افتح قسم الأعضاء واختر عضواً لإرسال رسالة.';return;}
- const {data:people,error:peopleError}=await supabaseClient.rpc('mithaq_public_member_profiles',{p_user_ids:ids});
+ const {data:people,error:peopleError}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:ids});
  if(peopleError){host.textContent='تعذر تحميل أسماء المستخدمين: '+peopleError.message;return;}
  const peopleById=new Map((people||[]).map(person=>[person.id,person]));
  host.replaceChildren();
@@ -2215,7 +2215,7 @@ async function openChat(userId,name){
  document.getElementById('chatPresenceText').textContent='عضو ميثاق';
  try{
   const {data:profile}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,last_seen_at').eq('id',userId).maybeSingle();
-  const {data:publicRows}=await supabaseClient.rpc('mithaq_public_member_profiles',{p_user_ids:[userId]});
+  const {data:publicRows}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[userId]});
   const gender=String(publicRows?.[0]?.details?.gender||'').trim().toLowerCase();
   document.getElementById('chatHeaderAvatar').textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   const online=!!profile?.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
@@ -2269,7 +2269,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
  const loading=document.createElement('p');loading.className='muted';loading.textContent='جارٍ تحميل الملف الشخصي الكامل...';
  content.append(loading);page.append(header,content);document.body.append(page);
  try{
-  const {data:memberRows,error:memberError}=await supabaseClient.rpc('mithaq_public_member_profiles',{p_user_ids:[userId]});
+  const {data:memberRows,error:memberError}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[userId]});
   if(page.isConnected===false)return;
   if(memberError)throw memberError;
   const profile=memberRows?.[0];
@@ -2298,6 +2298,10 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   };
   const metaCard=document.createElement('section');metaCard.className='mithaq-profile-meta';
   const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات العضوية';metaCard.append(metaTitle);
+  const memberNumberLine=document.createElement('div');memberNumberLine.className='mithaq-profile-meta-row';
+  const memberNumberLabel=document.createElement('span');memberNumberLabel.textContent='رقم العضوية';
+  const memberNumberValue=document.createElement('strong');memberNumberValue.textContent=profile.member_number??'غير متاح';
+  memberNumberLine.append(memberNumberLabel,memberNumberValue);metaCard.append(memberNumberLine);
   const online=!!profile.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
   [['تاريخ آخر زيارة',online?'🟢 متواجد الآن':relativeDate(profile.last_seen_at),profile.last_seen_at],['تاريخ التسجيل',relativeDate(profile.created_at),profile.created_at]].forEach(([label,value,stamp])=>{
    const line=document.createElement('div');line.className='mithaq-profile-meta-row';
