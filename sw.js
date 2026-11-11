@@ -47,3 +47,40 @@ self.addEventListener('fetch', event => {
     );
   }
 });
+
+self.addEventListener('push', event => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (_) {
+    payload = { body: event.data ? event.data.text() : '' };
+  }
+  const title = payload.title || 'ميثاق';
+  const options = {
+    body: payload.body || 'لديك إشعار جديد.',
+    icon: './icons/mithaq-icon.svg',
+    badge: './icons/mithaq-icon.svg',
+    tag: payload.tag || 'mithaq-notification',
+    data: { url: payload.url || './' },
+    dir: 'rtl',
+    lang: 'ar',
+    renotify: false
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url || './', self.registration.scope).href;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of windows) {
+      if (client.url.startsWith(self.registration.scope) && 'focus' in client) {
+        await client.focus();
+        if ('navigate' in client && client.url !== target) await client.navigate(target);
+        return;
+      }
+    }
+    if (self.clients.openWindow) await self.clients.openWindow(target);
+  })());
+});
