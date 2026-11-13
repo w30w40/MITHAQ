@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<script>document.documentElement.classList.add('mithaq-auth-pending');</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#ec1764"><title>ميثاق | تعارف جاد باحترام وخصوصية</title>
 <meta name="description" content="ميثاق منصة للتعارف الجاد بقصد الزواج، مع ملفات شخصية وطلبات تعارف ومراسلات خاصة تحفظ الخصوصية.">
@@ -27,6 +28,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 /* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
+html.mithaq-auth-pending #entryGate{visibility:hidden!important;pointer-events:none!important}
 body.authenticated{background:#fff9fa;color:#343b43}
 body.authenticated #entryGate{display:none!important}
 body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
@@ -1685,12 +1687,20 @@ try{
   const requestUrl=String(input instanceof Request?input.url:input);
   const isAuthToken=requestUrl.includes('/auth/v1/token');
   for(let attempt=0;;attempt++){
-   try{return await window.fetch(input,init);}
+   const controller=new AbortController();
+   const sourceSignal=init?.signal||(input instanceof Request?input.signal:null);
+   const relayAbort=()=>controller.abort(sourceSignal.reason);
+   if(sourceSignal){if(sourceSignal.aborted)relayAbort();else sourceSignal.addEventListener('abort',relayAbort,{once:true});}
+   const timeout=setTimeout(()=>controller.abort(new Error('انتهت مهلة الاتصال بالخادم بعد 20 ثانية.')),20000);
+   try{return await window.fetch(input,{...(init||{}),signal:controller.signal});}
    catch(networkError){
-    if(!isAuthToken||attempt>=2)throw networkError;
+    if(controller.signal.aborted||!isAuthToken||attempt>=2)throw networkError;
     const delay=700*(attempt+1);
     console.warn('MITHAQ: temporary Auth network failure; retry',attempt+1,'after',delay,'ms');
     await new Promise(resolve=>setTimeout(resolve,delay));
+   }finally{
+    clearTimeout(timeout);
+    if(sourceSignal)sourceSignal.removeEventListener('abort',relayAbort);
    }
   }
  };
@@ -1724,6 +1734,8 @@ function authUnavailableMessage(){
  return 'تعذر الاتصال بخدمة التسجيل: '+detail+' يرجى إعادة تحميل الصفحة والمحاولة لاحقاً.';
 }
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+const MITHAQ_ROUTE_KEY='mithaq-last-page-v1';
+function saveMithaqRoute(id){try{sessionStorage.setItem(MITHAQ_ROUTE_KEY,id);}catch(_){}}
 nav.forEach(button=>button.addEventListener('click',()=>show(button.dataset.tab)));
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
@@ -1839,7 +1851,7 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 
 
-function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();if(id==='siteAnalyticsPage')loadMithaqSiteAnalytics();}
+function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();if(id==='siteAnalyticsPage')loadMithaqSiteAnalytics();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about','notifications'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -1894,15 +1906,24 @@ async function showAuthSession(){
  applyAuthenticatedSession(data.session||null);
 }
 async function restoreAuthSession(){
- if(!supabaseClient)return;
- const {data,error}=await supabaseClient.auth.getSession();
- if(error){console.error('MITHAQ session restore:',error.message);return;}
- if(data.session){
-  applyAuthenticatedSession(data.session);
-  show('home');
-  await refreshMithaqAdminAccess();
- }else{
-  applyAuthenticatedSession(null);
+ try{
+  if(!supabaseClient){applyAuthenticatedSession(null);return;}
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error){console.error('MITHAQ session restore:',error.message);applyAuthenticatedSession(null);return;}
+  if(data.session){
+   applyAuthenticatedSession(data.session);
+   let target='home';
+   try{const saved=sessionStorage.getItem(MITHAQ_ROUTE_KEY);if(saved&&tabs.some(tab=>tab.id===saved))target=saved;}catch(_){}
+   const allowed=await refreshMithaqAdminAccess();
+   if(target==='siteAnalyticsPage'&&!isMithaqAdmin)target='home';
+   if(target==='admin'&&!allowed)target='home';
+   show(target,target==='home');
+  }else{
+   applyAuthenticatedSession(null);
+   try{sessionStorage.removeItem(MITHAQ_ROUTE_KEY);}catch(_){}
+  }
+ }finally{
+  document.documentElement.classList.remove('mithaq-auth-pending');
  }
 }
 if(supabaseClient){
@@ -1910,11 +1931,10 @@ if(supabaseClient){
   applyAuthenticatedSession(session);
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   Promise.resolve().then(()=>refreshMithaqAdminAccess());
-  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
-   if(!document.querySelector('.tab:not(.hidden)'))show('home');
-  }
  });
  restoreAuthSession();
+}else{
+ document.documentElement.classList.remove('mithaq-auth-pending');
 }
 let isMithaqAdmin=false,isMithaqModerator=false;
 async function refreshMithaqAdminAccess(){
@@ -2039,6 +2059,7 @@ async function refreshProfileAccess(){
  const gate=document.getElementById('profileGate'),form=document.getElementById('myProfileForm');
  const details=document.getElementById('myProfileDetails'),about=document.getElementById('myProfileAbout');
  const status=document.getElementById('profileStatus');
+ try{
  if(!supabaseClient){gate.textContent='تعذر الاتصال بالخدمة حالياً.';form.hidden=true;return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){gate.textContent='سجّل الدخول أولاً لعرض ملفك الشخصي.';form.hidden=true;details.textContent='لا توجد جلسة دخول.';return;}
@@ -2101,6 +2122,14 @@ document.getElementById('profileCountry')?.addEventListener('change',()=>{const 
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
+ }catch(error){
+  console.error('MITHAQ profile load failed:',error);
+  gate.textContent='تعذر تحميل ملفك بسبب مشكلة اتصال. تحقق من الإنترنت ثم اضغط ملفي الشخصي لإعادة المحاولة.';
+  form.hidden=true;
+  if(details)details.textContent='لم يكتمل تحميل المواصفات.';
+  if(about)about.textContent='تعذر تحميل النبذة حالياً.';
+  if(status)status.textContent='تعذر الاتصال بقاعدة البيانات: '+(error?.message||'انتهت مهلة الاتصال.');
+ }
 }
 document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  e.preventDefault();
