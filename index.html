@@ -2619,7 +2619,18 @@ document.getElementById('settingsBackgroundOpen')?.addEventListener('click',()=>
  const panel=document.getElementById('mithaqBackgroundSettings');panel.hidden=!panel.hidden;
  if(!panel.hidden)loadMithaqBackgroundSettings();
 });
-document.getElementById('mithaqBackgroundFile')?.addEventListener('change',async event=>{
+// Recover the uploader if a deployed or partially hydrated shell omitted the hidden file input.
+let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
+if(!mithaqBackgroundFileInput){
+ mithaqBackgroundFileInput=document.createElement('input');
+ mithaqBackgroundFileInput.id='mithaqBackgroundFile';
+ mithaqBackgroundFileInput.type='file';
+ mithaqBackgroundFileInput.accept='image/jpeg,image/png,image/webp,image/gif';
+ mithaqBackgroundFileInput.hidden=true;
+ const picker=document.querySelector('label.mithaq-background-pick');
+ if(picker){picker.htmlFor='mithaqBackgroundFile';picker.insertAdjacentElement('afterend',mithaqBackgroundFileInput);}
+}
+mithaqBackgroundFileInput?.addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file)return;
  try{
   await validateMithaqBackgroundFile(file);
