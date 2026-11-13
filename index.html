@@ -1264,6 +1264,7 @@ a{color:#c2185b}
   <div class="mithaq-admin-heading"><div><span class="member-eyebrow">MITHAQ • ADMIN</span><h2>لوحة إدارة ميثاق</h2><p class="muted">إدارة الأعضاء ومراجعة الملفات والنبذات قبل نشرها</p></div><span class="mithaq-admin-shield">🛡️</span></div>
   <p id="mithaqAdminStatus" class="notice" aria-live="polite">جارٍ التحقق من صلاحية المشرف...</p>
   <div id="mithaqAdminStats" class="mithaq-admin-stats"></div>
+  <button id="mithaqOpenSiteAnalytics" class="primary" type="button" hidden>📊 إحصائيات زوار الموقع</button>
 </div>
 <div class="card mithaq-admin-card">
   <div class="card mithaq-admin-card">
@@ -1273,6 +1274,16 @@ a{color:#c2185b}
   <div class="mithaq-admin-heading"><div><h2>حسابات الأعضاء</h2><p class="muted">اعرض بيانات العضو وراجع النبذة قبل اعتماد ظهور الملف للعامة. تعليق العضوية يمنع المراسلات ولا يعطّل تسجيل الدخول نفسه.</p></div><button id="mithaqAdminReload" class="secondary" type="button">تحديث</button></div>
   <div id="mithaqAdminMembers" class="mithaq-admin-members"></div>
 </div>
+</section>
+<section id="siteAnalyticsPage" class="tab hidden">
+  <div class="card mithaq-admin-card">
+    <div class="mithaq-admin-heading"><div><span class="member-eyebrow">MITHAQ • ANALYTICS</span><h2>تحليل زوار ميثاق</h2><p class="muted">إحصائيات الزيارات والزوار والحسابات المسجلة</p></div></div>
+    <button id="mithaqAnalyticsBack" class="secondary" type="button">← رجوع إلى لوحة الإدارة</button>
+    <p id="mithaqAnalyticsStatus" class="notice" aria-live="polite">جارٍ تحميل الإحصائيات...</p>
+    <div id="mithaqAnalyticsStats" class="mithaq-admin-stats"></div>
+    <button id="mithaqAnalyticsReload" class="secondary" type="button">تحديث الإحصائيات</button>
+    <p class="muted" style="font-size:12px;line-height:1.8;margin-top:12px">تُسجّل الزيارة فور فتح الموقع بمعرّف عشوائي للمتصفح والجلسة. لا يتم جمع عنوان IP أو اسم الزائر. قد تتأثر الأعداد بحذف بيانات المتصفح أو استخدام أكثر من جهاز.</p>
+  </div>
 </section>
 <section id="settings" class="tab hidden">
 <div class="card settings-list">
@@ -1697,6 +1708,16 @@ try{
  supabaseInitError=err;
  console.error('MITHAQ Supabase initialization failed:',err);
 }
+function mithaqAnalyticsId(storage,key){
+ try{let value=storage.getItem(key);if(!value){value=crypto.randomUUID();storage.setItem(key,value);}return value;}
+ catch(err){return crypto.randomUUID();}
+}
+async function recordMithaqSiteVisit(){
+ if(!supabaseClient)return;
+ try{const visitorId=mithaqAnalyticsId(localStorage,'mithaq_visitor_id');const sessionId=mithaqAnalyticsId(sessionStorage,'mithaq_session_id');const {error}=await supabaseClient.rpc('mithaq_record_site_visit',{p_visitor_id:visitorId,p_session_id:sessionId});if(error)console.warn('MITHAQ visit tracking:',error.message);}
+ catch(err){console.warn('MITHAQ visit tracking unavailable:',err);}
+}
+setTimeout(recordMithaqSiteVisit,0);
 function authUnavailableMessage(){
  const detail=supabaseInitError?.message||'تعذر تهيئة اتصال Supabase.';
  console.error('MITHAQ authentication unavailable:',supabaseInitError||detail);
@@ -1818,7 +1839,7 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 
 
-function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();}
+function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();if(id==='siteAnalyticsPage')loadMithaqSiteAnalytics();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about','notifications'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -1906,6 +1927,7 @@ async function refreshMithaqAdminAccess(){
  isMithaqAdmin=!adminError&&admin===true;
  isMithaqModerator=!moderatorError&&moderator===true;
  const allowed=isMithaqAdmin||isMithaqModerator;
+ const analyticsButton=document.getElementById('mithaqOpenSiteAnalytics');if(analyticsButton)analyticsButton.hidden=!isMithaqAdmin;
  if(link)link.hidden=!allowed;
  const homeWidget=document.getElementById('mithaqAdminHomeWidget');if(homeWidget)homeWidget.hidden=!allowed;
  if(adminError)console.error('MITHAQ admin authorization check failed:',adminError.message);
@@ -1914,6 +1936,17 @@ async function refreshMithaqAdminAccess(){
  if(!allowed&&active?.id==='admin')show('home');
  return allowed;
 }
+async function loadMithaqSiteAnalytics(){
+ const status=document.getElementById('mithaqAnalyticsStatus'),host=document.getElementById('mithaqAnalyticsStats');if(!status||!host)return;
+ const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqAdmin){status.textContent='هذه الصفحة مخصصة للمشرف الرئيسي فقط.';host.replaceChildren();show('home',true);return;}
+ status.textContent='جارٍ تحميل الإحصائيات...';host.replaceChildren();
+ const {data,error}=await supabaseClient.rpc('mithaq_admin_site_analytics');if(error){status.textContent='تعذر تحميل الإحصائيات: '+error.message;return;}
+ [['إجمالي الزيارات',data.total_visits],['الزوار الفريدون',data.unique_visitors],['زوار لم ينشئوا حساباً',data.guest_visitors],['زوار لديهم حساب',data.registered_visitors],['زيارات اليوم',data.visits_today],['زوار اليوم',data.visitors_today],['إجمالي الحسابات المنشأة',data.registered_accounts],['حسابات جديدة اليوم',data.new_accounts_today]].forEach(([label,value])=>host.append(mithaqAdminStat(label,value)));
+ status.textContent='تم تحديث الإحصائيات الآن.';
+}
+document.getElementById('mithaqOpenSiteAnalytics')?.addEventListener('click',()=>show('siteAnalyticsPage'));
+document.getElementById('mithaqAnalyticsBack')?.addEventListener('click',()=>show('admin'));
+document.getElementById('mithaqAnalyticsReload')?.addEventListener('click',loadMithaqSiteAnalytics);
 function mithaqAdminStat(label,value){
  const card=document.createElement('div');card.className='mithaq-admin-stat';
  const name=document.createElement('span');name.textContent=label;
