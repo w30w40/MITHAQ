@@ -1923,9 +1923,10 @@ if(supabaseClient){
   applyAuthenticatedSession(session);
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   Promise.resolve().then(()=>refreshMithaqAdminAccess());
-  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(()=>{document.documentElement.classList.remove('mithaq-auth-pending');});
  });
  restoreAuthSession();
+}else{
+ document.documentElement.classList.remove('mithaq-auth-pending');
 }
 let isMithaqAdmin=false,isMithaqModerator=false;
 async function refreshMithaqAdminAccess(){
