@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mithaq-shell-v1';
+const CACHE_NAME = 'mithaq-shell-v2-bgfix-20261113';
 const APP_SHELL = ['./', './manifest.webmanifest', './icons/mithaq-icon.svg'];
 
 self.addEventListener('install', event => {
@@ -24,7 +24,7 @@ self.addEventListener('fetch', event => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).then(response => {
+      fetch(request, { cache: 'no-store' }).then(response => {
         if (response && response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put('./', copy));
