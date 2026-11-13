@@ -1687,12 +1687,20 @@ try{
   const requestUrl=String(input instanceof Request?input.url:input);
   const isAuthToken=requestUrl.includes('/auth/v1/token');
   for(let attempt=0;;attempt++){
-   try{return await window.fetch(input,init);}
+   const controller=new AbortController();
+   const sourceSignal=init?.signal||(input instanceof Request?input.signal:null);
+   const relayAbort=()=>controller.abort(sourceSignal.reason);
+   if(sourceSignal){if(sourceSignal.aborted)relayAbort();else sourceSignal.addEventListener('abort',relayAbort,{once:true});}
+   const timeout=setTimeout(()=>controller.abort(new Error('انتهت مهلة الاتصال بالخادم بعد 20 ثانية.')),20000);
+   try{return await window.fetch(input,{...(init||{}),signal:controller.signal});}
    catch(networkError){
-    if(!isAuthToken||attempt>=2)throw networkError;
+    if(controller.signal.aborted||!isAuthToken||attempt>=2)throw networkError;
     const delay=700*(attempt+1);
     console.warn('MITHAQ: temporary Auth network failure; retry',attempt+1,'after',delay,'ms');
     await new Promise(resolve=>setTimeout(resolve,delay));
+   }finally{
+    clearTimeout(timeout);
+    if(sourceSignal)sourceSignal.removeEventListener('abort',relayAbort);
    }
   }
  };
@@ -2051,6 +2059,7 @@ async function refreshProfileAccess(){
  const gate=document.getElementById('profileGate'),form=document.getElementById('myProfileForm');
  const details=document.getElementById('myProfileDetails'),about=document.getElementById('myProfileAbout');
  const status=document.getElementById('profileStatus');
+ try{
  if(!supabaseClient){gate.textContent='تعذر الاتصال بالخدمة حالياً.';form.hidden=true;return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){gate.textContent='سجّل الدخول أولاً لعرض ملفك الشخصي.';form.hidden=true;details.textContent='لا توجد جلسة دخول.';return;}
@@ -2113,6 +2122,14 @@ document.getElementById('profileCountry')?.addEventListener('change',()=>{const 
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
+ }catch(error){
+  console.error('MITHAQ profile load failed:',error);
+  gate.textContent='تعذر تحميل ملفك بسبب مشكلة اتصال. تحقق من الإنترنت ثم اضغط ملفي الشخصي لإعادة المحاولة.';
+  form.hidden=true;
+  if(details)details.textContent='لم يكتمل تحميل المواصفات.';
+  if(about)about.textContent='تعذر تحميل النبذة حالياً.';
+  if(status)status.textContent='تعذر الاتصال بقاعدة البيانات: '+(error?.message||'انتهت مهلة الاتصال.');
+ }
 }
 document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  e.preventDefault();
