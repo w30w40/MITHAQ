@@ -1936,9 +1936,8 @@ async function restoreAuthSession(){
 }
 if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((event,session)=>{
-  applyAuthenticatedSession(session);
-  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   if(event!=='INITIAL_SESSION'&&event!=='TOKEN_REFRESHED')applyAuthenticatedSession(session);
+  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   if(event==='SIGNED_IN'||event==='SIGNED_OUT'||event==='USER_UPDATED')Promise.resolve().then(()=>refreshMithaqAdminAccess());
  });
  restoreAuthSession();
