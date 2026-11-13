@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<script>document.documentElement.classList.add('mithaq-auth-pending');</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#ec1764"><title>ميثاق | تعارف جاد باحترام وخصوصية</title>
 <meta name="description" content="ميثاق منصة للتعارف الجاد بقصد الزواج، مع ملفات شخصية وطلبات تعارف ومراسلات خاصة تحفظ الخصوصية.">
@@ -27,6 +28,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 /* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
+html.mithaq-auth-pending #entryGate{visibility:hidden!important;pointer-events:none!important}
 body.authenticated{background:#fff9fa;color:#343b43}
 body.authenticated #entryGate{display:none!important}
 body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
@@ -1724,6 +1726,8 @@ function authUnavailableMessage(){
  return 'تعذر الاتصال بخدمة التسجيل: '+detail+' يرجى إعادة تحميل الصفحة والمحاولة لاحقاً.';
 }
 const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+const MITHAQ_ROUTE_KEY='mithaq-last-page-v1';
+function saveMithaqRoute(id){try{sessionStorage.setItem(MITHAQ_ROUTE_KEY,id);}catch(_){}}
 nav.forEach(button=>button.addEventListener('click',()=>show(button.dataset.tab)));
  const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
@@ -1839,7 +1843,7 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 
 
-function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();if(id==='siteAnalyticsPage')loadMithaqSiteAnalytics();}
+function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){if(id==='members'&&!memberChoice){const current=tabs.find(t=>!t.classList.contains('hidden'));if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){tabs.forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=tabs.find(t=>!t.classList.contains('hidden'));if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);tabs.forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){loadMithaqHomeFeed();loadMithaqUnreadCount();}if(id==='myprofile')refreshProfileAccess();if(id==='members'){resetMemberEntry();loadMembers();}if(id==='messages'){loadConversations();loadMithaqUnreadCount();}if(id==='notifications')loadMithaqNotifications();if(id==='admin')loadMithaqAdminPanel();if(id==='siteAnalyticsPage')loadMithaqSiteAnalytics();}
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about','notifications'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -1894,15 +1898,24 @@ async function showAuthSession(){
  applyAuthenticatedSession(data.session||null);
 }
 async function restoreAuthSession(){
- if(!supabaseClient)return;
- const {data,error}=await supabaseClient.auth.getSession();
- if(error){console.error('MITHAQ session restore:',error.message);return;}
- if(data.session){
-  applyAuthenticatedSession(data.session);
-  show('home');
-  await refreshMithaqAdminAccess();
- }else{
-  applyAuthenticatedSession(null);
+ try{
+  if(!supabaseClient){applyAuthenticatedSession(null);return;}
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error){console.error('MITHAQ session restore:',error.message);applyAuthenticatedSession(null);return;}
+  if(data.session){
+   applyAuthenticatedSession(data.session);
+   let target='home';
+   try{const saved=sessionStorage.getItem(MITHAQ_ROUTE_KEY);if(saved&&tabs.some(tab=>tab.id===saved))target=saved;}catch(_){}
+   const allowed=await refreshMithaqAdminAccess();
+   if(target==='siteAnalyticsPage'&&!isMithaqAdmin)target='home';
+   if(target==='admin'&&!allowed)target='home';
+   show(target,target==='home');
+  }else{
+   applyAuthenticatedSession(null);
+   try{sessionStorage.removeItem(MITHAQ_ROUTE_KEY);}catch(_){}
+  }
+ }finally{
+  document.documentElement.classList.remove('mithaq-auth-pending');
  }
 }
 if(supabaseClient){
@@ -1910,9 +1923,7 @@ if(supabaseClient){
   applyAuthenticatedSession(session);
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   Promise.resolve().then(()=>refreshMithaqAdminAccess());
-  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
-   if(!document.querySelector('.tab:not(.hidden)'))show('home');
-  }
+  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(()=>{document.documentElement.classList.remove('mithaq-auth-pending');});
  });
  restoreAuthSession();
 }
