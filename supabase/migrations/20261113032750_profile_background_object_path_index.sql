@@ -1,0 +1,1 @@
+create unique index if not exists mithaq_profile_backgrounds_object_path_uidx on public.mithaq_profile_backgrounds(object_path);
