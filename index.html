@@ -1908,6 +1908,7 @@ async function restoreAuthSession(){
 if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((event,session)=>{
   applyAuthenticatedSession(session);
+  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
   Promise.resolve().then(()=>refreshMithaqAdminAccess());
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
    if(!document.querySelector('.tab:not(.hidden)'))show('home');
