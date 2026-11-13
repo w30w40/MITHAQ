@@ -1924,7 +1924,7 @@ async function restoreAuthSession(){
    else Promise.resolve().then(()=>refreshMithaqAdminAccess()).catch(error=>console.warn('MITHAQ role refresh:',error));
    if(target==='siteAnalyticsPage'&&!isMithaqAdmin)target='home';
    if(target==='admin'&&!allowed)target='home';
-   show(target,target==='home');
+   show(target,target==='home',false,target==='members');
   }else{
    applyAuthenticatedSession(null);
    try{sessionStorage.removeItem(MITHAQ_ROUTE_KEY);}catch(_){}
