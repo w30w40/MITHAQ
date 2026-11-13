@@ -1742,7 +1742,7 @@ const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelector
 const MITHAQ_ROUTE_KEY='mithaq-last-page-v1';
 function saveMithaqRoute(id){try{sessionStorage.setItem(MITHAQ_ROUTE_KEY,id);}catch(_){}}
 const mithaqPageLoads=new Map();
-function runMithaqPageLoad(key,loader){if(mithaqPageLoads.has(key))return mithaqPageLoads.get(key);const task=Promise.resolve().then(loader).catch(error=>{console.error('MITHAQ page load failed ('+key+'):',error);}).finally(()=>{if(mithaqPageLoads.get(key)===task)mithaqPageLoads.delete(key);});mithaqPageLoads.set(key,task);return task;}
+function runMithaqPageLoad(key,loader){if(mithaqPageLoads.has(key))return mithaqPageLoads.get(key);const task=Promise.resolve().then(loader).catch(error=>{console.error('MITHAQ page load failed ('+key+'):',error);const active=document.querySelector('.tab:not(.hidden)');const messages={home:['homeFeedStatus','تعذر تحميل محتوى الرئيسية. تحقق من الاتصال ثم أعد فتح الصفحة.'],myprofile:['profileStatus','تعذر تحميل ملفك بسبب مشكلة اتصال. أعد فتح ملفي الشخصي للمحاولة.'],members:['membersStatus','تعذر تحميل الأعضاء بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],conversations:['conversationList','تعذر تحميل المراسلات بسبب مشكلة اتصال. أعد فتح البريد الداخلي للمحاولة.'],notifications:['mithaqNotificationsStatus','تعذر تحميل الإشعارات بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],admin:['mithaqAdminStatus','تعذر تحميل لوحة الإدارة بسبب مشكلة اتصال.'], 'site-analytics':['mithaqAnalyticsStatus','تعذر تحميل الإحصائيات بسبب مشكلة اتصال.']};const item=messages[key];if(item&&active?.id===(key==='conversations'?'messages':key==='site-analytics'?'siteAnalyticsPage':key)){const node=document.getElementById(item[0]);if(node)node.textContent=item[1];}}).finally(()=>{if(mithaqPageLoads.get(key)===task)mithaqPageLoads.delete(key);});mithaqPageLoads.set(key,task);return task;}
 const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
 function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');}
@@ -1756,7 +1756,7 @@ document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
 document.getElementById('memberMenuOpen').addEventListener('click',()=>{const isOpen=document.body.classList.toggle('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded',String(isOpen));});
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
-document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();if(id==='messages')loadConversations();}));
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();}));
 async function loadMithaqInterestedBy(){
  const status=document.getElementById('mithaqFeatureStatus'),host=document.getElementById('mithaqFeatureList');
  if(!status||!host||!supabaseClient)return;
@@ -2183,7 +2183,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
 });
 // يتم تحميل الملف من show() عند فتح تبويبه.
 
-document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.settingsGo;show(id);if(id==='messages')loadConversations();}));
+document.querySelectorAll('[data-settings-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.settingsGo)));
 document.getElementById('settingsSignOut').addEventListener('click',async()=>{const status=document.getElementById('settingsStatus');if(!supabaseClient){status.textContent='تسجيل الخروج غير متاح حالياً.';return;}status.textContent='جارٍ تسجيل الخروج...';const {error}=await supabaseClient.auth.signOut();status.textContent=error?'تعذر تسجيل الخروج: '+error.message:'تم تسجيل الخروج.';if(!error){const signedInBox=document.getElementById('signedInBox');if(signedInBox)signedInBox.hidden=true;document.body.classList.remove('authenticated');showEntry('signup');}});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 let publishedProfiles=[];
@@ -2206,7 +2206,7 @@ function setupMithaqPresence(session){
  if(!session)return;
  touchMithaqLastSeen(session);
  mithaqPresenceTimer=setInterval(()=>touchMithaqLastSeen(session),120000);
- mithaqFeedTimer=setInterval(()=>{const home=document.getElementById('home');if(home&&!home.classList.contains('hidden'))loadMithaqHomeFeed();},60000);
+ mithaqFeedTimer=setInterval(()=>{const home=document.getElementById('home');if(home&&!home.classList.contains('hidden'))runMithaqPageLoad('home-feed',loadMithaqHomeFeed);},60000);
  loadMithaqNotificationCount();mithaqNotificationTimer=setInterval(()=>{if(document.visibilityState==='visible')loadMithaqNotificationCount();},60000);
 }
 function updateMithaqUnreadBadges(count){
@@ -2531,7 +2531,7 @@ async function openChat(userId,name){
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
- activeChatUser=null;loadConversations();
+ activeChatUser=null;runMithaqPageLoad('conversations',loadConversations);
 });
 
 async function showChatMemberProfile(requestedUserId=activeChatUser,requestedName='',backTarget='chat'){
@@ -2775,7 +2775,7 @@ document.getElementById('messageForm').addEventListener('submit',async e=>{
   mithaqMessageSending=false;btn.disabled=false;
  }
 });
-document.querySelector('button[data-tab="messages"]').addEventListener('click',loadConversations);
+// Conversation loading is centralized in show() to prevent duplicate requests.
 
 
 
