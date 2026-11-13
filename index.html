@@ -29,6 +29,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
 html.mithaq-auth-pending #entryGate{visibility:hidden!important;pointer-events:none!important}
+html.mithaq-auth-pending .tab,html.mithaq-auth-pending nav,html.mithaq-auth-pending [data-bottom-go]{visibility:hidden!important;pointer-events:none!important}
 body.authenticated{background:#fff9fa;color:#343b43}
 body.authenticated #entryGate{display:none!important}
 body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
@@ -1930,7 +1931,7 @@ if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((event,session)=>{
   applyAuthenticatedSession(session);
   if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))Promise.resolve().then(recordMithaqSiteVisit);
-  Promise.resolve().then(()=>refreshMithaqAdminAccess());
+  if(event!=='INITIAL_SESSION')Promise.resolve().then(()=>refreshMithaqAdminAccess());
  });
  restoreAuthSession();
 }else{
