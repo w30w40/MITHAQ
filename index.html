@@ -3148,7 +3148,7 @@ const mithaqBackgroundSettingsPanel=document.getElementById('mithaqBackgroundSet
 if(mithaqBackgroundSettingsPanel)document.getElementById('myprofile')?.append(mithaqBackgroundSettingsPanel);
 let mithaqBackgroundLastTrigger=mithaqProfileBackgroundButton||mithaqBackgroundSettingsButton;
 function setMithaqBackgroundPanelOpen(open,trigger=mithaqBackgroundLastTrigger){if(!mithaqBackgroundSettingsPanel)return;if(trigger)mithaqBackgroundLastTrigger=trigger;mithaqBackgroundSettingsPanel.hidden=!open;[mithaqBackgroundSettingsButton,mithaqProfileBackgroundButton].forEach(button=>button?.setAttribute('aria-expanded',String(open)));if(open){loadMithaqBackgroundSettings();mithaqBackgroundSettingsPanel.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('mithaqBackgroundFile')?.focus({preventScroll:true});}else (mithaqBackgroundLastTrigger||mithaqProfileBackgroundButton||mithaqBackgroundSettingsButton)?.focus({preventScroll:true});}
-mithaqBackgroundSettingsButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden,mithaqBackgroundSettingsButton));
+mithaqBackgroundSettingsButton?.addEventListener('click',()=>{show('myprofile');setMithaqBackgroundPanelOpen(true,mithaqBackgroundSettingsButton);});
 mithaqProfileBackgroundButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden,mithaqProfileBackgroundButton));
 document.getElementById('mithaqBackgroundClose')?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(false));
 let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
