@@ -661,7 +661,14 @@ body.authenticated main.wrap{padding-bottom:112px}
 .mithaq-member-search input{border-radius:28px;background:#fff;border:1px solid #f0dce3;padding:13px 44px 13px 15px}
 .mithaq-member-search:before{content:'⌕';position:absolute;right:16px;top:5px;color:#d65b79;font-size:25px;z-index:1}
 #membersGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.mithaq-country-flag-badge{position:absolute;right:-3px;bottom:-3px;min-width:23px;height:20px;padding:1px 3px;display:grid;place-items:center;border:2px solid #fff;border-radius:9px;background:#fff;font-size:15px;line-height:1;box-shadow:0 1px 5px #0002;z-index:2}.mithaq-directory-avatar .mithaq-country-flag-badge{right:-5px;bottom:-4px}
+.mithaq-country-flag-badge{position:absolute;right:-3px;bottom:-3px;min-width:23px;height:20px;padding:1px 3px;display:grid;place-items:center;border:2px solid #fff;border-radius:9px;background:#fff;font-size:15px;line-height:1;box-shadow:0 1px 5px #0002;z-index:2}
+.mithaq-premium-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-inline-start:4px;border-radius:50%;background:linear-gradient(145deg,#fff4c2,#d7a62a);border:1px solid #b8891c;color:#674500;font-size:13px;line-height:1;box-shadow:0 1px 4px #9b741d44;vertical-align:middle}
+.mithaq-premium-badge[hidden]{display:none!important}
+.mithaq-premium-card{border:1px solid #e8d59a;background:linear-gradient(145deg,#fffdf6,#fff8e4)}
+.mithaq-premium-card .mithaq-premium-mark{font-size:30px}
+.mithaq-premium-card .mithaq-premium-benefits{line-height:1.9}
+.mithaq-premium-status{font-weight:700;color:#806018}
+.mithaq-directory-avatar .mithaq-country-flag-badge{right:-5px;bottom:-4px}
 .mithaq-directory-card{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#fff;border:1px solid #f0e3e6;border-radius:16px;padding:13px;box-shadow:0 5px 16px #963a4a08;min-width:0}
 .mithaq-directory-avatar{position:relative;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f9e9ee;font-size:27px;grid-row:span 3}
 .mithaq-directory-card h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere}
@@ -1321,9 +1328,17 @@ a{color:#c2185b}
 <section id="settings" class="tab hidden">
 <div class="card settings-list">
 
+<button class="settings-item" id="settingsPremiumOpen" type="button"><span class="settings-icon">⭐</span><span><strong>العضوية المميزة</strong><small>الرسائل الصوتية ومشاركة الصور ومراسلات أكثر</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item" id="settingsBackgroundOpen" type="button"><span class="settings-icon">🖼️</span><span><strong>خلفية حسابي</strong><small>اختر صورة تظهر للأعضاء عند تفعيلها</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
+</div>
+<div class="card mithaq-premium-card" id="mithaqPremiumPanel" hidden>
+ <div class="member-profile-card-head"><h2>العضوية المميزة</h2><span class="mithaq-premium-mark">⭐</span></div>
+ <p id="mithaqPremiumStatus" class="mithaq-premium-status" aria-live="polite">جارٍ التحقق من حالة العضوية...</p>
+ <ul class="mithaq-premium-benefits"><li>شارة ذهبية بجانب صورتك.</li><li>إرسال الرسائل الصوتية.</li><li>مشاركة الصور في المحادثات.</li><li>مزايا مراسلة أوسع، بعد تحديد حد المراسلات المجاني قبل الإطلاق.</li></ul>
+ <p class="muted">الاشتراك الشهري والدفع الإلكتروني سيُفعّلان بعد ربط حساب التحصيل البنكي وبوابة الدفع. لن يتم خصم أي مبلغ الآن.</p>
+ <button type="button" class="primary" id="mithaqPremiumSubscribe" disabled>الاشتراك الشهري — قريباً</button>
 </div>
 <div class="card mithaq-background-settings" id="mithaqBackgroundSettings" hidden>
  <div class="member-profile-card-head"><h2>خلفية حسابي</h2><span>خلفية مستقلة لحسابك</span></div>
@@ -1584,6 +1599,32 @@ document.getElementById('entryBack').addEventListener('click',()=>{
 
 // International phone country picker (ISO country/territory calling codes).
 const phoneCountryRows="IS|آيسلندا|354~AZ|أذربيجان|994~AM|أرمينيا|374~AW|أروبا|297~AU|أستراليا|61~AF|أفغانستان|93~AL|ألبانيا|355~DE|ألمانيا|49~AG|أنتيغوا وبربودا|1268~AO|أنغولا|244~AI|أنغويلا|1264~UY|أوروغواي|598~UZ|أوزبكستان|998~UG|أوغندا|256~UA|أوكرانيا|380~IE|أيرلندا|353~ET|إثيوبيا|251~ER|إريتريا|291~ES|إسبانيا|34~EE|إستونيا|372~IL|إسرائيل|972~SZ|إسواتيني|268~ID|إندونيسيا|62~IR|إيران|98~IT|إيطاليا|39~AR|الأرجنتين|54~JO|الأردن|962~IO|الإقليم البريطاني في المحيط الهندي|246~EC|الإكوادور|593~AE|الإمارات العربية المتحدة|971~BH|البحرين|973~BR|البرازيل|55~PT|البرتغال|351~BA|البوسنة والهرسك|387~CZ|التشيك|420~DZ|الجزائر|213~DK|الدانمرك|45~CV|الرأس الأخضر|238~SV|السلفادور|503~SN|السنغال|221~SD|السودان|249~SE|السويد|46~EH|الصحراء الغربية|212~SO|الصومال|252~CN|الصين|86~IQ|العراق|964~GA|الغابون|241~PH|الفلبين|63~CM|الكاميرون|237~CG|الكونغو - برازافيل|242~CD|الكونغو - كينشاسا|243~KW|الكويت|965~MA|المغرب|212~MX|المكسيك|52~SA|المملكة العربية السعودية|966~GB|المملكة المتحدة|44~NO|النرويج|47~AT|النمسا|43~NE|النيجر|227~IN|الهند|91~US|الولايات المتحدة|1~JP|اليابان|81~YE|اليمن|967~GR|اليونان|30~PG|بابوا غينيا الجديدة|675~PY|باراغواي|595~PK|باكستان|92~PW|بالاو|680~BB|بربادوس|1246~BM|برمودا|1441~BN|بروناي|673~BE|بلجيكا|32~BG|بلغاريا|359~BZ|بليز|501~BD|بنغلاديش|880~PA|بنما|507~BJ|بنين|229~BT|بوتان|975~BW|بوتسوانا|267~PR|بورتوريكو|1787~BF|بوركينا فاسو|226~BI|بوروندي|257~PL|بولندا|48~BO|بوليفيا|591~PF|بولينيزيا الفرنسية|689~PE|بيرو|51~BY|بيلاروس|375~TH|تايلاند|66~TW|تايوان|886~TM|تركمانستان|993~TR|تركيا|90~TT|ترينيداد وتوباغو|1868~TD|تشاد|235~CL|تشيلي|56~TZ|تنزانيا|255~TG|توغو|228~TV|توفالو|688~TK|توكيلاو|690~TN|تونس|216~TO|تونغا|676~TL|تيمور الشرقية|670~JM|جامايكا|1876~GI|جبل طارق|350~BS|جزر البهاما|1242~KM|جزر القمر|269~MQ|مارتينيك|596~MV|جزر المالديف|960~PN|جزر بيتكيرن|64~SB|جزر سليمان|677~FO|جزر فارو|298~FK|جزر فوكلاند|500~KY|جزر كايمان|1345~CK|جزر كوك|682~CC|جزر كوكوس|61~MH|جزر مارشال|692~MP|جزر ماريانا الشمالية|1670~WF|واليس وفوتونا|681~CX|جزيرة كريسماس|61~IM|جزيرة مان|44~NF|جزيرة نورفولك|672~CF|جمهورية أفريقيا الوسطى|236~DO|جمهورية الدومينيكان|1809~ZA|جنوب أفريقيا|27~SS|جنوب السودان|211~GE|جورجيا|995~GS|جورجيا الجنوبية|500~DJ|جيبوتي|253~JE|جيرسي|44~DM|دومينيكا|1767~RW|رواندا|250~RU|روسيا|7~RO|رومانيا|40~RE|ريونيون|262~ZM|زامبيا|260~ZW|زيمبابوي|263~CI|ساحل العاج|225~WS|ساموا|685~AS|ساموا الأمريكية|1684~PM|سان بيير وميكلون|508~SM|سان مارينو|378~VC|سانت فنسنت والغرينادين|1784~KN|سانت كيتس ونيفيس|1869~LC|سانت لوسيا|1758~SH|سانت هيلينا|290~ST|ساو تومي وبرينسيبي|239~LK|سريلانكا|94~SJ|سفالبارد ويان ماين|47~SK|سلوفاكيا|421~SI|سلوفينيا|386~SG|سنغافورة|65~SY|سوريا|963~SR|سورينام|597~CH|سويسرا|41~SL|سيراليون|232~SC|سيشل|248~TJ|طاجيكستان|992~OM|عُمان|968~GM|غامبيا|220~GH|غانا|233~GD|غرينادا|1473~GL|غرينلاند|299~GT|غواتيمالا|502~GP|غوادلوب|590~GU|غوام|1671~GF|غويانا الفرنسية|594~GY|غيانا|592~GG|غيرنزي|44~GN|غينيا|224~GQ|غينيا الاستوائية|240~GW|غينيا بيساو|245~VU|فانواتو|678~FR|فرنسا|33~VE|فنزويلا|58~FI|فنلندا|358~VN|فيتنام|84~FJ|فيجي|679~CY|قبرص|357~QA|قطر|974~KG|قيرغيزستان|996~KZ|كازاخستان|7~NC|كاليدونيا الجديدة|687~HR|كرواتيا|385~KH|كمبوديا|855~CA|كندا|1~XK|كوسوفو|383~CU|كوبا|53~KR|كوريا الجنوبية|82~KP|كوريا الشمالية|850~CR|كوستاريكا|506~CO|كولومبيا|57~KI|كيريباتي|686~KE|كينيا|254~LV|لاتفيا|371~LA|لاوس|856~LB|لبنان|961~LU|لوكسمبورغ|352~LY|ليبيا|218~LR|ليبيريا|231~LT|ليتوانيا|370~LI|ليختنشتاين|423~LS|ليسوتو|266~MT|مالطا|356~ML|مالي|223~MY|ماليزيا|60~YT|مايوت|262~MG|مدغشقر|261~EG|مصر|20~MK|مقدونيا الشمالية|389~MW|ملاوي|265~MO|ماكاو|853~MN|منغوليا|976~MR|موريتانيا|222~MU|موريشيوس|230~MZ|موزمبيق|258~MD|مولدوفا|373~MC|موناكو|377~MS|مونتسرات|1664~FM|ميكرونيزيا|691~NA|ناميبيا|264~NR|ناورو|674~NP|نيبال|977~NG|نيجيريا|234~NI|نيكاراغوا|505~NZ|نيوزيلندا|64~NU|نيوي|683~HT|هايتي|509~HN|هندوراس|504~HU|هنغاريا|36~NL|هولندا|31~HK|هونغ كونغ|852".split('~').map(row=>row.split('|'));
+let mithaqPremiumMemberIds=new Set();
+let mithaqMyPremium=false;
+async function loadMithaqPremiumIds(userIds){
+ const ids=[...new Set((userIds||[]).filter(Boolean))];
+ if(!ids.length||!supabaseClient)return new Set();
+ const {data,error}=await supabaseClient.rpc('mithaq_premium_member_ids',{p_user_ids:ids});
+ if(error){console.warn('MITHAQ premium badges:',error.message);return new Set();}
+ return new Set(data||[]);
+}
+function makeMithaqPremiumBadge(){
+ const badge=document.createElement('span');badge.className='mithaq-premium-badge';badge.textContent='★';badge.title='عضو مميز';badge.setAttribute('role','img');badge.setAttribute('aria-label','عضو مميز');return badge;
+}
+async function loadMithaqMyMembership(){
+ const status=document.getElementById('mithaqPremiumStatus');if(!supabaseClient)return;
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){mithaqMyPremium=false;if(status)status.textContent='سجّل الدخول لعرض عضويتك.';return;}
+ const {data,error}=await supabaseClient.rpc('mithaq_my_membership');
+ if(error){if(status)status.textContent='تعذر التحقق من العضوية حالياً.';console.warn('MITHAQ membership:',error.message);return;}
+ const membership=Array.isArray(data)?data[0]:data;
+ mithaqMyPremium=!!membership?.is_premium;
+ if(status)status.textContent=mithaqMyPremium?'⭐ عضويتك المميزة فعّالة حتى '+(membership.expires_at?new Date(membership.expires_at).toLocaleDateString('ar'):''): 'عضويتك الحالية مجانية. الاشتراك الشهري سيتاح بعد ربط الدفع.';
+}
+document.getElementById('settingsPremiumOpen')?.addEventListener('click',async()=>{
+ const panel=document.getElementById('mithaqPremiumPanel');if(panel)panel.hidden=!panel.hidden;
+ await loadMithaqMyMembership();
+});
 function mithaqCountryFlagBadge(country){
  const raw=String(country||'').trim();if(!raw||typeof phoneCountryRows==='undefined')return null;
  const normalize=value=>String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/[\u064B-\u065F\u0670]/g,'').replace(/^(جمهورية|دولة)\s*/,'').trim();
@@ -2333,6 +2374,7 @@ async function loadMithaqUnreadCount(){
  updateMithaqUnreadBadges(count||0);
 }
 async function setupMithaqLiveUpdates(session){
+ if(session)loadMithaqMyMembership();
  if(!supabaseClient||!session)return;
  if(mithaqLiveChannel){await supabaseClient.removeChannel(mithaqLiveChannel);mithaqLiveChannel=null;}
  mithaqLiveChannel=supabaseClient.channel('mithaq-live-'+session.user.id)
@@ -2353,6 +2395,7 @@ async function loadMithaqHomeFeed(){
  status.textContent='جارٍ تحميل الأعضاء المتاحين...';
  const {data,error}=await supabaseClient.rpc('mithaq_home_feed');
  if(error){status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
+ mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
  if(!data?.length){status.textContent='لا يوجد أعضاء آخرون متاحون حالياً.';return;}
  data.forEach(person=>{
   const card=document.createElement('article');card.className='mithaq-live-member';
@@ -2362,7 +2405,7 @@ async function loadMithaqHomeFeed(){
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
-  dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);
+  dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));
   const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.city||person.country||''].filter(Boolean).join(' • ')||'عضو ميثاق';
   const action=document.createElement('button');action.type='button';action.className='secondary mithaq-live-message';action.textContent='مراسلة';
@@ -2407,7 +2450,7 @@ function renderMithaqMembers(){
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
   const gender=String(person.details?.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
-  const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);
+  const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);if(mithaqPremiumMemberIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
   const meta=document.createElement('p');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل حالياً';
@@ -2423,6 +2466,7 @@ async function loadMembers(){
  status.textContent='جارٍ تحميل جميع الأعضاء المتاحين...';
  const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
+ mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
  mithaqMemberCache=(data||[]).map(person=>({...person,details:person.details||{}}));
  renderMithaqMembers();
  if(!mithaqMemberCache.length)status.textContent='لا يوجد أعضاء متاحون للعرض حالياً.';
@@ -2959,6 +3003,10 @@ async function uploadChatAttachment(file,kind){
  const blockedExtensions=['exe','msi','apk','aab','bat','cmd','com','scr','ps1','sh','bash','js','mjs','cjs','html','htm','php','jar','svg','hta'];
  if(blockedExtensions.includes(ext)){status.textContent='هذا النوع التنفيذي أو القابل لتشغيل محتوى نشط غير مسموح به لحماية الأعضاء.';return;}
  const mime=(file.type||chatMimeByExt[ext]||'application/octet-stream').split(';')[0].trim().toLowerCase()||'application/octet-stream';
+ if((kind==='voice'||mime.startsWith('image/')||mime.startsWith('audio/'))&&!mithaqMyPremium){
+  await loadMithaqMyMembership();
+  if(!mithaqMyPremium){status.textContent='هذه الميزة متاحة لأعضاء ميثاق المميزين فقط. افتح الإعدادات ثم العضوية المميزة.';return;}
+ }
  const safeName=(file.name||('voice-'+Date.now()+'.webm')).replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,90);
  const path=session.user.id+'/'+activeChatUser+'/'+Date.now()+'-'+crypto.randomUUID()+'-'+safeName;
  btn.disabled=true;status.textContent='جارٍ رفع المرفق...';
@@ -2974,6 +3022,7 @@ document.getElementById('chatFileInput').addEventListener('change',async e=>{con
 let mithaqRecorder=null,mithaqRecordChunks=[],mithaqRecordStream=null;
 document.getElementById('chatRecordButton').addEventListener('click',async()=>{
  const button=document.getElementById('chatRecordButton'),status=document.getElementById('messageStatus');
+ if(!mithaqMyPremium){await loadMithaqMyMembership();if(!mithaqMyPremium){status.textContent='الرسائل الصوتية متاحة بالعضوية المميزة فقط.';return;}}
  if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqRecorder.stop();button.textContent='🎙️';button.classList.remove('recording');return;}
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){status.textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return;}
  try{
