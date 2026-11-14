@@ -62,8 +62,8 @@
           <div id="mithaqStoreDetailContent"></div>
         </div>
       </div>
-      <div id="mithaqStoreConsent" class="mithaq-store-overlay" hidden>
-        <div class="mithaq-store-dialog mithaq-store-consent-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreConsentTitle">
+      <div id="mithaqStoreConsent" class="mithaq-store-overlay mithaq-store-consent-overlay" hidden>
+        <div class="mithaq-store-dialog mithaq-store-consent-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreConsentTitle" tabindex="-1">
           <div class="mithaq-store-consent-toolbar">
             <button type="button" id="mithaqStoreConsentBack" class="mithaq-store-detail-back">← العودة إلى تفاصيل المعروض</button>
             <button type="button" id="mithaqStoreConsentClose" class="mithaq-store-close" aria-label="إغلاق المراجعة">×</button>
