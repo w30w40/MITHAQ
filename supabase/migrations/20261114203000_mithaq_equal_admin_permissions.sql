@@ -134,3 +134,101 @@ revoke all on function public.mithaq_manage_moderator(text,uuid) from public, an
 grant execute on function public.mithaq_admin_list_moderators() to authenticated;
 grant execute on function public.mithaq_admin_manageable_members() to authenticated;
 grant execute on function public.mithaq_manage_moderator(text,uuid) to authenticated;
+
+
+create or replace function public.mithaq_admin_list_subscriptions()
+returns table(
+ id uuid, user_id uuid, display_name text, email text, status text,
+ plan_code text, country text, amount_sar numeric, currency text,
+ starts_at timestamptz, expires_at timestamptz, created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path to ''
+as $function$
+begin
+ if (select auth.uid()) is null or not public.mithaq_is_admin() then
+  raise exception 'not_authorized' using errcode='42501';
+ end if;
+ return query
+ select s.id,s.user_id,coalesce(p.display_name,'عضو'),u.email::text,
+        s.status,s.plan_code,s.country,s.amount_sar,s.currency,
+        s.starts_at,s.expires_at,s.created_at
+ from public.mithaq_premium_subscriptions s
+ join auth.users u on u.id=s.user_id
+ left join public.profiles p on p.id=s.user_id
+ order by s.created_at desc
+ limit 300;
+end;
+$function$;
+
+create or replace function public.mithaq_manage_premium_subscription(
+ p_action text,
+ p_user_id uuid,
+ p_plan_code text default 'monthly',
+ p_country text default null,
+ p_amount_sar numeric default null,
+ p_currency text default 'SAR',
+ p_starts_at timestamptz default now(),
+ p_expires_at timestamptz default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path to ''
+as $function$
+declare
+ v_id uuid;
+ v_currency text := upper(trim(coalesce(p_currency,'SAR')));
+begin
+ if (select auth.uid()) is null or not public.mithaq_is_admin() then
+  raise exception 'not_authorized' using errcode='42501';
+ end if;
+ if p_user_id is null then
+  raise exception 'user_id_required' using errcode='22023';
+ end if;
+ if p_action='cancel' then
+  update public.mithaq_premium_subscriptions
+     set status='canceled',updated_at=now()
+   where user_id=p_user_id and status in ('active','pending');
+  if not found then raise exception 'active_subscription_not_found' using errcode='P0002'; end if;
+  return null;
+ elsif p_action='activate' then
+  if not exists (
+   select 1 from public.profiles p
+   where p.id=p_user_id and p.account_status='active'
+  ) then
+   raise exception 'active_member_not_found' using errcode='P0002';
+  end if;
+  if coalesce(trim(p_plan_code),'')='' or length(trim(p_plan_code))>40 then
+   raise exception 'invalid_plan_code' using errcode='22023';
+  end if;
+  if p_amount_sar is null or p_amount_sar<0 then
+   raise exception 'invalid_amount_sar' using errcode='22023';
+  end if;
+  if v_currency !~ '^[A-Z]{3}$' then
+   raise exception 'invalid_currency_code' using errcode='22023';
+  end if;
+  if p_starts_at is null or p_expires_at is null or p_expires_at<=p_starts_at then
+   raise exception 'invalid_subscription_dates' using errcode='22023';
+  end if;
+  update public.mithaq_premium_subscriptions
+     set status='expired',updated_at=now()
+   where user_id=p_user_id and status='active';
+  insert into public.mithaq_premium_subscriptions(
+   user_id,status,plan_code,country,amount_sar,currency,starts_at,expires_at
+  ) values (
+   p_user_id,'active',trim(p_plan_code),nullif(left(trim(coalesce(p_country,'')),80),''),
+   p_amount_sar,v_currency,p_starts_at,p_expires_at
+  ) returning id into v_id;
+  return v_id;
+ else
+  raise exception 'invalid_action' using errcode='22023';
+ end if;
+end;
+$function$;
+
+revoke all on function public.mithaq_admin_list_subscriptions() from public, anon;
+revoke all on function public.mithaq_manage_premium_subscription(text,uuid,text,text,numeric,text,timestamptz,timestamptz) from public, anon;
+grant execute on function public.mithaq_admin_list_subscriptions() to authenticated;
+grant execute on function public.mithaq_manage_premium_subscription(text,uuid,text,text,numeric,text,timestamptz,timestamptz) to authenticated;
