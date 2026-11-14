@@ -2016,7 +2016,7 @@ async function loadMithaqInterestedBy(){
  status.textContent='عدد الأعضاء المهتمين بك: '+data.length;
  data.forEach(person=>{
   const row=document.createElement('article');row.className='mithaq-feature-member-row';
-  const avatar=document.createElement('span');avatar.className='mithaq-feature-member-avatar';const gender=String(person.details?.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';if(visitorPremiumIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
+
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
   const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.country,person.region].filter(Boolean).join(' • ');
@@ -2723,7 +2723,7 @@ document.querySelectorAll('#memberEntryChooser [data-member-shortcut-action]').f
  if(action==='online'){openMemberResults('online');return;}
  if(action==='new'){openMemberResults('newest');return;}
  if(action==='visitors'){openMithaqFeature('visitors');return;}
- if(action==='search'){openMithaqMemberSearch();return;}
+ if(action==='search'){openMemberResults('search');return;}
  if(action==='health'){openMemberResults('health');return;}
  if(action==='premium'){openMemberResults('premium');return;}
 }));
