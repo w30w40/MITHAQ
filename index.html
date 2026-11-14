@@ -1090,6 +1090,17 @@ a{color:#c2185b}
 .mithaq-image-viewer img{max-width:min(96vw,1400px);max-height:88dvh;width:auto;height:auto;object-fit:contain;border-radius:10px}
 .mithaq-image-viewer>button{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;width:44px;height:44px;padding:0;border-radius:50%;background:#fff;color:#25313b;font-size:30px;line-height:1}
 @media(max-width:600px){.mithaq-background-actions{display:grid;grid-template-columns:1fr}.mithaq-background-preview-wrap img{max-height:260px}.mithaq-chat-background-pair{max-height:116px}.mithaq-chat-background-tile img{height:70px}}
+
+.mithaq-background-display-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.mithaq-background-display-controls .field{margin:0;padding:11px;border:1px solid #e6edf2;border-radius:12px;background:#f9fbfd}
+.mithaq-background-display-controls label{display:block;margin-bottom:7px;font-weight:700}
+.mithaq-background-display-controls input[type=range]{display:block;width:100%;min-height:28px;accent-color:#2f6d9e}
+.mithaq-background-display-controls small{display:block;color:#748496;font-size:11px}
+.mithaq-background-preview-wrap img{transition:object-position .12s ease,object-fit .12s ease}
+.mithaq-chat-messages-has-background{background-color:#f6f7f9!important;border:1px solid #e5eaf0!important;background-attachment:local}
+.mithaq-chat-background-pair{grid-template-columns:minmax(0,1fr);max-height:90px;overflow:hidden}
+.mithaq-chat-background-tile img{height:48px;object-fit:cover}
+@media(max-width:600px){.mithaq-background-display-controls{grid-template-columns:1fr}.mithaq-chat-background-pair{max-height:82px}.mithaq-chat-background-tile img{height:42px}}
 </style>
 <style id="mithaq-member-shortcut-popup">
 .member-entry-chooser{position:fixed!important;z-index:1000!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(92vw,390px)!important;max-width:390px!important;margin:0!important;padding:18px!important;background:#fff!important;border:1px solid #e8e2e4!important;border-radius:20px!important;box-shadow:0 0 0 100vmax #17202b66,0 14px 42px #0003!important}
@@ -1430,16 +1441,22 @@ a{color:#c2185b}
  <p id="mithaqPremiumContactStatus" class="notice" aria-live="polite"></p>
 </div>
 <div class="card mithaq-background-settings" id="mithaqBackgroundSettings" hidden>
- <div class="member-profile-card-head"><h2>خلفية حسابي</h2><span>خلفية مستقلة لحسابك</span></div>
- <p class="muted">اختر صورة بصيغة JPG أو PNG أو WebP أو GIF، بحد أقصى 8 ميغابايت. ستظهر للأعضاء بعد تفعيلها.</p>
- <label class="mithaq-background-pick" for="mithaqBackgroundFile">اختيار صورة من الجهاز</label>
+ <div class="member-profile-card-head"><h2>الخلفية الشخصية</h2><span>مرتبطة بحسابك وتُحفظ في التخزين</span></div>
+ <p class="muted">اختر صورة JPG أو PNG أو WebP أو GIF بحجم لا يتجاوز 8 ميغابايت. لن تظهر للطرف الآخر إلا بعد حفظها وتفعيلها.</p>
+ <label class="mithaq-background-pick" for="mithaqBackgroundFile">🖼️ تغيير الخلفية / اختيار صورة</label>
  <input id="mithaqBackgroundFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
- <div id="mithaqBackgroundPreviewWrap" class="mithaq-background-preview-wrap" hidden><img id="mithaqBackgroundPreview" alt="معاينة الخلفية الشخصية"><span>معاينة قبل التفعيل</span></div>
+ <div id="mithaqBackgroundPreviewWrap" class="mithaq-background-preview-wrap" hidden><img id="mithaqBackgroundPreview" alt="معاينة الخلفية الشخصية"><span>معاينة قبل الحفظ</span></div>
+ <div class="mithaq-background-display-controls">
+  <div class="field"><label for="mithaqBackgroundFit">ملاءمة الصورة</label><select id="mithaqBackgroundFit"><option value="cover">ملء مساحة المحادثة</option><option value="contain">إظهار الصورة كاملة</option></select></div>
+  <div class="field"><label for="mithaqBackgroundPositionX">موضع الصورة أفقياً</label><input id="mithaqBackgroundPositionX" type="range" min="0" max="100" value="50"><small>يسار  ←  الوسط  →  يمين</small></div>
+  <div class="field"><label for="mithaqBackgroundPositionY">موضع الصورة عمودياً</label><input id="mithaqBackgroundPositionY" type="range" min="0" max="100" value="50"><small>أعلى  ←  الوسط  →  أسفل</small></div>
+ </div>
  <p id="mithaqBackgroundStatus" class="notice" aria-live="polite">جارٍ تحميل إعدادات الخلفية...</p>
  <div class="mithaq-background-actions">
-  <button type="button" class="primary" id="mithaqBackgroundActivate" disabled>تفعيل الخلفية</button>
-  <button type="button" class="secondary" id="mithaqBackgroundDisable" disabled>تعطيل الخلفية</button>
-  <button type="button" class="secondary" id="mithaqBackgroundDelete" disabled>حذف الخلفية نهائياً</button>
+  <button type="button" class="primary" id="mithaqBackgroundActivate" disabled>حفظ وتفعيل الخلفية</button>
+  <button type="button" class="secondary" id="mithaqBackgroundCancelSelection" hidden>إلغاء اختيار الصورة</button>
+  <button type="button" class="secondary" id="mithaqBackgroundDisable" disabled>تعطيل مؤقت</button>
+  <button type="button" class="secondary" id="mithaqBackgroundDelete" disabled>حذف نهائي</button>
  </div>
 </div>
 </section><section id="help" class="tab hidden"><div class="card"><h2>مساعدة</h2><p class="muted">للمساعدة في استخدام ميثاق، راجع أقسام الملف الشخصي والاستكشاف وطلبات التعارف. لا تشارك كلمات المرور أو بياناتك الخاصة مع أي شخص.</p></div></section>
@@ -2968,16 +2985,22 @@ document.querySelectorAll('[data-member-quick]').forEach(button=>button.addEvent
 let mithaqBackgroundPendingFile=null;
 let mithaqBackgroundPendingPreviewUrl=null;
 let mithaqBackgroundCurrentPath=null;
+let mithaqBackgroundCurrentRecord=null;
 async function getMithaqProfileBackground(userId,includeDisabled=false){
  if(!supabaseClient||!userId)return null;
- let query=supabaseClient.from('mithaq_profile_backgrounds').select('user_id,object_path,is_enabled,updated_at').eq('user_id',userId);
+ let query=supabaseClient.from('mithaq_profile_backgrounds')
+  .select('user_id,object_path,is_enabled,updated_at,background_position_x,background_position_y,background_fit')
+  .eq('user_id',userId);
  if(!includeDisabled)query=query.eq('is_enabled',true);
  const {data,error}=await query.maybeSingle();
- if(error){console.warn('MITHAQ background metadata:',error.message);return null;}
+ if(error)throw error;
  if(!data?.object_path||(!includeDisabled&&!data.is_enabled))return null;
  const {data:signed,error:signedError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').createSignedUrl(data.object_path,3600);
- if(signedError||!signed?.signedUrl){console.warn('MITHAQ background URL:',signedError?.message);return null;}
- return {...data,url:signed.signedUrl};
+ if(signedError||!signed?.signedUrl){
+  console.warn('MITHAQ background file unavailable:',signedError?.message);
+  return {...data,url:null,storageMissing:true,storageError:signedError?.message||'تعذر إنشاء رابط الصورة'};
+ }
+ return {...data,url:signed.signedUrl,storageMissing:false};
 }
 function makeMithaqBackgroundCard(background,label='الخلفية الشخصية'){
  if(!background?.url)return null;
@@ -2990,48 +3013,114 @@ function makeMithaqBackgroundCard(background,label='الخلفية الشخصي�
  caption.append(text,hint);button.append(img,caption);button.addEventListener('click',()=>openMithaqImageViewer(background.url,label));
  card.append(button);return card;
 }
+function clearMithaqChatBackground(){
+ const messages=document.getElementById('chatMessages');
+ if(messages){
+  messages.classList.remove('mithaq-chat-messages-has-background');
+  ['background-image','background-size','background-position','background-repeat'].forEach(name=>messages.style.removeProperty(name));
+ }
+ const host=document.getElementById('mithaqChatBackgrounds');
+ if(host){host.replaceChildren();host.hidden=true;}
+}
 async function renderMithaqChatBackgrounds(otherUserId){
- const host=document.getElementById('mithaqChatBackgrounds');if(!host)return;
- host.replaceChildren();host.hidden=true;
- const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
- const [mine,theirs]=await Promise.all([getMithaqProfileBackground(session.user.id),getMithaqProfileBackground(otherUserId)]);
+ clearMithaqChatBackground();
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session||!otherUserId||activeChatUser!==otherUserId)return;
+ const background=await getMithaqProfileBackground(otherUserId);
  if(activeChatUser!==otherUserId)return;
- const addTile=(background,label)=>{
-  if(!background)return;
-  const tile=document.createElement('div');tile.className='mithaq-chat-background-tile';
-  const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','عرض '+label+' كاملة');
-  const img=document.createElement('img');img.src=background.url;img.alt=label;img.loading='lazy';img.decoding='async';
-  const caption=document.createElement('small');caption.textContent=label+' · اضغط للتكبير';
-  button.append(img,caption);button.addEventListener('click',()=>openMithaqImageViewer(background.url,label));tile.append(button);host.append(tile);
- };
- addTile(mine,'خلفيتك');addTile(theirs,'خلفية الطرف الآخر');host.hidden=!host.childElementCount;
+ const {data:{session:currentSession}}=await supabaseClient.auth.getSession();
+ if(!currentSession||currentSession.user.id!==session.user.id)return;
+ const messages=document.getElementById('chatMessages');
+ if(background?.url&&messages){
+  const x=Math.max(0,Math.min(100,Number(background.background_position_x??50)));
+  const y=Math.max(0,Math.min(100,Number(background.background_position_y??50)));
+  const fit=background.background_fit==='contain'?'contain':'cover';
+  messages.style.backgroundImage='linear-gradient(rgba(255,255,255,.80),rgba(255,255,255,.80)),url("'+background.url+'")';
+  messages.style.backgroundSize='cover,'+fit;
+  messages.style.backgroundPosition='center,'+x+'% '+y+'%';
+  messages.style.backgroundRepeat='no-repeat';
+  messages.classList.add('mithaq-chat-messages-has-background');
+  const host=document.getElementById('mithaqChatBackgrounds');
+  if(host){
+   const tile=document.createElement('div');tile.className='mithaq-chat-background-tile';
+   const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','عرض خلفية الطرف الآخر بحجم كامل');
+   const img=document.createElement('img');img.src=background.url;img.alt='خلفية الطرف الآخر';img.loading='lazy';img.decoding='async';
+   const caption=document.createElement('small');caption.textContent='خلفية الطرف الآخر · اضغط للتكبير';
+   button.append(img,caption);button.addEventListener('click',()=>openMithaqImageViewer(background.url,'خلفية الطرف الآخر'));
+   tile.append(button);host.append(tile);host.hidden=false;
+  }
+ }else if(background?.storageMissing){
+  console.warn('MITHAQ: active background record has no accessible storage object for chat owner',otherUserId);
+ }
 }
 async function renderMithaqOwnProfileBackground(){
  const host=document.getElementById('myProfileBackgroundDisplay');if(!host)return;
  host.replaceChildren();
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
- const background=await getMithaqProfileBackground(session.user.id);
- const card=makeMithaqBackgroundCard(background,'خلفيتك الشخصية');
- if(card)host.append(card);
+ try{
+  const background=await getMithaqProfileBackground(session.user.id);
+  const card=makeMithaqBackgroundCard(background,'خلفيتك الشخصية');
+  if(card)host.append(card);
+ }catch(error){console.warn('MITHAQ own background:',error);}
 }
 function setMithaqBackgroundStatus(message){const el=document.getElementById('mithaqBackgroundStatus');if(el)el.textContent=message;}
+function mithaqApplyBackgroundPreview(){
+ const img=document.getElementById('mithaqBackgroundPreview');
+ if(!img)return;
+ const fit=document.getElementById('mithaqBackgroundFit')?.value==='contain'?'contain':'cover';
+ const x=Number(document.getElementById('mithaqBackgroundPositionX')?.value??50);
+ const y=Number(document.getElementById('mithaqBackgroundPositionY')?.value??50);
+ img.style.objectFit=fit;img.style.objectPosition=x+'% '+y+'%';
+}
+function mithaqClearPendingBackground(){
+ mithaqBackgroundPendingFile=null;
+ if(mithaqBackgroundPendingPreviewUrl){URL.revokeObjectURL(mithaqBackgroundPendingPreviewUrl);mithaqBackgroundPendingPreviewUrl=null;}
+ if(mithaqBackgroundFileInput)mithaqBackgroundFileInput.value='';
+ const cancel=document.getElementById('mithaqBackgroundCancelSelection');if(cancel)cancel.hidden=true;
+}
 async function loadMithaqBackgroundSettings(){
  const panel=document.getElementById('mithaqBackgroundSettings');if(!panel||!supabaseClient)return;
- const {data:{session}}=await supabaseClient.auth.getSession();if(!session){setMithaqBackgroundStatus('سجّل الدخول لإدارة خلفيتك.');return;}
- const [background]=await Promise.all([getMithaqProfileBackground(session.user.id,true)]);
- mithaqBackgroundCurrentPath=background?.object_path||null;
- const activate=document.getElementById('mithaqBackgroundActivate'),disable=document.getElementById('mithaqBackgroundDisable'),del=document.getElementById('mithaqBackgroundDelete');
- if(activate)activate.disabled=!mithaqBackgroundPendingFile&&!mithaqBackgroundCurrentPath;
- if(disable)disable.disabled=!background?.is_enabled;
- if(del)del.disabled=!background?.object_path;
- if(background?.url){
-  const wrap=document.getElementById('mithaqBackgroundPreviewWrap'),img=document.getElementById('mithaqBackgroundPreview');
-  if(!mithaqBackgroundPendingFile){img.src=background.url;wrap.hidden=false;}
-  setMithaqBackgroundStatus(background.is_enabled?'خلفيتك محفوظة ومفعّلة وتظهر للأعضاء.':'خلفيتك محفوظة لكنها معطّلة ولا تظهر للآخرين.');
- }else if(!mithaqBackgroundPendingFile)setMithaqBackgroundStatus('لم تختر خلفية بعد. سيبقى التصميم الافتراضي كما هو.');
+ try{
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){setMithaqBackgroundStatus('انتهت جلسة الدخول. سجّل الدخول مجدداً لإدارة الخلفية.');return;}
+  const background=await getMithaqProfileBackground(session.user.id,true);
+  mithaqBackgroundCurrentRecord=background;
+  mithaqBackgroundCurrentPath=background?.object_path||null;
+  const activate=document.getElementById('mithaqBackgroundActivate');
+  const disable=document.getElementById('mithaqBackgroundDisable');
+  const del=document.getElementById('mithaqBackgroundDelete');
+  const fit=document.getElementById('mithaqBackgroundFit');
+  const x=document.getElementById('mithaqBackgroundPositionX');
+  const y=document.getElementById('mithaqBackgroundPositionY');
+  if(fit)fit.value=background?.background_fit==='contain'?'contain':'cover';
+  if(x)x.value=String(background?.background_position_x??50);
+  if(y)y.value=String(background?.background_position_y??50);
+  if(activate)activate.disabled=!mithaqBackgroundPendingFile&&(!background?.object_path||background.storageMissing);
+  if(disable)disable.disabled=!background?.is_enabled;
+  if(del)del.disabled=!background?.object_path;
+  if(background?.url&&!mithaqBackgroundPendingFile){
+   const wrap=document.getElementById('mithaqBackgroundPreviewWrap'),img=document.getElementById('mithaqBackgroundPreview');
+   img.src=background.url;mithaqApplyBackgroundPreview();wrap.hidden=false;
+  }else if(!mithaqBackgroundPendingFile){
+   document.getElementById('mithaqBackgroundPreviewWrap').hidden=true;
+  }
+  const cancel=document.getElementById('mithaqBackgroundCancelSelection');if(cancel)cancel.hidden=!mithaqBackgroundPendingFile;
+  if(background?.storageMissing){
+   setMithaqBackgroundStatus('سجل الخلفية موجود، لكن ملف الصورة غير متاح في التخزين. اختر صورة جديدة أو احذف السجل القديم.');
+  }else if(background?.url){
+   setMithaqBackgroundStatus(background.is_enabled?'الخلفية محفوظة ومفعّلة. ستظهر كخلفية للمحادثة لدى الطرف الآخر.':'الخلفية محفوظة لكنها معطّلة.');
+  }else if(!mithaqBackgroundPendingFile){
+   setMithaqBackgroundStatus('لا توجد خلفية محفوظة. ستظهر الخلفية الافتراضية في المحادثة.');
+  }
+ }catch(error){
+  console.error('MITHAQ background settings load:',error);
+  setMithaqBackgroundStatus('تعذر تحميل إعدادات الخلفية من قاعدة البيانات: '+(error.message||'تحقق من الاتصال ثم أعد المحاولة.'));
+ }
 }
 async function validateMithaqBackgroundFile(file){
- if(!file||file.size>8*1024*1024)throw new Error('الحد الأقصى لحجم الصورة 8 ميغابايت.');
+ if(!file)throw new Error('لم تختر صورة.');
+ if(file.size<=0)throw new Error('ملف الصورة فارغ.');
+ if(file.size>8*1024*1024)throw new Error('الحد الأقصى لحجم الصورة 8 ميغابايت.');
  const allowed=['image/jpeg','image/png','image/webp','image/gif'];
  if(!allowed.includes((file.type||'').toLowerCase()))throw new Error('الصيغ المدعومة فقط: JPG وPNG وWebP وGIF.');
  const bytes=new Uint8Array(await file.slice(0,12).arrayBuffer());
@@ -3046,7 +3135,6 @@ document.getElementById('settingsBackgroundOpen')?.addEventListener('click',()=>
  const panel=document.getElementById('mithaqBackgroundSettings');panel.hidden=!panel.hidden;
  if(!panel.hidden)loadMithaqBackgroundSettings();
 });
-// Recover the uploader if a deployed or partially hydrated shell omitted the hidden file input.
 let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
 if(!mithaqBackgroundFileInput){
  mithaqBackgroundFileInput=document.createElement('input');
@@ -3061,56 +3149,118 @@ mithaqBackgroundFileInput?.addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file)return;
  try{
   await validateMithaqBackgroundFile(file);
-  mithaqBackgroundPendingFile=file;
   if(mithaqBackgroundPendingPreviewUrl)URL.revokeObjectURL(mithaqBackgroundPendingPreviewUrl);
+  mithaqBackgroundPendingFile=file;
   mithaqBackgroundPendingPreviewUrl=URL.createObjectURL(file);
   const img=document.getElementById('mithaqBackgroundPreview');img.src=mithaqBackgroundPendingPreviewUrl;
   document.getElementById('mithaqBackgroundPreviewWrap').hidden=false;
-  document.getElementById('mithaqBackgroundActivate').disabled=false;
-  setMithaqBackgroundStatus('هذه معاينة فقط. اضغط «تفعيل الخلفية» لحفظها وإظهارها للأعضاء.');
- }catch(error){mithaqBackgroundPendingFile=null;setMithaqBackgroundStatus(error.message);event.target.value='';}
+  const activate=document.getElementById('mithaqBackgroundActivate');activate.disabled=false;activate.textContent='حفظ وتفعيل الخلفية';
+  const cancel=document.getElementById('mithaqBackgroundCancelSelection');if(cancel)cancel.hidden=false;
+  mithaqApplyBackgroundPreview();
+  setMithaqBackgroundStatus('تم التحقق من الصورة. هذه معاينة محلية فقط؛ لن تُحفظ حتى تضغط «حفظ وتفعيل الخلفية».');
+ }catch(error){
+  mithaqClearPendingBackground();
+  setMithaqBackgroundStatus('لم يتم قبول الصورة: '+error.message);
+ }
+});
+document.getElementById('mithaqBackgroundCancelSelection')?.addEventListener('click',async()=>{
+ mithaqClearPendingBackground();await loadMithaqBackgroundSettings();
+ setMithaqBackgroundStatus('تم إلغاء اختيار الصورة ولم يتم رفعها.');
+});
+['mithaqBackgroundFit','mithaqBackgroundPositionX','mithaqBackgroundPositionY'].forEach(id=>{
+ document.getElementById(id)?.addEventListener('input',mithaqApplyBackgroundPreview);
+ document.getElementById(id)?.addEventListener('change',mithaqApplyBackgroundPreview);
 });
 document.getElementById('mithaqBackgroundActivate')?.addEventListener('click',async()=>{
- const button=document.getElementById('mithaqBackgroundActivate');button.disabled=true;setMithaqBackgroundStatus('جارٍ حفظ الخلفية وتفعيلها...');
+ const button=document.getElementById('mithaqBackgroundActivate');
+ button.disabled=true;setMithaqBackgroundStatus('جارٍ رفع الصورة وحفظ بياناتها...');
+ let uploadedPath=null;
  try{
-  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة الدخول.');
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session)throw new Error('انتهت جلسة المستخدم. سجّل الدخول ثم أعد المحاولة.');
+  const file=mithaqBackgroundPendingFile;
   let newPath=mithaqBackgroundCurrentPath;
-  if(mithaqBackgroundPendingFile){
-   await validateMithaqBackgroundFile(mithaqBackgroundPendingFile);
-   const file=mithaqBackgroundPendingFile,ext=({ 'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'})[file.type.toLowerCase()];
+  if(file){
+   await validateMithaqBackgroundFile(file);
+   const ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'})[file.type.toLowerCase()];
+   if(!ext)throw new Error('امتداد الصورة غير مدعوم.');
    newPath=session.user.id+'/'+crypto.randomUUID()+'.'+ext;
-   const {error:uploadError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').upload(newPath,file,{contentType:file.type,upsert:false,cacheControl:'3600'});
-   if(uploadError)throw uploadError;
+   const {error:uploadError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').upload(newPath,file,{
+    upsert:false,contentType:file.type,cacheControl:'3600'
+   });
+   if(uploadError)throw new Error('فشل رفع الصورة إلى التخزين: '+uploadError.message);
+   uploadedPath=newPath;
   }
   if(!newPath)throw new Error('اختر صورة أولاً.');
+  if(!file&&mithaqBackgroundCurrentRecord?.storageMissing)throw new Error('الصورة القديمة غير موجودة في التخزين. اختر صورة جديدة قبل التفعيل.');
   const oldPath=mithaqBackgroundCurrentPath;
-  const {error:saveError}=await supabaseClient.from('mithaq_profile_backgrounds').upsert({user_id:session.user.id,object_path:newPath,is_enabled:true,updated_at:new Date().toISOString()},{onConflict:'user_id'});
-  if(saveError){if(newPath!==oldPath)await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([newPath]);throw saveError;}
-  mithaqBackgroundCurrentPath=newPath;mithaqBackgroundPendingFile=null;
-  if(mithaqBackgroundPendingPreviewUrl){URL.revokeObjectURL(mithaqBackgroundPendingPreviewUrl);mithaqBackgroundPendingPreviewUrl=null;}
-  if(oldPath&&oldPath!==newPath)await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([oldPath]);
-  document.getElementById('mithaqBackgroundFile').value='';
-  await loadMithaqBackgroundSettings();setMithaqBackgroundStatus('تم حفظ خلفيتك وتفعيلها. أصبحت ظاهرة للأعضاء.');
- }catch(error){setMithaqBackgroundStatus('تعذر تفعيل الخلفية: '+(error.message||'حاول مرة أخرى.'));button.disabled=false;}
+  const positionX=Number(document.getElementById('mithaqBackgroundPositionX')?.value??50);
+  const positionY=Number(document.getElementById('mithaqBackgroundPositionY')?.value??50);
+  const fit=document.getElementById('mithaqBackgroundFit')?.value==='contain'?'contain':'cover';
+  const {error:saveError}=await supabaseClient.from('mithaq_profile_backgrounds').upsert({
+   user_id:session.user.id,object_path:newPath,is_enabled:true,
+   background_position_x:positionX,background_position_y:positionY,background_fit:fit,
+   updated_at:new Date().toISOString()
+  },{onConflict:'user_id'});
+  if(saveError){
+   if(uploadedPath){
+    const {error:rollbackError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([uploadedPath]);
+    if(rollbackError)console.error('MITHAQ background upload rollback failed:',rollbackError.message);
+   }
+   throw new Error('رُفعت الصورة لكن فشل حفظ بياناتها في قاعدة البيانات؛ لم يتم إعلان نجاح الحفظ. '+saveError.message);
+  }
+  mithaqBackgroundCurrentPath=newPath;mithaqBackgroundCurrentRecord={object_path:newPath,is_enabled:true,background_position_x:positionX,background_position_y:positionY,background_fit:fit};
+  mithaqClearPendingBackground();
+  let cleanupWarning='';
+  if(oldPath&&oldPath!==newPath){
+   const {error:removeOldError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([oldPath]);
+   if(removeOldError){console.warn('MITHAQ old background cleanup:',removeOldError.message);cleanupWarning=' تم حفظ الخلفية الجديدة، لكن تعذر تنظيف الصورة القديمة من التخزين؛ لن تظهر للأعضاء.';}
+  }
+  await loadMithaqBackgroundSettings();
+  await renderMithaqOwnProfileBackground();
+  if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
+  setMithaqBackgroundStatus('تم حفظ الصورة وبياناتها في قاعدة البيانات وتفعيلها بنجاح.'+cleanupWarning);
+ }catch(error){
+  console.error('MITHAQ background save:',error);
+  setMithaqBackgroundStatus('تعذر حفظ الخلفية: '+(error.message||'خطأ غير معروف.'));
+  button.disabled=false;
+ }
 });
 document.getElementById('mithaqBackgroundDisable')?.addEventListener('click',async()=>{
  const button=document.getElementById('mithaqBackgroundDisable');button.disabled=true;
- try{const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة الدخول.');
+ try{
+  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة المستخدم.');
   const {error}=await supabaseClient.from('mithaq_profile_backgrounds').update({is_enabled:false,updated_at:new Date().toISOString()}).eq('user_id',session.user.id);
-  if(error)throw error;await loadMithaqBackgroundSettings();setMithaqBackgroundStatus('تم تعطيل الخلفية. الصورة محفوظة ويمكن تفعيلها لاحقاً.');
+  if(error)throw error;
+  await loadMithaqBackgroundSettings();await renderMithaqOwnProfileBackground();
+  if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
+  setMithaqBackgroundStatus('تم تعطيل الخلفية. الصورة ما زالت محفوظة ويمكن إعادة تفعيلها.');
  }catch(error){setMithaqBackgroundStatus('تعذر تعطيل الخلفية: '+error.message);button.disabled=false;}
 });
 document.getElementById('mithaqBackgroundDelete')?.addEventListener('click',async()=>{
- if(!confirm('هل تريد حذف الخلفية نهائياً؟ لا يمكن التراجع عن الحذف.'))return;
+ if(!confirm('سيتم تعطيل الخلفية أولاً ثم حذف ملفها وسجلها. هل تريد المتابعة؟'))return;
  const button=document.getElementById('mithaqBackgroundDelete');button.disabled=true;
- try{const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة الدخول.');
-  const {data:row,error:readError}=await supabaseClient.from('mithaq_profile_backgrounds').select('object_path').eq('user_id',session.user.id).maybeSingle();if(readError)throw readError;
-  const {error}=await supabaseClient.from('mithaq_profile_backgrounds').delete().eq('user_id',session.user.id);if(error)throw error;
-  if(row?.object_path){const {error:removeError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([row.object_path]);if(removeError)console.warn('MITHAQ background orphan cleanup:',removeError.message);}
-  mithaqBackgroundCurrentPath=null;mithaqBackgroundPendingFile=null;
-  document.getElementById('mithaqBackgroundPreviewWrap').hidden=true;document.getElementById('mithaqBackgroundFile').value='';
-  await loadMithaqBackgroundSettings();setMithaqBackgroundStatus('تم حذف الخلفية نهائياً.');
- }catch(error){setMithaqBackgroundStatus('تعذر حذف الخلفية: '+error.message);button.disabled=false;}
+ try{
+  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة المستخدم.');
+  const {data:row,error:readError}=await supabaseClient.from('mithaq_profile_backgrounds').select('object_path').eq('user_id',session.user.id).maybeSingle();
+  if(readError)throw readError;
+  if(!row?.object_path)throw new Error('لا يوجد سجل خلفية لحذفه.');
+  const {error:disableError}=await supabaseClient.from('mithaq_profile_backgrounds').update({is_enabled:false,updated_at:new Date().toISOString()}).eq('user_id',session.user.id);
+  if(disableError)throw new Error('تعذر تعطيل الخلفية قبل الحذف: '+disableError.message);
+  const {error:removeError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([row.object_path]);
+  if(removeError)throw new Error('تم تعطيل الخلفية وإخفاؤها، لكن تعذر حذف ملفها من التخزين. أعد المحاولة لاحقاً: '+removeError.message);
+  const {error:deleteError}=await supabaseClient.from('mithaq_profile_backgrounds').delete().eq('user_id',session.user.id);
+  if(deleteError)throw new Error('حُذف ملف الصورة من التخزين لكن تعذر حذف سجلها: '+deleteError.message+'. أعد المحاولة لتنظيف السجل.');
+  mithaqClearPendingBackground();mithaqBackgroundCurrentPath=null;mithaqBackgroundCurrentRecord=null;
+  document.getElementById('mithaqBackgroundPreviewWrap').hidden=true;
+  await loadMithaqBackgroundSettings();await renderMithaqOwnProfileBackground();
+  if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
+  setMithaqBackgroundStatus('تم حذف الخلفية وملفها من التخزين وسجلها من قاعدة البيانات.');
+ }catch(error){
+  console.error('MITHAQ background delete:',error);
+  setMithaqBackgroundStatus('تعذر إكمال الحذف: '+error.message);
+  button.disabled=false;
+ }
 });
 document.addEventListener('keydown',event=>{
  const viewer=document.getElementById('mithaqImageViewer');
@@ -3158,7 +3308,7 @@ async function openChat(userId,name){
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
- activeChatUser=null;runMithaqPageLoad('conversations',loadConversations);
+ activeChatUser=null;clearMithaqChatBackground();runMithaqPageLoad('conversations',loadConversations);
 });
 
 async function showChatMemberProfile(requestedUserId=activeChatUser,requestedName='',backTarget='chat'){
