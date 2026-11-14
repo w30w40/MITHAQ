@@ -184,7 +184,7 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-admin-report strong{display:block;color:#245783;margin-bottom:5px}
 .mithaq-admin-report p{margin:4px 0;color:#586879;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
 
-</style>
+.mithaq-premium-contacts{display:grid;gap:9px;margin:14px 0}.mithaq-premium-contact-button{width:100%;text-align:center}.mithaq-admin-contact-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}.mithaq-admin-contact-row>div{flex:1;min-width:150px}.mithaq-admin-contact-row p{margin:5px 0 0;color:var(--muted);font-size:13px}.mithaq-admin-contact-row button{font-size:12px;padding:9px 12px}</style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
 body{background:#f3f7fc}
@@ -1306,6 +1306,15 @@ a{color:#c2185b}
   <div id="mithaqAdminStats" class="mithaq-admin-stats"></div>
   <button id="mithaqOpenSiteAnalytics" class="primary" type="button" hidden>📊 إحصائيات زوار الموقع</button>
 </div>
+<div class="card mithaq-admin-card" id="mithaqPremiumContactsAdmin" hidden>
+ <div class="mithaq-admin-heading"><div><h2>أرقام واتساب اشتراكات العضوية المميزة</h2><p class="muted">أضف أرقام الإدارة أو عدّلها أو عطّلها. تظهر الأرقام النشطة للأعضاء فقط.</p></div></div>
+ <div class="field"><label for="mithaqPremiumContactLabel">اسم جهة التواصل</label><input id="mithaqPremiumContactLabel" maxlength="60" value="واتساب الإدارة" placeholder="مثال: إدارة ميثاق"></div>
+ <div class="field"><label for="mithaqPremiumContactPhone">رقم واتساب بصيغة دولية</label><input id="mithaqPremiumContactPhone" type="tel" inputmode="tel" placeholder="+9665XXXXXXXX"></div>
+ <input id="mithaqPremiumContactEditId" type="hidden">
+ <div class="row"><button id="mithaqPremiumContactSave" class="primary" type="button">إضافة رقم التواصل</button><button id="mithaqPremiumContactCancel" class="secondary" type="button" hidden>إلغاء التعديل</button></div>
+ <p id="mithaqPremiumContactsAdminStatus" class="notice" aria-live="polite"></p>
+ <div id="mithaqPremiumContactsAdminList"></div>
+</div>
 <div class="card mithaq-admin-card">
   <div class="card mithaq-admin-card">
   <div class="mithaq-admin-heading"><div><h2>بلاغات الأعضاء</h2><p class="muted">البلاغات المرسلة من ملفات الأعضاء لمراجعتها من الإدارة</p></div></div>
@@ -1337,8 +1346,9 @@ a{color:#c2185b}
  <div class="member-profile-card-head"><h2>العضوية المميزة</h2><span class="mithaq-premium-mark">⭐</span></div>
  <p id="mithaqPremiumStatus" class="mithaq-premium-status" aria-live="polite">جارٍ التحقق من حالة العضوية...</p>
  <ul class="mithaq-premium-benefits"><li>شارة ذهبية بجانب صورتك.</li><li>إرسال الرسائل الصوتية.</li><li>مشاركة الصور في المحادثات.</li><li>مزايا مراسلة أوسع، بعد تحديد حد المراسلات المجاني قبل الإطلاق.</li></ul>
- <p class="muted">الاشتراك الشهري والدفع الإلكتروني سيُفعّلان بعد ربط حساب التحصيل البنكي وبوابة الدفع. لن يتم خصم أي مبلغ الآن.</p>
- <button type="button" class="primary" id="mithaqPremiumSubscribe" disabled>الاشتراك الشهري — قريباً</button>
+ <p class="muted">لطلب العضوية المميزة، اختر أحد أرقام واتساب الإدارة. ستُفتح رسالة جاهزة تتضمن بيانات حسابك وطلب الاشتراك، ولن يتم خصم أي مبلغ تلقائياً.</p>
+ <div id="mithaqPremiumContacts" class="mithaq-premium-contacts"><p class="notice">جارٍ تحميل أرقام التواصل...</p></div>
+ <p id="mithaqPremiumContactStatus" class="notice" aria-live="polite"></p>
 </div>
 <div class="card mithaq-background-settings" id="mithaqBackgroundSettings" hidden>
  <div class="member-profile-card-head"><h2>خلفية حسابي</h2><span>خلفية مستقلة لحسابك</span></div>
@@ -1621,9 +1631,108 @@ async function loadMithaqMyMembership(){
  mithaqMyPremium=!!membership?.is_premium;
  if(status)status.textContent=mithaqMyPremium?'⭐ عضويتك المميزة فعّالة حتى '+(membership.expires_at?new Date(membership.expires_at).toLocaleDateString('ar'):''): 'عضويتك الحالية مجانية. الاشتراك الشهري سيتاح بعد ربط الدفع.';
 }
+async function loadMithaqPremiumContacts(){
+ const host=document.getElementById('mithaqPremiumContacts');if(!host)return;
+ host.replaceChildren();
+ const {data,error}=await supabaseClient.rpc('mithaq_premium_contacts');
+ if(error){host.textContent='تعذر تحميل أرقام التواصل حالياً.';console.warn('MITHAQ premium contacts:',error.message);return;}
+ if(!data?.length){host.textContent='لا توجد أرقام تواصل متاحة حالياً. يرجى المحاولة لاحقاً.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ let memberName=session?.user?.user_metadata?.display_name||session?.user?.user_metadata?.full_name||session?.user?.email||'عضو ميثاق';
+ let memberNumber='غير متاح';
+ if(session){
+  const {data:profiles,error:profileError}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[session.user.id]});
+  const own=(profiles||[]).find(person=>person.id===session.user.id);
+  if(own){memberName=own.display_name||memberName;memberNumber=own.member_number??memberNumber;}
+  if(profileError)console.warn('MITHAQ member number lookup:',profileError.message);
+ }
+ data.forEach(contact=>{
+  const button=document.createElement('button');button.type='button';button.className='primary mithaq-premium-contact-button';
+  button.textContent='واتساب — '+(contact.label||'الإدارة');
+  button.addEventListener('click',()=>{
+   const message='السلام عليكم، أنا '+memberName+'، رقم عضويتي في تطبيق ميثاق: '+memberNumber+'. أرغب بالاشتراك في العضوية المميزة وتفعيل شارة العضو المميز ومزاياها. أرجو تزويدي بخطوات الاشتراك.\n\nمرسل من داخل تطبيق ميثاق.';
+   const url='https://wa.me/'+String(contact.phone||'').replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(message);
+   window.open(url,'_blank','noopener,noreferrer');
+  });
+  host.append(button);
+ });
+}
 document.getElementById('settingsPremiumOpen')?.addEventListener('click',async()=>{
  const panel=document.getElementById('mithaqPremiumPanel');if(panel)panel.hidden=!panel.hidden;
  await loadMithaqMyMembership();
+ if(panel&&!panel.hidden)await loadMithaqPremiumContacts();
+});
+async function loadMithaqPremiumContactsAdmin(){
+ const panel=document.getElementById('mithaqPremiumContactsAdmin');
+ const status=document.getElementById('mithaqPremiumContactsAdminStatus');
+ const host=document.getElementById('mithaqPremiumContactsAdminList');
+ if(!panel||!host||!status)return;
+ const allowed=await refreshMithaqAdminAccess();
+ panel.hidden=!(allowed&&isMithaqAdmin);
+ if(panel.hidden)return;
+ status.textContent='جارٍ تحميل أرقام التواصل...';host.replaceChildren();
+ const {data,error}=await supabaseClient.rpc('mithaq_premium_contacts_admin');
+ if(error){
+  // Admin listing uses the same protected management RPC through the public contacts view.
+  const fallback=await supabaseClient.rpc('mithaq_premium_contacts');
+  if(fallback.error){status.textContent='تعذر تحميل الأرقام: '+(error.message||fallback.error.message);return;}
+  renderMithaqPremiumContactAdminRows(fallback.data||[]);status.textContent='تم تحميل الأرقام النشطة فقط.';return;
+ }
+ renderMithaqPremiumContactAdminRows(data||[]);status.textContent='تم تحميل أرقام التواصل.';
+}
+function renderMithaqPremiumContactAdminRows(rows){
+ const host=document.getElementById('mithaqPremiumContactsAdminList');if(!host)return;host.replaceChildren();
+ if(!rows.length){host.textContent='لا توجد أرقام مضافة.';return;}
+ rows.forEach(contact=>{
+  const row=document.createElement('div');row.className='mithaq-admin-contact-row';
+  const info=document.createElement('div');const title=document.createElement('strong');title.textContent=contact.label;
+  const phone=document.createElement('p');phone.textContent=contact.phone+' • '+(contact.is_active?'نشط':'معطّل');info.append(title,phone);
+  const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='تعديل';
+  edit.addEventListener('click',()=>{
+   document.getElementById('mithaqPremiumContactEditId').value=contact.id;
+   document.getElementById('mithaqPremiumContactLabel').value=contact.label;
+   document.getElementById('mithaqPremiumContactPhone').value=contact.phone;
+   document.getElementById('mithaqPremiumContactSave').textContent='حفظ التعديلات';
+   document.getElementById('mithaqPremiumContactCancel').hidden=false;
+   document.getElementById('mithaqPremiumContactLabel').focus();
+  });
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='secondary';toggle.textContent=contact.is_active?'تعطيل':'تفعيل';
+  toggle.addEventListener('click',async()=>{
+   toggle.disabled=true;
+   const {error}=await supabaseClient.rpc('mithaq_manage_premium_contact',{p_action:'update',p_id:contact.id,p_label:contact.label,p_phone:contact.phone,p_active:!contact.is_active});
+   if(error){document.getElementById('mithaqPremiumContactsAdminStatus').textContent='تعذر تغيير الحالة: '+error.message;toggle.disabled=false;return;}
+   await loadMithaqPremiumContactsAdmin();
+  });
+  const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='حذف';
+  remove.addEventListener('click',async()=>{
+   if(!confirm('هل تريد حذف رقم التواصل هذا؟'))return;
+   remove.disabled=true;const {error}=await supabaseClient.rpc('mithaq_manage_premium_contact',{p_action:'delete',p_id:contact.id});
+   if(error){document.getElementById('mithaqPremiumContactsAdminStatus').textContent='تعذر حذف الرقم: '+error.message;remove.disabled=false;return;}
+   await loadMithaqPremiumContactsAdmin();
+  });
+  row.append(info,edit,toggle,remove);host.append(row);
+ });
+}
+function resetMithaqPremiumContactForm(){
+ document.getElementById('mithaqPremiumContactEditId').value='';
+ document.getElementById('mithaqPremiumContactLabel').value='واتساب الإدارة';
+ document.getElementById('mithaqPremiumContactPhone').value='';
+ document.getElementById('mithaqPremiumContactSave').textContent='إضافة رقم التواصل';
+ document.getElementById('mithaqPremiumContactCancel').hidden=true;
+}
+document.getElementById('mithaqPremiumContactCancel')?.addEventListener('click',resetMithaqPremiumContactForm);
+document.getElementById('mithaqPremiumContactSave')?.addEventListener('click',async()=>{
+ const status=document.getElementById('mithaqPremiumContactsAdminStatus');
+ const id=document.getElementById('mithaqPremiumContactEditId').value||null;
+ const label=document.getElementById('mithaqPremiumContactLabel').value.trim();
+ const phone=document.getElementById('mithaqPremiumContactPhone').value.trim();
+ const button=document.getElementById('mithaqPremiumContactSave');
+ if(!label||!phone){status.textContent='أدخل اسم جهة التواصل ورقم واتساب.';return;}
+ button.disabled=true;status.textContent='جارٍ حفظ الرقم...';
+ const {error}=await supabaseClient.rpc('mithaq_manage_premium_contact',{p_action:id?'update':'add',p_id:id,p_label:label,p_phone:phone,p_active:true});
+ button.disabled=false;
+ if(error){status.textContent='تعذر حفظ الرقم: '+error.message;return;}
+ resetMithaqPremiumContactForm();status.textContent='تم حفظ رقم التواصل.';await loadMithaqPremiumContactsAdmin();
 });
 function mithaqCountryFlagBadge(country){
  const raw=String(country||'').trim();if(!raw||typeof phoneCountryRows==='undefined')return null;
@@ -2081,6 +2190,7 @@ async function loadMithaqAdminPanel(){
  if(!await refreshMithaqAdminAccess()){status.textContent='هذه الصفحة مخصصة للمشرف المعتمد فقط.';statsHost.replaceChildren();membersHost.replaceChildren();return;}
  status.textContent='جارٍ تحميل بيانات الإدارة...';
  statsHost.replaceChildren();membersHost.replaceChildren();
+ await loadMithaqPremiumContactsAdmin();
  const reportsHost=document.getElementById('mithaqAdminReports');
  const statsCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_stats'):Promise.resolve({data:null,error:null});
  const peopleCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_list_members'):supabaseClient.rpc('mithaq_moderator_list_members');
