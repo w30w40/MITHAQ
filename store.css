@@ -270,3 +270,18 @@ body.mithaq-store-detail-open .member-drawer-backdrop {
     max-height: 58vh;
   }
 }
+
+
+/* WhatsApp review uses the same full-screen shell as Store item details. */
+.mithaq-store-consent-overlay{position:fixed!important;inset:0!important;z-index:10001!important;display:block!important;width:100vw;height:100vh;height:100dvh;margin:0!important;padding:0!important;overflow:hidden!important;background:#fff}
+.mithaq-store-consent-overlay[hidden]{display:none!important}
+.mithaq-store-consent-dialog{display:flex;flex-direction:column;width:100%;max-width:none;height:100%;max-height:none!important;min-height:100%;margin:0;padding:max(12px,env(safe-area-inset-top)) clamp(14px,3vw,28px) max(20px,env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto;border-radius:0;box-shadow:none;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable}
+.mithaq-store-consent-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding-bottom:12px;border-bottom:1px solid #e7edf1}
+.mithaq-store-consent-toolbar .mithaq-store-close{position:static;float:none;flex:0 0 44px}
+.mithaq-store-consent-dialog h2{margin:18px 0 12px;line-height:1.5}
+.mithaq-store-consent-dialog .mithaq-store-field textarea{min-height:260px;line-height:1.9}
+.mithaq-store-consent-dialog .mithaq-store-form-actions{position:static;margin:12px 0 0;padding:0;background:transparent}
+.mithaq-store-consent-dialog .mithaq-store-form-actions button,.mithaq-store-consent-dialog .mithaq-store-whatsapp-link{min-height:48px;touch-action:manipulation}
+.mithaq-store-whatsapp-fallback-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.mithaq-store-whatsapp-link{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:520px){.mithaq-store-consent-dialog{padding:max(10px,env(safe-area-inset-top)) 12px max(22px,env(safe-area-inset-bottom))}.mithaq-store-consent-toolbar{gap:8px}.mithaq-store-consent-toolbar .mithaq-store-detail-back{flex:1 1 auto;white-space:normal;text-align:right}.mithaq-store-consent-dialog .mithaq-store-field textarea{min-height:220px}.mithaq-store-consent-dialog .mithaq-store-form-actions{display:grid;grid-template-columns:1fr}.mithaq-store-whatsapp-fallback-actions{grid-template-columns:1fr}}
