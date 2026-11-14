@@ -4,6 +4,8 @@
   let storeItems = [];
   let storeEditingImages = [];
   let storeIsAdmin = false;
+  let currentStoreDetailIndex = -1;
+  let storeDetailReturnFocus = null;
 
   const el = (tag, className, value) => {
     const node = document.createElement(tag);
@@ -56,10 +58,16 @@
       <div class="mithaq-store-list-heading"><h2>المعروضات</h2><span id="mithaqStoreCount"></span></div>
       <p id="mithaqStoreStatus" class="muted" role="status" aria-live="polite">جارٍ تحميل المتجر...</p>
       <div id="mithaqStoreGrid" class="mithaq-store-grid"></div>
-      <div id="mithaqStoreDetail" class="mithaq-store-overlay" hidden>
-        <div class="mithaq-store-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreDetailTitle">
-          <button type="button" id="mithaqStoreDetailClose" class="mithaq-store-close" aria-label="إغلاق التفاصيل">×</button>
-          <div id="mithaqStoreDetailContent"></div>
+      <div id="mithaqStoreDetail" class="mithaq-store-overlay mithaq-store-detail-overlay" hidden>
+        <div class="mithaq-store-dialog mithaq-store-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreDetailTitle" tabindex="-1">
+          <div class="mithaq-store-detail-toolbar">
+            <button type="button" id="mithaqStoreDetailClose" class="mithaq-store-detail-back" aria-label="العودة إلى قائمة المعروضات">← العودة للمتجر</button>
+            <div class="mithaq-store-detail-pagination" aria-label="التنقل بين المعروضات">
+              <button type="button" id="mithaqStoreDetailPrevious" class="secondary" aria-label="المعروض السابق">السابق</button>
+              <button type="button" id="mithaqStoreDetailNext" class="secondary" aria-label="المعروض التالي">التالي</button>
+            </div>
+          </div>
+          <div id="mithaqStoreDetailContent" class="mithaq-store-detail-content"></div>
         </div>
       </div>
       <div id="mithaqStoreConsent" class="mithaq-store-overlay" hidden>
@@ -90,6 +98,11 @@
     });
     document.getElementById('mithaqStoreBack').addEventListener('click', () => goBack());
     document.getElementById('mithaqStoreDetailClose').addEventListener('click', closeStoreDetail);
+    document.getElementById('mithaqStoreDetailPrevious').addEventListener('click', () => moveStoreDetail(-1));
+    document.getElementById('mithaqStoreDetailNext').addEventListener('click', () => moveStoreDetail(1));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !document.getElementById('mithaqStoreDetail').hidden) closeStoreDetail();
+    });
     document.getElementById('mithaqStoreConsentClose').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppCancel').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppConsent').addEventListener('change', event => {
@@ -204,7 +217,7 @@
     });
   }
 
-  function openStoreDetail(item) {
+  function renderStoreDetail(item) {
     const host = document.getElementById('mithaqStoreDetailContent');
     host.replaceChildren();
     const title = el('h2', 'mithaq-store-detail-title', item.title);
@@ -228,13 +241,47 @@
     }
     host.append(el('p', 'mithaq-store-price', 'السعر: ' + storeMoney(item)));
     host.append(el('p', 'mithaq-store-status' + (item.availability_status === 'available' ? '' : ' unavailable'), 'الحالة: ' + storeStatus(item)));
-    const contact = el('button', 'primary mithaq-store-contact', 'تواصل عبر الإدارة على واتساب');
+    const contact = el('button', 'primary mithaq-store-contact mithaq-store-detail-contact', 'تواصل عبر الإدارة على واتساب');
     contact.type = 'button';
     contact.addEventListener('click', () => prepareStoreWhatsApp(item));
     host.append(contact);
-    document.getElementById('mithaqStoreDetail').hidden = false;
+
+    document.getElementById('mithaqStoreDetailPrevious').disabled = currentStoreDetailIndex <= 0;
+    document.getElementById('mithaqStoreDetailNext').disabled = currentStoreDetailIndex >= storeItems.length - 1;
   }
-  function closeStoreDetail() { document.getElementById('mithaqStoreDetail').hidden = true; }
+
+  function openStoreDetail(item) {
+    currentStoreDetailIndex = storeItems.findIndex(row => row.id === item.id);
+    if (currentStoreDetailIndex < 0) return;
+    storeDetailReturnFocus = document.activeElement;
+    renderStoreDetail(storeItems[currentStoreDetailIndex]);
+    const overlay = document.getElementById('mithaqStoreDetail');
+    overlay.hidden = false;
+    document.body.classList.add('mithaq-store-detail-open');
+    const dialog = overlay.querySelector('.mithaq-store-detail-dialog');
+    dialog.scrollTop = 0;
+    dialog.focus({ preventScroll: true });
+  }
+
+  function moveStoreDetail(direction) {
+    const nextIndex = currentStoreDetailIndex + direction;
+    if (nextIndex < 0 || nextIndex >= storeItems.length) return;
+    currentStoreDetailIndex = nextIndex;
+    renderStoreDetail(storeItems[currentStoreDetailIndex]);
+    const dialog = document.querySelector('#mithaqStoreDetail .mithaq-store-detail-dialog');
+    if (dialog) dialog.scrollTop = 0;
+  }
+
+  function closeStoreDetail() {
+    const overlay = document.getElementById('mithaqStoreDetail');
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.classList.remove('mithaq-store-detail-open');
+    currentStoreDetailIndex = -1;
+    if (storeDetailReturnFocus && document.contains(storeDetailReturnFocus)) {
+      storeDetailReturnFocus.focus({ preventScroll: true });
+    }
+  }
 
   async function prepareStoreWhatsApp(item) {
     const status = document.getElementById('mithaqStoreStatus');
