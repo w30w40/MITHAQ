@@ -96,3 +96,39 @@ body.authenticated .mithaq-bottom-nav{grid-template-columns:repeat(5,minmax(0,1f
   }
   .mithaq-store-consent-dialog textarea{min-height:180px}
 }
+
+
+.mithaq-store-whatsapp-fallback-note{
+  margin:12px 0 4px;
+  color:#5b6d79;
+  font-size:12px;
+  line-height:1.8;
+}
+.mithaq-store-whatsapp-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:9px 12px;
+  border:1px solid #d5e0e7;
+  border-radius:10px;
+  color:#245a78;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:650;
+  text-align:center;
+  box-sizing:border-box;
+  cursor:pointer;
+}
+.mithaq-store-whatsapp-link.is-disabled{
+  opacity:.45;
+  pointer-events:none;
+  cursor:not-allowed;
+}
+.mithaq-store-whatsapp-fallback-actions{
+  margin-top:6px;
+}
+@media(max-width:480px){
+  .mithaq-store-whatsapp-fallback-actions{display:grid;grid-template-columns:1fr}
+  .mithaq-store-whatsapp-link{width:100%}
+}
