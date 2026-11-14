@@ -6,6 +6,7 @@
   let storeIsAdmin = false;
   let currentStoreDetailIndex = -1;
   let storeDetailReturnFocus = null;
+  let storeDetailScrollY = 0;
 
   const el = (tag, className, value) => {
     const node = document.createElement(tag);
@@ -254,6 +255,7 @@
     currentStoreDetailIndex = storeItems.findIndex(row => row.id === item.id);
     if (currentStoreDetailIndex < 0) return;
     storeDetailReturnFocus = document.activeElement;
+    storeDetailScrollY = window.scrollY || window.pageYOffset || 0;
     renderStoreDetail(storeItems[currentStoreDetailIndex]);
     const overlay = document.getElementById('mithaqStoreDetail');
     overlay.hidden = false;
@@ -277,6 +279,7 @@
     if (!overlay) return;
     overlay.hidden = true;
     document.body.classList.remove('mithaq-store-detail-open');
+    window.scrollTo(0, storeDetailScrollY);
     currentStoreDetailIndex = -1;
     if (storeDetailReturnFocus && document.contains(storeDetailReturnFocus)) {
       storeDetailReturnFocus.focus({ preventScroll: true });
