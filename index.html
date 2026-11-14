@@ -1373,6 +1373,13 @@ a{color:#c2185b}
  <p id="mithaqPremiumContactsAdminStatus" class="notice" aria-live="polite"></p>
  <div id="mithaqPremiumContactsAdminList"></div>
 </div>
+<div class="card mithaq-admin-card" id="mithaqModeratorManagement" hidden>
+ <div class="mithaq-admin-heading"><div><h2>إدارة المشرفين</h2><p class="muted">يمكن للمالك والمشرف إضافة مشرفين آخرين أو إلغاء صفتهم. حساب المالك الأساسي محمي ولا يظهر ضمن قائمة المشرفين القابلة للتعديل.</p></div></div>
+ <div class="field"><label for="mithaqModeratorCandidate">إضافة عضو كمشرف</label><select id="mithaqModeratorCandidate"><option value="">جارٍ تحميل الأعضاء...</option></select></div>
+ <button id="mithaqModeratorAdd" class="primary" type="button">إضافة المشرف</button>
+ <p id="mithaqModeratorManagementStatus" class="notice" aria-live="polite"></p>
+ <div id="mithaqModeratorList"></div>
+</div>
 <div class="card mithaq-admin-card">
   <div class="card mithaq-admin-card">
   <div class="mithaq-admin-heading"><div><h2>بلاغات الأعضاء</h2><p class="muted">البلاغات المرسلة من ملفات الأعضاء لمراجعتها من الإدارة</p></div></div>
@@ -2270,7 +2277,7 @@ async function loadMithaqAdminPanel(){
  if(!await refreshMithaqAdminAccess()){status.textContent='هذه الصفحة مخصصة للمشرف المعتمد فقط.';statsHost.replaceChildren();membersHost.replaceChildren();return;}
  status.textContent='جارٍ تحميل بيانات الإدارة...';
  statsHost.replaceChildren();membersHost.replaceChildren();
- await loadMithaqPremiumContactsAdmin();
+ await Promise.all([loadMithaqPremiumContactsAdmin(),loadMithaqModeratorManagement()]);
  const reportsHost=document.getElementById('mithaqAdminReports');
  const statsCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_stats'):Promise.resolve({data:null,error:null});
  const peopleCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_list_members'):supabaseClient.rpc('mithaq_moderator_list_members');
@@ -2341,8 +2348,60 @@ async function loadMithaqAdminPanel(){
   });
   actions.append(badge,detail,btn);row.append(info,actions);membersHost.append(row,detailPanel,review);
  });
- status.textContent=isMithaqAdmin?'تم تحميل لوحة الإدارة. تعرض أحدث الحسابات وتفاصيلها وحالة مراجعة النبذة.':'لوحة المشرف: مراجعة البلاغات والنبذات وإدارة حالة حسابات الأعضاء ضمن الصلاحيات المحددة.';
+ status.textContent='تم تحميل لوحة الإدارة. صلاحيات الإدارة متاحة للمالك والمشرف.';
 }
+async function loadMithaqModeratorManagement(){
+ const panel=document.getElementById('mithaqModeratorManagement');
+ const status=document.getElementById('mithaqModeratorManagementStatus');
+ const select=document.getElementById('mithaqModeratorCandidate');
+ const host=document.getElementById('mithaqModeratorList');
+ if(!panel||!status||!select||!host)return;
+ const allowed=await refreshMithaqAdminAccess();
+ panel.hidden=!(allowed&&isMithaqAdmin);
+ if(panel.hidden)return;
+ status.textContent='جارٍ تحميل قائمة المشرفين...';host.replaceChildren();
+ const [{data:moderators,error:moderatorError},{data:candidates,error:candidateError},{data:{session}}]=await Promise.all([
+  supabaseClient.rpc('mithaq_admin_list_moderators'),
+  supabaseClient.rpc('mithaq_admin_manageable_members'),
+  supabaseClient.auth.getSession()
+ ]);
+ if(moderatorError||candidateError){status.textContent='تعذر تحميل قائمة الصلاحيات: '+(moderatorError?.message||candidateError?.message);return;}
+ select.replaceChildren();
+ const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='اختر العضو';select.append(placeholder);
+ (candidates||[]).forEach(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=(person.display_name||'عضو')+' — '+(person.email||'بريد غير متاح');select.append(option);});
+ if(!candidates?.length){placeholder.textContent='لا يوجد أعضاء مؤهلون للإضافة حالياً';}
+ (moderators||[]).forEach(person=>{
+  const row=document.createElement('div');row.className='mithaq-admin-member';
+  const info=document.createElement('div');info.className='mithaq-admin-member-info';
+  const name=document.createElement('strong');name.textContent=person.display_name||'مشرف';
+  const meta=document.createElement('small');meta.textContent=(person.email||'بريد غير متاح')+' • تاريخ الإضافة: '+new Date(person.created_at).toLocaleDateString('ar');
+  info.append(name,meta);
+  const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='إلغاء صفة المشرف';
+  if(person.id===session?.user?.id){remove.disabled=true;remove.title='لا يمكن للمشرف إلغاء صفته بنفسه';}
+  remove.addEventListener('click',async()=>{
+   if(!confirm('هل تريد إلغاء صلاحيات المشرف لهذا الحساب؟'))return;
+   remove.disabled=true;
+   const {error}=await supabaseClient.rpc('mithaq_manage_moderator',{p_action:'remove',p_user_id:person.id});
+   if(error){status.textContent='تعذر إلغاء الصلاحية: '+error.message;remove.disabled=false;return;}
+   await loadMithaqModeratorManagement();
+  });
+  row.append(info,remove);host.append(row);
+ });
+ status.textContent='يمكن إدارة المشرفين دون تعديل حساب المالك الأساسي.';
+}
+document.getElementById('mithaqModeratorAdd')?.addEventListener('click',async()=>{
+ const select=document.getElementById('mithaqModeratorCandidate');
+ const status=document.getElementById('mithaqModeratorManagementStatus');
+ const userId=select?.value;
+ if(!userId){status.textContent='اختر عضواً أولاً.';return;}
+ if(!confirm('هل تريد منح هذا العضو صلاحيات الإدارة الكاملة؟'))return;
+ const button=document.getElementById('mithaqModeratorAdd');button.disabled=true;
+ const {error}=await supabaseClient.rpc('mithaq_manage_moderator',{p_action:'add',p_user_id:userId});
+ button.disabled=false;
+ if(error){status.textContent='تعذر إضافة المشرف: '+error.message;return;}
+ status.textContent='تمت إضافة المشرف.';
+ await loadMithaqModeratorManagement();
+});
 document.getElementById('mithaqAdminReload').addEventListener('click',loadMithaqAdminPanel);
 
 async function refreshProfileAccess(){
