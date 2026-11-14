@@ -1300,7 +1300,7 @@ a{color:#c2185b}
 <label id="mithaqHealthFilterWrap" hidden>الحالة الصحية<select id="mithaqHealthFilter" aria-label="تصفية الأعضاء حسب الحالة الصحية"><option value="all">الكل</option><option value="بصحة جيدة والحمد لله">بصحة جيدة والحمد لله</option><option value="لدي حالة صحية وأفضل توضيحها لاحقاً">لدي حالة صحية</option></select></label>
 <label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
 <label>نوع الزواج<select id="mithaqMarriageFilter"><option value="all">كل الأنواع</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
-<label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="name">حسب الاسم</option></select></label>
+<label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="newest">الأعضاء الأحدث</option><option value="name">حسب الاسم</option></select></label>
 </div><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div>
 </div></div></section>
 <section id="myprofile" class="tab hidden">
@@ -2088,7 +2088,7 @@ function openMithaqFeature(key){
 document.querySelectorAll('[data-menu-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.menuFeature)));
 document.querySelectorAll('[data-home-feature]').forEach(b=>b.addEventListener('click',()=>openMithaqFeature(b.dataset.homeFeature)));
 function openMithaqMemberSearch(){
- show('members',false,false,true);closeMemberDrawer();
+ openMemberResults('search');closeMemberDrawer();
  setTimeout(()=>document.getElementById('mithaqMemberSearch')?.focus(),120);
 }
 document.querySelectorAll('[data-menu-action="search"],[data-home-action="search"]').forEach(b=>b.addEventListener('click',openMithaqMemberSearch));
@@ -2691,7 +2691,7 @@ function openMemberResults(choice){
  const presence=document.getElementById('mithaqPresenceFilter'),country=document.getElementById('mithaqCountryFilter'),marriage=document.getElementById('mithaqMarriageFilter'),sort=document.getElementById('mithaqMemberSort'),gender=document.getElementById('mithaqGenderFilter'),health=document.getElementById('mithaqHealthFilter');
  if(!results||!grid||!status||!presence||!country||!marriage||!sort)return;
  show('members',false,false,true);
- presence.value='all';country.value='all';marriage.value='all';sort.value='activity';if(gender)gender.value='all';if(health)health.value='all';
+ presence.value='all';country.value='all';marriage.value='all';sort.value='activity';if(gender)gender.value='all';if(health)health.value='all';const searchInput=document.getElementById('mithaqMemberSearch');if(searchInput)searchInput.value='';
  setMithaqDirectoryView(choice==='online'?'online':choice==='newest'?'newest':choice==='premium'?'premium':choice==='health'?'health':choice==='search'?'search':'all');
  if(['online','offline'].includes(choice))presence.value=choice;
  if(['online-name','activity-online','name-online'].includes(choice))presence.value='online';
