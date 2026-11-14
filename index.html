@@ -3317,6 +3317,12 @@ async function openChat(userId,name){
  }catch(e){console.warn('MITHAQ chat profile:',e);}
  const {error:readError}=await supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});if(readError)console.warn('MITHAQ mark-read:',readError.message);else loadMithaqUnreadCount();
  await refreshChat();
+ // show('messages') starts an asynchronous conversation-list load which can hide
+ // chatPanel after this chat has already opened. Reassert the selected chat after
+ // its first message render so the composer remains available on mobile.
+ panel.hidden=false;document.body.classList.add('mithaq-chat-open');
+ const composer=document.getElementById('messageForm');
+ if(composer){composer.style.setProperty('display','flex','important');composer.scrollIntoView({behavior:'smooth',block:'nearest'});}
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
  const channelName='mithaq-chat-'+[session.user.id,userId].sort().join('-');
