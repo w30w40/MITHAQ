@@ -242,7 +242,7 @@
     }
     const profile = profileResult.data || {};
     const details = detailsResult.data?.details || {};
-    const memberName = profile.display_name || details.full_name || details.username || user.user_metadata?.full_name || '';
+    const memberName = details.full_name || user.user_metadata?.full_name || profile.display_name || details.username || '';
     const phone = details.phone_number || user.phone || '';
     const lines = [
       'السلام عليكم ورحمة الله وبركاته،',
