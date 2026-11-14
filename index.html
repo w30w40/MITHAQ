@@ -3032,6 +3032,14 @@ async function renderMithaqChatBackgrounds(otherUserId){
  if(!currentSession||currentSession.user.id!==session.user.id)return;
  const messages=document.getElementById('chatMessages');
  if(background?.url&&messages){
+  const probe=new Image();
+  const imageLoaded=await new Promise(resolve=>{
+   probe.onload=()=>resolve(true);
+   probe.onerror=()=>resolve(false);
+   probe.src=background.url;
+  });
+  if(activeChatUser!==otherUserId)return;
+  if(!imageLoaded){console.warn('MITHAQ chat background image failed to load for owner',otherUserId);return;}
   const x=Math.max(0,Math.min(100,Number(background.background_position_x??50)));
   const y=Math.max(0,Math.min(100,Number(background.background_position_y??50)));
   const fit=background.background_fit==='contain'?'contain':'cover';
@@ -3160,6 +3168,8 @@ mithaqBackgroundFileInput?.addEventListener('change',async event=>{
   setMithaqBackgroundStatus('تم التحقق من الصورة. هذه معاينة محلية فقط؛ لن تُحفظ حتى تضغط «حفظ وتفعيل الخلفية».');
  }catch(error){
   mithaqClearPendingBackground();
+  const activate=document.getElementById('mithaqBackgroundActivate');
+  if(activate){activate.disabled=!mithaqBackgroundCurrentPath||!!mithaqBackgroundCurrentRecord?.storageMissing;activate.textContent='حفظ وتفعيل الخلفية';}
   setMithaqBackgroundStatus('لم يتم قبول الصورة: '+error.message);
  }
 });
@@ -3175,6 +3185,7 @@ document.getElementById('mithaqBackgroundActivate')?.addEventListener('click',as
  const button=document.getElementById('mithaqBackgroundActivate');
  button.disabled=true;setMithaqBackgroundStatus('جارٍ رفع الصورة وحفظ بياناتها...');
  let uploadedPath=null;
+ let rollbackWarning='';
  try{
   const {data:{session}}=await supabaseClient.auth.getSession();
   if(!session)throw new Error('انتهت جلسة المستخدم. سجّل الدخول ثم أعد المحاولة.');
@@ -3205,7 +3216,7 @@ document.getElementById('mithaqBackgroundActivate')?.addEventListener('click',as
   if(saveError){
    if(uploadedPath){
     const {error:rollbackError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([uploadedPath]);
-    if(rollbackError)console.error('MITHAQ background upload rollback failed:',rollbackError.message);
+    if(rollbackError){rollbackWarning=' وتعذر تنظيف الملف المؤقت من التخزين؛ يحتاج إلى تنظيف لاحق.';console.error('MITHAQ background upload rollback failed:',rollbackError.message);}
    }
    throw new Error('رُفعت الصورة لكن فشل حفظ بياناتها في قاعدة البيانات؛ لم يتم إعلان نجاح الحفظ. '+saveError.message);
   }
@@ -3222,7 +3233,7 @@ document.getElementById('mithaqBackgroundActivate')?.addEventListener('click',as
   setMithaqBackgroundStatus('تم حفظ الصورة وبياناتها في قاعدة البيانات وتفعيلها بنجاح.'+cleanupWarning);
  }catch(error){
   console.error('MITHAQ background save:',error);
-  setMithaqBackgroundStatus('تعذر حفظ الخلفية: '+(error.message||'خطأ غير معروف.'));
+  setMithaqBackgroundStatus('تعذر حفظ الخلفية: '+(error.message||'خطأ غير معروف.')+rollbackWarning);
   button.disabled=false;
  }
 });
@@ -3247,6 +3258,8 @@ document.getElementById('mithaqBackgroundDelete')?.addEventListener('click',asyn
   if(!row?.object_path)throw new Error('لا يوجد سجل خلفية لحذفه.');
   const {error:disableError}=await supabaseClient.from('mithaq_profile_backgrounds').update({is_enabled:false,updated_at:new Date().toISOString()}).eq('user_id',session.user.id);
   if(disableError)throw new Error('تعذر تعطيل الخلفية قبل الحذف: '+disableError.message);
+  await renderMithaqOwnProfileBackground();
+  if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
   const {error:removeError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([row.object_path]);
   if(removeError)throw new Error('تم تعطيل الخلفية وإخفاؤها، لكن تعذر حذف ملفها من التخزين. أعد المحاولة لاحقاً: '+removeError.message);
   const {error:deleteError}=await supabaseClient.from('mithaq_profile_backgrounds').delete().eq('user_id',session.user.id);
