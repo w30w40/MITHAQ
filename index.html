@@ -1178,7 +1178,7 @@ a{color:#c2185b}
           <label>مجال العمل <b class="required-star">*</b><select id="entryWorkField" required><option value="">إختر ..</option><option>لا أعمل</option><option>القطاع الحكومي</option><option>القطاع الخاص</option><option>أعمال حرة</option><option>التعليم</option><option>الصحة</option><option>الهندسة</option><option>التجارة</option><option>إدارة وأعمال</option><option>شيء آخر</option></select></label>
           <label>الوظيفة <b class="required-star">*</b><input id="entryWork" required placeholder="ادخل الوظيفة"></label>
           <label>الدخل الشهري <b class="required-star">*</b><select id="entryMonthlyIncome" required><option value="">اختر الدخل الشهري</option></select><small class="muted">تُعرض شرائح الدخل بعملة بلد الإقامة، والقيم تقريبية.</small></label>
-          <label>الحالة الصحية <b class="required-star">*</b><select id="entryHealth" required><option value="">إختر ..</option><option>بصحة جيدة والحمد لله</option><option>لدي حالة صحية وأفضل توضيحها لاحقاً</option></select></label>
+          <label>الحالة الصحية <b class="required-star">*</b><input id="entryHealth" maxlength="120" required placeholder="مثال: بصحة جيدة، أو اكتب الحالة التي ترغب بإظهارها"></label>
           <label class="mithaq-health-consent"><input id="entryHealthPublic" type="checkbox"> أوافق على إظهار حالتي الصحية في قائمة الحالات الصحية للأعضاء المسجلين. لن تظهر إذا لم أفعّل هذا الخيار.</label>
         </section>
         <section class="wizard-panel" data-step-panel="4" hidden>
@@ -2603,7 +2603,14 @@ function renderMithaqMembers(){
  const marriageFilter=document.getElementById('mithaqMarriageFilter')?.value||'all';
  const countryFilter=document.getElementById('mithaqCountryFilter')?.value||'all';
  const genderFilter=document.getElementById('mithaqGenderFilter')?.value||'all';
- const healthFilter=document.getElementById('mithaqHealthFilter')?.value||'all';
+ const healthSelect=document.getElementById('mithaqHealthFilter');
+ let healthFilter=healthSelect?.value||'all';
+ if(mithaqMemberViewMode==='health'&&healthSelect){
+  const current=healthFilter,values=[...new Set(mithaqMemberCache.map(person=>String(person.details?.health||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
+  healthSelect.replaceChildren();const all=document.createElement('option');all.value='all';all.textContent='كل الحالات';healthSelect.append(all);
+  values.forEach(value=>{const option=document.createElement('option');option.value=value;option.textContent=value;healthSelect.append(option);});
+  healthFilter=values.includes(current)?current:'all';healthSelect.value=healthFilter;
+ }
  const sortMode=document.getElementById('mithaqMemberSort')?.value||'activity';
  const isOnline=person=>!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);
  const normalizeCountry=value=>String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/[\u064B-\u065F\u0670]/g,'').replace(/^(المملكة العربية المتحدة|المملكة العربية السعودية|جمهورية|دولة)\s*/,'').trim();
