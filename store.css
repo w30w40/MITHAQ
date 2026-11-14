@@ -1,0 +1,54 @@
+body.authenticated .mithaq-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(min-width:900px){body.authenticated .mithaq-bottom-nav{width:min(720px,94vw)}}
+.mithaq-store-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 20px;margin:0 0 16px;border-radius:22px;background:linear-gradient(125deg,#eaf5fb,#f7f2e8);border:1px solid #dce9ef}
+.mithaq-store-heading h1{margin:5px 0;color:#185b85;font-size:clamp(22px,4vw,30px)}
+.mithaq-store-heading p,.mithaq-store-section-title p{margin:4px 0;color:#6b7c88;font-size:13px}
+.mithaq-store-mark{width:64px;height:64px;display:grid;place-items:center;border-radius:20px;background:#fff;font-size:34px;box-shadow:0 5px 18px #214c6812}
+.mithaq-store-admin{border:1px solid #d9e5eb;border-top:3px solid #c4a15e;margin-bottom:20px}
+.mithaq-store-section-title,.mithaq-store-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.mithaq-store-section-title h2,.mithaq-store-list-heading h2{margin:0;color:#225d83;font-size:18px}
+.mithaq-store-admin-tag{border-radius:20px;background:#f7f0df;color:#87631d;padding:6px 11px;font-size:11px;font-weight:700}
+.mithaq-store-field{display:grid;gap:7px;margin:12px 0;color:#425665;font-size:13px;font-weight:650}
+.mithaq-store-field input,.mithaq-store-field textarea,.mithaq-store-field select{width:100%;min-height:44px;border:1px solid #d8e2e8;border-radius:12px;padding:10px 12px;background:#fff;color:#243746;font:inherit;font-weight:400;box-sizing:border-box}
+.mithaq-store-field textarea{resize:vertical;line-height:1.8}
+.mithaq-store-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mithaq-store-publish,.mithaq-store-consent-check{display:flex;align-items:flex-start;gap:9px;margin:14px 0;color:#475b69;font-size:13px;line-height:1.8}
+.mithaq-store-publish input,.mithaq-store-consent-check input{width:18px;height:18px;flex:0 0 auto;margin-top:3px;accent-color:#176b9e}
+.mithaq-store-form-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.mithaq-store-image-admin-list{display:flex;flex-wrap:wrap;gap:10px}
+.mithaq-store-image-admin{width:100px;display:grid;gap:5px}
+.mithaq-store-image-admin img{width:100px;height:76px;object-fit:cover;border-radius:9px}
+.mithaq-store-image-admin button{font-size:11px;padding:6px}
+.mithaq-store-list-heading{margin:20px 2px 12px}
+.mithaq-store-list-heading span{font-size:12px;color:#71818c}
+.mithaq-store-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:110px}
+.mithaq-store-card{overflow:hidden;border:1px solid #e1e8ed;border-radius:17px;background:#fff;box-shadow:0 4px 16px #173b5010;min-width:0}
+.mithaq-store-card-image{width:100%;height:180px;object-fit:cover;background:#f2f5f7;display:block}
+.mithaq-store-no-image{height:180px;display:grid;place-items:center;background:linear-gradient(140deg,#edf4f7,#f7f1e5);font-size:42px;color:#79909e}
+.mithaq-store-card-body{padding:13px}
+.mithaq-store-card h3{margin:0 0 7px;color:#225d83;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
+.mithaq-store-card-description{margin:0 0 10px;color:#667783;font-size:12px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mithaq-store-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:9px 0;color:#4d6574;font-size:12px}
+.mithaq-store-price{font-weight:800;color:#185b85;font-size:15px}
+.mithaq-store-status{display:inline-flex;align-items:center;border-radius:20px;padding:5px 9px;font-size:11px;background:#e8f6ed;color:#237345}
+.mithaq-store-status.unavailable{background:#fcecee;color:#a53b49}
+.mithaq-store-status.hidden-item{background:#f2f0ea;color:#786a50}
+.mithaq-store-card-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.mithaq-store-card-actions button{min-height:40px;padding:8px 10px;font-size:11px;flex:1 1 auto}
+.mithaq-store-contact{background:#176a9d!important;color:#fff!important}
+.mithaq-store-admin-actions{display:flex;gap:7px;margin-top:8px}
+.mithaq-store-admin-actions button{flex:1}
+.mithaq-store-overlay{position:fixed;inset:0;z-index:9999;background:#102536a8;display:flex;align-items:center;justify-content:center;padding:14px;overflow-y:auto}
+.mithaq-store-overlay[hidden]{display:none!important}
+.mithaq-store-dialog{position:relative;width:min(760px,100%);max-height:92dvh;overflow:auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 18px 70px #06182755}
+.mithaq-store-close{position:sticky;top:0;float:left;z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:#eef3f6;color:#355365;font-size:25px;cursor:pointer}
+.mithaq-store-detail-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.mithaq-store-detail-gallery img{width:100%;max-height:300px;object-fit:contain;background:#f3f6f8;border-radius:12px}
+.mithaq-store-detail-title{margin:6px 0;color:#205e86;font-size:22px}
+.mithaq-store-detail-text{white-space:pre-wrap;overflow-wrap:anywhere;color:#485d6a;line-height:1.9;font-size:14px}
+.mithaq-store-consent-dialog{width:min(650px,100%)}
+.mithaq-store-consent-dialog h2{color:#205e86;margin:4px 0 12px}
+.mithaq-store-privacy-note{background:#f4f8fb;border-right:3px solid #c2a05d;border-radius:10px;padding:12px;color:#435967;font-size:13px;line-height:1.9}
+.mithaq-store-consent-dialog textarea{min-height:230px;direction:rtl}
+@media(max-width:760px){.mithaq-store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mithaq-store-card-image,.mithaq-store-no-image{height:145px}.mithaq-store-card-body{padding:10px}.mithaq-store-form-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.mithaq-store-grid{grid-template-columns:1fr 1fr}.mithaq-store-heading{padding:17px 14px}.mithaq-store-mark{width:50px;height:50px;font-size:28px}.mithaq-store-dialog{padding:16px}.mithaq-store-detail-gallery{grid-template-columns:1fr}.mithaq-store-form-grid{grid-template-columns:1fr}}
