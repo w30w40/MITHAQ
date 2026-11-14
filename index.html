@@ -2404,7 +2404,6 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  if(userError){status.textContent='تعذر قراءة بيانات حسابك: '+userError.message;return;}
  const previous=userData.user?.user_metadata||session.user.user_metadata||{};
  const updated={...previous,
-  health_public:!!document.getElementById('profileHealthPublic')?.checked,
   username:document.getElementById('displayName').value.trim(),
   country:document.getElementById('profileCountry').value.trim(),
   city:document.getElementById('profileRegion').value.trim(),
