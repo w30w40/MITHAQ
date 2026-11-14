@@ -132,3 +132,141 @@ body.authenticated .mithaq-bottom-nav{grid-template-columns:repeat(5,minmax(0,1f
   .mithaq-store-whatsapp-fallback-actions{display:grid;grid-template-columns:1fr}
   .mithaq-store-whatsapp-link{width:100%}
 }
+
+
+/* Full-screen Store item details: hide site chrome only while the detail view is open. */
+body.mithaq-store-detail-open {
+  overflow: hidden !important;
+}
+body.mithaq-store-detail-open > header,
+body.mithaq-store-detail-open #mithaqBottomNav,
+body.mithaq-store-detail-open .member-drawer-backdrop {
+  display: none !important;
+}
+.mithaq-store-detail-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  display: block !important;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #fff;
+}
+.mithaq-store-detail-overlay[hidden] {
+  display: none !important;
+}
+.mithaq-store-detail-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 100%;
+  max-height: none !important;
+  margin: 0;
+  padding: max(12px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 0;
+  box-shadow: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+.mithaq-store-detail-toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px clamp(14px, 3vw, 28px) 14px;
+  border-bottom: 1px solid #e7edf1;
+  background: #fff;
+}
+.mithaq-store-detail-back {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #dce7ee;
+  border-radius: 12px;
+  background: #f3f7fa;
+  color: #205e86;
+  white-space: nowrap;
+}
+.mithaq-store-detail-pagination {
+  display: flex;
+  gap: 8px;
+}
+.mithaq-store-detail-pagination button {
+  min-width: 76px;
+  min-height: 44px;
+  padding: 9px 13px;
+}
+.mithaq-store-detail-content {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 18px clamp(14px, 3vw, 28px) 28px;
+  overflow-wrap: anywhere;
+}
+.mithaq-store-detail-title {
+  margin: 6px 0 12px;
+  font-size: clamp(21px, 4vw, 30px);
+  line-height: 1.5;
+}
+.mithaq-store-detail-gallery {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: start;
+  gap: 12px;
+  margin: 18px 0 24px;
+}
+.mithaq-store-detail-gallery img {
+  width: 100%;
+  max-height: min(65vh, 620px);
+  object-fit: contain;
+}
+.mithaq-store-detail-text {
+  font-size: 15px;
+  line-height: 2;
+}
+.mithaq-store-detail-content h3 {
+  margin: 20px 0 8px;
+  color: #245e82;
+}
+.mithaq-store-detail-contact {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  margin: 22px 0 8px;
+  white-space: normal;
+}
+@media (max-width: 520px) {
+  .mithaq-store-detail-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    padding-inline: 12px;
+  }
+  .mithaq-store-detail-back {
+    width: 100%;
+  }
+  .mithaq-store-detail-pagination {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .mithaq-store-detail-pagination button {
+    width: 100%;
+  }
+  .mithaq-store-detail-content {
+    padding: 14px 14px max(28px, env(safe-area-inset-bottom));
+  }
+  .mithaq-store-detail-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mithaq-store-detail-gallery img {
+    max-height: 58vh;
+  }
+}
