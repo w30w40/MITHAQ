@@ -7,6 +7,7 @@
   let currentStoreDetailIndex = -1;
   let storeDetailReturnFocus = null;
   let storeDetailScrollY = 0;
+  let storeConsentReturnToDetail = false;
 
   const el = (tag, className, value) => {
     const node = document.createElement(tag);
@@ -71,9 +72,12 @@
           <div id="mithaqStoreDetailContent" class="mithaq-store-detail-content"></div>
         </div>
       </div>
-      <div id="mithaqStoreConsent" class="mithaq-store-overlay" hidden>
-        <div class="mithaq-store-dialog mithaq-store-consent-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreConsentTitle">
-          <button type="button" id="mithaqStoreConsentClose" class="mithaq-store-close" aria-label="إغلاق">×</button>
+      <div id="mithaqStoreConsent" class="mithaq-store-overlay mithaq-store-consent-overlay" hidden>
+        <div class="mithaq-store-dialog mithaq-store-consent-dialog" role="dialog" aria-modal="true" aria-labelledby="mithaqStoreConsentTitle" tabindex="-1">
+          <div class="mithaq-store-consent-toolbar">
+            <button type="button" id="mithaqStoreConsentBack" class="mithaq-store-detail-back">← العودة إلى تفاصيل المعروض</button>
+            <button type="button" id="mithaqStoreConsentClose" class="mithaq-store-close" aria-label="إغلاق المراجعة">×</button>
+          </div>
           <h2 id="mithaqStoreConsentTitle">مراجعة رسالة واتساب</h2>
           <p class="mithaq-store-privacy-note">ستتضمن الرسالة معلومات المعروض، وبيانات حسابك التالية عند توفرها: الاسم والبريد الإلكتروني ورقم العضوية ورقم الهاتف. لن تظهر هذه البيانات للأعضاء الآخرين. ستنتقل الرسالة إلى واتساب لتراجعها بنفسك؛ ولن تُرسل إلا إذا ضغطت زر «إرسال» داخل واتساب.</p>
           <label class="mithaq-store-field">الرسالة الجاهزة (يمكنك تعديلها قبل فتح واتساب)<textarea id="mithaqStoreWhatsAppMessage" rows="13" maxlength="12000"></textarea></label>
@@ -102,9 +106,11 @@
     document.getElementById('mithaqStoreDetailPrevious').addEventListener('click', () => moveStoreDetail(-1));
     document.getElementById('mithaqStoreDetailNext').addEventListener('click', () => moveStoreDetail(1));
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && !document.getElementById('mithaqStoreDetail').hidden) closeStoreDetail();
+      if (event.key === 'Escape' && !document.getElementById('mithaqStoreConsent').hidden) closeStoreConsent();
+      else if (event.key === 'Escape' && !document.getElementById('mithaqStoreDetail').hidden) closeStoreDetail();
     });
     document.getElementById('mithaqStoreConsentClose').addEventListener('click', closeStoreConsent);
+    document.getElementById('mithaqStoreConsentBack').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppCancel').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppConsent').addEventListener('change', event => {
       document.getElementById('mithaqStoreWhatsAppContinue').disabled = !event.target.checked;
@@ -331,12 +337,25 @@
     document.getElementById('mithaqStoreWhatsAppMessage').value = lines.join('\n');
     document.getElementById('mithaqStoreWhatsAppConsent').checked = false;
     document.getElementById('mithaqStoreWhatsAppContinue').disabled = true;
-    closeStoreDetail();
+    storeConsentReturnToDetail = !document.getElementById('mithaqStoreDetail').hidden;
+    const backButton = document.getElementById('mithaqStoreConsentBack');
+    backButton.textContent = storeConsentReturnToDetail ? '← العودة إلى تفاصيل المعروض' : '← الرجوع إلى المتجر';
     document.getElementById('mithaqStoreConsent').hidden = false;
+    document.body.classList.add('mithaq-store-detail-open');
+    const consentDialog = document.querySelector('#mithaqStoreConsent .mithaq-store-consent-dialog');
+    consentDialog.scrollTop = 0;
+    consentDialog.focus({ preventScroll: true });
   }
 
   function closeStoreConsent() {
     document.getElementById('mithaqStoreConsent').hidden = true;
+    if (document.getElementById('mithaqStoreDetail').hidden) {
+      document.body.classList.remove('mithaq-store-detail-open');
+    } else {
+      const detailDialog = document.querySelector('#mithaqStoreDetail .mithaq-store-detail-dialog');
+      if (detailDialog) detailDialog.focus({ preventScroll: true });
+    }
+    storeConsentReturnToDetail = false;
     document.getElementById('mithaqStoreWhatsAppConsent').checked = false;
     document.getElementById('mithaqStoreWhatsAppContinue').disabled = true;
     ['mithaqStoreWhatsAppAppLink', 'mithaqStoreWhatsAppWebLink'].forEach(id => {
