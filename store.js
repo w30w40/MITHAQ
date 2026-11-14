@@ -70,6 +70,11 @@
           <label class="mithaq-store-field">الرسالة الجاهزة (يمكنك تعديلها قبل فتح واتساب)<textarea id="mithaqStoreWhatsAppMessage" rows="13" maxlength="12000"></textarea></label>
           <label class="mithaq-store-consent-check"><input id="mithaqStoreWhatsAppConsent" type="checkbox"> أوافق على تضمين بيانات حسابي الموضحة أعلاه في رسالة واتساب الموجهة إلى إدارة ميثاق.</label>
           <div class="mithaq-store-form-actions"><button type="button" id="mithaqStoreWhatsAppContinue" class="primary" disabled>فتح واتساب ومراجعة الرسالة</button><button type="button" id="mithaqStoreWhatsAppCancel" class="secondary">إلغاء</button></div>
+          <p class="mithaq-store-whatsapp-fallback-note">إذا لم يفتح تطبيق واتساب تلقائياً، استخدم أحد الخيارين التاليين:</p>
+          <div class="mithaq-store-form-actions mithaq-store-whatsapp-fallback-actions">
+            <a id="mithaqStoreWhatsAppAppLink" class="secondary mithaq-store-whatsapp-link is-disabled" aria-disabled="true">محاولة فتح تطبيق واتساب مباشرة</a>
+            <a id="mithaqStoreWhatsAppWebLink" class="secondary mithaq-store-whatsapp-link is-disabled" aria-disabled="true">المتابعة عبر wa.me في المتصفح</a>
+          </div>
         </div>
       </div>`;
     main.append(section);
@@ -89,6 +94,14 @@
     document.getElementById('mithaqStoreWhatsAppCancel').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppConsent').addEventListener('change', event => {
       document.getElementById('mithaqStoreWhatsAppContinue').disabled = !event.target.checked;
+      updateStoreWhatsAppLinks();
+    });
+    document.getElementById('mithaqStoreWhatsAppMessage').addEventListener('input', updateStoreWhatsAppLinks);
+    document.getElementById('mithaqStoreWhatsAppAppLink').addEventListener('click', event => {
+      if (!document.getElementById('mithaqStoreWhatsAppConsent').checked) event.preventDefault();
+    });
+    document.getElementById('mithaqStoreWhatsAppWebLink').addEventListener('click', event => {
+      if (!document.getElementById('mithaqStoreWhatsAppConsent').checked) event.preventDefault();
     });
     document.getElementById('mithaqStoreWhatsAppContinue').addEventListener('click', continueStoreWhatsApp);
     document.getElementById('mithaqStoreForm').addEventListener('submit', saveStoreItem);
@@ -276,15 +289,39 @@
     document.getElementById('mithaqStoreConsent').hidden = true;
     document.getElementById('mithaqStoreWhatsAppConsent').checked = false;
     document.getElementById('mithaqStoreWhatsAppContinue').disabled = true;
+    ['mithaqStoreWhatsAppAppLink', 'mithaqStoreWhatsAppWebLink'].forEach(id => {
+      const link = document.getElementById(id);
+      link.removeAttribute('href');
+      link.classList.add('is-disabled');
+      link.setAttribute('aria-disabled', 'true');
+    });
   }
+  function updateStoreWhatsAppLinks() {
+    const allowed = document.getElementById('mithaqStoreWhatsAppConsent').checked;
+    const message = document.getElementById('mithaqStoreWhatsAppMessage').value.trim();
+    const encodedMessage = encodeURIComponent(message);
+    const appLink = document.getElementById('mithaqStoreWhatsAppAppLink');
+    const webLink = document.getElementById('mithaqStoreWhatsAppWebLink');
+    [appLink, webLink].forEach(link => {
+      link.classList.toggle('is-disabled', !allowed || !message);
+      link.setAttribute('aria-disabled', String(!allowed || !message));
+      if (!allowed || !message) link.removeAttribute('href');
+    });
+    if (allowed && message) {
+      appLink.href = 'whatsapp://send?phone=' + STORE_WHATSAPP + '&text=' + encodedMessage;
+      webLink.href = 'https://wa.me/' + STORE_WHATSAPP + '?text=' + encodedMessage;
+    }
+  }
+
   function continueStoreWhatsApp() {
     if (!document.getElementById('mithaqStoreWhatsAppConsent').checked) return;
     const message = document.getElementById('mithaqStoreWhatsAppMessage').value.trim();
     if (!message) return;
-    const url = 'https://wa.me/' + STORE_WHATSAPP + '?text=' + encodeURIComponent(message);
-    closeStoreConsent();
-    const opened = window.open(url, '_blank', 'noopener,noreferrer');
-    if (!opened) window.location.href = url;
+    const encodedMessage = encodeURIComponent(message);
+    const url = 'https://wa.me/' + STORE_WHATSAPP + '?text=' + encodedMessage;
+    // Same-tab navigation allows Android App Links to hand wa.me to the installed WhatsApp app.
+    // Avoid window.open(), which commonly leaves the user in a browser tab.
+    window.location.assign(url);
   }
 
   function renderStoreExistingImages() {
