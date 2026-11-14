@@ -52,3 +52,47 @@ body.authenticated .mithaq-bottom-nav{grid-template-columns:repeat(5,minmax(0,1f
 .mithaq-store-consent-dialog textarea{min-height:230px;direction:rtl}
 @media(max-width:760px){.mithaq-store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mithaq-store-card-image,.mithaq-store-no-image{height:145px}.mithaq-store-card-body{padding:10px}.mithaq-store-form-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.mithaq-store-grid{grid-template-columns:1fr 1fr}.mithaq-store-heading{padding:17px 14px}.mithaq-store-mark{width:50px;height:50px;font-size:28px}.mithaq-store-dialog{padding:16px}.mithaq-store-detail-gallery{grid-template-columns:1fr}.mithaq-store-form-grid{grid-template-columns:1fr}}
+
+
+/* Keep Store dialogs scrollable above the fixed app navigation on small screens. */
+.mithaq-store-overlay{
+  z-index:39;
+  box-sizing:border-box;
+  align-items:flex-start;
+  padding: max(14px, env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom));
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.mithaq-store-dialog{
+  box-sizing:border-box;
+  max-height:calc(100dvh - 124px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  margin:auto 0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.mithaq-store-consent-dialog .mithaq-store-form-actions{
+  position:sticky;
+  bottom:0;
+  z-index:2;
+  padding:10px 0 max(6px, env(safe-area-inset-bottom));
+  margin:12px -2px -2px;
+  background:linear-gradient(to bottom, #ffffffeb, #fff 35%);
+}
+.mithaq-store-consent-dialog .mithaq-store-form-actions button{
+  min-height:48px;
+  touch-action:manipulation;
+}
+@media(max-width:480px){
+  .mithaq-store-overlay{
+    padding-right:10px;
+    padding-left:10px;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom));
+  }
+  .mithaq-store-dialog{
+    width:100%;
+    max-height:calc(100dvh - 124px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding:14px;
+  }
+  .mithaq-store-consent-dialog textarea{min-height:180px}
+}
