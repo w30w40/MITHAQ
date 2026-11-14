@@ -1380,6 +1380,19 @@ a{color:#c2185b}
  <p id="mithaqModeratorManagementStatus" class="notice" aria-live="polite"></p>
  <div id="mithaqModeratorList"></div>
 </div>
+<div class="card mithaq-admin-card" id="mithaqPremiumSubscriptionsAdmin" hidden>
+ <div class="mithaq-admin-heading"><div><h2>إدارة العضويات المميزة</h2><p class="muted">تفعيل أو تجديد العضوية وإلغاؤها يدوياً. لا يتم تحصيل أي مبلغ تلقائياً من هذه اللوحة.</p></div></div>
+ <div class="field"><label for="mithaqSubscriptionMember">العضو</label><select id="mithaqSubscriptionMember"><option value="">جارٍ تحميل الأعضاء...</option></select></div>
+ <div class="row">
+  <div class="field"><label for="mithaqSubscriptionAmount">المبلغ</label><input id="mithaqSubscriptionAmount" type="number" min="0" step="0.01" placeholder="المبلغ المتفق عليه"></div>
+  <div class="field"><label for="mithaqSubscriptionCurrency">العملة</label><input id="mithaqSubscriptionCurrency" maxlength="3" value="SAR" placeholder="SAR"></div>
+ </div>
+ <div class="field"><label for="mithaqSubscriptionCountry">الدولة</label><input id="mithaqSubscriptionCountry" maxlength="80" placeholder="دولة العضو (اختياري)"></div>
+ <div class="field"><label for="mithaqSubscriptionExpiry">تاريخ انتهاء العضوية</label><input id="mithaqSubscriptionExpiry" type="datetime-local"></div>
+ <button id="mithaqSubscriptionActivate" class="primary" type="button">تفعيل / تجديد العضوية</button>
+ <p id="mithaqSubscriptionsAdminStatus" class="notice" aria-live="polite"></p>
+ <div id="mithaqSubscriptionsAdminList"></div>
+</div>
 <div class="card mithaq-admin-card">
   <div class="card mithaq-admin-card">
   <div class="mithaq-admin-heading"><div><h2>بلاغات الأعضاء</h2><p class="muted">البلاغات المرسلة من ملفات الأعضاء لمراجعتها من الإدارة</p></div></div>
@@ -2277,7 +2290,7 @@ async function loadMithaqAdminPanel(){
  if(!await refreshMithaqAdminAccess()){status.textContent='هذه الصفحة مخصصة للمشرف المعتمد فقط.';statsHost.replaceChildren();membersHost.replaceChildren();return;}
  status.textContent='جارٍ تحميل بيانات الإدارة...';
  statsHost.replaceChildren();membersHost.replaceChildren();
- await Promise.all([loadMithaqPremiumContactsAdmin(),loadMithaqModeratorManagement()]);
+ await Promise.all([loadMithaqPremiumContactsAdmin(),loadMithaqModeratorManagement(),loadMithaqPremiumSubscriptionsAdmin()]);
  const reportsHost=document.getElementById('mithaqAdminReports');
  const statsCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_stats'):Promise.resolve({data:null,error:null});
  const peopleCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_list_members'):supabaseClient.rpc('mithaq_moderator_list_members');
@@ -2401,6 +2414,67 @@ document.getElementById('mithaqModeratorAdd')?.addEventListener('click',async()=
  if(error){status.textContent='تعذر إضافة المشرف: '+error.message;return;}
  status.textContent='تمت إضافة المشرف.';
  await loadMithaqModeratorManagement();
+});
+async function loadMithaqPremiumSubscriptionsAdmin(){
+ const panel=document.getElementById('mithaqPremiumSubscriptionsAdmin');
+ const status=document.getElementById('mithaqSubscriptionsAdminStatus');
+ const host=document.getElementById('mithaqSubscriptionsAdminList');
+ const select=document.getElementById('mithaqSubscriptionMember');
+ if(!panel||!status||!host||!select)return;
+ const allowed=await refreshMithaqAdminAccess();
+ panel.hidden=!(allowed&&isMithaqAdmin);
+ if(panel.hidden)return;
+ status.textContent='جارٍ تحميل العضويات...';host.replaceChildren();
+ const [{data:subscriptions,error:subscriptionError},{data:members,error:memberError}]=await Promise.all([
+  supabaseClient.rpc('mithaq_admin_list_subscriptions'),
+  supabaseClient.rpc('mithaq_admin_manageable_members')
+ ]);
+ if(subscriptionError||memberError){status.textContent='تعذر تحميل العضويات: '+(subscriptionError?.message||memberError?.message);return;}
+ select.replaceChildren();
+ const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='اختر العضو';select.append(placeholder);
+ (members||[]).forEach(person=>{const option=document.createElement('option');option.value=person.id;option.textContent=(person.display_name||'عضو')+' — '+(person.email||'بريد غير متاح');select.append(option);});
+ (subscriptions||[]).forEach(subscription=>{
+  const row=document.createElement('div');row.className='mithaq-admin-member';
+  const info=document.createElement('div');info.className='mithaq-admin-member-info';
+  const name=document.createElement('strong');name.textContent=(subscription.display_name||'عضو')+' — '+(subscription.status==='active'?'نشطة':subscription.status==='pending'?'معلقة':subscription.status==='expired'?'منتهية':'ملغاة');
+  const meta=document.createElement('small');meta.textContent=(subscription.email||'')+' • '+(subscription.amount_sar??'—')+' '+(subscription.currency||'SAR')+' • تنتهي: '+(subscription.expires_at?new Date(subscription.expires_at).toLocaleString('ar'):'غير محدد');
+  info.append(name,meta);row.append(info);
+  if(subscription.status==='active'||subscription.status==='pending'){
+   const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary';cancel.textContent='إلغاء العضوية';
+   cancel.addEventListener('click',async()=>{
+    if(!confirm('هل تريد إلغاء العضوية المميزة لهذا العضو؟'))return;
+    cancel.disabled=true;
+    const {error}=await supabaseClient.rpc('mithaq_manage_premium_subscription',{p_action:'cancel',p_user_id:subscription.user_id});
+    if(error){status.textContent='تعذر إلغاء العضوية: '+error.message;cancel.disabled=false;return;}
+    await loadMithaqPremiumSubscriptionsAdmin();
+   });
+   row.append(cancel);
+  }
+  host.append(row);
+ });
+ status.textContent='يمكن للإدارة تفعيل وتجديد وإلغاء العضويات يدوياً؛ لا يوجد تحصيل إلكتروني.';
+}
+document.getElementById('mithaqSubscriptionActivate')?.addEventListener('click',async()=>{
+ const status=document.getElementById('mithaqSubscriptionsAdminStatus');
+ const userId=document.getElementById('mithaqSubscriptionMember')?.value;
+ const amount=Number(document.getElementById('mithaqSubscriptionAmount')?.value);
+ const currency=(document.getElementById('mithaqSubscriptionCurrency')?.value||'').trim().toUpperCase();
+ const country=(document.getElementById('mithaqSubscriptionCountry')?.value||'').trim();
+ const expiryValue=document.getElementById('mithaqSubscriptionExpiry')?.value;
+ if(!userId||!expiryValue||!currency||!Number.isFinite(amount)||amount<0){status.textContent='اختر العضو وأدخل المبلغ والعملة وتاريخ الانتهاء بشكل صحيح.';return;}
+ if(!/^[A-Z]{3}$/.test(currency)){status.textContent='اكتب رمز العملة المكوّن من 3 أحرف، مثل SAR أو USD.';return;}
+ const expiresAt=new Date(expiryValue);
+ if(!Number.isFinite(expiresAt.getTime())||expiresAt<=new Date()){status.textContent='اختر تاريخ انتهاء مستقبلياً.';return;}
+ if(!confirm('سيتم تفعيل العضوية يدوياً دون تحصيل إلكتروني. هل تريد المتابعة؟'))return;
+ const button=document.getElementById('mithaqSubscriptionActivate');button.disabled=true;status.textContent='جارٍ حفظ العضوية...';
+ const {error}=await supabaseClient.rpc('mithaq_manage_premium_subscription',{
+  p_action:'activate',p_user_id:userId,p_plan_code:'monthly',p_country:country||null,
+  p_amount_sar:amount,p_currency:currency,p_starts_at:new Date().toISOString(),p_expires_at:expiresAt.toISOString()
+ });
+ button.disabled=false;
+ if(error){status.textContent='تعذر تفعيل العضوية: '+error.message;return;}
+ status.textContent='تم تفعيل العضوية يدوياً.';
+ await loadMithaqPremiumSubscriptionsAdmin();
 });
 document.getElementById('mithaqAdminReload').addEventListener('click',loadMithaqAdminPanel);
 
