@@ -3136,7 +3136,9 @@ async function validateMithaqBackgroundFile(file){
  const isPng=bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4e&&bytes[3]===0x47;
  const isGif=bytes[0]===0x47&&bytes[1]===0x49&&bytes[2]===0x46&&bytes[3]===0x38;
  const isWebp=bytes[0]===0x52&&bytes[1]===0x49&&bytes[2]===0x46&&bytes[3]===0x46&&bytes[8]===0x57&&bytes[9]===0x45&&bytes[10]===0x42&&bytes[11]===0x50;
- if(!(isJpeg||isPng||isGif||isWebp))throw new Error('محتوى الملف لا يطابق صيغة صورة مدعومة.');
+ const mime=(file.type||'').toLowerCase();
+ const signatureMatches=(mime==='image/jpeg'&&isJpeg)||(mime==='image/png'&&isPng)||(mime==='image/gif'&&isGif)||(mime==='image/webp'&&isWebp);
+ if(!signatureMatches)throw new Error('محتوى الملف لا يطابق نوع الصورة المعلن. اختر صورة JPG أو PNG أو WebP أو GIF صحيحة.');
  return true;
 }
 document.getElementById('settingsBackgroundOpen')?.addEventListener('click',()=>{
