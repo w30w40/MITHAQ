@@ -1428,7 +1428,7 @@ a{color:#c2185b}
 <div class="card settings-list">
 
 <button class="settings-item" id="settingsPremiumOpen" type="button"><span class="settings-icon">⭐</span><span><strong>العضوية المميزة</strong><small>الرسائل الصوتية ومشاركة الصور ومراسلات أكثر</small></span><span class="settings-arrow">‹</span></button>
-<button class="settings-item" id="settingsBackgroundOpen" type="button"><span class="settings-icon">🖼️</span><span><strong>خلفية حسابي</strong><small>اختر صورة تظهر للأعضاء عند تفعيلها</small></span><span class="settings-arrow">‹</span></button>
+<button class="settings-item" id="settingsBackgroundOpen" type="button" aria-expanded="false" aria-controls="mithaqBackgroundSettings"><span class="settings-icon">🖼️</span><span><strong>الخلفية الشخصية</strong><small>إدارة الخلفية الشخصية ورفع صورة تظهر للطرف الآخر في المحادثة</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
 </div>
@@ -1441,7 +1441,7 @@ a{color:#c2185b}
  <p id="mithaqPremiumContactStatus" class="notice" aria-live="polite"></p>
 </div>
 <div class="card mithaq-background-settings" id="mithaqBackgroundSettings" hidden>
- <div class="member-profile-card-head"><h2>الخلفية الشخصية</h2><span>مرتبطة بحسابك وتُحفظ في التخزين</span></div>
+ <div class="member-profile-card-head"><div><h2>إدارة الخلفية الشخصية</h2><span>مرتبطة بحسابك وتُحفظ في التخزين</span></div><button type="button" class="secondary" id="mithaqBackgroundClose" aria-label="إغلاق إدارة الخلفية">إغلاق</button></div>
  <p class="muted">اختر صورة JPG أو PNG أو WebP أو GIF بحجم لا يتجاوز 8 ميغابايت. لن تظهر للطرف الآخر إلا بعد حفظها وتفعيلها.</p>
  <label class="mithaq-background-pick" for="mithaqBackgroundFile">🖼️ تغيير الخلفية / اختيار صورة</label>
  <input id="mithaqBackgroundFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
@@ -3141,10 +3141,22 @@ async function validateMithaqBackgroundFile(file){
  if(!signatureMatches)throw new Error('محتوى الملف لا يطابق نوع الصورة المعلن. اختر صورة JPG أو PNG أو WebP أو GIF صحيحة.');
  return true;
 }
-document.getElementById('settingsBackgroundOpen')?.addEventListener('click',()=>{
- const panel=document.getElementById('mithaqBackgroundSettings');panel.hidden=!panel.hidden;
- if(!panel.hidden)loadMithaqBackgroundSettings();
-});
+const mithaqBackgroundSettingsButton=document.getElementById('settingsBackgroundOpen');
+const mithaqBackgroundSettingsPanel=document.getElementById('mithaqBackgroundSettings');
+function setMithaqBackgroundPanelOpen(open){
+ if(!mithaqBackgroundSettingsPanel||!mithaqBackgroundSettingsButton)return;
+ mithaqBackgroundSettingsPanel.hidden=!open;
+ mithaqBackgroundSettingsButton.setAttribute('aria-expanded',String(open));
+ if(open){
+  loadMithaqBackgroundSettings();
+  mithaqBackgroundSettingsPanel.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('mithaqBackgroundFile')?.focus({preventScroll:true});
+ }else{
+  mithaqBackgroundSettingsButton.focus({preventScroll:true});
+ }
+}
+mithaqBackgroundSettingsButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden));
+document.getElementById('mithaqBackgroundClose')?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(false));
 let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
 if(!mithaqBackgroundFileInput){
  mithaqBackgroundFileInput=document.createElement('input');
