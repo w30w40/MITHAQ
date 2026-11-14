@@ -73,7 +73,6 @@
         </div>
       </div>`;
     main.append(section);
-    if (typeof tabs !== 'undefined' && Array.isArray(tabs)) tabs.push(section);
     const navButton = el('button');
     navButton.type = 'button';
     navButton.dataset.bottomGo = 'store';
