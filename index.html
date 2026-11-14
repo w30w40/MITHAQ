@@ -2052,6 +2052,7 @@ async function loadMithaqProfileVisitors(){
  ids.forEach(id=>{
   const event=latest.get(id),person=byId.get(id);if(!person)return;count++;
   const row=document.createElement('article');row.className='mithaq-feature-member-row';
+  const avatar=document.createElement('span');avatar.className='mithaq-feature-member-avatar';const gender=String(person.details?.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';if(visitorPremiumIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||event.actor_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||event.actor_name||'عضو ميثاق','menuFeature'));
   const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),'آخر زيارة: '+new Date(event.created_at).toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'})].join(' • ');
