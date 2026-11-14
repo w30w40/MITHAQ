@@ -93,15 +93,10 @@
     document.getElementById('mithaqStoreConsentClose').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppCancel').addEventListener('click', closeStoreConsent);
     document.getElementById('mithaqStoreWhatsAppConsent').addEventListener('change', event => {
-      const allowed = event.target.checked;
-      document.getElementById('mithaqStoreWhatsAppContinue').disabled = !allowed;
-      ['mithaqStoreWhatsAppAppLink', 'mithaqStoreWhatsAppWebLink'].forEach(id => {
-        const link = document.getElementById(id);
-        link.classList.toggle('is-disabled', !allowed);
-        link.setAttribute('aria-disabled', String(!allowed));
-        if (!allowed) link.removeAttribute('href');
-      });
+      document.getElementById('mithaqStoreWhatsAppContinue').disabled = !event.target.checked;
+      updateStoreWhatsAppLinks();
     });
+    document.getElementById('mithaqStoreWhatsAppMessage').addEventListener('input', updateStoreWhatsAppLinks);
     document.getElementById('mithaqStoreWhatsAppAppLink').addEventListener('click', event => {
       if (!document.getElementById('mithaqStoreWhatsAppConsent').checked) event.preventDefault();
     });
@@ -301,21 +296,29 @@
       link.setAttribute('aria-disabled', 'true');
     });
   }
+  function updateStoreWhatsAppLinks() {
+    const allowed = document.getElementById('mithaqStoreWhatsAppConsent').checked;
+    const message = document.getElementById('mithaqStoreWhatsAppMessage').value.trim();
+    const encodedMessage = encodeURIComponent(message);
+    const appLink = document.getElementById('mithaqStoreWhatsAppAppLink');
+    const webLink = document.getElementById('mithaqStoreWhatsAppWebLink');
+    [appLink, webLink].forEach(link => {
+      link.classList.toggle('is-disabled', !allowed || !message);
+      link.setAttribute('aria-disabled', String(!allowed || !message));
+      if (!allowed || !message) link.removeAttribute('href');
+    });
+    if (allowed && message) {
+      appLink.href = 'whatsapp://send?phone=' + STORE_WHATSAPP + '&text=' + encodedMessage;
+      webLink.href = 'https://wa.me/' + STORE_WHATSAPP + '?text=' + encodedMessage;
+    }
+  }
+
   function continueStoreWhatsApp() {
     if (!document.getElementById('mithaqStoreWhatsAppConsent').checked) return;
     const message = document.getElementById('mithaqStoreWhatsAppMessage').value.trim();
     if (!message) return;
     const encodedMessage = encodeURIComponent(message);
     const url = 'https://wa.me/' + STORE_WHATSAPP + '?text=' + encodedMessage;
-    const appUrl = 'whatsapp://send?phone=' + STORE_WHATSAPP + '&text=' + encodedMessage;
-    const appLink = document.getElementById('mithaqStoreWhatsAppAppLink');
-    const webLink = document.getElementById('mithaqStoreWhatsAppWebLink');
-    appLink.href = appUrl;
-    webLink.href = url;
-    appLink.classList.remove('is-disabled');
-    webLink.classList.remove('is-disabled');
-    appLink.setAttribute('aria-disabled', 'false');
-    webLink.setAttribute('aria-disabled', 'false');
     // Same-tab navigation allows Android App Links to hand wa.me to the installed WhatsApp app.
     // Avoid window.open(), which commonly leaves the user in a browser tab.
     window.location.assign(url);
