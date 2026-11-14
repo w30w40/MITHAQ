@@ -675,9 +675,11 @@ body.authenticated main.wrap{padding-bottom:112px}
 .mithaq-directory-card p{margin:2px 0;color:#7c8790;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
 .mithaq-directory-card button{justify-self:start;margin-top:4px;padding:7px 13px;border-radius:22px;background:#e8f4fb;color:#286d96;font-size:11px}
 .mithaq-bottom-nav{display:none}
-body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;bottom:0;left:0;right:0;padding:9px max(12px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));background:linear-gradient(110deg,#1264a0,#1687c3);box-shadow:0 -5px 20px #174b7225;border-radius:17px 17px 0 0}
+body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;bottom:0;left:0;right:0;padding:9px max(12px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));background:linear-gradient(110deg,#1264a0,#1687c3);box-shadow:0 -5px 20px #174b7225;border-radius:17px 17px 0 0}
 .mithaq-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px;min-height:62px;border-radius:12px;background:transparent;color:#fff;font-size:11px}
 .mithaq-bottom-nav button .bottom-icon{font-size:27px;line-height:1.15}
+.mithaq-bottom-nav button .mithaq-bottom-premium-logo{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#fff4bd,#d8a52b 68%,#a87512);border:2px solid #fff0b0;color:#684700;font-size:21px;line-height:1;box-shadow:0 1px 7px #071f3b66}
+.mithaq-bottom-nav button:focus-visible{outline:2px solid #ffe39a;outline-offset:-3px}
 .mithaq-bottom-nav button.active{background:#ffffff20}
 .mithaq-bottom-nav .mithaq-unread-badge{position:absolute;margin:-31px 0 0 25px;border:1px solid #1687c3}
 @media(max-width:600px){.mithaq-live-feed,#membersGrid{grid-template-columns:1fr}.mithaq-live-member{grid-template-columns:48px minmax(0,1fr)}.mithaq-live-avatar-wrap,.mithaq-live-avatar{width:46px;height:46px}.mithaq-live-avatar{font-size:25px}.member-home-welcome h2{font-size:17px}.member-home-note{padding:16px 13px}}
@@ -1369,6 +1371,7 @@ a{color:#c2185b}
 
 </main>
 <div class="mithaq-bottom-nav" id="mithaqBottomNav" aria-label="التنقل السفلي">
+<button type="button" data-bottom-premium="true" aria-label="العضوية المميزة"><span class="bottom-icon mithaq-bottom-premium-logo" aria-hidden="true"><span>★</span></span><span>التميز</span></button>
 <button type="button" data-bottom-go="messages"><span class="bottom-icon">✉️</span><span>البريد الداخلي</span><span class="mithaq-unread-badge" id="bottomUnreadBadge" hidden>0</span></button>
 <button type="button" data-bottom-go="members"><span class="bottom-icon">👥</span><span>الأعضاء</span></button>
 <button type="button" data-bottom-go="myprofile"><span class="bottom-icon">👤</span><span>ملفي الشخصي</span></button>
@@ -1953,6 +1956,15 @@ document.getElementById('mithaqMarkAllNotificationsRead')?.addEventListener('cli
 
 document.getElementById('homeExploreMembers')?.addEventListener('click',()=>show('members'));
 document.querySelectorAll('[data-bottom-go]').forEach(button=>button.addEventListener('click',()=>show(button.dataset.bottomGo)));
+document.querySelector('[data-bottom-premium]')?.addEventListener('click',async()=>{
+ show('settings');
+ const panel=document.getElementById('mithaqPremiumPanel');
+ const backgroundPanel=document.getElementById('mithaqBackgroundSettings');
+ if(backgroundPanel)backgroundPanel.hidden=true;
+ if(panel){panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'start'});}
+ await loadMithaqMyMembership();
+ await loadMithaqPremiumContacts();
+});
 document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');
 document.getElementById('memberMenuOpen').addEventListener('click',()=>{const isOpen=document.body.classList.toggle('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded',String(isOpen));});
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
