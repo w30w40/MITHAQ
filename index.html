@@ -1122,7 +1122,8 @@ a{color:#c2185b}
 #mithaqMemberResults .mithaq-member-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
 #mithaqMemberResults .mithaq-member-filters label{min-width:0}
 @media(max-width:520px){.mithaq-directory-hero>span{width:54px;height:54px;font-size:34px}.mithaq-directory-hero h2{font-size:18px}.mithaq-feature-member-row{align-items:center}}
-</style></head>
+</style><link rel="stylesheet" href="./store.css">
+</head>
 <body>
 <div id="entryGate" dir="rtl">
   <div class="entry-top">
@@ -2026,7 +2027,7 @@ function authUnavailableMessage(){
  console.error('MITHAQ authentication unavailable:',supabaseInitError||detail);
  return 'تعذر الاتصال بخدمة التسجيل: '+detail+' يرجى إعادة تحميل الصفحة والمحاولة لاحقاً.';
 }
-const tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
+let tabs=[...document.querySelectorAll('.tab')],nav=[...document.querySelectorAll('nav button')];
 const MITHAQ_ROUTE_KEY='mithaq-last-page-v1';
 function saveMithaqRoute(id){try{sessionStorage.setItem(MITHAQ_ROUTE_KEY,id);}catch(_){}}
 const mithaqPageLoads=new Map();
@@ -3557,4 +3558,5 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 })();
 </script>
 
+<script src="./store.js"></script>
 </body></html>
