@@ -1066,6 +1066,10 @@ a{color:#c2185b}
 .mithaq-quick-search button{background:#fff0f4;color:#b83f62;border:1px solid #f0d4dd;padding:8px 11px;font-size:12px;border-radius:20px}
 #mithaqNotificationsBack{margin-bottom:12px}
 @media(max-width:520px){.mithaq-feature-member-row{align-items:flex-start;flex-wrap:wrap}.mithaq-interest-action,.mithaq-feature-member-row>button{width:100%}.mithaq-search-tools{align-items:flex-start}.mithaq-quick-search button{flex:1}}
+
+.member-profile-cover.mithaq-profile-cover-has-background{background-repeat:no-repeat;background-color:#fff4f7;border:1px solid #f0dce2;box-shadow:inset 0 0 0 1px #ffffff70}
+#profileBackgroundOpen{background:#fff0f4;color:#a83f60;border:1px solid #f1d5de}
+#mithaqBackgroundSettings{scroll-margin-top:125px}
 </style>
 <style id="mithaq-profile-backgrounds">
 .mithaq-background-settings[hidden],.mithaq-background-preview-wrap[hidden],.mithaq-chat-background-pair[hidden]{display:none!important}
@@ -1339,7 +1343,7 @@ a{color:#c2185b}
 </div></div></section>
 <section id="myprofile" class="tab hidden">
 
-<div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
+<div class="member-profile-cover"><div class="member-profile-avatar">👤</div><div><span class="member-eyebrow">MITHAQ • ميثاق</span><h2 id="myProfileDisplayName">ملفي الشخصي</h2><p id="myProfileSubline">بياناتك ومواصفاتك الشخصية</p></div><div class="member-profile-actions"><button class="member-hero-action" id="profileBackgroundOpen" type="button">🖼️ الخلفية الشخصية</button><button class="member-hero-action" id="editProfileOpen" type="button">تعديل الملف</button></div></div>
 <div id="myProfileBackgroundDisplay"></div>
 <p id="profileGate" class="muted">جارٍ تحميل ملفك الشخصي...</p>
 <div id="profileReadView">
@@ -3062,14 +3066,11 @@ async function renderMithaqChatBackgrounds(otherUserId){
  }
 }
 async function renderMithaqOwnProfileBackground(){
- const host=document.getElementById('myProfileBackgroundDisplay');if(!host)return;
- host.replaceChildren();
+ const host=document.getElementById('myProfileBackgroundDisplay');const hero=document.querySelector('#myprofile .member-profile-cover');
+ if(host)host.replaceChildren();if(hero){hero.style.removeProperty('background-image');hero.style.removeProperty('background-size');hero.style.removeProperty('background-position');hero.classList.remove('mithaq-profile-cover-has-background');}
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
- try{
-  const background=await getMithaqProfileBackground(session.user.id);
-  const card=makeMithaqBackgroundCard(background,'خلفيتك الشخصية');
-  if(card)host.append(card);
- }catch(error){console.warn('MITHAQ own background:',error);}
+ try{const background=await getMithaqProfileBackground(session.user.id);if(background?.url&&hero){const x=Math.max(0,Math.min(100,Number(background.background_position_x??50)));const y=Math.max(0,Math.min(100,Number(background.background_position_y??50)));hero.style.backgroundImage='linear-gradient(90deg,rgba(255,255,255,.82),rgba(255,255,255,.68)),url("'+background.url+'")';hero.style.backgroundSize='cover,'+(background.background_fit==='contain'?'contain':'cover');hero.style.backgroundPosition='center,'+x+'% '+y+'%';hero.classList.add('mithaq-profile-cover-has-background');}}
+ catch(error){console.warn('MITHAQ own background:',error);}
 }
 function setMithaqBackgroundStatus(message){const el=document.getElementById('mithaqBackgroundStatus');if(el)el.textContent=message;}
 function mithaqApplyBackgroundPreview(){
@@ -3142,20 +3143,13 @@ async function validateMithaqBackgroundFile(file){
  return true;
 }
 const mithaqBackgroundSettingsButton=document.getElementById('settingsBackgroundOpen');
+const mithaqProfileBackgroundButton=document.getElementById('profileBackgroundOpen');
 const mithaqBackgroundSettingsPanel=document.getElementById('mithaqBackgroundSettings');
-function setMithaqBackgroundPanelOpen(open){
- if(!mithaqBackgroundSettingsPanel||!mithaqBackgroundSettingsButton)return;
- mithaqBackgroundSettingsPanel.hidden=!open;
- mithaqBackgroundSettingsButton.setAttribute('aria-expanded',String(open));
- if(open){
-  loadMithaqBackgroundSettings();
-  mithaqBackgroundSettingsPanel.scrollIntoView({behavior:'smooth',block:'start'});
-  document.getElementById('mithaqBackgroundFile')?.focus({preventScroll:true});
- }else{
-  mithaqBackgroundSettingsButton.focus({preventScroll:true});
- }
-}
-mithaqBackgroundSettingsButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden));
+if(mithaqBackgroundSettingsPanel)document.getElementById('myprofile')?.append(mithaqBackgroundSettingsPanel);
+let mithaqBackgroundLastTrigger=mithaqProfileBackgroundButton||mithaqBackgroundSettingsButton;
+function setMithaqBackgroundPanelOpen(open,trigger=mithaqBackgroundLastTrigger){if(!mithaqBackgroundSettingsPanel)return;if(trigger)mithaqBackgroundLastTrigger=trigger;mithaqBackgroundSettingsPanel.hidden=!open;[mithaqBackgroundSettingsButton,mithaqProfileBackgroundButton].forEach(button=>button?.setAttribute('aria-expanded',String(open)));if(open){loadMithaqBackgroundSettings();mithaqBackgroundSettingsPanel.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('mithaqBackgroundFile')?.focus({preventScroll:true});}else (mithaqBackgroundLastTrigger||mithaqProfileBackgroundButton||mithaqBackgroundSettingsButton)?.focus({preventScroll:true});}
+mithaqBackgroundSettingsButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden,mithaqBackgroundSettingsButton));
+mithaqProfileBackgroundButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden,mithaqProfileBackgroundButton));
 document.getElementById('mithaqBackgroundClose')?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(false));
 let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
 if(!mithaqBackgroundFileInput){
@@ -3384,8 +3378,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   identity.append(name,sub);hero.append(avatar,identity);content.append(hero);
   const memberBackground=await getMithaqProfileBackground(userId);
   if(page.isConnected===false)return;
-  const backgroundCard=makeMithaqBackgroundCard(memberBackground,'خلفية '+(profile?.display_name||requestedName||'العضو'));
-  if(backgroundCard)content.append(backgroundCard);
+  if(memberBackground?.url){const x=Math.max(0,Math.min(100,Number(memberBackground.background_position_x??50)));const y=Math.max(0,Math.min(100,Number(memberBackground.background_position_y??50)));hero.style.backgroundImage='linear-gradient(90deg,rgba(255,255,255,.82),rgba(255,255,255,.68)),url("'+memberBackground.url+'")';hero.style.backgroundSize='cover,'+(memberBackground.background_fit==='contain'?'contain':'cover');hero.style.backgroundPosition='center,'+x+'% '+y+'%';hero.classList.add('mithaq-profile-cover-has-background');}
   const fullDate=value=>{if(!value)return 'غير متاح';const date=new Date(value);return Number.isNaN(date.getTime())?'غير متاح':date.toLocaleString('ar',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});};
   const relativeDate=value=>{
    if(!value)return 'غير متاح';
