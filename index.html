@@ -2729,7 +2729,7 @@ let activeChatChannel=null;
 let mithaqChatRenderVersion=0;
 let mithaqMessageSending=false;
 let mithaqReplyTarget=null;
-let mithaqTypingTimer=null;
+let mithaqTypingTimer=null,mithaqTypingActive=false;
 let mithaqLiveChannel=null;
 let mithaqUnreadCount=0;
 let mithaqNotificationTimer=null;
@@ -3575,6 +3575,7 @@ async function openChat(userId,name){
 }
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
+ if(mithaqTypingTimer){clearTimeout(mithaqTypingTimer);mithaqTypingTimer=null;}mithaqTypingActive=false;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
  activeChatUser=null;mithaqOpenChatRequest++;document.getElementById('conversationList').hidden=false;clearMithaqChatBackground();runMithaqPageLoad('conversations',loadConversations);
 });
@@ -3964,9 +3965,9 @@ document.getElementById('chatRecordButton').addEventListener('click',async()=>{
 });
 document.getElementById('messageText').addEventListener('input',()=>{
  if(!activeChatChannel||!activeChatUser)return;
- activeChatChannel.track({user_id:currentUserId,typing:true}).catch(()=>{});
+ if(!mithaqTypingActive){mithaqTypingActive=true;activeChatChannel.track({user_id:currentUserId,typing:true}).catch(()=>{});}
  if(mithaqTypingTimer)clearTimeout(mithaqTypingTimer);
- mithaqTypingTimer=setTimeout(()=>{if(activeChatChannel)activeChatChannel.track({user_id:currentUserId,typing:false}).catch(()=>{});},1600);
+ mithaqTypingTimer=setTimeout(()=>{if(activeChatChannel)activeChatChannel.track({user_id:currentUserId,typing:false}).catch(()=>{});mithaqTypingActive=false;},1600);
 });
 document.getElementById('messageForm').addEventListener('submit',async e=>{
  e.preventDefault();
