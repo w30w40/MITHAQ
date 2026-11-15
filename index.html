@@ -1076,6 +1076,8 @@ a{color:#c2185b}
 #myprofile .member-profile-avatar:focus-visible{outline:3px solid #287ba5;outline-offset:4px}
 #myprofile .member-profile-avatar[aria-expanded="true"]{box-shadow:0 0 0 3px #287ba544,0 2px 12px #0001}
 .mithaq-full-member-profile-avatar{background-repeat:no-repeat;background-color:#f8edf0}
+.mithaq-live-avatar,.mithaq-directory-avatar,.mithaq-conversation-avatar,.mithaq-feature-member-avatar,.mithaq-chat-avatar,.mithaq-full-member-profile-avatar{background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important;overflow:hidden!important;background-color:#f8edf0}
+
 </style>
 <style id="mithaq-profile-backgrounds">
 .mithaq-background-settings[hidden],.mithaq-background-preview-wrap[hidden],.mithaq-chat-background-pair[hidden]{display:none!important}
@@ -2130,7 +2132,7 @@ async function loadMithaqProfileVisitors(){
  ids.forEach(id=>{
   const event=latest.get(id),person=byId.get(id);if(!person)return;count++;
   const row=document.createElement('article');row.className='mithaq-feature-member-row';
-  const avatar=document.createElement('span');avatar.className='mithaq-feature-member-avatar';const gender=String(person.details?.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';if(visitorPremiumIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
+  const avatar=document.createElement('span');avatar.className='mithaq-feature-member-avatar';const gender=String(person.details?.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';decorateMithaqMemberAvatar(avatar,person.id);if(visitorPremiumIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||event.actor_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||event.actor_name||'عضو ميثاق','menuFeature'));
   const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),'آخر زيارة: '+new Date(event.created_at).toLocaleString('ar',{dateStyle:'medium',timeStyle:'short'})].join(' • ');
@@ -2756,6 +2758,7 @@ async function loadMithaqHomeFeed(){
   const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
   const gender=String(person.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  decorateMithaqMemberAvatar(avatar,person.id);
   avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
   dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
@@ -2836,6 +2839,7 @@ function renderMithaqMembers(){
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
   const gender=String(person.details?.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  decorateMithaqMemberAvatar(avatar,person.id);
   const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);if(mithaqPremiumMemberIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
   const meta=document.createElement('p');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
@@ -2974,6 +2978,7 @@ document.querySelectorAll('[data-member-quick]').forEach(button=>button.addEvent
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
   const gender=String(person?.details?.gender||'').trim().toLowerCase();
   const avatar=document.createElement('span');avatar.className='mithaq-conversation-avatar';avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  decorateMithaqMemberAvatar(avatar,id);
   const b=document.createElement('button');b.type='button';b.className='mithaq-conversation-row';
   const main=document.createElement('span');main.className='mithaq-conversation-main';
   const title=document.createElement('strong');title.textContent=name;
@@ -3084,6 +3089,31 @@ function applyMithaqBackgroundToAvatar(avatar,background){
   avatar.style.setProperty('background-size',background.background_fit==='contain'?'contain':'cover','important');
   avatar.style.setProperty('background-position',x+'% '+y+'%','important');
   avatar.style.setProperty('background-repeat','no-repeat','important');
+}
+const mithaqAvatarBackgroundCache=new Map();
+function clearMithaqAvatarBackgroundCache(userId){
+ if(userId)mithaqAvatarBackgroundCache.delete(userId);else mithaqAvatarBackgroundCache.clear();
+}
+async function getMithaqAvatarBackground(userId){
+ if(!userId)return null;
+ const cached=mithaqAvatarBackgroundCache.get(userId);
+ if(cached&&cached.expiresAt>Date.now())return cached.promise;
+ const entry={expiresAt:Date.now()+45*60*1000,promise:null};
+ entry.promise=getMithaqProfileBackground(userId).then(background=>{
+  entry.expiresAt=Date.now()+45*60*1000;
+  return background?.url?background:null;
+ }).catch(error=>{
+  mithaqAvatarBackgroundCache.delete(userId);
+  console.warn('MITHAQ avatar background load:',userId,error?.message||error);
+  return null;
+ });
+ mithaqAvatarBackgroundCache.set(userId,entry);
+ return entry.promise;
+}
+async function decorateMithaqMemberAvatar(avatar,userId){
+ if(!avatar||!userId)return;
+ const background=await getMithaqAvatarBackground(userId);
+ if(avatar.isConnected)applyMithaqBackgroundToAvatar(avatar,background);
 }
 async function renderMithaqOwnProfileBackground(){
   const host=document.getElementById('myProfileBackgroundDisplay');const avatar=document.querySelector('#myprofile .member-profile-avatar');
@@ -3249,7 +3279,7 @@ document.getElementById('mithaqBackgroundActivate')?.addEventListener('click',as
    }
    throw new Error('رُفعت الصورة لكن فشل حفظ بياناتها في قاعدة البيانات؛ لم يتم إعلان نجاح الحفظ. '+saveError.message);
   }
-  mithaqBackgroundCurrentPath=newPath;mithaqBackgroundCurrentRecord={object_path:newPath,is_enabled:true,background_position_x:positionX,background_position_y:positionY,background_fit:fit};
+  mithaqBackgroundCurrentPath=newPath;mithaqBackgroundCurrentRecord={object_path:newPath,is_enabled:true,background_position_x:positionX,background_position_y:positionY,background_fit:fit};clearMithaqAvatarBackgroundCache(session.user.id);
   mithaqClearPendingBackground();
   let cleanupWarning='';
   if(oldPath&&oldPath!==newPath){
@@ -3272,6 +3302,7 @@ document.getElementById('mithaqBackgroundDisable')?.addEventListener('click',asy
   const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error('انتهت جلسة المستخدم.');
   const {error}=await supabaseClient.from('mithaq_profile_backgrounds').update({is_enabled:false,updated_at:new Date().toISOString()}).eq('user_id',session.user.id);
   if(error)throw error;
+  clearMithaqAvatarBackgroundCache(session.user.id);
   await loadMithaqBackgroundSettings();await renderMithaqOwnProfileBackground();
   if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
   setMithaqBackgroundStatus('تم تعطيل الخلفية. الصورة ما زالت محفوظة ويمكن إعادة تفعيلها.');
@@ -3287,6 +3318,7 @@ document.getElementById('mithaqBackgroundDelete')?.addEventListener('click',asyn
   if(!row?.object_path)throw new Error('لا يوجد سجل خلفية لحذفه.');
   const {error:disableError}=await supabaseClient.from('mithaq_profile_backgrounds').update({is_enabled:false,updated_at:new Date().toISOString()}).eq('user_id',session.user.id);
   if(disableError)throw new Error('تعذر تعطيل الخلفية قبل الحذف: '+disableError.message);
+  clearMithaqAvatarBackgroundCache(session.user.id);
   await renderMithaqOwnProfileBackground();
   if(activeChatUser)await renderMithaqChatBackgrounds(activeChatUser);
   const {error:removeError}=await supabaseClient.storage.from('mithaq-profile-backgrounds').remove([row.object_path]);
@@ -3326,6 +3358,7 @@ async function openChat(userId,name){
   const {data:publicRows}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[userId]});
   const gender=String(publicRows?.[0]?.details?.gender||'').trim().toLowerCase();
   document.getElementById('chatHeaderAvatar').textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  decorateMithaqMemberAvatar(document.getElementById('chatHeaderAvatar'),userId);
   const online=!!profile?.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
   document.getElementById('chatPresenceDot').hidden=!online;
   document.getElementById('chatPresenceText').textContent=online?'متصل الآن':'غير متصل حالياً';
@@ -3397,7 +3430,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   const name=document.createElement('h2');name.textContent=profile?.display_name||requestedName||activeChatName||'عضو ميثاق';
   const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
   identity.append(name,sub);hero.append(avatar,identity);content.append(hero);
-  const memberBackground=await getMithaqProfileBackground(userId);
+  const memberBackground=await getMithaqAvatarBackground(userId);
   if(page.isConnected===false)return;
   applyMithaqBackgroundToAvatar(avatar,memberBackground);
   const fullDate=value=>{if(!value)return 'غير متاح';const date=new Date(value);return Number.isNaN(date.getTime())?'غير متاح':date.toLocaleString('ar',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});};
