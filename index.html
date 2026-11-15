@@ -1415,7 +1415,7 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
 #mithaq-selection-layer .mithaq-selection-tools{display:flex;align-items:center;justify-content:flex-start;gap:5px;overflow-x:auto;flex:1;scrollbar-width:none}
 #mithaq-selection-layer .mithaq-selection-action{display:flex!important;flex:0 0 44px!important;width:44px!important;height:44px!important;min-height:44px!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important;padding:3px!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#263238!important}
 #mithaq-selection-layer .mithaq-selection-action:active{background:#dfe4e8!important}
-#mithaq-selection-layer .mithaq-selection-action-icon{font-size:22px;line-height:26px}
+#mithaq-selection-layer .mithaq-selection-action-icon{display:flex;align-items:center;justify-content:center;width:24px;height:24px;line-height:1}#mithaq-selection-layer .mithaq-selection-action-icon svg,#mithaq-selection-layer .mithaq-selection-close svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 #mithaq-selection-layer .mithaq-selection-action-label{display:none!important}
 #mithaq-selection-layer .mithaq-selection-reactions{position:absolute;display:flex;align-items:center;gap:5px;padding:6px 9px;background:#fff;border-radius:30px;box-shadow:0 3px 14px #0002;pointer-events:auto;direction:ltr}
 #mithaq-selection-layer .mithaq-selection-reactions button{width:38px;height:38px;min-width:38px;padding:0;border-radius:50%;background:#f4f6f7;font-size:21px}
@@ -4173,7 +4173,7 @@ async function refreshChat(){
    const layer=document.createElement('div');layer.id='mithaq-selection-layer';layer.__messageHost=p;layer.__actionHost=p;layer.__originalActions=actions;layer.__originalButtons=[...actions.querySelectorAll('button')];
    const backdrop=document.createElement('button');backdrop.type='button';backdrop.className='mithaq-selection-backdrop';backdrop.setAttribute('aria-label','إغلاق تحديد الرسالة');backdrop.addEventListener('click',closeMithaqSelection);
    const toolbar=document.createElement('div');toolbar.className='mithaq-selection-toolbar';toolbar.setAttribute('role','toolbar');toolbar.setAttribute('aria-label','إجراءات الرسالة المحددة');
-   const close=document.createElement('button');close.type='button';close.className='mithaq-selection-close';close.textContent='×';close.setAttribute('aria-label','إلغاء التحديد');close.addEventListener('click',closeMithaqSelection);
+   const close=document.createElement('button');close.type='button';close.className='mithaq-selection-close';close.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';close.setAttribute('aria-label','إلغاء التحديد');close.addEventListener('click',closeMithaqSelection);
    const count=document.createElement('span');count.className='mithaq-selection-count';count.textContent='1';
    const tools=document.createElement('div');tools.className='mithaq-selection-tools';
    const originalButtons=[...actions.querySelectorAll('button')];
@@ -4184,27 +4184,27 @@ async function refreshChat(){
    const pinButton=findButton(t=>t.includes('تثبيت'));
    const deleteButtons=originalButtons.filter(btn=>buttonText(btn).includes('حذف'));
    const used=new Set();
-   const makeAction=(btn,glyph,label)=>{
+   const makeAction=(btn,svg,label)=>{
     if(!btn)return;
     used.add(btn);btn.classList.add('mithaq-selection-action');
     btn.setAttribute('aria-label',label);btn.title=label;
-    const icon=document.createElement('span');icon.className='mithaq-selection-action-icon';icon.textContent=glyph;
+    const icon=document.createElement('span');icon.className='mithaq-selection-action-icon';icon.innerHTML=svg;
     const caption=document.createElement('span');caption.className='mithaq-selection-action-label';caption.textContent=label;
     btn.replaceChildren(icon,caption);tools.append(btn);
     btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});
    };
-   makeAction(replyButton,'↩','رد');
-   makeAction(forwardButton,'➦','إعادة توجيه');
-   makeAction(pinButton,'📌','تثبيت الرسالة');
+   makeAction(replyButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14l-5-5 5-5M4 9h9a7 7 0 0 1 7 7v2"/></svg>','رد');
+   makeAction(forwardButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>','إعادة توجيه');
+   makeAction(pinButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l-1 5 3 3v2H6v-2l3-3-1-5zM12 14v7"/></svg>','تثبيت الرسالة');
    const menuStyle=document.createElement('style');
    menuStyle.textContent='#mithaq-selection-layer .mithaq-selection-menu{position:absolute;top:calc(64px + env(safe-area-inset-top));left:10px;z-index:3;min-width:190px;max-width:min(260px,calc(100vw - 20px));padding:7px;background:#fff;border:1px solid #e1e5e8;border-radius:13px;box-shadow:0 8px 28px #0003;display:flex;flex-direction:column;gap:3px;pointer-events:auto}#mithaq-selection-layer .mithaq-selection-menu[hidden]{display:none!important}#mithaq-selection-layer .mithaq-selection-menu button{display:flex!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;min-height:44px!important;padding:9px 12px!important;border:0!important;border-radius:8px!important;background:#fff!important;color:#263238!important;text-align:right!important;font-size:14px!important;white-space:normal!important}#mithaq-selection-layer .mithaq-selection-menu button:active{background:#f0f2f5!important}#mithaq-selection-layer .mithaq-selection-more{font-size:25px!important}';
    layer.append(menuStyle);
    const deleteAction=document.createElement('button');deleteAction.type='button';deleteAction.className='mithaq-selection-action';deleteAction.setAttribute('aria-label','حذف');deleteAction.title='حذف';
-   const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.textContent='🗑';
+   const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-7 0 1 14h4l1-14M10 10v7m4-7v7"/></svg>';
    deleteAction.append(deleteIcon);deleteButtons.forEach(btn=>used.add(btn));deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
    if(deleteButtons.length)tools.append(deleteAction);
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
-   const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.textContent='⋮';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
+   const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.innerHTML='<span class="mithaq-selection-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
    moreButton.addEventListener('click',()=>{moreMenu.hidden=!moreMenu.hidden;});
    originalButtons.filter(btn=>!used.has(btn)).forEach(btn=>{used.add(btn);btn.classList.remove('mithaq-selection-action');btn.classList.add('mithaq-selection-menu-item');btn.replaceChildren(document.createTextNode(buttonText(btn)));moreMenu.append(btn);btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});});
    if(moreMenu.childElementCount)tools.append(moreButton);
