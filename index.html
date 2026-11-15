@@ -4257,10 +4257,7 @@ async function refreshChat(){
    if(event.target.closest('button,a,input,video,audio'))return;
    if(mithaqLongPressTriggered){mithaqLongPressTriggered=false;return;}
    const activeLayer=document.getElementById('mithaq-selection-layer');
-   if(activeLayer){addMithaqSelectedMessage(activeLayer,p);return;}
-   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p){node.classList.remove('show-actions');const old=node.querySelector('.mithaq-message-actions');if(old){old.style.position='';old.style.left='';old.style.top='';old.style.width='';old.style.maxHeight='';}}});
-   p.classList.toggle('show-actions');
-   if(!p.classList.contains('show-actions')){const menu=p.querySelector('.mithaq-message-actions');if(menu){menu.style.position='';menu.style.left='';menu.style.top='';menu.style.width='';menu.style.maxHeight='';}}
+   if(activeLayer)addMithaqSelectedMessage(activeLayer,p);
   });
   messageFragment.append(p);
  }
