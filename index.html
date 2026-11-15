@@ -3569,6 +3569,7 @@ async function openChat(userId,name){
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
    const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
   }).on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_reactions'},()=>{if(activeChatUser===userId)refreshChat();})
+  .on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_pins'},()=>{if(activeChatUser===userId)refreshChat();})
   .on('presence',{event:'sync'},()=>{if(activeChatUser!==userId||!activeChatChannel)return;const state=activeChatChannel.presenceState();const peer=state[userId]||[];const typing=peer.some(meta=>meta.typing===true);if(typing)document.getElementById('chatPresenceText').textContent='يكتب الآن...';else{const dot=document.getElementById('chatPresenceDot');document.getElementById('chatPresenceText').textContent=dot&&!dot.hidden?'متصل الآن':'غير متصل حالياً';}})
   .subscribe(async channelStatus=>{if(channelStatus==='SUBSCRIBED'&&activeChatChannel)await activeChatChannel.track({user_id:session.user.id,typing:false});});
 }
