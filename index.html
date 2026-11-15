@@ -3564,7 +3564,7 @@ async function openChat(userId,name){
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
  const channelName='mithaq-chat-'+[session.user.id,userId].sort().join('-');
- activeChatChannel=supabaseClient.channel(channelName,{config:{presence:{key:session.user.id}}})
+ activeChatChannel=supabaseClient.channel(channelName,{config:{private:true,presence:{key:session.user.id}}})
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
    const m=payload.new;
    if(m.sender_id===userId&&activeChatUser===userId){refreshChat();supabaseClient.rpc('mithaq_mark_messages_delivered',{p_sender_id:userId}).then(()=>supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId}));loadMithaqUnreadCount();}
