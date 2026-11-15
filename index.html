@@ -1294,6 +1294,10 @@ body.mithaq-chat-open #chatPanel>#messageStatus:empty{display:none!important;mar
 body.mithaq-chat-open #chatPanel>.mithaq-chat-compose{background:#f0f2f5!important;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
 body.mithaq-chat-open #chatPanel{background:#f0f2f5!important}
 </style>
+<style id="mithaq-chat-remove-header-gap">
+/* The header already occupies its own 66px flex row; do not add a second 66px offset. */
+body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{margin:0!important}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
