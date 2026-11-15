@@ -186,16 +186,18 @@ body.authenticated .card h2{color:#246b98}
 
 .mithaq-premium-contacts{display:grid;gap:9px;margin:14px 0}.mithaq-premium-contact-button{width:100%;text-align:center}.mithaq-admin-contact-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}.mithaq-admin-contact-row>div{flex:1;min-width:150px}.mithaq-admin-contact-row p{margin:5px 0 0;color:var(--muted);font-size:13px}.mithaq-admin-contact-row button{font-size:12px;padding:9px 12px}.mithaq-legal-details{margin:14px 0;padding:14px 16px;border:1px solid #e2e9f0;border-radius:14px;background:#f8fafc;line-height:1.9}.mithaq-legal-details summary{cursor:pointer;font-weight:750;color:#245b80}.mithaq-legal-details p{margin:10px 0;color:#45586a;font-size:14px;line-height:1.9}.mithaq-legal-details strong{color:#a56d16}
 
-/* Chat actions behave like a mobile bottom sheet and stay above the composer. */
+/* All three-dot actions share an accessible in-chat panel above the composer. */
 .mithaq-chat-menu{position:fixed!important;z-index:100500!important;top:76px!important;left:12px!important;right:auto!important;width:min(290px,calc(100vw - 24px))!important;max-height:calc(100dvh - 100px)!important;overflow:auto!important;overscroll-behavior:contain}
-.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;left:10px!important;right:10px!important;bottom:calc(82px + env(safe-area-inset-bottom))!important;max-height:62dvh!important;overflow:auto!important;overscroll-behavior:contain;background:#fff!important;color:#26343c!important;border:1px solid #eadde2!important;border-radius:20px!important;box-shadow:0 12px 45px #14202b45!important;padding:16px!important;margin:0!important;direction:rtl}
-.mithaq-chat-tools-panel h3{margin:0 0 12px;font-size:17px}
-.mithaq-chat-tools-panel p{margin:5px 0 12px;color:#66737b;font-size:13px}
-.mithaq-chat-tools-panel button{min-height:44px;margin:4px 2px;padding:10px 14px;border-radius:12px;background:#f8eaf0;color:#7d3150}
-.mithaq-chat-tools-panel button.primary{background:#b83d61;color:#fff}
-.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{width:100%;min-height:44px;margin:8px 0;padding:12px;border:1px solid #d9cbd1;border-radius:10px;background:#fff;color:#26343c}
-.mithaq-chat-tools-panel .mithaq-sheet-close{float:left;background:#f1f1f1;color:#344}
-@media(max-width:520px){.mithaq-chat-menu{top:68px!important;left:8px!important}.mithaq-chat-tools-panel{left:8px!important;right:8px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;max-height:58dvh!important}}
+.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;top:clamp(105px,16vh,145px)!important;bottom:auto!important;left:10px!important;right:10px!important;width:auto!important;max-height:min(48dvh,390px)!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;background:#fff!important;color:#26343c!important;border:1px solid #eadde2!important;border-radius:20px!important;box-shadow:0 12px 45px #14202b45!important;padding:16px!important;margin:0!important;direction:rtl!important}
+.mithaq-chat-tools-panel:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:7px!important}
+.mithaq-chat-tools-panel h3{margin:0 0 5px;font-size:17px;padding-left:76px!important}
+.mithaq-chat-tools-panel p{margin:0 0 7px;color:#66737b;font-size:13px;line-height:1.7}
+.mithaq-chat-tools-panel button{display:block!important;flex:0 0 auto!important;width:100%!important;min-height:44px!important;margin:0!important;padding:10px 14px!important;text-align:right!important;white-space:normal!important;border-radius:12px!important;background:#f8eaf0!important;color:#7d3150!important}
+.mithaq-chat-tools-panel button.primary{background:#b83d61!important;color:#fff!important}
+.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{display:block!important;width:100%!important;min-height:44px!important;margin:4px 0!important;padding:12px!important;border:1px solid #d9cbd1!important;border-radius:10px!important;background:#fff!important;color:#26343c!important}
+.mithaq-chat-tools-panel .mithaq-sheet-close{position:absolute!important;top:10px!important;left:12px!important;width:auto!important;min-width:66px!important;min-height:36px!important;padding:7px 11px!important;background:#f1f1f1!important;color:#344!important;text-align:center!important}
+@media(max-width:520px){.mithaq-chat-menu{top:68px!important;left:8px!important}.mithaq-chat-tools-panel{top:100px!important;left:8px!important;right:8px!important;max-height:min(44dvh,330px)!important;padding:13px!important}}
+@media(max-height:620px){.mithaq-chat-tools-panel{top:82px!important;max-height:calc(100dvh - 180px)!important}}
 
 </style>
 <style id="mithaq-refresh">
