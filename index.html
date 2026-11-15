@@ -1229,6 +1229,7 @@ a{color:#c2185b}
 .mithaq-message-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
 .mithaq-message-actions button,.mithaq-chat-search-results button{min-height:44px;border:1px solid var(--border-color,#ddd);border-radius:9px;padding:5px 9px;background:var(--card-bg,#fff);color:inherit}
 .mithaq-chat-search-results{display:grid;gap:6px;margin-top:10px;max-height:40vh;overflow:auto}
+.mithaq-attachment-preview{display:grid;gap:10px;max-height:55vh;overflow:auto}.mithaq-attachment-preview img,.mithaq-attachment-preview video{max-width:100%;max-height:48vh;object-fit:contain;border-radius:12px}.mithaq-attachment-preview audio{width:100%}
 .mithaq-chat-location{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(30,136,229,.1);text-decoration:none;color:inherit;margin:6px 0}
 .mithaq-voice-preview{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px;border:1px solid var(--border-color,#ddd);border-radius:12px;margin:8px 0}.mithaq-voice-preview audio{max-width:100%;flex:1}
 .mithaq-inbox-filters{display:flex;gap:6px;flex-wrap:wrap}
@@ -3968,7 +3969,22 @@ document.getElementById('chatShareLocationButton').addEventListener('click',()=>
  });sheet.append(confirm);
 });
 document.getElementById('chatAttachButton').addEventListener('click',()=>document.getElementById('chatFileInput').click());
-document.getElementById('chatFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file)await uploadChatAttachment(file,'file');e.target.value='';});
+async function previewAndUploadChatAttachment(file){
+ if(!file)return;
+ if(file.size>25*1024*1024){document.getElementById('messageStatus').textContent='حجم الملف أكبر من 25 ميغابايت.';return;}
+ const url=URL.createObjectURL(file),sheet=mithaqShowChatSheet('معاينة المرفق','راجع الملف قبل إرساله إلى مستلم المحادثة.');
+ const preview=document.createElement('div');preview.className='mithaq-attachment-preview';
+ if(file.type.startsWith('image/')){const img=document.createElement('img');img.src=url;img.alt=file.name;preview.append(img);}
+ else if(file.type.startsWith('video/')){const video=document.createElement('video');video.src=url;video.controls=true;video.playsInline=true;preview.append(video);}
+ else if(file.type.startsWith('audio/')){const audio=document.createElement('audio');audio.src=url;audio.controls=true;preview.append(audio);}
+ else{const details=document.createElement('p');details.textContent=file.name+' · '+(file.size/1024/1024).toFixed(2)+' MB';preview.append(details);}
+ sheet.append(preview);
+ const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال المرفق';
+ send.addEventListener('click',async()=>{send.disabled=true;const sent=await uploadChatAttachment(file,'file');if(sent===true){sheet.hidden=true;URL.revokeObjectURL(url);}else send.disabled=false;});
+ const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء';cancel.addEventListener('click',()=>{sheet.hidden=true;URL.revokeObjectURL(url);});
+ sheet.append(send,cancel);
+}
+document.getElementById('chatFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file)await previewAndUploadChatAttachment(file);e.target.value='';});
 let mithaqRecorder=null,mithaqRecordChunks=[],mithaqRecordStream=null,mithaqPendingVoiceFile=null,mithaqPendingVoiceUrl=null;
 document.getElementById('chatRecordButton').addEventListener('click',async()=>{
  const button=document.getElementById('chatRecordButton'),status=document.getElementById('messageStatus');
