@@ -2729,6 +2729,7 @@ let activeChatChannel=null;
 let mithaqChatRenderVersion=0;
 let mithaqMessageSending=false;
 let mithaqReplyTarget=null;
+let mithaqTypingTimer=null;
 let mithaqLiveChannel=null;
 let mithaqUnreadCount=0;
 let mithaqNotificationTimer=null;
@@ -3557,7 +3558,7 @@ async function openChat(userId,name){
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
  const channelName='mithaq-chat-'+[session.user.id,userId].sort().join('-');
- activeChatChannel=supabaseClient.channel(channelName)
+ activeChatChannel=supabaseClient.channel(channelName,{config:{presence:{key:session.user.id}}})
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
    const m=payload.new;
    if(m.sender_id===userId&&activeChatUser===userId){refreshChat();supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});loadMithaqUnreadCount();}
@@ -3567,7 +3568,9 @@ async function openChat(userId,name){
   })
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
    const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
-  }).on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_reactions'},()=>{if(activeChatUser===userId)refreshChat();}).subscribe();
+  }).on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_reactions'},()=>{if(activeChatUser===userId)refreshChat();})
+  .on('presence',{event:'sync'},()=>{if(activeChatUser!==userId||!activeChatChannel)return;const state=activeChatChannel.presenceState();const peer=state[userId]||[];const typing=peer.some(meta=>meta.typing===true);if(typing)document.getElementById('chatPresenceText').textContent='يكتب الآن...';else{const dot=document.getElementById('chatPresenceDot');document.getElementById('chatPresenceText').textContent=dot&&!dot.hidden?'متصل الآن':'غير متصل حالياً';}})
+  .subscribe(async channelStatus=>{if(channelStatus==='SUBSCRIBED'&&activeChatChannel)await activeChatChannel.track({user_id:session.user.id,typing:false});});
 }
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
@@ -3957,6 +3960,12 @@ document.getElementById('chatRecordButton').addEventListener('click',async()=>{
   };
   mithaqRecorder.start();button.textContent='■';button.classList.add('recording');status.textContent='جارٍ تسجيل الرسالة الصوتية... اضغط الميكروفون للإيقاف والإرسال.';
  }catch(err){status.textContent='لم نتمكن من تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);}
+});
+document.getElementById('messageText').addEventListener('input',()=>{
+ if(!activeChatChannel||!activeChatUser)return;
+ activeChatChannel.track({user_id:currentUserId,typing:true}).catch(()=>{});
+ if(mithaqTypingTimer)clearTimeout(mithaqTypingTimer);
+ mithaqTypingTimer=setTimeout(()=>{if(activeChatChannel)activeChatChannel.track({user_id:currentUserId,typing:false}).catch(()=>{});},1600);
 });
 document.getElementById('messageForm').addEventListener('submit',async e=>{
  e.preventDefault();
