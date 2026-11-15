@@ -1287,6 +1287,13 @@ body.authenticated #messages .mithaq-chat-message-meta{color:#667781}
 }
 </style>
 
+<style id="mithaq-chat-remove-empty-white-strip">
+/* Remove the empty status paragraph that was leaving a white strip below the composer. */
+body.mithaq-chat-open #chatPanel>#messageStatus:empty{display:none!important;margin:0!important;padding:0!important;height:0!important;min-height:0!important;border:0!important}
+/* Keep the composer and Android safe-area edge the same WhatsApp-like light grey. */
+body.mithaq-chat-open #chatPanel>.mithaq-chat-compose{background:#f0f2f5!important;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
+body.mithaq-chat-open #chatPanel{background:#f0f2f5!important}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
