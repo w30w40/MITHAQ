@@ -4029,7 +4029,7 @@ async function uploadChatAttachment(file,kind){
  if(blockedExtensions.includes(ext)){status.textContent='هذا النوع التنفيذي أو القابل لتشغيل محتوى نشط غير مسموح به لحماية الأعضاء.';return false;}
  const mime=(file.type||chatMimeByExt[ext]||'application/octet-stream').split(';')[0].trim().toLowerCase()||'application/octet-stream';
  const signatureValid=await mithaqValidateFileSignature(file,mime,ext);if(!signatureValid){status.textContent='نوع الملف الفعلي لا يطابق نوعه المعلن أو أنه ملف تنفيذي غير مسموح.';return false;}
- if((kind==='voice'||mime.startsWith('image/')||mime.startsWith('audio/'))&&!mithaqMyPremium){
+ if(kind!=='voice'&&(mime.startsWith('image/')||mime.startsWith('audio/'))&&!mithaqMyPremium){
   await loadMithaqMyMembership();
   if(!mithaqMyPremium){status.textContent='هذه الميزة متاحة لأعضاء ميثاق المميزين فقط. افتح الإعدادات ثم العضوية المميزة.';return false;}
  }
@@ -4077,7 +4077,6 @@ document.getElementById('chatFileInput').addEventListener('change',async e=>{con
 let mithaqRecorder=null,mithaqRecordChunks=[],mithaqRecordStream=null,mithaqPendingVoiceFile=null,mithaqPendingVoiceUrl=null;
 document.getElementById('chatRecordButton').addEventListener('click',async()=>{
  const button=document.getElementById('chatRecordButton'),status=document.getElementById('messageStatus');
- if(!mithaqMyPremium){await loadMithaqMyMembership();if(!mithaqMyPremium){status.textContent='الرسائل الصوتية متاحة بالعضوية المميزة فقط.';return;}}
  if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqRecorder.stop();button.textContent='🎙️';button.classList.remove('recording');return;}
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){status.textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return;}
  try{
