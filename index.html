@@ -4102,7 +4102,7 @@ async function refreshChat(){
   p.classList.add('mithaq-chat-message-item');
   let mithaqLongPressTimer=null,mithaqLongPressTriggered=false;
   const revealMessageActions=(x,y)=>{
-   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p){node.classList.remove('show-actions');const old=node.querySelector('.mithaq-message-actions');if(old){old.style.position='';old.style.left='';old.style.top='';old.style.width='';old.style.maxHeight='';}});
+   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p){node.classList.remove('show-actions');const old=node.querySelector('.mithaq-message-actions');if(old){old.style.position='';old.style.left='';old.style.top='';old.style.width='';old.style.maxHeight='';}}});
    p.classList.add('show-actions');
    const menu=p.querySelector('.mithaq-message-actions');if(menu){
     const width=Math.min(280,window.innerWidth-24),height=Math.min(360,window.innerHeight*.62);
