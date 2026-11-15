@@ -1236,6 +1236,12 @@ a{color:#c2185b}
 .mithaq-inbox-filters button{min-height:40px;padding:7px 12px;border-radius:999px}
 .mithaq-inbox-filters button[aria-pressed="true"]{background:var(--accent,#6c63ff);color:white}
 
+/* Message controls appear on demand, like WhatsApp; tap a bubble to reveal on touch screens. */
+body.authenticated #messages .mithaq-chat-message-item .mithaq-message-actions{display:none!important}
+body.authenticated #messages .mithaq-chat-message-item:hover .mithaq-message-actions,
+body.authenticated #messages .mithaq-chat-message-item:focus-within .mithaq-message-actions,
+body.authenticated #messages .mithaq-chat-message-item.show-actions .mithaq-message-actions{display:flex!important}
+body.authenticated #messages .mithaq-chat-message-item{cursor:pointer}
 /* WhatsApp-inspired live chat UI — presentation only; existing Supabase message flow is unchanged */
 body.authenticated #messages .mithaq-messages-card{padding:0;overflow:hidden;border:1px solid #d9e4df;border-radius:12px;background:#fff;box-shadow:0 2px 10px #10251a12}
 body.authenticated #messages .mithaq-inbox-toolbar{padding:14px;background:#f0f2f5;border-bottom:1px solid #e1e6e3}
@@ -3950,6 +3956,12 @@ async function refreshChat(){
   const pin=document.createElement('button');pin.type='button';pin.textContent=pinnedIds.has(m.id)?'إلغاء التثبيت':'تثبيت';pin.addEventListener('click',async()=>{const result=pinnedIds.has(m.id)?await supabaseClient.from('mithaq_chat_message_pins').delete().eq('message_id',m.id).eq('user_id',session.user.id):await supabaseClient.from('mithaq_chat_message_pins').insert({message_id:m.id,user_id:session.user.id});if(result.error){status.textContent='تعذر تحديث التثبيت: '+result.error.message;return;}await refreshChat();});actions.append(pin);
   if(mine){const all=document.createElement('button');all.type='button';all.textContent='حذف للجميع';all.addEventListener('click',()=>mithaqDeleteMessage(m.id,true));actions.append(all);if(!m.attachment_path&&Date.now()-new Date(m.created_at).getTime()<=15*60*1000){const edit=document.createElement('button');edit.type='button';edit.textContent='تعديل';edit.addEventListener('click',async()=>{const value=prompt('عدّل نص الرسالة',m.body||'');if(value===null||!value.trim())return;const {error}=await supabaseClient.rpc('mithaq_chat_edit_message',{p_message_id:m.id,p_body:value.trim()});if(error){status.textContent='تعذر تعديل الرسالة: '+error.message;return;}await refreshChat();});actions.append(edit);}}
   const local=document.createElement('button');local.type='button';local.textContent='حذف لدي';local.addEventListener('click',()=>mithaqDeleteMessage(m.id,false));actions.append(local);p.append(actions);}
+  p.classList.add('mithaq-chat-message-item');
+  p.addEventListener('click',event=>{
+   if(event.target.closest('button,a,input,video,audio'))return;
+   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p)node.classList.remove('show-actions');});
+   p.classList.toggle('show-actions');
+  });
   messageFragment.append(p);
  }
  if(renderVersion!==mithaqChatRenderVersion)return;
