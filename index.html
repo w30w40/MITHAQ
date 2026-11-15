@@ -3930,6 +3930,23 @@ function openMithaqImageViewer(url,alt){
  if(!mithaqViewerHistoryOpen){history.pushState({...history.state,mithaqImageViewer:true},'');mithaqViewerHistoryOpen=true;}
 }
 const chatMimeByExt={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',pdf:'application/pdf',txt:'text/plain',csv:'text/csv',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',zip:'application/zip',mp3:'audio/mpeg',m4a:'audio/mp4',ogg:'audio/ogg',wav:'audio/wav',aac:'audio/aac'};
+async function mithaqValidateFileSignature(file,mime,ext){
+ const bytes=new Uint8Array(await file.slice(0,16).arrayBuffer()),ascii=String.fromCharCode(...bytes);
+ const starts=(...values)=>values.every((value,i)=>bytes[i]===value);
+ const contains=(value,start,end)=>ascii.slice(start,end).includes(value);
+ if(starts(0x4d,0x5a)||starts(0x7f,0x45,0x4c,0x46)||starts(0x23,0x21)||starts(0xfe,0xed,0xfa,0xce)||starts(0xfe,0xed,0xfa,0xcf)||starts(0xcf,0xfa,0xed,0xfe)||starts(0xca,0xfe,0xba,0xbe))return false;
+ if(mime==='image/jpeg')return starts(0xff,0xd8,0xff);
+ if(mime==='image/png')return starts(0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a);
+ if(mime==='image/gif')return ascii.startsWith('GIF87a')||ascii.startsWith('GIF89a');
+ if(mime==='image/webp')return ascii.startsWith('RIFF')&&contains('WEBP',8,12);
+ if(mime==='image/avif')return contains('ftypavif',4,16)||contains('ftypavis',4,16);
+ if(mime==='application/pdf')return ascii.startsWith('%PDF-');
+ if(mime.startsWith('video/'))return contains('ftyp',4,12)||starts(0x1a,0x45,0xdf,0xa3);
+ if(mime.startsWith('audio/'))return ascii.startsWith('ID3')||(starts(0x4f,0x67,0x67,0x53))||(starts(0x66,0x4c,0x61,0x43))||(starts(0x52,0x49,0x46,0x46)&&contains('WAVE',8,12))||contains('ftyp',4,12)||starts(0x1a,0x45,0xdf,0xa3)||(bytes[0]===0xff&&(bytes[1]&0xe0)===0xe0);
+ if(mime==='application/zip'||mime.includes('officedocument'))return starts(0x50,0x4b,0x03,0x04)||starts(0x50,0x4b,0x05,0x06);
+ if(mime.startsWith('text/')||mime==='application/json'||mime==='application/xml')return !ascii.toLowerCase().includes('<script')&&!ascii.toLowerCase().includes('<!doctype html');
+ return true;
+}
 let mithaqActiveUploadXhr=null;
 function mithaqUploadFileWithProgress(path,file,mime,session,onProgress){return new Promise((resolve,reject)=>{const xhr=new XMLHttpRequest();mithaqActiveUploadXhr=xhr;const encodedPath=path.split('/').map(encodeURIComponent).join('/');xhr.open('POST',SUPABASE_URL.replace(/\/$/,'')+'/storage/v1/object/mithaq-chat/'+encodedPath);xhr.setRequestHeader('apikey',SUPABASE_PUBLISHABLE_KEY);xhr.setRequestHeader('Authorization','Bearer '+session.access_token);xhr.setRequestHeader('Content-Type',mime);xhr.setRequestHeader('x-upsert','false');xhr.upload.onprogress=event=>{if(event.lengthComputable)onProgress(Math.round(event.loaded/event.total*100));};xhr.onload=()=>{mithaqActiveUploadXhr=null;let payload={};try{payload=JSON.parse(xhr.responseText||'{}');}catch{}if(xhr.status>=200&&xhr.status<300)resolve(payload);else reject(new Error(payload.message||payload.error||('Storage HTTP '+xhr.status)));};xhr.onerror=()=>{mithaqActiveUploadXhr=null;reject(new Error('تعذر الاتصال بخدمة رفع الملفات.'));};xhr.onabort=()=>{mithaqActiveUploadXhr=null;reject(new Error('تم إلغاء رفع الملف.'));};xhr.send(file);});}
 async function uploadChatAttachment(file,kind){
@@ -3941,6 +3958,7 @@ async function uploadChatAttachment(file,kind){
  const blockedExtensions=['exe','msi','apk','aab','bat','cmd','com','scr','ps1','sh','bash','js','mjs','cjs','html','htm','php','jar','svg','hta'];
  if(blockedExtensions.includes(ext)){status.textContent='هذا النوع التنفيذي أو القابل لتشغيل محتوى نشط غير مسموح به لحماية الأعضاء.';return false;}
  const mime=(file.type||chatMimeByExt[ext]||'application/octet-stream').split(';')[0].trim().toLowerCase()||'application/octet-stream';
+ const signatureValid=await mithaqValidateFileSignature(file,mime,ext);if(!signatureValid){status.textContent='نوع الملف الفعلي لا يطابق نوعه المعلن أو أنه ملف تنفيذي غير مسموح.';return false;}
  if((kind==='voice'||mime.startsWith('image/')||mime.startsWith('audio/'))&&!mithaqMyPremium){
   await loadMithaqMyMembership();
   if(!mithaqMyPremium){status.textContent='هذه الميزة متاحة لأعضاء ميثاق المميزين فقط. افتح الإعدادات ثم العضوية المميزة.';return false;}
