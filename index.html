@@ -31,7 +31,7 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 /* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
-html.mithaq-auth-pending #entryGate{visibility:hidden!important;pointer-events:none!important}
+/* Keep the public entry screen visible while Supabase restores a saved session. */
 html[data-mithaq-initial-route] .tab{display:none!important}
 html[data-mithaq-initial-route="home"] #home,html[data-mithaq-initial-route="notifications"] #notifications,html[data-mithaq-initial-route="members"] #members,html[data-mithaq-initial-route="myprofile"] #myprofile,html[data-mithaq-initial-route="messages"] #messages,html[data-mithaq-initial-route="settings"] #settings,html[data-mithaq-initial-route="help"] #help,html[data-mithaq-initial-route="about"] #about{display:block!important}
 body.authenticated{background:#fff9fa;color:#343b43}
