@@ -4207,10 +4207,7 @@ async function refreshChat(){
    if(deleteButtons.length)tools.append(deleteAction);
    makeAction(forwardButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>','إعادة توجيه');
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
-   const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.innerHTML='<span class="mithaq-selection-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
-   moreButton.addEventListener('click',()=>{moreMenu.hidden=!moreMenu.hidden;});
    originalButtons.filter(btn=>!used.has(btn)).forEach(btn=>{used.add(btn);btn.classList.remove('mithaq-selection-action');btn.classList.add('mithaq-selection-menu-item');btn.replaceChildren(document.createTextNode(buttonText(btn)));moreMenu.append(btn);btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});});
-   if(moreMenu.childElementCount)tools.append(moreButton);
    toolbar.append(close,count,tools);
    layer.append(moreMenu);
    const hideSelectionMenu=event=>{if(!layer.isConnected){document.removeEventListener('click',hideSelectionMenu);return;}if(!layer.contains(event.target))moreMenu.hidden=true;};
