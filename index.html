@@ -2814,9 +2814,9 @@ async function loadMithaqUnreadCount(){
  if(!supabaseClient)return;
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){updateMithaqUnreadBadges(0);return;}
- const {count,error}=await supabaseClient.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',session.user.id).is('read_at',null);
+ const {data,error}=await supabaseClient.rpc('mithaq_unread_message_count');
  if(error){console.warn('MITHAQ unread count:',error.message);return;}
- updateMithaqUnreadBadges(count||0);
+ updateMithaqUnreadBadges(Number(data)||0);
 }
 async function setupMithaqLiveUpdates(session){
  if(session)loadMithaqMyMembership();
@@ -3102,7 +3102,7 @@ async function loadConversations(){
  const [messageResult,peopleResult,preferenceResult]=await Promise.all([
   supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at,attachment_name,attachment_kind,deleted_for_everyone_at').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300),
   Promise.resolve(null),
-  supabaseClient.from('mithaq_chat_preferences').select('peer_id,favorite,muted,shortcut,archived,pinned').eq('user_id',session.user.id)
+  supabaseClient.from('mithaq_chat_preferences').select('peer_id,favorite,muted,shortcut,archived,pinned,last_read_at').eq('user_id',session.user.id)
  ]);
  const {data,error}=messageResult;
  if(error){host.textContent='تعذر تحميل المحادثات: '+error.message;return;}
@@ -3118,7 +3118,7 @@ async function loadConversations(){
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
   const gender=String(person?.details?.gender||'').trim().toLowerCase();
   const avatar=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
-  const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at).length;
+  const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at&&(!pref?.last_read_at||new Date(m.created_at)>new Date(pref.last_read_at))).length;
   const preview=last?.deleted_for_everyone_at?'تم حذف الرسالة':last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
   const pref=preferencesById.get(id);
   return {id,name,last,unread,avatar,preview,favorite:!!pref?.favorite,muted:!!pref?.muted,archived:!!pref?.archived,pinned:!!pref?.pinned};
