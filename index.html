@@ -1178,6 +1178,37 @@ a{color:#c2185b}
 .mithaq-message-actions{display:flex;gap:5px;justify-content:flex-end;margin-top:5px}
 .mithaq-message-actions button{font-size:11px;padding:5px 8px;background:#f3e8ed;color:#754052}
 </style><link rel="stylesheet" href="./store.css">
+<style id="mithaq-chat-menu-redesign-preview">
+/* Preview redesign: grouped chat actions and accessible bottom-sheet flows */
+.mithaq-chat-menu{position:fixed!important;z-index:100500!important;top:74px!important;left:12px!important;right:12px!important;width:min(360px,calc(100vw - 24px))!important;max-height:min(72dvh,620px)!important;overflow:auto!important;padding:12px!important;display:flex;flex-direction:column;gap:12px;background:#fff!important;color:#233c52!important;border:1px solid #dce7f0!important;border-radius:22px!important;box-shadow:0 18px 55px #102b4433!important;direction:rtl!important}
+.mithaq-chat-menu[hidden]{display:none!important}
+.mithaq-menu-section{display:flex;flex-direction:column;gap:3px}
+.mithaq-menu-section+.mithaq-menu-section{border-top:1px solid #eaf0f5;padding-top:9px}
+.mithaq-menu-section-title{padding:4px 10px 6px;color:#7a8b9a;font-size:11px;font-weight:800;letter-spacing:.2px}
+.mithaq-chat-menu button{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:46px!important;padding:9px 10px!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#29465f!important;text-align:right!important;font:inherit!important;font-size:14px!important;cursor:pointer!important}
+.mithaq-chat-menu button:active{background:#edf4fa!important}
+.mithaq-menu-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:10px;background:#edf4fa;color:#2b648f;font-size:19px}
+.mithaq-chat-menu button.mithaq-menu-danger{color:#a33c50!important}
+.mithaq-chat-menu button.mithaq-menu-danger .mithaq-menu-icon{background:#fff0f1;color:#b64254}
+.mithaq-chat-tools-backdrop{position:fixed!important;inset:0!important;z-index:100590!important;width:100%!important;height:100%!important;border:0!important;border-radius:0!important;background:#10263b80!important;backdrop-filter:blur(3px)!important;opacity:1!important}
+.mithaq-chat-tools-backdrop[hidden]{display:none!important}
+.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;top:auto!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;left:10px!important;right:10px!important;width:auto!important;max-height:min(76dvh,650px)!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;background:#fff!important;color:#263b50!important;border:1px solid #e0e9f1!important;border-radius:25px!important;box-shadow:0 18px 55px #102b4440!important;padding:20px 17px calc(18px + env(safe-area-inset-bottom))!important;margin:0!important;direction:rtl!important;transform:translateY(24px);opacity:0;transition:transform .24s ease,opacity .24s ease}
+.mithaq-chat-tools-panel[hidden]{display:none!important}
+.mithaq-chat-tools-panel.is-visible{transform:translateY(0);opacity:1}
+.mithaq-chat-tools-panel:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}
+.mithaq-chat-tools-panel .mithaq-sheet-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #edf1f5}
+.mithaq-chat-tools-panel .mithaq-sheet-heading-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.mithaq-chat-tools-panel .mithaq-sheet-eyebrow{font-size:10px;font-weight:800;color:#9a7181;letter-spacing:.4px}
+.mithaq-chat-tools-panel h3{margin:0!important;padding:0!important;font-size:19px!important;font-weight:800!important;color:#234662!important}
+.mithaq-chat-tools-panel p,.mithaq-chat-tools-panel .mithaq-sheet-description{margin:0 0 5px!important;color:#687b8d!important;font-size:13px!important;line-height:1.8!important}
+.mithaq-chat-tools-panel button{display:block!important;flex:0 0 auto!important;width:100%!important;min-height:48px!important;margin:0!important;padding:12px 15px!important;text-align:center!important;white-space:normal!important;border:1px solid #e4ebf2!important;border-radius:14px!important;background:#f6f9fc!important;color:#31536f!important;font-weight:700!important}
+.mithaq-chat-tools-panel button.primary{background:linear-gradient(120deg,#1d527c,#327eac)!important;border-color:transparent!important;color:#fff!important}
+.mithaq-chat-tools-panel .mithaq-sheet-close{position:static!important;flex:0 0 42px!important;width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#f0f4f7!important;color:#526b7f!important;font-size:24px!important;line-height:1!important}
+.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{display:block!important;width:100%!important;min-height:48px!important;margin:4px 0!important;padding:12px 14px!important;border:1px solid #d9e4ed!important;border-radius:13px!important;background:#fff!important;color:#263b50!important;font:inherit!important}
+@media(max-width:520px){.mithaq-chat-menu{top:65px!important;left:8px!important;right:8px!important;width:auto!important;max-height:72dvh!important;padding:10px!important}.mithaq-chat-tools-panel{left:7px!important;right:7px!important;bottom:calc(7px + env(safe-area-inset-bottom))!important;max-height:78dvh!important;padding:17px 14px calc(16px + env(safe-area-inset-bottom))!important}}
+@media(max-height:620px){.mithaq-chat-tools-panel{max-height:calc(100dvh - 28px)!important}}
+@media(prefers-reduced-motion:reduce){.mithaq-chat-tools-panel{transition:none!important;transform:none!important}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -1412,7 +1443,24 @@ a{color:#c2185b}
 </div>
 </section>
 
-<section id="messages" class="tab hidden"><div class="card mithaq-messages-card"><div id="conversationList" class="muted"></div><div id="chatPanel" hidden><header class="mithaq-chat-header"><button type="button" id="chatBack" class="mithaq-chat-back" aria-label="العودة للمحادثات" title="رجوع">←</button><div class="mithaq-chat-avatar-wrap"><span id="chatHeaderAvatar" class="mithaq-chat-avatar">👤</span><i id="chatPresenceDot" class="mithaq-chat-presence"></i></div><div class="mithaq-chat-head-copy"><button type="button" id="chatTitle" class="mithaq-chat-title-button">المحادثة</button><small id="chatPresenceText">عضو ميثاق</small></div><div class="mithaq-chat-menu-wrap"><button type="button" id="mithaqChatMenuTrigger" class="mithaq-chat-menu-trigger" aria-label="خيارات المحادثة" aria-expanded="false">⋮</button><div id="mithaqChatMenu" class="mithaq-chat-menu" hidden><button data-chat-action="delete">🗑️ حذف الرسائل</button><button data-chat-action="select">☑️ تحديد الرسائل</button><button data-chat-action="theme">🎨 خلفية المحادثة</button><button data-chat-action="block">🚫 حظر العضو</button><button data-chat-action="report">⚑ الإبلاغ عن المحادثة</button><button data-chat-action="favorite">⭐ إضافة للمفضلة</button><button data-chat-action="search">🔎 البحث داخل المحادثة</button><button data-chat-action="mute">🔕 كتم الإشعارات</button><button data-chat-action="clear">🧹 مسح محتوى المحادثة لدي</button><button data-chat-action="shortcut">➕ إضافة اختصار</button></div></div></header><div id="mithaqChatToolsPanel" class="mithaq-chat-tools-panel" hidden></div><div id="mithaqChatBackgrounds" class="mithaq-chat-background-pair" hidden></div><div id="chatProfileCard" class="mithaq-chat-profile-card" hidden><div class="mithaq-chat-profile-top"><strong>الملف الشخصي</strong><button type="button" id="chatProfileClose" aria-label="إغلاق">×</button></div><div id="chatProfileContent"></div></div><div id="chatMessages" class="mithaq-chat-messages" aria-live="polite"></div><form id="messageForm" class="mithaq-chat-compose"><input id="chatFileInput" type="file" hidden accept="*/*"><button type="button" id="chatAttachButton" class="mithaq-chat-tool" aria-label="إرفاق صورة أو ملف" title="إرفاق صورة أو ملف">📎</button><button type="button" id="chatRecordButton" class="mithaq-chat-tool" aria-label="تسجيل رسالة صوتية" title="تسجيل رسالة صوتية">🎙️</button><div class="field"><label for="messageText" class="visually-hidden">رسالتك</label><textarea id="messageText" rows="1" placeholder="اكتب رسالتك..." aria-label="اكتب رسالتك"></textarea></div><button class="primary mithaq-chat-send" id="sendMessage" type="submit" aria-label="إرسال الرسالة">➤</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
+<section id="messages" class="tab hidden"><div class="card mithaq-messages-card"><div id="conversationList" class="muted"></div><div id="chatPanel" hidden><header class="mithaq-chat-header"><button type="button" id="chatBack" class="mithaq-chat-back" aria-label="العودة للمحادثات" title="رجوع">←</button><div class="mithaq-chat-avatar-wrap"><span id="chatHeaderAvatar" class="mithaq-chat-avatar">👤</span><i id="chatPresenceDot" class="mithaq-chat-presence"></i></div><div class="mithaq-chat-head-copy"><button type="button" id="chatTitle" class="mithaq-chat-title-button">المحادثة</button><small id="chatPresenceText">عضو ميثاق</small></div><div class="mithaq-chat-menu-wrap"><button type="button" id="mithaqChatMenuTrigger" class="mithaq-chat-menu-trigger" aria-label="خيارات المحادثة" aria-expanded="false">⋮</button><div id="mithaqChatMenu" class="mithaq-chat-menu" hidden aria-label="قائمة إجراءات المحادثة">
+ <div class="mithaq-menu-section"><div class="mithaq-menu-section-title">أدوات المحادثة</div>
+  <button data-chat-action="search"><span class="mithaq-menu-icon">⌕</span><span>البحث داخل المحادثة</span></button>
+  <button data-chat-action="favorite"><span class="mithaq-menu-icon">☆</span><span>إضافة للمفضلة</span></button>
+  <button data-chat-action="mute"><span class="mithaq-menu-icon">♩</span><span>كتم الإشعارات</span></button>
+  <button data-chat-action="theme"><span class="mithaq-menu-icon">◐</span><span>مظهر المحادثة</span></button>
+  <button data-chat-action="shortcut"><span class="mithaq-menu-icon">⌑</span><span>إضافة اختصار</span></button>
+ </div>
+ <div class="mithaq-menu-section"><div class="mithaq-menu-section-title">إدارة الرسائل</div>
+  <button data-chat-action="select"><span class="mithaq-menu-icon">☑</span><span>تحديد الرسائل</span></button>
+  <button data-chat-action="delete"><span class="mithaq-menu-icon">⌫</span><span>حذف الرسائل</span></button>
+  <button data-chat-action="clear"><span class="mithaq-menu-icon">▤</span><span>مسح المحادثة لدي</span></button>
+ </div>
+ <div class="mithaq-menu-section"><div class="mithaq-menu-section-title">الأمان والخصوصية</div>
+  <button data-chat-action="block" class="mithaq-menu-danger"><span class="mithaq-menu-icon">⊘</span><span>حظر العضو</span></button>
+  <button data-chat-action="report" class="mithaq-menu-danger"><span class="mithaq-menu-icon">⚑</span><span>الإبلاغ عن المحادثة</span></button>
+ </div>
+</div></div></header><div id="mithaqChatToolsPanel" class="mithaq-chat-tools-panel" hidden></div><div id="mithaqChatBackgrounds" class="mithaq-chat-background-pair" hidden></div><div id="chatProfileCard" class="mithaq-chat-profile-card" hidden><div class="mithaq-chat-profile-top"><strong>الملف الشخصي</strong><button type="button" id="chatProfileClose" aria-label="إغلاق">×</button></div><div id="chatProfileContent"></div></div><div id="chatMessages" class="mithaq-chat-messages" aria-live="polite"></div><form id="messageForm" class="mithaq-chat-compose"><input id="chatFileInput" type="file" hidden accept="*/*"><button type="button" id="chatAttachButton" class="mithaq-chat-tool" aria-label="إرفاق صورة أو ملف" title="إرفاق صورة أو ملف">📎</button><button type="button" id="chatRecordButton" class="mithaq-chat-tool" aria-label="تسجيل رسالة صوتية" title="تسجيل رسالة صوتية">🎙️</button><div class="field"><label for="messageText" class="visually-hidden">رسالتك</label><textarea id="messageText" rows="1" placeholder="اكتب رسالتك..." aria-label="اكتب رسالتك"></textarea></div><button class="primary mithaq-chat-send" id="sendMessage" type="submit" aria-label="إرسال الرسالة">➤</button></form><p id="messageStatus" class="notice" aria-live="polite"></p></div></div></section>
 <section id="admin" class="tab hidden">
 <div class="card mithaq-admin-card">
   <div class="mithaq-admin-heading"><div><span class="member-eyebrow">MITHAQ • ADMIN</span><h2>لوحة إدارة ميثاق</h2><p class="muted">إدارة الأعضاء ومراجعة الملفات والنبذات قبل نشرها</p></div><span class="mithaq-admin-shield">🛡️</span></div>
@@ -3635,13 +3683,25 @@ function mithaqCloseChatMenu(){const m=document.getElementById('mithaqChatMenu')
 document.getElementById('mithaqChatMenuTrigger').addEventListener('click',()=>{const m=document.getElementById('mithaqChatMenu');m.hidden=!m.hidden;document.getElementById('mithaqChatMenuTrigger').setAttribute('aria-expanded',String(!m.hidden));});
 document.addEventListener('click',e=>{if(!e.target.closest('.mithaq-chat-menu-wrap'))mithaqCloseChatMenu();});
 function mithaqChatToolsPanel(){const p=document.getElementById('mithaqChatToolsPanel');if(p&&p.parentElement!==document.body)document.body.append(p);return p;}
+function mithaqCloseChatSheet(){
+ const p=mithaqChatToolsPanel();p.hidden=true;p.classList.remove('is-visible');
+ const shade=document.getElementById('mithaqChatToolsBackdrop');if(shade)shade.hidden=true;
+}
 function mithaqShowChatSheet(title,description){
- const p=mithaqChatToolsPanel();p.replaceChildren();p.hidden=false;
- const h=document.createElement('h3');h.textContent=title;p.append(h);
- const close=document.createElement('button');close.type='button';close.className='mithaq-sheet-close';close.textContent='إغلاق';close.addEventListener('click',()=>p.hidden=true);p.append(close);
- if(description){const d=document.createElement('p');d.textContent=description;p.append(d);}
+ const p=mithaqChatToolsPanel();p.replaceChildren();
+ let shade=document.getElementById('mithaqChatToolsBackdrop');
+ if(!shade){shade=document.createElement('button');shade.type='button';shade.id='mithaqChatToolsBackdrop';shade.className='mithaq-chat-tools-backdrop';shade.setAttribute('aria-label','إغلاق النافذة');shade.addEventListener('click',mithaqCloseChatSheet);document.body.append(shade);}
+ shade.hidden=false;p.hidden=false;p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');p.setAttribute('aria-label',title);
+ const head=document.createElement('div');head.className='mithaq-sheet-heading';
+ const copy=document.createElement('div');copy.className='mithaq-sheet-heading-copy';
+ const eyebrow=document.createElement('span');eyebrow.className='mithaq-sheet-eyebrow';eyebrow.textContent='ميثاق • خيارات المحادثة';
+ const h=document.createElement('h3');h.textContent=title;copy.append(eyebrow,h);head.append(copy);
+ const close=document.createElement('button');close.type='button';close.className='mithaq-sheet-close';close.setAttribute('aria-label','إغلاق');close.textContent='×';close.addEventListener('click',mithaqCloseChatSheet);head.append(close);p.append(head);
+ if(description){const d=document.createElement('p');d.className='mithaq-sheet-description';d.textContent=description;p.append(d);}
+ requestAnimationFrame(()=>p.classList.add('is-visible'));
  return p;
 }
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const p=document.getElementById('mithaqChatToolsPanel');if(p&&!p.hidden)mithaqCloseChatSheet();}});
 async function mithaqChatPreference(field,value){
  const {error}=await supabaseClient.rpc('mithaq_chat_set_preference',{p_peer_id:activeChatUser,p_theme:field==='theme'?value:null,p_muted:field==='muted'?value:null,p_favorite:field==='favorite'?value:null,p_shortcut:field==='shortcut'?value:null});
  if(error)throw error;
