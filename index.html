@@ -4018,8 +4018,32 @@ document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
   }
  }catch(err){status.textContent='تعذر تنفيذ العملية: '+(err.message||'خطأ غير معروف');}
 });
-async function mithaqDeleteMessage(id,forEveryone){
- if(!confirm(forEveryone?'حذف هذه الرسالة من الطرفين؟':'إخفاء هذه الرسالة من حسابك فقط؟'))return;
+function mithaqShowDeleteDialog(canDeleteEveryone=true){
+ return new Promise(resolve=>{
+  document.getElementById('mithaq-delete-dialog')?.remove();
+  const overlay=document.createElement('div');overlay.id='mithaq-delete-dialog';overlay.setAttribute('role','presentation');
+  overlay.style.cssText='position:fixed;inset:0;z-index:100900;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(11,20,26,.48);direction:rtl;backdrop-filter:blur(1px)';
+  const style=document.createElement('style');
+  style.textContent='#mithaq-delete-dialog .mithaq-delete-box{width:min(340px,100%);background:#fff;color:#202c33;border-radius:4px;box-shadow:0 12px 36px #0004;padding:20px 22px 8px;font-family:Roboto,system-ui,sans-serif;animation:mithaqDeleteIn .14s ease-out}#mithaq-delete-dialog .mithaq-delete-title{font-size:20px;font-weight:600;line-height:1.4;margin:0 0 13px;color:#202c33}#mithaq-delete-dialog .mithaq-delete-options{display:flex;flex-direction:column;margin:0 -8px}#mithaq-delete-dialog .mithaq-delete-option{display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:48px;padding:0 10px;border:0;border-radius:2px;background:transparent;color:#202c33;text-align:right;font-size:15px;font-weight:500}#mithaq-delete-dialog .mithaq-delete-option:active{background:#f0f2f5}#mithaq-delete-dialog .mithaq-delete-option.cancel{color:#667781}#mithaq-delete-dialog .mithaq-delete-option.everyone{color:#d32f2f}#mithaq-delete-dialog .mithaq-delete-option:focus-visible{outline:2px solid #00a884;outline-offset:-2px}@keyframes mithaqDeleteIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){#mithaq-delete-dialog .mithaq-delete-box{animation:none}}';
+  const box=document.createElement('section');box.className='mithaq-delete-box';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','mithaq-delete-title');
+  const title=document.createElement('h2');title.id='mithaq-delete-title';title.className='mithaq-delete-title';title.textContent='حذف الرسالة؟';
+  const options=document.createElement('div');options.className='mithaq-delete-options';
+  const finish=value=>{overlay.remove();resolve(value);};
+  const add=(label,value,cls='')=>{const b=document.createElement('button');b.type='button';b.className='mithaq-delete-option '+cls;b.textContent=label;b.addEventListener('click',()=>finish(value));options.append(b);};
+  add('حذف لدي',false);
+  add('إلغاء',null,'cancel');
+  if(canDeleteEveryone)add('حذف للجميع',true,'everyone');
+  box.append(title,options);overlay.append(style,box);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)finish(null);});
+  const onKey=e=>{if(e.key==='Escape'){finish(null);document.removeEventListener('keydown',onKey);}};
+  document.addEventListener('keydown',onKey,{once:true});
+  document.body.append(overlay);
+  options.querySelector('button')?.focus();
+ });
+}
+async function mithaqDeleteMessage(id,canDeleteEveryone=true){
+ const forEveryone=await mithaqShowDeleteDialog(canDeleteEveryone);
+ if(forEveryone===null)return;
  const {error}=await supabaseClient.rpc('mithaq_chat_delete_message',{p_message_id:id,p_for_everyone:forEveryone});
  if(error){document.getElementById('messageStatus').textContent='تعذر الحذف: '+error.message;return;}
  await refreshChat();
@@ -4117,8 +4141,8 @@ async function refreshChat(){
   const reply=document.createElement('button');reply.type='button';reply.textContent='رد';reply.addEventListener('click',()=>{mithaqReplyTarget=m.id;const status=document.getElementById('messageStatus');status.replaceChildren(document.createTextNode('رد على: '+(m.body||'مرفق')+' '));const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء الرد';cancel.addEventListener('click',()=>{mithaqReplyTarget=null;status.textContent='';});status.append(cancel);document.getElementById('messageText').focus();});actions.append(reply);
   const react=document.createElement('button');react.type='button';react.textContent='😊 '+(reactionRows.filter(r=>r.message_id===m.id).length||'');react.addEventListener('click',()=>{const sheet=mithaqShowChatSheet('التفاعل مع الرسالة','اختر رمزًا للتفاعل. يمكنك إزالة تفاعلك بالضغط عليه مرة أخرى.');['👍','❤️','😂','😮','😢','🙏'].forEach(emoji=>{const choice=document.createElement('button');choice.type='button';choice.textContent=emoji+' '+reactionRows.filter(r=>r.message_id===m.id&&r.emoji===emoji).length;choice.addEventListener('click',async()=>{const existing=reactionRows.find(r=>r.message_id===m.id&&r.user_id===session.user.id&&r.emoji===emoji);const result=existing?await supabaseClient.from('mithaq_chat_message_reactions').delete().eq('id',existing.id):await supabaseClient.from('mithaq_chat_message_reactions').insert({message_id:m.id,user_id:session.user.id,emoji});if(result.error){status.textContent='تعذر حفظ التفاعل: '+result.error.message;return;}sheet.hidden=true;await refreshChat();});sheet.append(choice);});});actions.append(react);
   const pin=document.createElement('button');pin.type='button';pin.textContent=pinnedIds.has(m.id)?'إلغاء التثبيت':'تثبيت';pin.addEventListener('click',async()=>{const result=pinnedIds.has(m.id)?await supabaseClient.from('mithaq_chat_message_pins').delete().eq('message_id',m.id).eq('user_id',session.user.id):await supabaseClient.from('mithaq_chat_message_pins').insert({message_id:m.id,user_id:session.user.id});if(result.error){status.textContent='تعذر تحديث التثبيت: '+result.error.message;return;}await refreshChat();});actions.append(pin);
-  if(mine){const all=document.createElement('button');all.type='button';all.textContent='حذف للجميع';all.addEventListener('click',()=>mithaqDeleteMessage(m.id,true));actions.append(all);if(!m.attachment_path&&Date.now()-new Date(m.created_at).getTime()<=15*60*1000){const edit=document.createElement('button');edit.type='button';edit.textContent='تعديل';edit.addEventListener('click',async()=>{const value=prompt('عدّل نص الرسالة',m.body||'');if(value===null||!value.trim())return;const {error}=await supabaseClient.rpc('mithaq_chat_edit_message',{p_message_id:m.id,p_body:value.trim()});if(error){status.textContent='تعذر تعديل الرسالة: '+error.message;return;}await refreshChat();});actions.append(edit);}}
-  const local=document.createElement('button');local.type='button';local.textContent='حذف لدي';local.addEventListener('click',()=>mithaqDeleteMessage(m.id,false));actions.append(local);p.append(actions);}
+  const remove=document.createElement('button');remove.type='button';remove.textContent='حذف';remove.addEventListener('click',()=>mithaqDeleteMessage(m.id,mine));actions.append(remove);
+  if(mine&&!m.attachment_path&&Date.now()-new Date(m.created_at).getTime()<=15*60*1000){const edit=document.createElement('button');edit.type='button';edit.textContent='تعديل';edit.addEventListener('click',async()=>{const value=prompt('عدّل نص الرسالة',m.body||'');if(value===null||!value.trim())return;const {error}=await supabaseClient.rpc('mithaq_chat_edit_message',{p_message_id:m.id,p_body:value.trim()});if(error){status.textContent='تعذر تعديل الرسالة: '+error.message;return;}await refreshChat();});actions.append(edit);}p.append(actions);}
   p.classList.add('mithaq-chat-message-item');
   let mithaqLongPressTimer=null,mithaqLongPressTriggered=false;
   const closeMithaqSelection=()=>{
@@ -4175,20 +4199,18 @@ async function refreshChat(){
    const menuStyle=document.createElement('style');
    menuStyle.textContent='#mithaq-selection-layer .mithaq-selection-menu{position:absolute;top:calc(64px + env(safe-area-inset-top));left:10px;z-index:3;min-width:190px;max-width:min(260px,calc(100vw - 20px));padding:7px;background:#fff;border:1px solid #e1e5e8;border-radius:13px;box-shadow:0 8px 28px #0003;display:flex;flex-direction:column;gap:3px;pointer-events:auto}#mithaq-selection-layer .mithaq-selection-menu[hidden]{display:none!important}#mithaq-selection-layer .mithaq-selection-menu button{display:flex!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;min-height:44px!important;padding:9px 12px!important;border:0!important;border-radius:8px!important;background:#fff!important;color:#263238!important;text-align:right!important;font-size:14px!important;white-space:normal!important}#mithaq-selection-layer .mithaq-selection-menu button:active{background:#f0f2f5!important}#mithaq-selection-layer .mithaq-selection-more{font-size:25px!important}';
    layer.append(menuStyle);
-   const deleteMenu=document.createElement('div');deleteMenu.className='mithaq-selection-menu';deleteMenu.hidden=true;deleteMenu.setAttribute('aria-label','خيارات الحذف');
    const deleteAction=document.createElement('button');deleteAction.type='button';deleteAction.className='mithaq-selection-action';deleteAction.setAttribute('aria-label','حذف');deleteAction.title='حذف';
    const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.textContent='🗑';
-   deleteAction.append(deleteIcon);deleteAction.addEventListener('click',()=>{moreMenu.hidden=true;deleteMenu.hidden=!deleteMenu.hidden;});
-   deleteButtons.forEach(btn=>{used.add(btn);btn.classList.remove('mithaq-selection-action');btn.classList.add('mithaq-selection-menu-item');btn.replaceChildren(document.createTextNode(buttonText(btn)));deleteMenu.append(btn);btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});});
+   deleteAction.append(deleteIcon);deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
    if(deleteButtons.length)tools.append(deleteAction);
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
    const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.textContent='⋮';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
-   moreButton.addEventListener('click',()=>{deleteMenu.hidden=true;moreMenu.hidden=!moreMenu.hidden;});
+   moreButton.addEventListener('click',()=>{moreMenu.hidden=!moreMenu.hidden;});
    originalButtons.filter(btn=>!used.has(btn)).forEach(btn=>{used.add(btn);btn.classList.remove('mithaq-selection-action');btn.classList.add('mithaq-selection-menu-item');btn.replaceChildren(document.createTextNode(buttonText(btn)));moreMenu.append(btn);btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});});
    if(moreMenu.childElementCount)tools.append(moreButton);
    toolbar.append(close,count,tools);
-   layer.append(deleteMenu,moreMenu);
-   document.addEventListener('click',event=>{if(!layer.contains(event.target)){deleteMenu.hidden=true;moreMenu.hidden=true;}},{once:true});
+   layer.append(moreMenu);
+   document.addEventListener('click',event=>{if(!layer.contains(event.target))moreMenu.hidden=true;});
    const reactions=document.createElement('div');reactions.className='mithaq-selection-reactions';reactions.setAttribute('aria-label','تفاعل سريع');
    ['❤️','👍','😂','😮','😢','🙏'].forEach(emoji=>{
     const b=document.createElement('button');b.type='button';b.textContent=emoji;b.setAttribute('aria-label','تفاعل '+emoji);
