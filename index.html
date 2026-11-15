@@ -4148,7 +4148,7 @@ async function refreshChat(){
   const closeMithaqSelection=()=>{
    const layer=document.getElementById('mithaq-selection-layer');if(!layer)return;
    const hosts=layer.__selectedMessages||[layer.__messageHost],actions=layer.__originalActions||layer.querySelector('.mithaq-message-actions');
-   (layer.__originalButtons||[]).forEach(btn=>actions?.append(btn));
+   (layer.__originalButtons||[]).forEach(btn=>{btn.hidden=false;actions?.append(btn);});
    const actionHost=layer.__actionHost||layer.__messageHost;
    if(actionHost&&actions)actionHost.append(actions);
    hosts.forEach(host=>host?.classList.remove('show-actions','mithaq-message-selected'));
@@ -4203,7 +4203,7 @@ async function refreshChat(){
    layer.append(menuStyle);
    const deleteAction=document.createElement('button');deleteAction.type='button';deleteAction.className='mithaq-selection-action';deleteAction.setAttribute('aria-label','إزالة الرسائل المحددة');
    const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg>';
-   deleteAction.append(deleteIcon);deleteButtons.forEach(btn=>used.add(btn));deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
+   deleteAction.append(deleteIcon);deleteButtons.forEach(btn=>{used.add(btn);btn.hidden=true;});deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
    if(deleteButtons.length)tools.append(deleteAction);
    makeAction(forwardButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>','إعادة توجيه');
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
