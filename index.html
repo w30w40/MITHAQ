@@ -4476,4 +4476,33 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 </script>
 
 <script src="./store.js"></script>
+<script id="mithaq-messenger-workspace-behavior-v3">
+(()=>{
+ const section=document.getElementById('messages');
+ const panel=document.getElementById('chatPanel');
+ const input=document.getElementById('messageText');
+ if(!section||!panel)return;
+ const sync=()=>{
+  const mobile=window.matchMedia('(max-width:760px)').matches;
+  const open=!panel.hidden;
+  section.classList.toggle('mithaq-mobile-chat-open',mobile&&open);
+ };
+ new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
+ window.addEventListener('resize',sync,{passive:true});
+ sync();
+ if(input){
+  const resize=()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,110)+'px';};
+  input.addEventListener('input',resize);
+  input.addEventListener('keydown',event=>{
+   if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){
+    event.preventDefault();
+    document.getElementById('messageForm')?.requestSubmit();
+   }
+  });
+  resize();
+ }
+ const back=document.getElementById('chatBack');
+ back?.addEventListener('click',()=>{section.classList.remove('mithaq-mobile-chat-open');});
+})();
+</script>
 </body></html>
