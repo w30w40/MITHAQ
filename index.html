@@ -1431,6 +1431,7 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
 .mithaq-audio-wave>svg{display:block;width:100%;height:36px;overflow:visible}
 .mithaq-chat-bubble.theirs .mithaq-audio-wave{color:#9aa6ad}
 </style>
+<style id="mithaq-read-receipt-blue-svg">.mithaq-chat-ticks.read svg{display:inline-block;width:20px;height:20px;vertical-align:middle;color:#53BDEB}</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -4128,7 +4129,7 @@ async function refreshChat(){
      else{const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.className='mithaq-chat-file';link.textContent='📄 '+(m.attachment_name||'فتح الملف المرفق');p.append(link);}
    }else{const unavailable=document.createElement('small');unavailable.textContent='تعذر فتح المرفق';p.append(unavailable);}
   }
-  const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':m.delivered_at?' delivered':'');ticks.textContent=(m.delivered_at||m.read_at)?'✓✓':'✓';ticks.title=m.read_at?'تمت قراءة الرسالة':m.delivered_at?'تم استلام الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
+  const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':m.delivered_at?' delivered':'');if(m.read_at){ticks.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#53BDEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="تمت القراءة"><path d="m2 12 4 4L16 6"/><path d="m9 12 4 4L23 6"/></svg>';}else ticks.textContent=m.delivered_at?'✓✓':'✓';ticks.title=m.read_at?'تمت قراءة الرسالة':m.delivered_at?'تم استلام الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
   if(!m.deleted_for_everyone_at){const actions=document.createElement('div');actions.className='mithaq-message-actions';const mine=m.sender_id===session.user.id;
   const copy=document.createElement('button');copy.type='button';copy.textContent='نسخ';copy.addEventListener('click',async()=>{const value=m.body||m.attachment_name||m.location_label||'';if(!value){status.textContent='لا يوجد نص لنسخه.';return;}try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);else{const field=document.createElement('textarea');field.value=value;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('copy unavailable');}status.textContent='تم نسخ الرسالة.';}catch(_){status.textContent='تعذر النسخ من هذا المتصفح.';}});actions.append(copy);
   const forward=document.createElement('button');forward.type='button';forward.textContent='إعادة توجيه';forward.addEventListener('click',async()=>{try{
