@@ -1,3 +1,1373 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<script>
+document.documentElement.classList.add('mithaq-auth-pending');
+try{const route=sessionStorage.getItem('mithaq-last-page-v1');const safe=['home','notifications','members','myprofile','messages','settings','help','about'];if(safe.includes(route))document.documentElement.setAttribute('data-mithaq-initial-route',route);}catch(_){}
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ec1764"><title>ميثاق | تعارف جاد باحترام وخصوصية</title>
+<meta name="description" content="ميثاق منصة للتعارف الجاد بقصد الزواج، مع ملفات شخصية وطلبات تعارف ومراسلات خاصة تحفظ الخصوصية.">
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#263b50;background:#f4f7fb;--green:#244f78;--green2:#2f6d9e;--gold:#c5a46a;--muted:#748496;--line:#e2e9f0;--surface:#fff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#edf3f9 0,#f7f9fc 360px)}.wrap{max-width:1080px;margin:auto;padding-inline:22px}
+header{background:linear-gradient(115deg,#173e62,#245783 65%,#3679a9);color:#fff;padding:23px 0 58px;position:relative;overflow:hidden}header:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff20;border-radius:50%;left:-110px;top:-180px;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff06}.hero{position:relative;z-index:1}.brand{font-size:13px;letter-spacing:1.4px;color:#dceaf5;font-weight:700}.hero h1{margin:18px 0 9px;font-size:clamp(27px,5vw,42px);font-weight:750}.hero p{margin:0;line-height:1.9;color:#e5eff7;max-width:620px;font-size:15px}
+main.wrap{margin-top:-30px;position:relative;z-index:2;padding-bottom:30px}.demo{background:#fff;border:1px solid #e6ece6;border-right:4px solid var(--gold);border-radius:15px;padding:13px 17px;font-size:13px;line-height:1.8;margin-bottom:17px;box-shadow:0 5px 22px #163d3010;color:#596b62}
+nav{display:flex;gap:8px;overflow-x:auto;padding:7px;margin:0 0 18px;background:#ffffffed;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #183e3010;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{white-space:nowrap;background:transparent;color:#607168;padding:11px 16px;border-radius:11px;font-size:13px;font-weight:650;flex:1}nav button.active{background:#e8f1f9;color:var(--green);box-shadow:inset 0 0 0 1px #d8e6f2}
+.auth-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.auth-actions button{flex:1;min-width:145px}.auth-panel{display:none}.auth-panel.open{display:block}.auth-status{font-size:13px;line-height:1.8;margin-top:10px;color:#285543}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:11px 16px;font-weight:650;transition:transform .15s}button:active{transform:scale(.98)}button:disabled{opacity:.55;cursor:wait}.primary{background:var(--green2);color:white}.primary:hover{background:var(--green)}.secondary{background:#edf3f8;color:#315b7c}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:21px;margin-bottom:15px;box-shadow:0 7px 24px #183e3009}.card h2{font-size:19px;margin:0 0 12px;color:#233f34}.muted{color:var(--muted);line-height:1.9;font-size:14px}.tag{display:inline-block;background:#edf4fa;color:#315d82;padding:6px 11px;border-radius:30px;font-size:12px;margin:3px;border:1px solid #e1ebe2}
+.profile{display:flex;justify-content:space-between;gap:12px;align-items:center}.profile h3{margin:0 0 4px}.avatar{width:49px;height:49px;border-radius:16px;background:#e6f0f8;color:#2b5f88;display:grid;place-items:center;font-size:21px;font-weight:700;flex:none}.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1}.field{margin:14px 0}label{display:block;font-size:13px;font-weight:650;margin-bottom:7px;color:#40564b}input,select,textarea{width:100%;font:inherit;border:1px solid #d6e0d8;border-radius:12px;padding:12px 13px;background:#fbfcfa;color:#233b31;outline:none}input:focus,select:focus,textarea:focus{border-color:#5b8db6;box-shadow:0 0 0 3px #5b8db61b}textarea{min-height:125px;resize:vertical}.tab.hidden{display:none}.notice{font-size:12px;color:#748078;line-height:1.8}
+.home-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:15px}.welcome{background:linear-gradient(135deg,#fff,#f0f6f0);position:relative;overflow:hidden}.welcome:after{content:"م";position:absolute;left:15px;bottom:-50px;font-size:190px;font-weight:800;color:#24578308;pointer-events:none}.welcome>*{position:relative;z-index:1}.eyebrow,.section-kicker{font-size:12px;color:#8b744d;font-weight:750;letter-spacing:.4px}.welcome h2{font-size:25px;line-height:1.5;margin:9px 0}.welcome p{max-width:520px}.feature-list{display:grid;gap:10px}.feature{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid #edf1ed;border-radius:14px;background:#fcfdfb}.feature-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;background:#eaf2f9;font-size:17px;flex:none}.feature strong{display:block;font-size:13px;margin:1px 0 4px}.feature span{display:block;color:#78847d;font-size:12px;line-height:1.7}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.step{background:#f7f9fc;border:1px solid #e8edf3;border-radius:14px;padding:14px}.step b{display:block;color:#b18d55;font-size:12px;margin-bottom:7px}.step strong{font-size:13px}.step p{font-size:12px;line-height:1.7;color:#78847d;margin:6px 0 0}
+footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-width:700px){.wrap{padding-inline:14px}header{padding:20px 0 51px}.hero h1{font-size:29px}.hero p{font-size:13px}main.wrap{margin-top:-25px}.card{padding:17px;border-radius:16px}.home-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}nav{position:sticky;top:6px;z-index:10;border-radius:14px;padding:5px;gap:3px}nav button{padding:10px 12px;font-size:12px;flex:0 0 auto}.demo{font-size:12px}}
+
+/* Ensure inactive wizard controls are truly hidden despite shared button display rules */
+#entrySignupForm [hidden], #entrySignupForm .wizard-panel[hidden], #entrySignupForm .wizard-actions button[hidden]{display:none!important}
+#entrySignupForm .wizard-actions{flex-wrap:wrap;direction:rtl;justify-content:flex-start}
+#entrySignupForm .wizard-actions button{box-sizing:border-box;max-width:100%;white-space:normal}
+#entrySignupForm .wizard-actions #entryFinish{min-width:250px}
+@media(max-width:420px){#entrySignupForm .wizard-actions{gap:10px}#entrySignupForm .wizard-actions #entryFinish{width:100%;min-width:0}}
+ 
+/* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
+.member-topbar{display:none}
+.member-drawer,.member-drawer-backdrop{display:none}
+html.mithaq-auth-pending #entryGate{visibility:hidden!important;pointer-events:none!important}
+html[data-mithaq-initial-route] .tab{display:none!important}
+html[data-mithaq-initial-route="home"] #home,html[data-mithaq-initial-route="notifications"] #notifications,html[data-mithaq-initial-route="members"] #members,html[data-mithaq-initial-route="myprofile"] #myprofile,html[data-mithaq-initial-route="messages"] #messages,html[data-mithaq-initial-route="settings"] #settings,html[data-mithaq-initial-route="help"] #help,html[data-mithaq-initial-route="about"] #about{display:block!important}
+body.authenticated{background:#fff9fa;color:#343b43}
+body.authenticated #entryGate{display:none!important}
+body.authenticated header{position:sticky;top:0;z-index:30;padding:0;background:linear-gradient(110deg,#d94368,#ef7897);box-shadow:0 3px 16px #8d34421a}
+body.authenticated header:after{display:none}
+body.authenticated header .hero{display:none}
+body.authenticated .member-topbar{height:112px;max-width:1180px;margin:auto;padding:12px 28px;display:flex;align-items:center;justify-content:space-between}
+.member-language{background:#e4f5ff;color:#28678d;border-radius:28px;padding:10px 17px;font-size:15px}
+.member-brand{display:grid;justify-items:center;gap:0;color:white;line-height:1}
+.member-brand strong{font-size:12px;letter-spacing:1.8px}
+.member-mark{font-size:48px;color:#d51f47;text-shadow:-8px 2px #176b91}
+.member-menu-button{background:transparent;color:#fff;font-size:36px;padding:0 8px}
+body.authenticated main.wrap{max-width:1120px;margin:0 auto;padding:26px 20px 45px}
+body.authenticated .demo{display:none}
+body.authenticated .mooda-nav{display:none}
+.member-page-title{display:flex;align-items:center;justify-content:space-between;margin:5px 0 22px}
+.member-page-title small{color:#bd5770;font-weight:700;font-size:14px}
+.member-page-title h1{font-size:29px;margin:5px 0;color:#246b98}
+.member-title-heart{font-size:35px;color:#dc5475}
+.member-hero-card{display:flex;align-items:center;gap:20px;padding:25px;border-radius:20px;background:linear-gradient(110deg,#fff,#fff0f3);border:1px solid #f2dce2;box-shadow:0 8px 24px #963a4a0b}
+.member-hero-icon{width:74px;height:74px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8dce4;color:#d94368;font-size:40px}
+.member-eyebrow{font-size:12px;font-weight:800;letter-spacing:1px;color:#d04f70}
+.member-hero-card h2{margin:6px 0;color:#246b98;font-size:25px}
+.member-hero-card p{margin:0;color:#697783;font-size:14px;line-height:1.9}
+.member-hero-action{background:linear-gradient(110deg,#155d91,#278fbd);color:#fff;border-radius:40px;padding:13px 21px;white-space:nowrap}
+.member-section-heading{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 13px}
+.member-section-heading h2{font-size:21px;color:#246b98;margin:0}
+.member-section-heading span{font-size:12px;color:#87929b}
+.member-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.member-service{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:right;padding:18px;background:#fff;border:1px solid #f0e3e6;border-radius:16px;color:#34434e;box-shadow:0 5px 18px #963a4a08}
+.member-service:active{transform:scale(.985)}
+.service-icon{width:43px;height:43px;border-radius:13px;background:#e5f2fa;color:#246b98;display:grid;place-items:center;font-size:22px}
+.member-service strong{font-size:15px}
+.member-service small{font-size:12px;color:#87929b;font-weight:400}
+.member-info-card{margin-top:17px;background:#e3f1fa;border-radius:16px;padding:17px 19px;color:#36566c;line-height:1.9}
+.member-info-card strong{color:#246b98}
+.member-info-card p{margin:5px 0 0;font-size:13px}
+.member-drawer-backdrop{position:fixed;inset:0;background:#17202b66;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.member-drawer{display:block;position:fixed;z-index:51;top:0;bottom:0;right:0;width:min(390px,88vw);overflow-y:auto;background:#fff8fa;padding:17px 19px 30px;transform:translateX(105%);transition:transform .24s;box-shadow:-8px 0 30px #0002}
+body.drawer-open .member-drawer{transform:translateX(0)}
+body.drawer-open .member-drawer-backdrop{opacity:1;pointer-events:auto}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 0 18px;border-bottom:1px solid #f0dfe4;margin-bottom:8px}
+.drawer-brand{display:flex;align-items:center;gap:10px;color:#246b98;font-size:22px}
+.drawer-brand span{font-size:30px;color:#d94368}
+.drawer-head button{background:transparent;color:#52616b;font-size:32px;padding:0 8px}
+.drawer-link{display:flex;width:100%;align-items:center;gap:14px;text-align:right;background:transparent;color:#343f48;padding:14px 6px;border-radius:0;border-bottom:1px solid #f1e7e9;font-size:16px;font-weight:650}
+.drawer-link span{width:32px;text-align:center;color:#d45b78;font-size:21px}
+.drawer-link:active{background:#fbe9ee}
+.drawer-separator{height:10px;border-bottom:1px solid #eadde1;margin-bottom:7px}
+.drawer-note{text-align:center;color:#9a8790;font-size:12px;padding:15px}
+body.authenticated .card{border-color:#f0e3e6}
+body.authenticated .card h2{color:#246b98}
+@media(max-width:700px){
+ body.authenticated .member-topbar{height:104px;padding:10px 20px}
+ body.authenticated main.wrap{padding:21px 15px 35px}
+ .member-hero-card{align-items:flex-start;flex-wrap:wrap;padding:19px;gap:13px}
+ .member-hero-icon{width:56px;height:56px;font-size:31px}
+ .member-hero-card h2{font-size:21px}
+ .member-hero-card>div:nth-child(2){flex:1;min-width:180px}
+ .member-hero-action{margin-right:auto}
+ .member-service-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .member-service{padding:14px;min-height:125px}
+ .member-page-title h1{font-size:26px}
+ .member-section-heading h2{font-size:19px}
+}
+@media(max-width:370px){.member-service strong{font-size:13px}.member-service small{font-size:11px}}
+ 
+.member-profile-cover{display:flex;align-items:center;gap:17px;padding:23px;border-radius:18px;background:linear-gradient(115deg,#fff0f4,#e5f3fa);border:1px solid #f0dfe5;margin-bottom:16px}
+.member-profile-avatar{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#287ba5;font-size:37px;border:4px solid #fff;box-shadow:0 2px 12px #0001}
+.member-profile-cover h2{font-size:23px;color:#246b98;margin:5px 0}
+.member-profile-cover p{font-size:13px;color:#77848c;margin:0}
+#myProfileSubline{display:none!important}
+.member-profile-card{background:#fff;border:1px solid #f0e3e6;border-radius:17px;padding:19px;margin:14px 0;box-shadow:0 5px 18px #963a4a08}
+.member-profile-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid #f3e8eb;padding-bottom:12px;margin-bottom:13px}
+.member-profile-card-head h2{font-size:19px;color:#246b98;margin:0}
+.member-profile-card-head span{font-size:11px;color:#9a8790}
+.member-profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.member-detail-item{background:#fff9fa;border:1px solid #f4e8eb;border-radius:12px;padding:11px 13px;min-width:0}
+.member-detail-item span{display:block;font-size:11px;color:#9b7d87;margin-bottom:5px}
+.member-detail-item strong{display:block;font-size:14px;color:#35444d;overflow-wrap:anywhere}
+.member-profile-about{white-space:pre-wrap;line-height:1.9;color:#485963;font-size:14px}
+.member-profile-card form{margin-top:14px}
+#profileEditView[hidden],#profileReadView[hidden]{display:none!important}
+.member-profile-cover #editProfileOpen{margin-right:auto;flex:none}
+.member-profile-actions{display:flex;align-items:center;gap:8px;margin-right:auto;flex:none}.member-profile-actions button{white-space:nowrap}@media(max-width:600px){.member-profile-actions{width:100%;margin:8px 0 0}.member-profile-actions button{flex:1}.member-profile-cover #editProfileOpen{width:auto;margin:0}}
+@media(max-width:600px){.member-profile-cover{padding:17px}.member-profile-avatar{width:62px;height:62px;font-size:30px}.member-profile-card{padding:15px}.member-profile-details{grid-template-columns:1fr}.member-profile-card-head h2{font-size:17px}}
+
+.mithaq-section-back{display:inline-flex;align-items:center;gap:7px;margin:0 0 15px;padding:10px 17px;border:1px solid #dce8f2;border-radius:12px;background:#fff;color:#246b98;font-weight:700;box-shadow:0 3px 12px #183e3008}.mithaq-section-back:active{transform:scale(.98)}
+
+#memberPublicDetail[hidden]{display:none!important}.public-profile-back{margin-bottom:14px}.public-profile-open{width:100%;margin-top:12px}.profile-card{cursor:pointer}.profile-card button{position:relative;z-index:1}
+
+.mithaq-home-feed-card{background:#fff;border:1px solid #f0e3e6;border-radius:18px;padding:18px;margin:0 0 18px;box-shadow:0 5px 18px #963a4a08}
+.mithaq-live-feed{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}
+.mithaq-live-member{position:relative;flex:0 0 116px;min-width:116px;max-width:116px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;background:#fff;border:1px solid #f0e3e6;border-radius:15px;padding:12px 8px;scroll-snap-align:start}
+.mithaq-live-avatar-wrap{position:relative;width:62px;height:62px;margin:0 auto 3px}
+.mithaq-live-avatar{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f8edf0;border:2px solid #f0dce2;font-size:34px;line-height:1}
+.mithaq-live-member h3{font-size:12px;color:#246b98;line-height:1.45;margin:0;width:100%;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mithaq-live-member p{font-size:11px;color:#718096;line-height:1.5;margin:0;width:100%;overflow-wrap:anywhere}
+.mithaq-online-dot,.mithaq-offline-dot{position:absolute;top:1px;right:1px;width:11px;height:11px;border:2px solid #fff;border-radius:50%}
+.mithaq-online-dot{background:#16a34a;box-shadow:0 0 0 2px #16a34a24}
+.mithaq-offline-dot{background:#9ca3af}
+.mithaq-live-member .mithaq-live-message{font-size:11px;line-height:1.2;padding:6px 8px;min-height:0;width:100%;margin-top:3px;border-radius:18px}
+.mithaq-chat-messages{display:flex;flex-direction:column;gap:8px;max-height:55vh;min-height:90px;overflow-y:auto;padding:12px;background:#f6f7f9;border:1px solid #edf0f3;border-radius:14px}
+.mithaq-chat-bubble{width:fit-content;max-width:84%;padding:9px 12px;border-radius:15px;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;box-shadow:0 1px 2px #0000000a}
+.mithaq-chat-bubble.mine{align-self:flex-start;background:#e5f3e9;color:#244b32;border-bottom-right-radius:4px}
+.mithaq-chat-bubble.theirs{align-self:flex-end;background:#fff;color:#344054;border:1px solid #e8ebef;border-bottom-left-radius:4px}
+.mithaq-chat-compose{display:flex;align-items:flex-end;gap:8px;margin-top:10px}
+.mithaq-chat-compose .field{flex:1;margin:0}
+.mithaq-chat-compose textarea{min-height:44px;max-height:120px;resize:vertical;padding:10px 12px;border-radius:20px}
+.mithaq-chat-compose button{width:auto;min-width:76px;min-height:42px;padding:9px 16px;border-radius:22px}
+#chatPanel{margin-top:14px}
+#chatPanel[hidden]{display:none!important}
+
+.mithaq-admin-home-widget{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(110deg,#edf6ff,#fff);border:1px solid #cfe4f5;border-right:4px solid #246b98;border-radius:16px;padding:16px 18px;margin:0 0 18px}
+.mithaq-admin-home-widget[hidden]{display:none!important}.mithaq-admin-home-widget>div{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:3px 8px}.mithaq-admin-home-widget>div>span{grid-row:span 2;font-size:25px}.mithaq-admin-home-widget strong{color:#1e5d91}.mithaq-admin-home-widget small{color:#718096}.mithaq-admin-home-widget button{background:#1e5d91;color:#fff;border-radius:30px;padding:11px 16px;min-height:44px}
+.mithaq-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#dc3545;color:#fff;font-size:11px;font-weight:800;line-height:1;vertical-align:middle;margin-inline-start:5px}
+.mithaq-unread-badge[hidden]{display:none!important}
+@media(max-width:600px){.mithaq-admin-home-widget{align-items:flex-start;flex-direction:column}.mithaq-admin-home-widget button{width:100%}.mithaq-live-member{flex-basis:108px;min-width:108px;max-width:108px}.mithaq-chat-messages{max-height:52vh}}
+
+.mithaq-member-options{display:flex;flex-direction:column;max-height:220px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:thin;padding:5px 8px;margin:12px 0 16px;border:1px solid #e7dce2;border-right:3px solid #d5b16e;border-radius:12px;background:#fffafd;gap:3px}
+.mithaq-member-options button{display:flex;flex:0 0 auto;width:100%;min-height:44px;align-items:center;text-align:right;justify-content:flex-start;background:transparent;color:#43515d;border:0;border-bottom:1px solid #f1e8ec;border-radius:8px;padding:10px 13px;font-size:14px;font-weight:600;touch-action:pan-y}
+.mithaq-member-options button:last-child{border-bottom:0}
+.mithaq-member-options button.active{background:#e4f2fa;color:#176493}
+
+.mithaq-profile-meta{margin:0 0 14px;padding:15px;background:#fff;border:1px solid #e5ecef;border-radius:15px}
+.mithaq-profile-meta h3{margin:0 0 10px;color:#176b58;font-size:15px}
+.mithaq-profile-meta-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #edf1f2;font-size:13px}
+.mithaq-profile-meta-row:last-child{border-bottom:0}
+.mithaq-profile-meta-row span{color:#718078}
+.mithaq-profile-meta-row strong{color:#263b32;text-align:left}
+.mithaq-profile-meta-row .meta-secondary{display:block;color:#718078;font-size:11px;margin-top:4px;text-align:left}
+.mithaq-profile-actions-panel{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px;padding:14px;background:#fff;border:1px solid #e5ecef;border-radius:15px}
+.mithaq-profile-actions-panel>button{flex:1 1 135px;min-height:44px}
+.mithaq-profile-interest-choice,.mithaq-profile-report-form{width:100%;padding:13px;border:1px solid #e4ecef;border-radius:12px;background:#f8fbfa}
+.mithaq-profile-interest-choice[hidden],.mithaq-profile-report-form[hidden],.mithaq-profile-menu[hidden]{display:none!important}
+.mithaq-profile-choice-buttons{display:flex;gap:8px;margin-top:10px}
+.mithaq-profile-choice-buttons button{flex:1;min-height:42px}
+.mithaq-profile-menu-wrap{position:relative;flex:1 1 100%}
+.mithaq-profile-menu-trigger{width:100%;background:#f0f4f6;color:#40515c;min-height:44px}
+.mithaq-profile-menu{display:flex;flex-direction:column;gap:5px;margin-top:6px;padding:8px;border:1px solid #e1e8eb;border-radius:12px;background:#fff}
+.mithaq-profile-menu button{width:100%;text-align:right;background:#f8fafb;color:#354650;min-height:44px}
+.mithaq-profile-menu button.danger{color:#b42318}
+.mithaq-profile-report-form{display:grid;gap:9px;margin-top:9px}
+.mithaq-profile-report-form label{font-size:13px}
+.mithaq-profile-report-form textarea{min-height:80px}
+.mithaq-profile-action-status{width:100%;margin:0;color:#28634e;font-size:13px;line-height:1.7}
+.mithaq-admin-reports{display:grid;gap:10px}
+.mithaq-admin-report{padding:13px;border:1px solid #e2eaf1;border-radius:12px;background:#fbfdff}
+.mithaq-admin-report strong{display:block;color:#245783;margin-bottom:5px}
+.mithaq-admin-report p{margin:4px 0;color:#586879;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+
+.mithaq-premium-contacts{display:grid;gap:9px;margin:14px 0}.mithaq-premium-contact-button{width:100%;text-align:center}.mithaq-admin-contact-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}.mithaq-admin-contact-row>div{flex:1;min-width:150px}.mithaq-admin-contact-row p{margin:5px 0 0;color:var(--muted);font-size:13px}.mithaq-admin-contact-row button{font-size:12px;padding:9px 12px}.mithaq-legal-details{margin:14px 0;padding:14px 16px;border:1px solid #e2e9f0;border-radius:14px;background:#f8fafc;line-height:1.9}.mithaq-legal-details summary{cursor:pointer;font-weight:750;color:#245b80}.mithaq-legal-details p{margin:10px 0;color:#45586a;font-size:14px;line-height:1.9}.mithaq-legal-details strong{color:#a56d16}
+
+/* All three-dot actions share an accessible in-chat panel above the composer. */
+.mithaq-chat-menu{position:fixed!important;z-index:100500!important;top:76px!important;left:12px!important;right:auto!important;width:min(290px,calc(100vw - 24px))!important;max-height:calc(100dvh - 100px)!important;overflow:auto!important;overscroll-behavior:contain}
+.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;top:clamp(105px,16vh,145px)!important;bottom:auto!important;left:10px!important;right:10px!important;width:auto!important;max-height:min(48dvh,390px)!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;background:#fff!important;color:#26343c!important;border:1px solid #eadde2!important;border-radius:20px!important;box-shadow:0 12px 45px #14202b45!important;padding:16px!important;margin:0!important;direction:rtl!important}
+.mithaq-chat-tools-panel:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:7px!important}
+.mithaq-chat-tools-panel h3{margin:0 0 5px;font-size:17px;padding-left:76px!important}
+.mithaq-chat-tools-panel p{margin:0 0 7px;color:#66737b;font-size:13px;line-height:1.7}
+.mithaq-chat-tools-panel button{display:block!important;flex:0 0 auto!important;width:100%!important;min-height:44px!important;margin:0!important;padding:10px 14px!important;text-align:right!important;white-space:normal!important;border-radius:12px!important;background:#f8eaf0!important;color:#7d3150!important}
+.mithaq-chat-tools-panel button.primary{background:#b83d61!important;color:#fff!important}
+.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{display:block!important;width:100%!important;min-height:44px!important;margin:4px 0!important;padding:12px!important;border:1px solid #d9cbd1!important;border-radius:10px!important;background:#fff!important;color:#26343c!important}
+.mithaq-chat-tools-panel .mithaq-sheet-close{position:absolute!important;top:10px!important;left:12px!important;width:auto!important;min-width:66px!important;min-height:36px!important;padding:7px 11px!important;background:#f1f1f1!important;color:#344!important;text-align:center!important}
+@media(max-width:520px){.mithaq-chat-menu{top:68px!important;left:8px!important}.mithaq-chat-tools-panel{top:100px!important;left:8px!important;right:8px!important;max-height:min(44dvh,330px)!important;padding:13px!important}}
+@media(max-height:620px){.mithaq-chat-tools-panel{top:82px!important;max-height:calc(100dvh - 180px)!important}}
+
+</style>
+<style id="mithaq-refresh">
+:root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
+body{background:#f3f7fc}
+header{background:linear-gradient(125deg,#123b63 0%,#1c5b8e 58%,#347fb5 100%);padding:30px 0 76px}
+header:after{width:390px;height:390px;left:-125px;top:-205px;border-color:#ffffff24;box-shadow:0 0 0 42px #ffffff09,0 0 0 88px #ffffff06}
+.brand{font-size:14px;letter-spacing:1.8px;color:#e6f2fb}
+.hero h1{font-size:clamp(30px,5vw,46px);letter-spacing:-.6px;margin-top:20px}
+.hero p{font-size:16px;max-width:660px;color:#eaf4fc}
+main.wrap{max-width:1120px;margin-top:-39px}
+.demo{border:1px solid #dce9f5;border-right:4px solid #d5b16e;background:#fff;color:#536a80;border-radius:14px;box-shadow:0 8px 26px #183e6010;padding:14px 18px}
+nav{border:1px solid #e0e9f2;border-radius:16px;box-shadow:0 8px 25px #163c5c0d;padding:6px;background:#fffffffa;gap:5px}
+nav button{color:#65788b;border-radius:11px}
+nav button.active{background:#e8f2fb;color:#1d5d91;box-shadow:inset 0 0 0 1px #d7e8f6}
+.card{border:1px solid #e3ebf3;border-radius:18px;box-shadow:0 8px 28px #163c5c0a;padding:23px}
+.card h2{color:#243e58}
+.welcome{background:linear-gradient(135deg,#fff 0%,#f0f7fd 100%);border-color:#dce9f5}
+.welcome h2{font-size:29px;line-height:1.45;color:#1c4f78}
+.eyebrow,.section-kicker{color:#a17d42}
+.feature{background:#fbfdff;border-color:#e7eff6}
+.feature-icon,.avatar{background:#e8f2fb;color:#216494}
+.step{background:#f7fafe;border-color:#e4edf5}
+.step b{color:#a17d42}
+.primary{background:#2879b8;color:#fff}
+.primary:hover{background:#1d6096}
+.secondary{background:#edf4fa;color:#285d85}
+input,select,textarea{border-color:#d9e4ee;background:#fcfdff;color:#24364b}
+input:focus,select:focus,textarea:focus{border-color:#4c91c7;box-shadow:0 0 0 3px #4c91c71b}
+.auth-status{color:#285d85}
+.profile-card{transition:transform .16s,box-shadow .16s}
+.profile-card:hover{transform:translateY(-2px);box-shadow:0 12px 30px #163c5c12}
+footer{color:#8a9aad}
+@media(max-width:700px){
+ header{padding:24px 0 61px}
+ .hero h1{font-size:30px}
+ .hero p{font-size:14px}
+ main.wrap{margin-top:-31px}
+ .card{padding:18px}
+ .welcome h2{font-size:25px}
+ nav{top:5px}
+}
+</style>
+<style id="mithaq-settings">
+.settings-list{padding:5px 18px}.settings-item{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:16px 5px;border-radius:0;background:transparent;color:#243e58;border-bottom:1px solid #e8eef4}.settings-item:last-of-type{border-bottom:0}.settings-item>span:nth-child(2){display:grid;gap:5px;flex:1}.settings-item strong{font-size:14px}.settings-item small{font-size:12px;color:#7a8b9b;font-weight:400}.settings-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#edf5fc;font-size:18px}.settings-arrow{font-size:24px;color:#8ca0b2}.settings-static{cursor:default}.settings-logout{color:#a43c42}.settings-logout .settings-icon{background:#fff0f0}@media(max-width:700px){.settings-list{padding-inline:14px}.settings-item{padding:14px 3px}}
+</style>
+<style id="mithaq-main-navigation">
+.mooda-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border-radius:16px}
+.mooda-nav button{min-width:0;padding:13px 7px;font-size:14px;font-weight:700;color:#61788d;border-radius:12px}
+.mooda-nav button.active{background:#e5f1fb;color:#1d5d91;box-shadow:inset 0 0 0 1px #d3e5f5}
+@media(max-width:700px){.mooda-nav{position:sticky;top:5px;z-index:10;background:#fff;box-shadow:0 5px 20px #183e3010}.mooda-nav button{padding:13px 4px;font-size:13px}}
+</style>
+<style id="mithaq-entry-design">
+#entryGate{min-height:100vh;background:#fff9fa;color:#343b43;font-family:"Segoe UI",Tahoma,Arial,sans-serif;padding-bottom:94px}
+body:not(.authenticated)>header,body:not(.authenticated)>main,body:not(.authenticated)>footer{display:none!important}
+.entry-top{height:128px;background:linear-gradient(110deg,#d94368,#ef7897);display:flex;align-items:center;justify-content:space-between;padding:18px 28px;color:#fff}
+.entry-lang{border-radius:28px;background:#e4f5ff;color:#28678d;padding:12px 18px;font-size:18px}
+.entry-logo{display:grid;justify-items:center;gap:0;color:#fff;font-weight:800;letter-spacing:2px}
+.entry-logo span{font-size:52px;line-height:1;color:#d71e45;text-shadow:-9px 3px #176b91}
+.entry-logo b{font-size:12px}
+.entry-menu{background:transparent;color:white;font-size:36px;padding:0}
+.entry-screen{max-width:680px;margin:0 auto;padding:40px 29px 30px;min-height:calc(100vh - 230px)}
+.entry-heading{text-align:center;font-size:32px;margin:0 0 42px;color:#343b43;font-weight:750}
+.entry-oath{font-size:27px;line-height:1.95;text-align:right;color:#777;margin:0 0 58px}
+.entry-pledge{display:flex;align-items:center;gap:12px;border:2px solid #efdddd;border-radius:17px;padding:22px 17px;color:#d45e78;font-size:23px;font-weight:700;margin-bottom:56px}
+.entry-pledge input{width:22px;height:22px;accent-color:#d75a77;flex:none}
+.entry-genders{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:0 10%}
+.entry-gender{height:225px;border-radius:28px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 30px #9a64701a}
+.entry-gender span{font-size:76px;line-height:1.2}
+.entry-gender b{font-size:23px}
+.entry-gender i{position:absolute;right:28%;top:48%;background:#55c85b;color:white;border-radius:50%;width:45px;height:45px;font-style:normal;font-size:35px;line-height:42px}
+.entry-gender.wife{background:#ffdae2;color:#d34e70}.entry-gender.husband{background:#d8efff;color:#288ab5}
+.entry-form{margin-top:35px;background:white;padding:22px;border-radius:18px;border:1px solid #f0dfe3}
+.entry-form h2{margin:0 0 18px;color:#c84e6b}
+.entry-form label,.entry-login-form>label{display:block;font-size:20px;font-weight:650;margin:20px 0;color:#3b4148}
+.entry-form input,.entry-login-form input{display:block;width:100%;height:76px;margin-top:14px;border:2px solid #e0e0e0;border-radius:14px;background:#fff;padding:14px 18px;font-size:21px;text-align:right}
+.entry-submit{display:block;background:linear-gradient(100deg,#155d91,#278fbd);color:white;border-radius:60px;padding:18px 48px;font-size:27px;margin:30px auto 10px;min-width:250px}
+.entry-status{color:#28658b;text-align:center;line-height:1.8}
+.entry-switch{text-align:center;font-size:24px;font-weight:650;margin:55px 0 15px}
+.entry-switch button,.entry-login-options button{background:transparent;color:#d44f6e;padding:0;font-size:inherit;font-weight:750}
+.login-heading{color:#176494;margin-bottom:48px}
+.entry-login-form>label{font-size:23px;margin:0 0 48px}
+.entry-login-form input{height:82px;font-size:25px}
+.entry-login-options{display:flex;justify-content:space-between;align-items:center;font-size:20px;margin:0 0 65px}
+.entry-login-options .entry-remember{display:flex;align-items:center;gap:10px}
+.entry-login-options .entry-remember input{width:22px;height:22px;margin:0;accent-color:#247db1}
+.login-submit{font-size:30px;min-width:285px}
+.entry-bottom{position:fixed;bottom:0;left:0;right:0;height:94px;background:#fff;box-shadow:0 -5px 22px #2221;display:flex;justify-content:space-around;align-items:center;z-index:20}
+.entry-bottom button{background:transparent;color:#777;display:grid;justify-items:center;gap:3px;font-size:16px;padding:5px}
+.entry-bottom span{font-size:28px}
+body.authenticated #entryGate{display:none}
+@media(max-width:700px){.entry-top{height:128px;padding:15px 28px}.entry-screen{padding:40px 29px 25px;min-height:calc(100vh - 220px)}.entry-heading{font-size:31px;margin-bottom:42px}.entry-oath{font-size:25px;line-height:1.95;margin-bottom:58px}.entry-pledge{font-size:21px;padding:20px 14px;margin-bottom:56px}.entry-genders{gap:20px;padding:0 8%}.entry-gender{height:225px;border-radius:27px}.entry-gender span{font-size:70px}.entry-gender b{font-size:21px}.entry-gender i{right:25%;font-size:32px}.entry-login-form>label{font-size:22px;margin-bottom:48px}.entry-login-form input{height:82px}.entry-switch{font-size:22px}.entry-bottom{height:94px}}
+@media(max-width:390px){.entry-oath{font-size:21px}.entry-genders{padding:0 2%;gap:12px}.entry-gender{height:190px}.entry-gender b{font-size:18px}.entry-pledge{font-size:18px}.entry-login-options{font-size:17px}}
+</style>
+
+<style id="mithaq-five-step-registration">
+#entryGate{background:#fff9fa;color:#343b43}
+.entry-top{background:linear-gradient(110deg,#d94368,#ef7897)}
+.entry-heading{color:#216b9c}
+#entrySignupForm.entry-form{border:0;background:transparent;padding:0;margin-top:0}
+#entrySignupForm .entry-heading{margin:0 0 42px;text-align:center;font-size:32px}
+#entrySignupForm h2{color:#216b9c;font-size:27px;margin:35px 0 28px;text-align:right}
+.wizard-progress{position:relative;display:flex;justify-content:space-between;align-items:center;margin:0 0 65px;padding:0 0;direction:rtl}
+.wizard-track{position:absolute;left:8%;right:8%;height:7px;background:#d8eaf5;border-radius:8px;top:50%;transform:translateY(-50%)}
+.wizard-step{position:relative;z-index:1;width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:#d8eaf5;color:#3d5362;font-size:29px;font-weight:750}
+.wizard-step.active,.wizard-step.done{background:#269bc2;color:white}
+.wizard-panel[hidden]{display:none!important}
+.wizard-panel>label{display:block;font-size:21px;font-weight:650;color:#343b43;margin:0 0 32px}
+.wizard-panel input:not([type=checkbox]),.wizard-panel select,.wizard-panel textarea{width:100%;height:76px;margin-top:14px;border:2px solid #e0e0e0;border-radius:14px;background:white;padding:14px 18px;font-size:21px;text-align:right;color:#414b53}
+.wizard-panel textarea{height:130px}
+.required-star{color:#d34d70;margin-inline-start:8px}
+.field-help{background:#d8ecf9;border-radius:23px;padding:22px 24px;margin:-4px 0 35px;font-size:18px;line-height:1.9;color:#344957}
+.field-help ul{margin:10px 0 0;padding-right:23px}
+.field-help li{padding:4px 0}
+.field-help li::marker{color:#269bc2}
+.wizard-actions{display:flex;gap:12px;align-items:center;justify-content:flex-start;margin:45px 0 20px}
+.wizard-actions .entry-submit{margin:0;min-width:250px}
+.wizard-back{background:#e6eff5;color:#285d80;border-radius:45px;padding:18px 30px;font-size:21px}
+.wizard-check{display:flex!important;gap:12px;align-items:flex-start;font-size:18px!important;line-height:1.8}
+.wizard-check input{width:22px;height:22px;margin-top:6px;flex:none;accent-color:#278fbd}
+#entrySignup .entry-switch{margin-top:45px}
+@media(max-width:700px){
+ .wizard-step{width:82px;height:82px;font-size:28px}
+ #entrySignupForm .entry-heading{font-size:31px}
+ .wizard-panel>label{font-size:21px}
+ .wizard-panel input:not([type=checkbox]),.wizard-panel select,.wizard-panel textarea{height:76px;font-size:21px}
+ .field-help{font-size:18px}
+}
+@media(max-width:390px){.wizard-step{width:58px;height:58px;font-size:22px}.wizard-track{left:9%;right:9%}.wizard-actions .entry-submit{min-width:0;flex:1}}
+
+/* Single-page five-section registration layout */
+#entrySignupForm .wizard-panel[hidden]{display:block!important}
+#entrySignupForm .wizard-panel-card{display:block;background:#fff;border:1px solid #e6e9ec;border-radius:20px;padding:22px 20px;margin:0 0 22px;box-shadow:0 4px 16px rgba(32,75,100,.06)}
+#entrySignupForm .wizard-panel-card h2{margin:0 0 24px;padding:0 0 14px;border-bottom:2px solid #e6f0f6;font-size:23px}
+#entrySignupForm .wizard-progress{margin-bottom:30px}
+#entrySignupForm .wizard-step{width:48px;height:48px;font-size:20px}
+#entrySignupForm .wizard-track{height:5px}
+#entrySignupForm .wizard-actions{margin:26px 0 18px}
+#entrySignupForm .wizard-actions #entryFinish{display:block;width:100%;min-width:0}
+@media(max-width:520px){#entrySignupForm .wizard-panel-card{padding:17px 14px;margin-bottom:16px}#entrySignupForm .wizard-panel>label{font-size:18px;margin-bottom:24px}#entrySignupForm .wizard-panel input:not([type=checkbox]),#entrySignupForm .wizard-panel select,#entrySignupForm .wizard-panel textarea{font-size:18px;height:64px}}
+
+/* Personal details section styled like the reference registration form */
+#entrySignupForm .wizard-panel[data-step-panel="5"]{background:#fff9fa;border:1px solid #e7cbd4;border-radius:20px;padding:22px;margin:28px 0}
+#entrySignupForm .wizard-panel[data-step-panel="5"] h2{background:#eef5f8;border:1px solid #dce8ee;border-radius:8px;padding:12px 16px;margin:0 0 28px;font-size:23px}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,auto);align-items:center;gap:12px;margin:0 0 22px}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label input{grid-column:1;grid-row:1}
+#entrySignupForm .wizard-panel[data-step-panel="5"]>label .required-star{grid-column:2;grid-row:1}
+#entrySignupForm .wizard-panel[data-step-panel="5"] .muted{background:#eef5f8;border-radius:12px;padding:14px;line-height:1.8}
+#entrySignupForm .wizard-panel[data-step-panel="6"]{background:#fff;border:1px solid #e6e9ec;border-radius:20px;padding:22px;margin:24px 0}
+@media(max-width:520px){#entrySignupForm .wizard-panel[data-step-panel="5"]{padding:16px 12px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label{grid-template-columns:1fr;gap:8px}#entrySignupForm .wizard-panel[data-step-panel="5"]>label input{grid-column:1;grid-row:2}#entrySignupForm .wizard-panel[data-step-panel="5"]>label .required-star{grid-column:1;grid-row:1}}
+
+/* Mawada-inspired colour system: soft distinct colours for every registration section and app menu. */
+#entrySignupForm .wizard-panel{border:1px solid #eadde4;border-radius:20px;padding:22px;margin:22px 0;box-shadow:0 5px 18px rgba(120,65,88,.055)}
+#entrySignupForm .wizard-panel[data-step-panel="1"]{background:#fff1f5;border-color:#f1cbd8}
+#entrySignupForm .wizard-panel[data-step-panel="2"]{background:#eff7ff;border-color:#cfe3f3}
+#entrySignupForm .wizard-panel[data-step-panel="3"]{background:#f5f1ff;border-color:#ded3f5}
+#entrySignupForm .wizard-panel[data-step-panel="4"]{background:#effaf5;border-color:#cde9dc}
+#entrySignupForm .wizard-panel[data-step-panel="5"]{background:#fff5ed;border-color:#f1d9c8}
+#entrySignupForm .wizard-panel[data-step-panel="6"]{background:#fff9e9;border-color:#eadfb9}
+#entrySignupForm .wizard-panel h2{color:#b63863;border-bottom:2px solid #e8bfd0;padding-bottom:12px}
+#entrySignupForm .wizard-panel input:not([type=checkbox]),#entrySignupForm .wizard-panel select,#entrySignupForm .wizard-panel textarea{border:1px solid #d9dfe8;border-radius:14px;background:#fff;box-shadow:inset 0 1px 2px #24384a08}
+#entrySignupForm .entry-phone-wrap{position:relative;display:grid;grid-template-columns:minmax(130px,auto) minmax(0,1fr);gap:8px;align-items:stretch;grid-column:1/-1}
+#entrySignupForm .entry-phone-country-button{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:12px 14px;border:1px solid #e5bfd0;border-radius:14px;background:#fff0f5;color:#7e3150;font:inherit;font-size:16px;cursor:pointer}
+#entrySignupForm .entry-phone-country-button span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#entrySignupForm .entry-phone-wrap>input#entryPhone{min-width:0;width:100%}
+#entrySignupForm .entry-phone-country-menu{position:absolute;z-index:1000;top:calc(100% + 8px);right:0;left:0;background:#fff;border:1px solid #e6c6d3;border-radius:18px;box-shadow:0 14px 36px #44202d2b;padding:12px;max-height:340px;display:flex;flex-direction:column;gap:9px}
+#entrySignupForm .entry-phone-country-menu[hidden]{display:none!important}
+#entrySignupForm .entry-phone-country-menu>input{width:100%;height:48px;padding:10px 14px;border:1px solid #d9e5ee;border-radius:12px;background:#f6fbff}
+#entrySignupForm .entry-phone-country-options{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:4px;max-height:255px}
+#entrySignupForm .entry-phone-country-option{width:100%;text-align:right;padding:11px 12px;border:0;border-radius:10px;background:#fff;color:#3d5265;font:inherit;font-size:15px;cursor:pointer}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+1){background:#fff1f5}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+2){background:#eff7ff}
+#entrySignupForm .entry-phone-country-option:nth-child(4n+3){background:#f4f0ff}
+#entrySignupForm .entry-phone-country-option:nth-child(4n){background:#effaf5}
+#entrySignupForm .entry-phone-country-option:active{outline:2px solid #d94b78}
+#entrySignupForm .entry-phone-country-empty{padding:12px;color:#7b8792;text-align:center}
+body.authenticated nav button:nth-child(4n+1),body.authenticated .member-drawer button:nth-child(4n+1){background:#fff0f5;color:#a8325c;border-color:#f0cbd8}
+body.authenticated nav button:nth-child(4n+2),body.authenticated .member-drawer button:nth-child(4n+2){background:#edf6ff;color:#28668f;border-color:#cfe2f2}
+body.authenticated nav button:nth-child(4n+3),body.authenticated .member-drawer button:nth-child(4n+3){background:#f3efff;color:#65518f;border-color:#ddd3f3}
+body.authenticated nav button:nth-child(4n),body.authenticated .member-drawer button:nth-child(4n){background:#eff9f3;color:#34775a;border-color:#d0e8d8}
+@media(max-width:520px){#entrySignupForm .wizard-panel{padding:16px 12px;margin:16px 0}#entrySignupForm .entry-phone-wrap{grid-template-columns:1fr}#entrySignupForm .entry-phone-country-button{min-height:54px}#entrySignupForm .entry-phone-wrap>input#entryPhone{min-height:60px}}
+</style>
+
+<style id="mithaq-profile-responsive-fix">
+/* Keep the profile page fluid on narrow phones, tablets and desktop screens. */
+#myprofile,
+#myprofile > *,
+#myprofile .member-profile-cover,
+#myprofile .member-profile-card,
+#myprofile #profileReadView,
+#myprofile #profileEditView {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#myprofile {
+  position: relative;
+  overflow: visible;
+}
+#myprofile .member-profile-cover {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+#myprofile .member-profile-cover > div:nth-child(2) {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+#myprofile .member-profile-cover h2,
+#myprofile .member-profile-cover p,
+#myprofile .member-profile-card,
+#myprofile .member-profile-card-head,
+#myprofile .member-detail-item,
+#myprofile .member-profile-about {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+#myprofile .member-profile-card-head {
+  flex-wrap: wrap;
+}
+#myprofile .member-profile-details {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 700px) {
+  body.authenticated main.wrap {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding: 16px 12px 32px;
+  }
+  body.authenticated main.wrap > .tab,
+  body.authenticated main.wrap > .tab:not(.hidden) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  #myprofile {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0;
+  }
+  #myprofile .member-profile-cover {
+    padding: 15px;
+    gap: 12px;
+  }
+  #myprofile .member-profile-avatar {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    font-size: 29px;
+  }
+  #myprofile .member-profile-cover #editProfileOpen {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 6px 0 0;
+  }
+  #myprofile .member-profile-card {
+    margin: 12px 0;
+    padding: 14px;
+  }
+  #myprofile .member-profile-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #myprofile .member-profile-card-head {
+    align-items: flex-start;
+    gap: 6px;
+  }
+  #myprofile #profileEditView form,
+  #myprofile #profileEditView .field,
+  #myprofile #profileEditView input,
+  #myprofile #profileEditView select,
+  #myprofile #profileEditView textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+@media (max-width: 360px) {
+  body.authenticated main.wrap {
+    padding-inline: 9px;
+  }
+  #myprofile .member-profile-card {
+    padding: 11px;
+  }
+  #myprofile .member-profile-cover h2 {
+    font-size: 19px;
+  }
+}
+</style>
+
+<style id="mithaq-advanced-search">
+.search-filter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.search-online-row{padding:12px 0;border-top:1px solid #e8eef4;border-bottom:1px solid #e8eef4;margin:8px 0 14px}
+.search-online-row label{display:flex;align-items:center;gap:9px;margin:0}
+.search-online-row input{width:18px;height:18px;accent-color:#2879b8}
+.search-actions{margin:12px 0 18px}.search-actions button{min-width:120px}
+@media(max-width:600px){.search-filter-grid{grid-template-columns:1fr}.search-actions button{flex:1}}
+</style>
+<style id="mithaq-global-language">
+.language-popover{position:fixed!important;inset:0!important;z-index:2147483000!important;background:#17202b99;display:none;align-items:center;justify-content:center;padding:18px;visibility:visible}
+.language-popover.open{display:flex!important}
+.language-panel{width:min(440px,100%);max-height:82vh;overflow:auto;background:#fff;border-radius:20px;padding:20px;box-shadow:0 18px 55px #0003;color:#24364b}
+.language-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.language-panel-head h2{margin:0;font-size:20px;color:#1d5d91}
+.language-close{background:#edf4fa;color:#315d82;font-size:23px;padding:5px 12px}
+.language-search{width:100%;margin:0 0 12px}
+.language-options{display:grid;gap:6px}
+.language-option{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:#f7fafe;color:#24364b;border:1px solid #e5edf5;padding:12px;border-radius:12px}
+.language-option[aria-selected="true"]{background:#e5f1fb;border-color:#80b4d8}
+.language-option .lang-flag{font-size:22px}
+.language-option .lang-name{flex:1;font-weight:650}
+.language-option small{color:#718096;font-weight:600}
+</style><style id="mithaq-admin-style">
+.mithaq-admin-card{border-color:#dce8f3}
+.mithaq-admin-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mithaq-admin-heading h2{margin:5px 0;color:#1e5d91}
+.mithaq-admin-shield{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:#e8f2fb;font-size:28px}
+.mithaq-admin-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+.mithaq-admin-stat{background:#f5f9fd;border:1px solid #e3edf6;border-radius:13px;padding:14px}
+.mithaq-admin-stat span{display:block;color:#75879a;font-size:12px}
+.mithaq-admin-stat strong{display:block;color:#1e5d91;font-size:24px;margin-top:6px}
+.mithaq-admin-member{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #e8eef4}
+.mithaq-admin-member:last-child{border-bottom:0}
+.mithaq-admin-member-info{min-width:0;display:grid;gap:5px}
+.mithaq-admin-member-info strong{color:#314b62;overflow-wrap:anywhere}
+.mithaq-admin-member-info small{color:#8291a0}
+.mithaq-admin-member-actions{display:flex;align-items:center;gap:8px;flex:none}
+.mithaq-admin-status{font-size:12px;border-radius:30px;padding:5px 9px;background:#e9f5ec;color:#287044}
+.mithaq-admin-status.suspended{background:#fff0f0;color:#a33e45}
+.mithaq-admin-member-actions button{font-size:12px;padding:9px 12px}
+@media(max-width:620px){.mithaq-admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mithaq-admin-heading{align-items:flex-start}.mithaq-admin-member{align-items:flex-start;flex-direction:column}.mithaq-admin-member-actions{width:100%;justify-content:flex-start}.mithaq-admin-member-actions button{flex:1}}
+
+.mithaq-messages-card{padding:0!important;overflow:hidden}.mithaq-chat-header{display:flex;align-items:center;gap:11px;padding:12px 14px;background:#176b58;color:#fff;margin:0 0 10px;border-radius:14px 14px 0 0}.mithaq-chat-back{border:0;background:transparent;color:#fff;font-size:30px;line-height:1;padding:2px 8px;cursor:pointer}.mithaq-chat-avatar-wrap{position:relative;width:42px;height:42px;flex:0 0 42px}.mithaq-chat-avatar{display:flex;width:42px;height:42px;align-items:center;justify-content:center;border-radius:50%;background:#e7f1ed;font-size:25px}.mithaq-chat-presence{position:absolute;right:0;bottom:0;width:11px;height:11px;border:2px solid #176b58;border-radius:50%;background:#16a34a}.mithaq-chat-presence[hidden]{display:none}.mithaq-chat-head-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.mithaq-chat-head-copy strong{font-size:15px;overflow-wrap:anywhere}.mithaq-chat-head-copy small{font-size:11px;color:#d7eee7}.mithaq-chat-messages{display:flex;flex-direction:column;gap:9px;max-height:55vh;min-height:120px;overflow-y:auto;padding:12px;background:#f0f2ef;border:0;border-radius:0}.mithaq-chat-bubble{width:fit-content;max-width:86%;padding:8px 11px;border-radius:15px;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;box-shadow:0 1px 2px #0000000a}.mithaq-chat-bubble.mine{align-self:flex-start;background:#e5f3e9;color:#244b32;border-bottom-right-radius:4px}.mithaq-chat-bubble.theirs{align-self:flex-end;background:#fff;color:#344054;border:1px solid #e8ebef;border-bottom-left-radius:4px}.mithaq-chat-caption{margin-bottom:5px}.mithaq-chat-time{display:block;text-align:left;font-size:10px;color:#82908a;margin-top:4px}.mithaq-chat-media{display:block;max-width:min(100%,300px);max-height:260px;border-radius:10px;object-fit:contain}.mithaq-chat-image-button{display:block;border:0;background:transparent;padding:0;cursor:zoom-in;max-width:100%}.mithaq-chat-audio-player{display:flex;align-items:center;gap:9px;min-width:min(250px,68vw);padding:8px 10px;border-radius:22px;background:#d7eee2}.mithaq-chat-audio-player button{width:34px;height:34px;flex:0 0 34px;border:0;border-radius:50%;background:#176b58;color:#fff;font-size:15px}.mithaq-chat-audio-player input{width:100%;min-width:40px;accent-color:#176b58}.mithaq-chat-audio-player small{font-size:10px;white-space:nowrap;color:#315b48}.mithaq-chat-ticks{display:inline-block;margin-inline-start:5px;font-size:12px;letter-spacing:-3px;color:#8a9690;direction:ltr}.mithaq-chat-ticks.read{color:#168bd2}.mithaq-image-viewer{position:fixed;inset:0;z-index:2147483000;background:#000e;display:flex;align-items:center;justify-content:center;padding:16px}.mithaq-image-viewer[hidden]{display:none}.mithaq-image-viewer img{max-width:100%;max-height:90dvh;object-fit:contain}.mithaq-image-viewer button{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;border:0;border-radius:50%;width:42px;height:42px;background:#fff;color:#222;font-size:28px}.mithaq-chat-file{display:block;color:#176b58;text-decoration:underline;overflow-wrap:anywhere}.mithaq-chat-compose{display:flex;align-items:flex-end;gap:7px;padding:10px;background:#f7f8f7;border-top:1px solid #e9eeeb;margin:0}.mithaq-chat-compose .field{flex:1;min-width:0;margin:0}.mithaq-chat-compose textarea{width:100%;min-height:42px;max-height:120px;resize:vertical;padding:10px 14px;border:1px solid #dce4df;border-radius:22px;background:#fff;line-height:1.45}.mithaq-chat-tool,.mithaq-chat-send{width:42px;height:42px;min-width:42px;min-height:42px;flex:0 0 42px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;font-size:20px;cursor:pointer}.mithaq-chat-tool{background:#e8efeb;color:#176b58}.mithaq-chat-tool.recording{background:#ffe1e1;color:#bd2525;animation:mithaqPulse 1s infinite}.mithaq-chat-send{background:#176b58;color:#fff;font-size:21px}.mithaq-chat-send:disabled{opacity:.5}.mithaq-chat-compose .field label{display:none!important}@keyframes mithaqPulse{50%{opacity:.55}}@media(max-width:600px){.mithaq-chat-messages{max-height:52vh;min-height:100px}.mithaq-chat-media{max-width:100%}.mithaq-chat-compose{gap:5px;padding:8px}.mithaq-chat-tool,.mithaq-chat-send{width:38px;height:38px;min-width:38px;min-height:38px;flex-basis:38px}}
+</style>
+<style id="mithaq-chat-fullscreen-v2">
+#chatPanel[hidden]{display:none!important}
+#chatPanel:not([hidden]){position:fixed!important;inset:0!important;z-index:2147482000!important;display:flex!important;flex-direction:column!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;padding:0!important;background:#f0f2ef!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important}
+.mithaq-chat-header{position:relative!important;flex:0 0 auto!important;margin:0!important;border-radius:0!important;padding:10px 14px!important;min-height:64px!important;z-index:2}
+.mithaq-chat-title-button{border:0!important;background:transparent!important;color:#fff!important;padding:4px 0!important;margin:0!important;min-height:0!important;width:auto!important;text-align:right!important;font-size:16px!important;font-weight:750!important;cursor:pointer!important}
+#chatHeaderAvatar{cursor:pointer}
+#chatMessages.mithaq-chat-messages{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;border:0!important;border-radius:0!important;padding:14px!important}
+.mithaq-chat-compose{flex:0 0 auto!important;margin:0!important;padding:9px max(9px,env(safe-area-inset-right)) calc(9px + env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important;gap:7px!important}
+.mithaq-chat-compose .field{min-width:0!important;flex:1 1 auto!important}
+.mithaq-chat-compose textarea{box-sizing:border-box!important;min-height:42px!important;width:100%!important;padding:10px 13px!important;border-radius:22px!important;resize:none!important}
+.mithaq-chat-compose .mithaq-chat-tool,.mithaq-chat-compose .mithaq-chat-send{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;flex:0 0 42px!important;padding:0!important;border-radius:50%!important}
+#messageStatus{flex:0 0 auto!important;margin:0!important;padding:0 12px 4px!important;background:#f7f8f7!important}
+body.mithaq-chat-open{overflow:hidden!important}
+body.mithaq-chat-open #messages>.mithaq-section-back{display:none!important}
+.mithaq-chat-profile-card{position:absolute;z-index:4;top:70px;right:10px;left:10px;max-height:65dvh;overflow:auto;background:#fff;border:1px solid #e1e9e4;border-radius:16px;box-shadow:0 12px 40px #0003;padding:14px}
+.mithaq-chat-profile-card[hidden]{display:none!important}
+.mithaq-chat-profile-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#176b58}
+.mithaq-chat-profile-top button{border:0;background:#edf3ef;border-radius:50%;width:34px;height:34px;font-size:22px}
+#chatProfileContent p{margin:8px 0;padding-bottom:7px;border-bottom:1px solid #edf0ed;overflow-wrap:anywhere}
+.mithaq-conversation-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:100%!important;margin:7px 0!important;padding:13px 14px!important;text-align:right!important;background:#fff!important;color:#263b34!important;border:1px solid #e7eeea!important;border-radius:14px!important;box-shadow:0 2px 8px #183e3008!important}
+.mithaq-conversation-main{display:grid;gap:5px;min-width:0}
+.mithaq-conversation-main strong{font-size:14px}
+.mithaq-conversation-main small{font-size:12px;color:#718078;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(72vw,520px)}
+.mithaq-conversation-row .mithaq-unread-badge{flex:none}
+@media(max-width:600px){.mithaq-chat-compose{gap:5px!important}.mithaq-chat-compose .mithaq-chat-tool,.mithaq-chat-compose .mithaq-chat-send{width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;flex-basis:38px!important}.mithaq-chat-compose textarea{font-size:16px!important}}
+</style>
+<style id="mithaq-conversations-v3">
+.mithaq-messages-card{padding:12px!important}
+.mithaq-conversation-row{display:flex!important;align-items:center!important;justify-content:stretch!important;gap:12px!important;width:100%!important;min-height:76px!important;margin:0!important;padding:11px 10px!important;text-align:right!important;background:#fff!important;color:#263b34!important;border:0!important;border-bottom:1px solid #e9efeb!important;border-radius:0!important;box-shadow:none!important}
+.mithaq-conversation-avatar{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:50%;background:#eaf2ed;font-size:27px}
+.mithaq-conversation-main{display:grid;gap:6px;min-width:0;flex:1}
+.mithaq-conversation-main strong{font-size:15px;color:#243b32}
+.mithaq-conversation-main small{font-size:12px;color:#78867f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mithaq-conversation-side{display:flex;flex:0 0 auto;min-width:54px;align-items:flex-end;gap:7px;flex-direction:column}
+.mithaq-conversation-time{font-size:10px;color:#84928b;white-space:nowrap}
+.mithaq-conversation-side .mithaq-unread-badge{background:#20a56b;min-width:20px;height:20px;margin:0}
+#chatPanel:not([hidden]){position:fixed!important;inset:0!important;z-index:2147482000!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;border-radius:0!important;overflow:hidden!important}
+#chatPanel .mithaq-chat-header{display:flex!important;align-items:center!important;gap:10px!important;width:100%!important;min-height:64px!important;box-sizing:border-box!important;flex:0 0 64px!important;background:#087e69!important;color:#fff!important;padding:8px 12px!important}
+#chatPanel .mithaq-chat-back{display:grid!important;place-items:center!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-width:40px!important;padding:0!important;border:0!important;background:transparent!important;color:#fff!important;font-size:30px!important;line-height:1!important}
+#chatPanel .mithaq-chat-avatar-wrap{flex:0 0 42px!important}
+#chatPanel .mithaq-chat-head-copy{flex:1;min-width:0}
+#chatPanel .mithaq-chat-title-button{display:block!important;color:#fff!important}
+#chatPanel .mithaq-chat-compose{display:flex!important;align-items:center!important;flex:0 0 auto!important;width:100%!important;box-sizing:border-box!important;padding:9px max(9px,env(safe-area-inset-right)) calc(9px + env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important;background:#f5f7f5!important}
+#chatPanel .mithaq-chat-compose .field{flex:1 1 auto!important;min-width:0!important}
+#chatPanel .mithaq-chat-compose textarea{width:100%!important;box-sizing:border-box!important;min-height:42px!important;max-height:110px!important;border:0!important;background:#fff!important;border-radius:24px!important}
+/* Explicitly protect the chat header from global site-header decoration and visibility rules. */
+#chatPanel:not([hidden])>.mithaq-chat-header{display:flex!important;position:relative!important;isolation:isolate!important;visibility:visible!important;opacity:1!important;order:0!important;flex:0 0 66px!important;height:66px!important;min-height:66px!important;max-height:66px!important;overflow:visible!important;z-index:20!important;background:#087e69!important;color:#fff!important}
+#chatPanel>.mithaq-chat-header:before,#chatPanel>.mithaq-chat-header:after{display:none!important;content:none!important}
+#chatPanel>.mithaq-chat-header>*{visibility:visible!important;opacity:1!important;position:relative!important;z-index:21!important}
+#chatPanel>.mithaq-chat-header .mithaq-chat-back{display:grid!important;visibility:visible!important;opacity:1!important;place-items:center!important;width:42px!important;height:42px!important;min-width:42px!important;flex:0 0 42px!important;color:#fff!important;font-size:28px!important;line-height:1!important}
+#chatPanel>.mithaq-chat-header .mithaq-chat-title-button,#chatPanel>.mithaq-chat-header #chatPresenceText{visibility:visible!important;opacity:1!important;color:#fff!important}
+#chatPanel>.mithaq-chat-header .mithaq-chat-avatar{visibility:visible!important;opacity:1!important}
+
+/* Full-screen conversation layer: hide only the site masthead, never the chat header. */
+body.mithaq-chat-open>header{display:none!important}
+body.mithaq-chat-open #chatPanel:not([hidden]){
+ position:fixed!important;inset:0!important;z-index:2147482999!important;
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ width:100vw!important;height:100vh!important;height:100dvh!important;
+ max-height:100dvh!important;margin:0!important;padding:0!important;
+ overflow:hidden!important;background:#f6f7f9!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+body.mithaq-chat-open #chatPanel:not([hidden])>.mithaq-chat-header{
+ display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;
+ z-index:2147483000!important;box-sizing:border-box!important;width:100%!important;
+ height:66px!important;min-height:66px!important;max-height:66px!important;
+ margin:0!important;border-radius:0!important;visibility:visible!important;opacity:1!important;
+ background:#087e69!important;color:#fff!important;flex:0 0 66px!important;
+}
+body.mithaq-chat-open #chatPanel>.mithaq-chat-header:before,
+body.mithaq-chat-open #chatPanel>.mithaq-chat-header:after{display:none!important;content:none!important}
+body.mithaq-chat-open #chatPanel>.mithaq-chat-header>*{visibility:visible!important;opacity:1!important;z-index:2147483001!important}
+body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{
+ display:flex!important;flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+ margin:66px 0 0!important;overflow-y:auto!important;border-radius:0!important;
+ padding:12px!important;overscroll-behavior:contain!important;
+}
+body.mithaq-chat-open #chatPanel>.mithaq-chat-compose{
+ flex:0 0 auto!important;margin:0!important;padding:10px 10px max(10px,env(safe-area-inset-bottom))!important;
+ background:#fff!important;border-top:1px solid #e7ece9!important;
+}
+body.mithaq-chat-open #chatPanel>#messageStatus{flex:0 0 auto!important;margin:0!important;padding:2px 12px 6px!important;background:#fff!important}
+body.mithaq-chat-open #chatPanel>#chatProfileCard{
+ position:fixed!important;top:76px!important;left:10px!important;right:10px!important;
+ z-index:2147483002!important;max-height:65dvh!important;
+}
+
+/* Full member profile page opened from the conversation header. */
+.mithaq-full-member-profile{position:fixed!important;inset:0!important;z-index:2147483600!important;display:flex!important;flex-direction:column!important;background:#f6f8f7!important;color:#26352f!important;overflow:hidden!important}
+.mithaq-full-member-profile-header{position:relative!important;display:flex!important;align-items:center!important;gap:16px!important;flex:0 0 64px!important;min-height:64px!important;padding:8px 14px!important;background:#087e69!important;color:#fff!important;box-shadow:0 2px 10px #0002!important}
+.mithaq-full-member-profile-header strong{font-size:17px!important}
+.mithaq-full-member-profile-back{border:0!important;background:#ffffff20!important;color:#fff!important;border-radius:22px!important;padding:9px 13px!important;min-height:40px!important;font-weight:700!important}
+.mithaq-full-member-profile-content{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:16px!important;padding-bottom:max(20px,env(safe-area-inset-bottom))!important}
+.mithaq-full-member-profile-hero{display:flex!important;align-items:center!important;gap:14px!important;padding:18px!important;margin-bottom:14px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:18px!important}
+.mithaq-full-member-profile-avatar{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:58px!important;height:58px!important;border-radius:50%!important;background:#e7f1ed!important;font-size:32px!important}
+.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}
+.mithaq-full-member-profile-hero p{margin:0!important;color:#68776f!important;font-size:13px!important}
+.mithaq-full-member-profile-section{margin:0 0 14px!important;padding:16px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:16px!important}
+.mithaq-full-member-profile-section h3{margin:0 0 12px!important;color:#176b58!important;font-size:16px!important}
+.mithaq-full-member-profile-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))!important;gap:10px!important}
+.mithaq-full-member-profile-item{min-width:0!important;padding:10px!important;background:#f7faf8!important;border-radius:11px!important}
+.mithaq-full-member-profile-item small{display:block!important;color:#718078!important;font-size:12px!important;margin-bottom:5px!important}
+.mithaq-full-member-profile-item p{margin:0!important;color:#273b31!important;font-size:14px!important;overflow-wrap:anywhere!important;white-space:pre-wrap!important}
+@media(max-width:480px){.mithaq-full-member-profile-content{padding:11px!important}.mithaq-full-member-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style>
+<style id="mithaq-home-redesign">
+/* Mawada-inspired home dashboard and fixed member navigation */
+body.authenticated .member-topbar{height:78px;padding:8px 18px;max-width:1180px}
+.member-topbar-actions{display:flex;align-items:center;gap:10px}
+.member-topbar-icon{width:42px;height:42px;padding:0;border-radius:50%;display:grid;place-items:center;background:#ffffff20;color:#fff;font-size:21px}
+.member-mark{font-size:42px}
+body.authenticated main.wrap{padding-bottom:112px}
+.member-page-title{margin:2px 0 16px;padding:8px 3px 13px;border-bottom:1px solid #f5dce3}
+.member-page-title h1{font-size:26px}
+.member-home-welcome{display:flex;align-items:center;gap:13px;padding:17px 18px;margin-bottom:15px;border-radius:17px;background:linear-gradient(115deg,#fff0f4,#fff 68%,#eaf6fc);border:1px solid #f1dce3}
+.member-home-welcome .welcome-symbol{width:54px;height:54px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8dce5;color:#d94368;font-size:29px}
+.member-home-welcome h2{margin:0 0 5px;color:#286d96;font-size:19px}
+.member-home-welcome p{margin:0;color:#78838b;font-size:12px;line-height:1.8}
+.member-home-note{padding:19px 18px;margin:0 0 17px;border-radius:17px;background:#fff;border:1px solid #f1e2e6;box-shadow:0 5px 18px #963a4a08;text-align:center}
+.member-home-note .note-icon{font-size:24px;color:#40a7c6}
+.member-home-note p{max-width:560px;margin:8px auto 13px;color:#687781;font-size:14px;line-height:1.95}
+.member-home-note button{background:linear-gradient(110deg,#d94368,#ef7897);color:#fff;border-radius:9px;min-width:190px}
+.member-section-heading{margin:20px 0 12px}
+.mithaq-home-feed-card{padding:16px}
+.mithaq-live-feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;gap:10px;padding:0}
+.mithaq-live-member{min-width:0;max-width:none;width:100%;flex:auto;display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:10px;align-items:center;text-align:right;padding:12px;scroll-snap-align:none}
+.mithaq-live-avatar-wrap{grid-column:1;grid-row:1/4;width:50px;height:50px;margin:0}
+.mithaq-live-avatar{width:50px;height:50px;font-size:28px}
+.mithaq-live-member h3{grid-column:2;grid-row:1;text-align:right;font-size:13px}
+.mithaq-live-member p{grid-column:2;grid-row:2;text-align:right;font-size:11px}
+.mithaq-live-member .mithaq-live-message{grid-column:2;grid-row:3;width:auto;justify-self:start;margin-top:5px;padding:6px 13px}
+.mithaq-member-filters select{max-height:48px;cursor:pointer}.mithaq-member-filters select option{padding:8px}
+.mithaq-member-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:12px 0 16px}.mithaq-member-filters label{display:grid;gap:5px;color:#64748b;font-size:13px}.mithaq-member-filters select{width:100%;min-height:42px;border:1px solid #dce5ec;border-radius:12px;background:#fff;color:#334155;padding:8px;font:inherit}.mithaq-bottom-nav button{cursor:pointer;touch-action:manipulation}.mithaq-bottom-nav button:focus-visible{outline:3px solid #fff;outline-offset:-5px}
+.mithaq-member-shortcuts{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:5px 2px 12px;margin:5px 0 10px;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.mithaq-member-shortcuts button{flex:0 0 auto;scroll-snap-align:start;border:1px solid #d9e6ef;border-radius:24px;background:#f5f9fc;color:#286d96;padding:9px 16px;font:inherit;font-size:13px;cursor:pointer;touch-action:pan-x}
+.mithaq-member-shortcuts button.active{background:linear-gradient(110deg,#1264a0,#1687c3);border-color:#1687c3;color:#fff;box-shadow:0 3px 10px #1264a033}
+.mithaq-member-shortcuts button:focus-visible{outline:3px solid #d65b79;outline-offset:2px}
+.mithaq-member-search{position:relative;margin:0 0 14px}
+.mithaq-member-search input{border-radius:28px;background:#fff;border:1px solid #f0dce3;padding:13px 44px 13px 15px}
+.mithaq-member-search:before{content:'⌕';position:absolute;right:16px;top:5px;color:#d65b79;font-size:25px;z-index:1}
+#membersGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mithaq-country-flag-badge{position:absolute;right:-3px;bottom:-3px;min-width:23px;height:20px;padding:1px 3px;display:grid;place-items:center;border:2px solid #fff;border-radius:9px;background:#fff;font-size:15px;line-height:1;box-shadow:0 1px 5px #0002;z-index:2}
+.mithaq-premium-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-inline-start:4px;border-radius:50%;background:linear-gradient(145deg,#fff4c2,#d7a62a);border:1px solid #b8891c;color:#674500;font-size:13px;line-height:1;box-shadow:0 1px 4px #9b741d44;vertical-align:middle}
+.mithaq-premium-badge[hidden]{display:none!important}
+.mithaq-premium-card{border:1px solid #e8d59a;background:linear-gradient(145deg,#fffdf6,#fff8e4)}
+.mithaq-premium-card .mithaq-premium-mark{font-size:30px}
+.mithaq-premium-card .mithaq-premium-benefits{line-height:1.9}
+.mithaq-premium-status{font-weight:700;color:#806018}
+.mithaq-directory-avatar .mithaq-country-flag-badge{right:-5px;bottom:-4px}
+.mithaq-directory-card{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#fff;border:1px solid #f0e3e6;border-radius:16px;padding:13px;box-shadow:0 5px 16px #963a4a08;min-width:0}
+.mithaq-directory-avatar{position:relative;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f9e9ee;font-size:27px;grid-row:span 3}
+.mithaq-directory-card h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere}
+.mithaq-directory-card p{margin:2px 0;color:#7c8790;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.mithaq-directory-card button{justify-self:start;margin-top:4px;padding:7px 13px;border-radius:22px;background:#e8f4fb;color:#286d96;font-size:11px}
+.mithaq-bottom-nav{display:none}
+body.authenticated .mithaq-bottom-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;bottom:0;left:0;right:0;padding:9px max(12px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));background:linear-gradient(110deg,#1264a0,#1687c3);box-shadow:0 -5px 20px #174b7225;border-radius:17px 17px 0 0}
+.mithaq-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px;min-height:62px;border-radius:12px;background:transparent;color:#fff;font-size:11px}
+.mithaq-bottom-nav button .bottom-icon{font-size:27px;line-height:1.15}
+.mithaq-bottom-nav button .mithaq-bottom-premium-logo{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#fff4bd,#d8a52b 68%,#a87512);border:2px solid #fff0b0;color:#684700;font-size:21px;line-height:1;box-shadow:0 1px 7px #071f3b66}
+.mithaq-bottom-nav button:focus-visible{outline:2px solid #ffe39a;outline-offset:-3px}
+.mithaq-bottom-nav button.active{background:#ffffff20}
+.mithaq-bottom-nav .mithaq-unread-badge{position:absolute;margin:-31px 0 0 25px;border:1px solid #1687c3}
+@media(max-width:600px){.mithaq-live-feed,#membersGrid{grid-template-columns:1fr}.mithaq-live-member{grid-template-columns:48px minmax(0,1fr)}.mithaq-live-avatar-wrap,.mithaq-live-avatar{width:46px;height:46px}.mithaq-live-avatar{font-size:25px}.member-home-welcome h2{font-size:17px}.member-home-note{padding:16px 13px}}
+@media(min-width:900px){body.authenticated .mithaq-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(620px,90vw);border-radius:18px 18px 0 0}}
+
+/* Keep the conversation composer visible and hide app navigation while chatting. */
+body.mithaq-chat-open #mithaqBottomNav{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+body.mithaq-chat-open #chatPanel:not([hidden])>.mithaq-chat-compose{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ position:relative!important;z-index:2147483001!important;
+ flex:0 0 auto!important;min-height:64px!important;
+}
+body.mithaq-chat-open #chatPanel:not([hidden])>#messageStatus{
+ display:block!important;visibility:visible!important;flex:0 0 auto!important;
+}
+</style>
+
+<style id="mithaq-member-entry-picker">
+.member-entry-chooser{max-width:720px;margin:18px auto 22px;padding:17px;background:#fff;border:1px solid #e4eaf0;border-top:3px solid #c5a46a;border-radius:16px;box-shadow:0 7px 22px #173e6210}
+.member-entry-chooser[hidden]{display:none!important}
+.member-entry-heading{display:flex;align-items:center;gap:12px;padding:0 2px 14px;border-bottom:1px solid #edf0f3;margin-bottom:13px}
+.member-entry-heading>span{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:#edf4fa;color:#245783;font-size:22px}
+.member-entry-heading strong{display:block;color:#244f78;font-size:17px}
+.member-entry-heading small{display:block;color:#7b8792;font-size:12px;margin-top:4px}
+.member-entry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.member-entry-grid button{min-height:58px;display:flex;align-items:center;gap:11px;text-align:right;padding:10px 13px;background:#fbfcfd;border:1px solid #e7edf2;border-radius:12px;color:#40566a;font-size:13px}
+.member-entry-grid button span{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:#eaf2f8;font-size:17px}
+.member-entry-grid button strong{font-weight:650}
+.member-entry-grid button:active{background:#edf5fb;border-color:#c8dbe9}
+.member-entry-option{min-width:0;display:flex;flex-direction:column;gap:5px}
+.member-entry-grid .member-entry-parent{width:100%;justify-content:flex-start;position:relative}
+.member-entry-parent>b{margin-right:auto;color:#8b744d;font-size:17px;font-weight:700}
+.member-entry-parent[aria-expanded="true"]{background:#eaf3fa;border-color:#9fc2dc;color:#1e5d91}
+.member-entry-submenu{display:flex;flex-direction:column;gap:3px;max-height:190px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding:6px;border:1px solid #dce7ef;border-right:3px solid #c5a46a;border-radius:11px;background:#f9fbfd}
+.member-entry-submenu[hidden]{display:none!important}
+.member-entry-grid .member-entry-submenu button{display:flex;flex:0 0 auto;width:100%;min-height:42px;justify-content:flex-start;text-align:right;padding:9px 11px;background:#fff;border:1px solid #edf1f4;border-radius:8px;color:#42586a;font-size:12px;font-weight:600}
+.member-entry-grid .member-entry-submenu button:active,.member-entry-grid .member-entry-submenu button.selected{background:#e5f2fa;border-color:#b7d3e6;color:#155d91}
+.member-entry-country-list{display:flex;flex-direction:column;gap:3px}
+.member-entry-country-list button{width:100%}
+@media(max-width:420px){.member-entry-submenu{max-height:175px}}
+
+@media(max-width:420px){.member-entry-chooser{padding:13px;margin:14px 0 18px;border-radius:14px}.member-entry-grid{gap:7px}.member-entry-grid button{min-height:55px;padding:9px 10px;gap:8px;font-size:12px}.member-entry-grid button span{width:30px;height:30px;font-size:15px}.member-entry-heading strong{font-size:16px}}
+</style>
+
+
+<style id="mithaq-public-profile-design">
+/* Visual-only refresh for the public member profile. Existing profile data and actions stay unchanged. */
+#mithaqFullMemberProfile{
+ background:#f4f7fb!important;
+ background-image:radial-gradient(ellipse at 90% 0%,#f8e8ee 0,transparent 34%),radial-gradient(ellipse at 0% 45%,#e5f1f9 0,transparent 36%)!important;
+ color:#263b50!important;
+ font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-header{
+ flex:0 0 auto!important;min-height:76px!important;padding:12px max(18px,calc((100vw - 900px)/2))!important;
+ background:linear-gradient(112deg,#173e62 0%,#245783 58%,#d65c7b 150%)!important;
+ box-shadow:0 5px 22px #173e6226!important;border:0!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-header strong{
+ font-size:18px!important;font-weight:800!important;letter-spacing:.1px!important;color:#fff!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-back{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+ min-height:44px!important;padding:9px 15px!important;border:1px solid #ffffff42!important;
+ border-radius:13px!important;background:#ffffff18!important;color:#fff!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-back:active{background:#ffffff30!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-content{
+ width:100%!important;max-width:900px!important;margin:0 auto!important;padding:22px 20px 38px!important;
+ overscroll-behavior:contain!important;scrollbar-width:thin!important;scrollbar-color:#c5d4df transparent!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;gap:18px!important;
+ min-height:132px!important;padding:25px!important;margin:0 0 17px!important;
+ border:1px solid #e5eaf0!important;border-radius:22px!important;
+ background:linear-gradient(112deg,#fff 0%,#fff 56%,#f9edf1 100%)!important;
+ box-shadow:0 10px 30px #173e620d!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero:after{
+ content:"م"!important;position:absolute!important;z-index:-1!important;left:20px!important;bottom:-75px!important;
+ color:#24578308!important;font-size:190px!important;font-weight:900!important;line-height:1!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-avatar{
+ flex:0 0 82px!important;width:82px!important;height:82px!important;border-radius:25px!important;
+ border:3px solid #fff!important;background:linear-gradient(145deg,#e5f1f8,#f8e6ec)!important;
+ color:#245783!important;font-size:42px!important;box-shadow:0 5px 18px #24578318!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero>div:nth-child(2){min-width:0!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero h2{
+ margin:0 0 8px!important;color:#1e5278!important;font-size:clamp(21px,3vw,27px)!important;
+ font-weight:850!important;line-height:1.4!important;overflow-wrap:anywhere!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero p{
+ display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;
+ color:#73818d!important;font-size:13px!important;line-height:1.8!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta,
+#mithaqFullMemberProfile .mithaq-profile-actions-panel,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section{
+ margin:0 0 16px!important;padding:19px!important;background:#fff!important;
+ border:1px solid #e5eaf0!important;border-radius:19px!important;
+ box-shadow:0 7px 23px #173e6209!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta h3,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ margin:0 0 15px!important;padding-bottom:12px!important;border-bottom:1px solid #edf1f5!important;
+ color:#245783!important;font-size:16px!important;font-weight:800!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta h3:before,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3:before{
+ content:""!important;width:4px!important;height:19px!important;border-radius:5px!important;background:#d65c7b!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row{
+ display:grid!important;grid-template-columns:minmax(105px,.7fr) minmax(0,1.3fr)!important;
+ align-items:center!important;gap:12px!important;padding:12px 2px!important;
+ border-bottom:1px solid #f0f3f6!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row:last-of-type{border-bottom:0!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>span{color:#7a8995!important;font-weight:600!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>strong{
+ justify-self:start!important;color:#245783!important;font-size:13px!important;font-weight:800!important;
+ cursor:pointer!important;text-align:right!important;line-height:1.7!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta-row>strong:focus-visible{outline:2px solid #d65c7b!important;outline-offset:3px!important;border-radius:4px!important}
+#mithaqFullMemberProfile .mithaq-profile-meta-row .meta-secondary{
+ grid-column:2!important;color:#179568!important;font-size:11px!important;margin-top:-8px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-meta .notice{
+ margin:11px 0 0!important;padding:9px 11px!important;border-radius:10px!important;
+ background:#f5f8fb!important;color:#85919a!important;font-size:11px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3{font-size:16px!important}
+#mithaqFullMemberProfile .mithaq-full-member-profile-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item{
+ padding:13px 14px!important;border:1px solid #edf1f5!important;border-radius:13px!important;
+ background:linear-gradient(145deg,#fbfcfe,#f6f9fc)!important;min-height:68px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item small{
+ color:#84919b!important;font-size:11px!important;font-weight:650!important;margin-bottom:6px!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-item p{
+ color:#344b5d!important;font-size:14px!important;font-weight:650!important;line-height:1.75!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;
+ padding:16px!important;position:relative!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button{
+ min-height:48px!important;border-radius:13px!important;font-size:13px!important;font-weight:800!important;
+ box-shadow:none!important;transition:filter .15s,transform .15s!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button:active{transform:scale(.985)!important}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.primary{
+ background:linear-gradient(110deg,#245783,#347eaa)!important;color:#fff!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.secondary{
+ background:#f8edf1!important;color:#b64b69!important;border:1px solid #f1dce3!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu-wrap{grid-column:1/-1!important;flex:auto!important}
+#mithaqFullMemberProfile .mithaq-profile-menu-trigger{
+ min-height:46px!important;border:1px solid #e5eaf0!important;border-radius:12px!important;
+ background:#f7f9fc!important;color:#52697b!important;font-weight:750!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu{
+ gap:7px!important;margin-top:8px!important;padding:9px!important;
+ border:1px solid #e5eaf0!important;border-radius:14px!important;
+ background:#fff!important;box-shadow:0 10px 25px #173e6214!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu button{
+ min-height:45px!important;padding:11px 13px!important;border-radius:10px!important;
+ background:#f7f9fc!important;color:#40576a!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu button.danger{background:#fff2f1!important;color:#b42318!important}
+#mithaqFullMemberProfile .mithaq-profile-interest-choice,
+#mithaqFullMemberProfile .mithaq-profile-report-form{
+ grid-column:1/-1!important;width:100%!important;padding:15px!important;
+ border:1px solid #e5eaf0!important;border-radius:14px!important;background:#f8fafc!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-interest-choice p{
+ margin:0!important;color:#40576a!important;font-size:13px!important;line-height:1.8!important;font-weight:700!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-choice-buttons{gap:9px!important;margin-top:12px!important}
+#mithaqFullMemberProfile .mithaq-profile-choice-buttons button,
+#mithaqFullMemberProfile .mithaq-profile-report-form button{
+ min-height:44px!important;border-radius:11px!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-report-form{gap:11px!important}
+#mithaqFullMemberProfile .mithaq-profile-report-form label{color:#536b7d!important;font-size:12px!important}
+#mithaqFullMemberProfile .mithaq-profile-report-form select,
+#mithaqFullMemberProfile .mithaq-profile-report-form textarea{
+ border:1px solid #dce5ec!important;border-radius:11px!important;background:#fff!important;
+ color:#344b5d!important;font-size:13px!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-report-form textarea{min-height:92px!important}
+#mithaqFullMemberProfile .mithaq-profile-action-status{
+ grid-column:1/-1!important;margin:0!important;padding:0 3px!important;
+ color:#247451!important;font-size:12px!important;line-height:1.8!important;
+}
+@media(max-width:600px){
+ #mithaqFullMemberProfile .mithaq-full-member-profile-header{min-height:68px!important;padding:9px 14px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-content{padding:13px 12px calc(24px + env(safe-area-inset-bottom))!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-hero{min-height:112px!important;padding:17px!important;gap:13px!important;border-radius:18px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-avatar{flex-basis:68px!important;width:68px!important;height:68px!important;border-radius:21px!important;font-size:35px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-hero h2{font-size:21px!important}
+ #mithaqFullMemberProfile .mithaq-profile-meta,#mithaqFullMemberProfile .mithaq-profile-actions-panel,#mithaqFullMemberProfile .mithaq-full-member-profile-section{padding:15px!important;border-radius:16px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ #mithaqFullMemberProfile .mithaq-full-member-profile-item{padding:11px!important;min-height:64px!important}
+ #mithaqFullMemberProfile .mithaq-profile-meta-row{grid-template-columns:minmax(92px,.75fr) minmax(0,1.25fr)!important}
+ #mithaqFullMemberProfile .mithaq-profile-actions-panel{gap:8px!important}
+}
+@media(max-width:360px){
+ #mithaqFullMemberProfile .mithaq-full-member-profile-grid{grid-template-columns:1fr!important}
+ #mithaqFullMemberProfile .mithaq-profile-actions-panel{grid-template-columns:1fr!important}
+ #mithaqFullMemberProfile .mithaq-profile-menu-wrap,#mithaqFullMemberProfile .mithaq-profile-interest-choice,#mithaqFullMemberProfile .mithaq-profile-report-form,#mithaqFullMemberProfile .mithaq-profile-action-status{grid-column:1!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #mithaqFullMemberProfile *{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+
+<style id="mithaq-pink-global-theme">
+/* Unified MITHAQ pink identity: visual styling only; no data, markup, or behavior changes. */
+:root{
+ --green:#c2185b;--green2:#e91e63;--gold:#e879a1;--muted:#887783;
+ --line:#f1cbd8;--surface:#fff;
+ --mithaq-pink:#ec1764;--mithaq-pink-dark:#c51155;--mithaq-pink-soft:#fff0f5;
+ --mithaq-page:#fff7fa;--mithaq-blue:#526b86;
+ color-scheme:light;
+}
+html,body{background:var(--mithaq-page)!important;color:#493541!important}
+body{background:linear-gradient(180deg,#fff0f5 0,#fff8fb 300px,#fff7fa 100%)!important}
+header{background:linear-gradient(112deg,#c51155 0%,#ec1764 58%,#f47da5 100%)!important}
+header:after{border-color:#ffffff26!important;box-shadow:0 0 0 35px #ffffff0b,0 0 0 75px #ffffff08!important}
+.brand,.hero p{color:#fff2f7!important}
+nav,.mooda-nav,.member-drawer,.member-drawer-backdrop+.member-drawer{
+ background:#fff!important;border-color:#f0c8d6!important;
+ box-shadow:0 6px 22px #a91d5010!important;
+}
+nav button{color:#765c68!important}
+nav button.active,nav button[aria-current="page"]{
+ background:#ffe4ed!important;color:#bd1452!important;
+ box-shadow:inset 0 0 0 1px #f5b7cb!important;
+}
+button.primary,.primary,.auth-actions .primary,.member-hero-action{
+ background:linear-gradient(115deg,#c51155,#ec1764)!important;color:#fff!important;
+ border:1px solid #d91a5c!important;box-shadow:0 5px 14px #d81b6030!important;
+}
+button.primary:hover,.primary:hover{background:#b90f4d!important}
+button.secondary,.secondary{
+ background:#fff0f5!important;color:#bd1452!important;border:1px solid #f1c2d2!important;
+}
+.card,.demo,.feature,.step,.welcome,.member-hero-card,.member-info-card,
+.member-service,.mithaq-profile-card,.auth-panel,.tab-panel{
+ background:#fff!important;border:1px solid #f0cbd8!important;
+ box-shadow:0 7px 24px #a91d500d!important;
+}
+.card h2,.member-section-heading h2,.member-page-title h1,
+.member-hero-card h2,.member-info-card strong{color:#bd1452!important}
+.member-page-title small,.eyebrow,.section-kicker{color:#d52c69!important}
+.tag,.feature-icon,.avatar,.member-service .service-icon{
+ background:#ffe8f0!important;color:#c2185b!important;border-color:#f5c3d4!important;
+}
+.member-info-card{background:#fff0f5!important;color:#704b5c!important}
+.member-info-card strong{color:#bd1452!important}
+.member-topbar,body.authenticated header{
+ background:linear-gradient(110deg,#c51155,#ec1764 65%,#f47da5)!important;
+}
+.member-language{background:#fff!important;color:#c2185b!important;border:1px solid #f4c1d2!important}
+.member-brand,.member-menu-button{color:#fff!important}
+.member-mark{color:#fff!important;text-shadow:-8px 2px #a70d49!important}
+.member-drawer{background:#fff!important;border-left:1px solid #f1c7d6!important}
+.drawer-head{border-bottom-color:#f3d5df!important}
+.drawer-brand,.drawer-link span{color:#c2185b!important}
+.drawer-link{color:#493541!important;border-bottom-color:#f7e4eb!important}
+.drawer-link:active{background:#fff0f5!important}
+.drawer-head button{color:#bd1452!important}
+.member-profile-cover{background:linear-gradient(115deg,#fff0f5,#fff)!important;border-color:#f0cbd8!important}
+body.authenticated .card{border-color:#f0cbd8!important}
+body.authenticated .card h2{color:#bd1452!important}
+input,select,textarea{
+ background:#fff!important;color:#493541!important;border:1px solid #eec6d5!important;
+}
+input:focus,select:focus,textarea:focus{
+ border-color:#ec1764!important;box-shadow:0 0 0 3px #ec17641c!important;
+}
+label{color:#674958!important}
+hr,.divider{border-color:#f2d6e0!important}
+a{color:#c2185b}
+[role="dialog"],.modal,.popup,.dropdown-menu,.menu-panel{
+ background:#fff!important;border-color:#efc6d5!important;
+ box-shadow:0 14px 40px #7f15351f!important;
+}
+#mithaqFullMemberProfile{
+ background:#fff7fa!important;
+ background-image:radial-gradient(ellipse at 90% 0%,#ffe1eb 0,transparent 34%),radial-gradient(ellipse at 0% 45%,#fff0f5 0,transparent 36%)!important;
+ color:#493541!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-header{
+ background:linear-gradient(112deg,#c51155 0%,#ec1764 65%,#f47da5 100%)!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero{
+ background:linear-gradient(112deg,#fff 0%,#fff 55%,#fff0f5 100%)!important;border-color:#f0cbd8!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-avatar{
+ background:linear-gradient(145deg,#ffe5ee,#fff1f6)!important;color:#c2185b!important;
+}
+#mithaqFullMemberProfile .mithaq-full-member-profile-hero h2,
+#mithaqFullMemberProfile .mithaq-profile-meta h3,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section h3,
+#mithaqFullMemberProfile .mithaq-profile-meta-row>strong{color:#bd1452!important}
+#mithaqFullMemberProfile .mithaq-profile-meta,
+#mithaqFullMemberProfile .mithaq-profile-actions-panel,
+#mithaqFullMemberProfile .mithaq-full-member-profile-section{
+ background:#fff!important;border-color:#f0cbd8!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.primary{
+ background:linear-gradient(110deg,#c51155,#ec1764)!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-panel>button.secondary,
+#mithaqFullMemberProfile .mithaq-profile-menu button{
+ background:#fff0f5!important;color:#bd1452!important;border-color:#f1c6d5!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-menu,
+#mithaqFullMemberProfile .mithaq-profile-interest-choice,
+#mithaqFullMemberProfile .mithaq-profile-report-form{
+ background:#fff!important;border-color:#f0cbd8!important;
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icons/mithaq-icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ميثاق">
+<style id="mithaq-notifications-ui">
+.mithaq-notification-bell{position:relative;overflow:visible}
+.mithaq-notification-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;border-radius:20px;background:#c9184a;color:#fff;font-size:10px;font-weight:800;line-height:1;border:2px solid #fff}
+.mithaq-notification-badge[hidden]{display:none!important}
+.mithaq-notifications-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mithaq-notifications-heading h2{margin:0 0 4px}
+.mithaq-notifications-heading p{margin:0}
+.mithaq-notifications-list{display:grid;gap:9px;margin-top:15px}
+.mithaq-notification-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #f0e3e6;border-radius:14px;background:#fff;cursor:pointer}
+.mithaq-notification-item.unread{background:#fff4f7;border-color:#edc5d1;box-shadow:inset -3px 0 #d94368}
+.mithaq-notification-item-icon{width:40px;height:40px;flex:none;border-radius:13px;display:grid;place-items:center;background:#f9e4eb;font-size:20px}
+.mithaq-notification-copy{min-width:0;flex:1}
+.mithaq-notification-copy strong{display:block;color:#246b98;font-size:14px;margin-bottom:3px}
+.mithaq-notification-copy p{margin:0 0 5px;color:#485963;font-size:13px;line-height:1.7}
+.mithaq-notification-copy small{color:#9a8790;font-size:11px}
+@media(max-width:500px){.mithaq-notifications-heading{align-items:flex-start}.mithaq-notifications-heading button{width:100%}}
+</style>
+<style id="mithaq-main-menu-v2">
+.member-drawer{max-height:100dvh;overscroll-behavior:contain}
+.member-drawer .drawer-link{min-height:48px;padding:10px 6px}
+.mithaq-main-menu-grid .member-service{min-height:132px}
+.mithaq-feature-page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mithaq-feature-page-head>span{font-size:34px;background:#fff0f4;border-radius:14px;padding:8px}
+.mithaq-feature-content{margin-top:18px;padding:16px;border:1px solid #f0dfe5;border-radius:14px;background:#fffafd;line-height:1.9;color:#59636b}
+.mithaq-feature-content strong{color:#c83e68}
+@media(max-width:700px){.mithaq-main-menu-grid .member-service{min-height:118px}.mithaq-main-menu-grid .member-service strong{font-size:14px}}
+</style>
+<style id="mithaq-member-lists-search">
+.mithaq-feature-member-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;margin:8px 0;border:1px solid #f0dfe5;border-radius:14px;background:#fff}
+.mithaq-feature-member-info{display:grid;gap:5px;min-width:0;flex:1}
+.mithaq-feature-member-info strong{color:#246b98;cursor:pointer;overflow-wrap:anywhere}
+.mithaq-feature-member-info small{color:#87929b;font-size:11px;line-height:1.6}
+.mithaq-interest-action{background:#fff0f4;color:#d33c68;border:1px solid #f0c9d5;white-space:nowrap;min-width:100px}
+.mithaq-interest-action.active{background:#eaf7ef;color:#187344;border-color:#ccebd7}
+.mithaq-search-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.mithaq-auto-search{display:flex;align-items:center;gap:7px;font-size:12px;color:#687782}
+.mithaq-auto-search input{width:18px;height:18px;accent-color:#d94368}
+.mithaq-search-tools button{min-width:92px}
+.mithaq-quick-search{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+.mithaq-quick-search strong{font-size:12px;color:#65737e}
+.mithaq-quick-search button{background:#fff0f4;color:#b83f62;border:1px solid #f0d4dd;padding:8px 11px;font-size:12px;border-radius:20px}
+#mithaqNotificationsBack{margin-bottom:12px}
+@media(max-width:520px){.mithaq-feature-member-row{align-items:flex-start;flex-wrap:wrap}.mithaq-interest-action,.mithaq-feature-member-row>button{width:100%}.mithaq-search-tools{align-items:flex-start}.mithaq-quick-search button{flex:1}}
+
+.member-profile-cover.mithaq-profile-cover-has-background{background-repeat:no-repeat;background-color:#fff4f7;border:1px solid #f0dce2;box-shadow:inset 0 0 0 1px #ffffff70}
+#profileBackgroundOpen{background:#fff0f4;color:#a83f60;border:1px solid #f1d5de}
+#mithaqBackgroundSettings{scroll-margin-top:125px}
+
+/* The avatar itself is the owner's background-management control. */
+#myprofile .member-profile-avatar{position:relative;isolation:isolate;overflow:hidden;cursor:pointer;padding:0;appearance:none;-webkit-appearance:none;font-family:inherit;line-height:1;touch-action:manipulation}
+#myprofile .member-profile-avatar:focus-visible{outline:3px solid #287ba5;outline-offset:4px}
+#myprofile .member-profile-avatar[aria-expanded="true"]{box-shadow:0 0 0 3px #287ba544,0 2px 12px #0001}
+.mithaq-full-member-profile-avatar{background-repeat:no-repeat;background-color:#f8edf0}
+.mithaq-live-avatar,.mithaq-directory-avatar,.mithaq-conversation-avatar,.mithaq-feature-member-avatar,.mithaq-chat-avatar,.mithaq-full-member-profile-avatar{background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important;overflow:hidden!important;background-color:#f8edf0}
+
+</style>
+<style id="mithaq-profile-backgrounds">
+.mithaq-background-settings[hidden],.mithaq-background-preview-wrap[hidden],.mithaq-chat-background-pair[hidden]{display:none!important}
+.mithaq-background-pick{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;border-radius:12px;background:#edf4fa;color:#245f8c;cursor:pointer;font-weight:700}
+.mithaq-background-preview-wrap{position:relative;margin:16px 0;border:1px solid #e7dce2;border-radius:15px;overflow:hidden;background:#f8f5f6;min-height:100px;display:flex;align-items:center;justify-content:center}
+.mithaq-background-preview-wrap img{display:block;max-width:100%;max-height:360px;width:auto;height:auto;object-fit:contain}
+.mithaq-background-preview-wrap span{position:absolute;bottom:8px;right:8px;background:#18212dcc;color:white;padding:5px 9px;border-radius:20px;font-size:11px}
+.mithaq-background-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.mithaq-background-actions button{flex:1;min-width:140px}
+.mithaq-profile-background{position:relative;margin:14px 0 18px;border-radius:17px;overflow:hidden;border:1px solid #f0dce2;background:#fff7f9}
+.mithaq-profile-background button{display:block;width:100%;padding:0;background:transparent;border-radius:0;color:inherit;text-align:right}
+.mithaq-profile-background img{display:block;width:100%;max-height:330px;object-fit:contain;background:#f7f2f4}
+.mithaq-profile-background-caption{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;color:#a34663;font-size:12px}
+.mithaq-profile-background-caption b{font-size:18px}
+#myProfileBackgroundDisplay:empty{display:none}
+.mithaq-chat-background-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;flex:0 0 auto;max-height:126px;padding:7px 10px;background:#fff;border-bottom:1px solid #f0e3e6;overflow-x:auto}
+.mithaq-chat-background-tile{min-width:0;border:1px solid #f0e3e6;border-radius:10px;overflow:hidden;background:#fff7f9}
+.mithaq-chat-background-tile button{display:block;width:100%;height:100%;padding:0;background:transparent;border-radius:0;text-align:right}
+.mithaq-chat-background-tile img{display:block;width:100%;height:82px;object-fit:cover}
+.mithaq-chat-background-tile small{display:block;padding:4px 7px;color:#9c4962;font-size:10px}
+.mithaq-image-viewer{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:#10141beF;opacity:1;transition:opacity .18s ease}
+.mithaq-image-viewer[hidden]{display:none!important}
+.mithaq-image-viewer img{max-width:min(96vw,1400px);max-height:88dvh;width:auto;height:auto;object-fit:contain;border-radius:10px}
+.mithaq-image-viewer>button{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;width:44px;height:44px;padding:0;border-radius:50%;background:#fff;color:#25313b;font-size:30px;line-height:1}
+@media(max-width:600px){.mithaq-background-actions{display:grid;grid-template-columns:1fr}.mithaq-background-preview-wrap img{max-height:260px}.mithaq-chat-background-pair{max-height:116px}.mithaq-chat-background-tile img{height:70px}}
+
+.mithaq-background-display-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.mithaq-background-display-controls .field{margin:0;padding:11px;border:1px solid #e6edf2;border-radius:12px;background:#f9fbfd}
+.mithaq-background-display-controls label{display:block;margin-bottom:7px;font-weight:700}
+.mithaq-background-display-controls input[type=range]{display:block;width:100%;min-height:28px;accent-color:#2f6d9e}
+.mithaq-background-display-controls small{display:block;color:#748496;font-size:11px}
+.mithaq-background-preview-wrap img{transition:object-position .12s ease,object-fit .12s ease}
+.mithaq-chat-messages-has-background{background-color:#f6f7f9!important;border:1px solid #e5eaf0!important;background-attachment:local}
+.mithaq-chat-background-pair{grid-template-columns:minmax(0,1fr);max-height:90px;overflow:hidden}
+.mithaq-chat-background-tile img{height:48px;object-fit:cover}
+@media(max-width:600px){.mithaq-background-display-controls{grid-template-columns:1fr}.mithaq-chat-background-pair{max-height:82px}.mithaq-chat-background-tile img{height:42px}}
+</style>
+<style id="mithaq-member-shortcut-popup">
+.member-entry-chooser{position:fixed!important;z-index:1000!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(92vw,390px)!important;max-width:390px!important;margin:0!important;padding:18px!important;background:#fff!important;border:1px solid #e8e2e4!important;border-radius:20px!important;box-shadow:0 0 0 100vmax #17202b66,0 14px 42px #0003!important}
+.member-entry-chooser[hidden]{display:none!important}
+.member-entry-heading{display:flex;align-items:center;gap:11px;padding:0 0 13px!important;margin-bottom:8px!important;border-bottom:1px solid #edf0f3!important}
+.member-entry-heading>span{width:42px!important;height:42px!important;display:grid;place-items:center;border-radius:50%;background:#e8f3fa;color:#246b98;font-size:23px;flex:none}
+.member-entry-heading strong{display:block;color:#246b98;font-size:18px}
+.member-entry-heading small{display:block;color:#84909a;font-size:12px;margin-top:3px}
+#memberEntryClose{margin-right:auto;background:transparent;color:#78838c;font-size:27px;line-height:1;padding:3px 8px;min-width:40px;min-height:40px}
+.member-entry-grid.member-entry-list{display:flex!important;flex-direction:column!important;gap:2px!important}
+.member-entry-choice{width:100%;min-height:58px;display:flex!important;align-items:center;gap:13px;text-align:right!important;padding:8px 10px!important;border:0!important;border-radius:12px!important;background:#fff!important;color:#56616a!important;font-size:16px!important}
+.member-entry-choice>span{width:39px;height:39px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f1f6f9;font-size:22px}
+.member-entry-choice strong{font-weight:600}
+.member-entry-choice:active{background:#eef5fa!important}
+@media(min-width:700px){.member-entry-chooser{width:min(90vw,420px)!important}}
+</style><style id="mithaq-six-member-pages">
+.mithaq-directory-hero{display:flex;align-items:center;gap:14px;padding:18px 16px;margin:0 0 16px;border-radius:16px;background:linear-gradient(115deg,#fff0f5,#f8e1ea);border:1px solid #f1d2dd}
+.mithaq-directory-hero>span{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;background:#fff8fa;font-size:40px;flex:none}
+.mithaq-directory-hero h2{margin:0;color:#286d96;font-size:21px}
+.mithaq-directory-hero p{margin:5px 0 0;color:#9a6c7c;font-size:13px}
+.mithaq-directory-hero[hidden]{display:none!important}
+.mithaq-directory-avatar .mithaq-premium-badge{position:absolute;top:-10px;right:50%;transform:translateX(50%);z-index:4;margin:0;width:24px;height:24px}
+.mithaq-feature-member-avatar{position:relative;display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:50%;background:#f9e9ee;font-size:29px}
+.mithaq-feature-member-avatar .mithaq-premium-badge{position:absolute;top:-8px;right:50%;transform:translateX(50%);z-index:4;margin:0;width:23px;height:23px}
+.mithaq-feature-member-row{justify-content:flex-start}
+.mithaq-feature-member-info{flex:1}
+.mithaq-feature-member-row>button{flex:none}
+.mithaq-health-consent{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;margin:10px 0;border:1px solid #edd6de;border-radius:12px;background:#fff8fa;color:#76515f;font-size:13px;line-height:1.7}
+.mithaq-health-consent input{width:19px;height:19px;flex:none;accent-color:#d94368;margin-top:2px}
+#mithaqMemberResults .mithaq-member-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+#mithaqMemberResults .mithaq-member-filters label{min-width:0}
+@media(max-width:520px){.mithaq-directory-hero>span{width:54px;height:54px;font-size:34px}.mithaq-directory-hero h2{font-size:18px}.mithaq-feature-member-row{align-items:center}}
+
+.mithaq-chat-menu-wrap{position:relative;margin-inline-start:auto;flex:none}
+.mithaq-chat-menu-trigger{width:44px;height:44px;padding:0;background:#f6e9ee;color:#b83d61;font-size:25px;border-radius:50%}
+.mithaq-chat-menu{position:absolute;z-index:60;top:48px;left:0;width:min(260px,78vw);max-height:65vh;overflow:auto;background:#fff;border:1px solid #eadde2;border-radius:15px;box-shadow:0 12px 35px #17202b25;padding:7px}
+.mithaq-chat-menu[hidden],.mithaq-chat-tools-panel[hidden]{display:none!important}
+.mithaq-chat-menu button{display:block;width:100%;text-align:right;background:transparent;color:#34434e;padding:12px;border-radius:9px;font-size:14px}
+.mithaq-chat-menu button:active{background:#fbeaf0}
+.mithaq-chat-tools-panel{padding:10px;margin:8px 0;background:#fff8fa;border:1px solid #f0dce3;border-radius:12px}
+.mithaq-chat-tools-panel button{margin:3px}
+.mithaq-chat-bubble.selected{outline:3px solid #d94f79}
+.mithaq-chat-bubble.deleted{opacity:.7;font-style:italic}
+#chatPanel[data-chat-theme="pink"] .mithaq-chat-messages{background:#fff0f4}
+#chatPanel[data-chat-theme="blue"] .mithaq-chat-messages{background:#eaf5fc}
+#chatPanel[data-chat-theme="dark"] .mithaq-chat-messages{background:#202b38}
+#chatPanel[data-chat-theme="dark"] .mithaq-chat-bubble.theirs{background:#344252;color:#fff;border-color:#45566a}
+#chatPanel[data-chat-theme="nature"] .mithaq-chat-messages{background:#edf5e9}
+.mithaq-message-actions{display:flex;gap:5px;justify-content:flex-end;margin-top:5px}
+.mithaq-message-actions button{font-size:11px;padding:5px 8px;background:#f3e8ed;color:#754052}
+
+/* Global chat actions preview: grouped, readable and touch-safe */
+.mithaq-chat-menu{position:absolute!important;top:calc(100% + 9px)!important;right:auto!important;left:0!important;width:min(340px,calc(100vw - 22px))!important;max-height:min(72dvh,620px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding:8px!important;border:1px solid #dce6ec!important;border-radius:18px!important;background:#fff!important;box-shadow:0 18px 48px #14283a30!important;direction:rtl!important}
+.mithaq-chat-menu[hidden]{display:none!important}
+.mithaq-menu-group{padding:5px 3px 7px}
+.mithaq-menu-group+ .mithaq-menu-group{border-top:1px solid #edf1f4}
+.mithaq-menu-group>small{display:block;padding:8px 10px 5px;color:#7c8b98;font-size:11px;font-weight:800;letter-spacing:.2px}
+.mithaq-chat-menu .mithaq-menu-group>button{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:56px!important;margin:2px 0!important;padding:9px 10px!important;text-align:right!important;border-radius:12px!important;background:transparent!important;color:#263d50!important;white-space:normal!important}
+.mithaq-chat-menu .mithaq-menu-group>button>span:first-child{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:#edf4f8;color:#28658c;font-size:20px;font-weight:700}
+.mithaq-chat-menu .mithaq-menu-group>button>span:last-child{display:grid;gap:3px;min-width:0}
+.mithaq-chat-menu .mithaq-menu-group b{font-size:13px;font-weight:750}
+.mithaq-chat-menu .mithaq-menu-group em{font-size:11px;font-style:normal;color:#7b8995;line-height:1.45}
+.mithaq-chat-menu .mithaq-menu-group>button:focus-visible,.mithaq-chat-menu .mithaq-menu-group>button:active{outline:2px solid #78a9ca;outline-offset:-2px;background:#f0f6fa!important}
+.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;top:max(78px,calc(env(safe-area-inset-top) + 72px))!important;bottom:auto!important;left:12px!important;right:12px!important;width:auto!important;max-height:min(66dvh,560px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding:17px!important;border:1px solid #dce6ec!important;border-radius:20px!important;background:#fff!important;color:#263d50!important;box-shadow:0 18px 55px #14283a40!important;direction:rtl!important}
+.mithaq-chat-tools-panel:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}
+.mithaq-sheet-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #edf1f4}
+.mithaq-chat-tools-panel .mithaq-sheet-heading h3{margin:0!important;padding:0!important;font-size:17px!important;color:#214f70!important}
+.mithaq-chat-tools-panel .mithaq-sheet-close{position:static!important;display:grid!important;place-items:center!important;flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;border-radius:50%!important;background:#eef3f6!important;color:#40596b!important;font-size:25px!important}
+.mithaq-chat-tools-panel .mithaq-sheet-description{margin:0!important;color:#6d7d89!important;font-size:13px!important;line-height:1.7!important}
+.mithaq-chat-tools-panel>button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:50px!important;margin:0!important;padding:12px 15px!important;border:1px solid #e1eaf0!important;border-radius:13px!important;background:#f4f8fa!important;color:#2b526d!important;text-align:center!important;font-size:14px!important;font-weight:700!important;white-space:normal!important}
+.mithaq-chat-tools-panel>button.primary{border-color:#216b91!important;background:#216b91!important;color:#fff!important}
+.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{width:100%!important;min-height:48px!important;padding:12px!important;border:1px solid #d8e3ea!important;border-radius:12px!important;background:#fff!important;color:#263d50!important}
+.mithaq-chat-tools-panel textarea{min-height:110px!important}
+.mithaq-message-actions{display:flex!important;flex-wrap:wrap!important;gap:7px!important;justify-content:flex-start!important;margin-top:9px!important;padding-top:8px!important;border-top:1px solid #ffffff90!important}
+.mithaq-message-actions button{min-height:40px!important;padding:8px 12px!important;border:1px solid #d9e5eb!important;border-radius:11px!important;background:#fff!important;color:#385a70!important;font-size:12px!important;font-weight:700!important}
+.mithaq-chat-bubble.selected{outline:2px solid #2d83b4!important;outline-offset:2px!important}
+@media(max-width:600px){.mithaq-chat-menu{position:fixed!important;top:72px!important;left:9px!important;right:9px!important;width:auto!important;max-height:min(68dvh,560px)!important}.mithaq-chat-menu .mithaq-menu-group>button{min-height:58px!important}.mithaq-chat-tools-panel{top:max(72px,calc(env(safe-area-inset-top) + 66px))!important;left:8px!important;right:8px!important;max-height:62dvh!important;padding:14px!important}}
+@media(max-height:620px){.mithaq-chat-menu{max-height:calc(100dvh - 95px)!important}.mithaq-chat-tools-panel{max-height:calc(100dvh - 100px)!important}}
+
+</style><link rel="stylesheet" href="./store.css">
+<style id="mithaq-global-chat-inbox-v1">
+.mithaq-inbox-toolbar{display:grid;gap:11px;padding:4px 2px 14px;border-bottom:1px solid #e6eee9;margin-bottom:4px}
+.mithaq-inbox-search{display:grid;gap:6px}
+.mithaq-inbox-search label{font-size:12px;font-weight:750;color:#48675b}
+.mithaq-inbox-search input{box-sizing:border-box;width:100%;min-height:46px;border:1px solid #d9e6de;border-radius:14px;padding:10px 14px;background:#f8fbf9;color:#1f352b;font:inherit;outline:none}
+.mithaq-inbox-search input:focus{border-color:#159879;box-shadow:0 0 0 3px #15987922}
+.mithaq-inbox-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mithaq-inbox-filters button{min-height:43px;border:1px solid #dce8e1;border-radius:12px;background:#f6faf7;color:#496358;font:inherit;font-size:13px;font-weight:700;padding:8px 10px}
+.mithaq-inbox-filters button[aria-pressed="true"]{background:#087e69;color:#fff;border-color:#087e69;box-shadow:0 4px 12px #087e6922}
+.mithaq-inbox-empty{margin:18px 4px;padding:22px 16px;border:1px dashed #cbdcd1;border-radius:16px;text-align:center;color:#718078;background:#fbfdfb;font-size:14px;line-height:1.7}
+.mithaq-conversation-favorite{color:#d59a22;font-size:15px;line-height:1}
+.mithaq-conversation-side{align-items:flex-end}
+@media(max-width:600px){.mithaq-inbox-toolbar{gap:9px;padding-bottom:11px}.mithaq-inbox-filters button{min-height:44px;font-size:12px}.mithaq-conversation-row{min-height:78px!important}}
+</style>
+
+<style id="mithaq-global-chat-feature-styles">
+.mithaq-chat-ticks.delivered{opacity:.9}.mithaq-chat-ticks.read{color:#2196f3}
+.mithaq-chat-reply-quote{border-inline-start:3px solid var(--accent,#6c63ff);padding:7px 10px;margin:0 0 8px;background:rgba(108,99,255,.08);border-radius:8px;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mithaq-chat-edited,.mithaq-chat-pinned{display:inline-block;font-size:.72rem;opacity:.72;margin-inline-start:6px}
+.mithaq-message-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mithaq-message-actions button,.mithaq-chat-search-results button{min-height:44px;border:1px solid var(--border-color,#ddd);border-radius:9px;padding:5px 9px;background:var(--card-bg,#fff);color:inherit}
+.mithaq-chat-search-results{display:grid;gap:6px;margin-top:10px;max-height:40vh;overflow:auto}
+.mithaq-attachment-preview{display:grid;gap:10px;max-height:55vh;overflow:auto}.mithaq-attachment-preview img,.mithaq-attachment-preview video{max-width:100%;max-height:48vh;object-fit:contain;border-radius:12px}.mithaq-attachment-preview audio{width:100%}
+.mithaq-chat-location{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(30,136,229,.1);text-decoration:none;color:inherit;margin:6px 0}
+.mithaq-voice-preview{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px;border:1px solid var(--border-color,#ddd);border-radius:12px;margin:8px 0}.mithaq-voice-preview audio{max-width:100%;flex:1}
+.mithaq-inbox-filters{display:flex;gap:6px;flex-wrap:wrap}
+.mithaq-inbox-filters button{min-height:40px;padding:7px 12px;border-radius:999px}
+.mithaq-inbox-filters button[aria-pressed="true"]{background:var(--accent,#6c63ff);color:white}
+
+/* Message controls appear on demand, like WhatsApp; tap a bubble to reveal on touch screens. */
+body.authenticated #messages .mithaq-chat-message-item .mithaq-message-actions{display:none!important}
+body.authenticated #messages .mithaq-chat-message-item:hover .mithaq-message-actions,
+body.authenticated #messages .mithaq-chat-message-item:focus-within .mithaq-message-actions,
+body.authenticated #messages .mithaq-chat-message-item.show-actions .mithaq-message-actions{display:flex!important}
+body.authenticated #messages .mithaq-chat-message-item{cursor:pointer}
+/* WhatsApp-inspired live chat UI — presentation only; existing Supabase message flow is unchanged */
+body.authenticated #messages .mithaq-messages-card{padding:0;overflow:hidden;border:1px solid #d9e4df;border-radius:12px;background:#fff;box-shadow:0 2px 10px #10251a12}
+body.authenticated #messages .mithaq-inbox-toolbar{padding:14px;background:#f0f2f5;border-bottom:1px solid #e1e6e3}
+body.authenticated #messages .mithaq-inbox-search label{color:#53636a;font-size:12px}
+body.authenticated #messages .mithaq-inbox-search input{border:0;border-radius:9px;background:#fff;min-height:43px}
+body.authenticated #messages .mithaq-inbox-filters{display:flex;gap:6px;overflow-x:auto;padding-top:10px}
+body.authenticated #messages .mithaq-inbox-filters button{flex:0 0 auto;border-radius:20px;padding:8px 14px;background:#fff;color:#52636a;border:1px solid #dce4e0;font-size:12px}
+body.authenticated #messages .mithaq-inbox-filters button[aria-pressed="true"]{background:#d9fdd3;color:#176b48;border-color:#b8e7b0}
+body.authenticated #messages #conversationList{padding:8px;background:#fff}
+body.authenticated #messages #chatPanel{margin:0!important;background:#efeae2;border:0;min-height:min(76vh,820px);display:flex;flex-direction:column}
+body.authenticated #messages #chatPanel[hidden]{display:none!important}
+body.authenticated #messages #chatPanel>header.mithaq-chat-header{position:relative!important;top:auto!important;z-index:4!important;display:flex!important;align-items:center;gap:10px;min-height:64px;padding:8px 12px!important;background:#008069!important;color:#fff!important;box-shadow:0 1px 3px #0002!important}
+body.authenticated #messages .mithaq-chat-header:after{display:none!important}
+body.authenticated #messages .mithaq-chat-back,body.authenticated #messages .mithaq-chat-menu-trigger{color:#fff!important;background:transparent!important;border:0!important;font-size:24px;padding:7px 9px}
+body.authenticated #messages .mithaq-chat-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#d9fdd3;color:#176b48}
+body.authenticated #messages .mithaq-chat-head-copy{flex:1;min-width:0}
+body.authenticated #messages .mithaq-chat-title-button{display:block;max-width:100%;padding:2px 0;background:transparent;color:#fff;font-size:16px;font-weight:700;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.authenticated #messages #chatPresenceText{display:block;color:#e2f5ef;font-size:11px}
+body.authenticated #messages .mithaq-chat-menu{z-index:20;top:calc(100% + 4px);background:#fff;border:1px solid #e2e8e5;border-radius:9px;box-shadow:0 8px 25px #0002}
+body.authenticated #messages .mithaq-chat-menu button{color:#34434a;background:#fff}
+body.authenticated #messages #mithaqChatToolsPanel{background:#fff;padding:10px;border-bottom:1px solid #e2e8e5}
+body.authenticated #messages #mithaqChatBackgrounds{background:#efeae2}
+body.authenticated #messages #chatProfileCard{margin:0;padding:12px;background:#fff;border:0;border-bottom:1px solid #e5e9e7}
+body.authenticated #messages #chatMessages.mithaq-chat-messages{flex:1;min-height:260px;max-height:none;height:clamp(330px,58vh,680px);overflow-y:auto;overscroll-behavior:contain;padding:18px 12px;background-color:#efeae2;background-image:radial-gradient(#b8afa333 .7px,transparent .7px);background-size:14px 14px;border:0;border-radius:0;gap:5px}
+body.authenticated #messages .mithaq-chat-bubble{position:relative;max-width:min(82%,520px);width:fit-content;padding:7px 10px 8px;border:0;border-radius:8px;font-size:14px;line-height:1.55;box-shadow:0 1px 1px #0002}
+body.authenticated #messages .mithaq-chat-bubble.mine{align-self:flex-end;background:#d9fdd3;color:#1f2c25;border-bottom-right-radius:2px}
+body.authenticated #messages .mithaq-chat-bubble.theirs{align-self:flex-start;background:#fff;color:#263238;border:0;border-bottom-left-radius:2px}
+body.authenticated #messages .mithaq-chat-compose{display:flex;align-items:flex-end;gap:7px;margin:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:#f0f2f5;border-top:1px solid #e1e6e3}
+body.authenticated #messages .mithaq-chat-compose .field{min-width:0;flex:1}
+body.authenticated #messages .mithaq-chat-compose textarea{display:block;width:100%;min-height:43px;max-height:120px;padding:11px 15px;border:0;border-radius:22px;background:#fff;color:#263238;resize:none;box-shadow:0 1px 2px #0000000d}
+body.authenticated #messages .mithaq-chat-tool{flex:0 0 40px;width:40px;min-width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:#54656b;font-size:19px}
+body.authenticated #messages .mithaq-chat-send{flex:0 0 43px;width:43px;min-width:43px;height:43px;min-height:43px;padding:0;border-radius:50%;background:#008069;color:#fff;font-size:20px;box-shadow:0 1px 3px #0002}
+body.authenticated #messages #messageStatus{margin:0;padding:5px 12px;background:#f0f2f5;color:#64736d;font-size:11px}
+body.authenticated #messages .mithaq-chat-message-meta{color:#667781}
+@media(max-width:700px){
+ body.authenticated #messages .mithaq-messages-card{margin-inline:-1px;border-radius:10px}
+ body.authenticated #messages #chatPanel{min-height:calc(100dvh - 190px)}
+ body.authenticated #messages #chatMessages.mithaq-chat-messages{height:calc(100dvh - 310px);min-height:280px;max-height:none;padding:14px 9px}
+ body.authenticated #messages .mithaq-chat-bubble{max-width:88%;font-size:14px}
+ body.authenticated #messages .mithaq-chat-compose{gap:3px;padding-inline:6px}
+ body.authenticated #messages .mithaq-chat-tool{flex-basis:34px;width:34px;min-width:34px}
+ body.authenticated #messages .mithaq-chat-send{flex-basis:40px;width:40px;min-width:40px;height:40px;min-height:40px}
+}
+</style>
+
+<style id="mithaq-chat-remove-empty-white-strip">
+/* Remove the empty status paragraph that was leaving a white strip below the composer. */
+body.mithaq-chat-open #chatPanel>#messageStatus:empty{display:none!important;margin:0!important;padding:0!important;height:0!important;min-height:0!important;border:0!important}
+/* Keep the composer and Android safe-area edge the same WhatsApp-like light grey. */
+body.mithaq-chat-open #chatPanel>.mithaq-chat-compose{background:#f0f2f5!important;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
+body.mithaq-chat-open #chatPanel{background:#f0f2f5!important}
+</style>
+<style id="mithaq-chat-remove-header-gap">
+/* The header already occupies its own 66px flex row; do not add a second 66px offset. */
+body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{margin:0!important}
+</style>
+
+<style id="mithaq-whatsapp-voice-recorder">
+/* MITHAQ voice composer — WhatsApp-style gestures, tuned to the approved dimensions */
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton{
+ touch-action:none;user-select:none;-webkit-user-select:none;
+ transition:background-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+ min-width:48px;min-height:48px;
+}
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{
+ background:#d9fdd3!important;color:#16845b!important;
+ box-shadow:0 0 0 5px #16845b20;transform:scale(.97)
+}
+.mithaq-voice-live{
+ display:flex;align-items:center;gap:10px;min-height:60px;
+ margin:8px 9px;padding:8px 12px;border-radius:28px;
+ background:#f0f2f5;color:#263238;
+ transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.mithaq-voice-live-dot{
+ width:9px;height:9px;flex:none;border-radius:50%;
+ background:#e5484d;box-shadow:0 0 0 5px #e5484d20;
+ animation:mithaqVoicePulse 1s infinite
+}
+.mithaq-voice-live strong{font-size:13px;font-variant-numeric:tabular-nums;min-width:42px}
+.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1;min-width:65px;line-height:1.4}
+.mithaq-voice-live-wave{
+ display:block;flex:0 1 150px;width:150px;max-width:25vw;height:34px;
+ overflow:visible;touch-action:none
+}
+.mithaq-voice-live button{
+ flex:none;width:44px;height:44px;min-width:44px;min-height:44px;
+ padding:0;border-radius:50%;background:#fff;color:#54656b;
+ display:inline-flex;align-items:center;justify-content:center;
+ transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease
+}
+.mithaq-voice-live button:active,.mithaq-voice-preview button:active{transform:scale(.94)}
+.mithaq-voice-live button:last-child{background:#16845b;color:#fff}
+.mithaq-voice-live.locked{
+ background:#d9fdd3;box-shadow:inset 0 0 0 1px #16845b18
+}
+.mithaq-voice-live.locked .mithaq-voice-live-dot{animation:none}
+.mithaq-voice-preview{
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+ min-height:60px;padding:10px 12px;border:1px solid #e2e9f0;
+ border-radius:18px;margin:8px 9px;background:#fff;
+ box-shadow:0 1px 2px #0000000d;
+ transition:box-shadow .18s ease,transform .18s ease
+}
+.mithaq-voice-preview strong{flex-basis:100%;font-size:12px;color:#667781}
+.mithaq-voice-preview audio{display:none}
+.mithaq-voice-preview input[type=range]{
+ flex:1;min-width:75px;padding:0;accent-color:#16845b;min-height:30px
+}
+.mithaq-voice-preview small{font-size:11px;color:#667781;white-space:nowrap;font-variant-numeric:tabular-nums}
+.mithaq-voice-preview button{
+ min-height:44px;min-width:44px;padding:8px 12px;border-radius:22px;
+ transition:background-color .18s ease,transform .18s ease
+}
+@keyframes mithaqVoicePulse{50%{opacity:.35;transform:scale(.85)}}
+@media(max-width:520px){
+ .mithaq-voice-live{gap:6px;padding:7px 9px;min-height:58px}
+ .mithaq-voice-live-hint{font-size:10px;min-width:48px}
+ .mithaq-voice-live-wave{flex-basis:60px;max-width:18vw;height:32px}
+ .mithaq-voice-live button{width:44px;height:44px;min-width:44px;min-height:44px}
+ .mithaq-voice-preview{gap:7px;padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mithaq-voice-live,.mithaq-voice-live button,.mithaq-voice-preview,.mithaq-voice-preview button,
+ body.authenticated #messages .mithaq-chat-compose #chatRecordButton{transition:none;animation:none}
+}
 
 /* WhatsApp-inspired sent voice bubble */
 .mithaq-chat-audio-player{display:flex;align-items:center;gap:9px;width:min(330px,72vw);min-width:min(260px,68vw);padding:9px 10px;border-radius:18px;background:#d9fdd3;color:#244b32;direction:ltr}
@@ -5,12 +1375,10 @@
 .mithaq-audio-play{width:42px;height:42px;min-width:42px;flex:0 0 42px;border:0;border-radius:50%;background:#16845b;color:#fff;font-size:17px;display:grid;place-items:center}
 .mithaq-chat-bubble.theirs .mithaq-audio-play{background:#667781}
 .mithaq-audio-wave-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:42px;overflow:hidden}
-.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:36px;position:relative;--played:0%;}
+.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:36px;position:relative;--played:0%}
 .mithaq-audio-wave i{display:block;flex:1;min-width:2px;max-width:4px;border-radius:4px;background:#779889;opacity:.8}
-.mithaq-audio-wave i:nth-child(-n+1){background:#16845b}
 .mithaq-audio-wave:after{content:"";position:absolute;inset:0 auto 0 0;width:var(--played);background:#16845b;opacity:.16;pointer-events:none}
-.mithaq-chat-bubble.theirs .mithaq-audio-wave i{background:#9aa6ad}
-.mithaq-chat-bubble.theirs .mithaq-audio-wave:after{background:#52636c}
+.mithaq-chat-bubble.theirs .mithaq-audio-wave i{background:#9aa6ad}.mithaq-chat-bubble.theirs .mithaq-audio-wave:after{background:#52636c}
 .mithaq-audio-seek{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
 .mithaq-audio-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:35px}
 .mithaq-audio-meta small{font-size:10px;white-space:nowrap;color:#315b48;font-variant-numeric:tabular-nums}
@@ -2672,21 +4040,16 @@ async function refreshChat(){
      const waveWrap=document.createElement('div');waveWrap.className='mithaq-audio-wave-wrap';
      const wave=document.createElement('div');wave.className='mithaq-audio-wave';wave.setAttribute('aria-hidden','true');
      let seed=0;for(const ch of String(m.id||m.created_at||'voice'))seed=(seed*31+ch.charCodeAt(0))>>>0;
-     const heights=[];for(let i=0;i< 40;i++){seed=(seed*1664525+1013904223)>>>0;heights.push(7+(seed%22));}
-     heights.forEach((height,index)=>{const bar=document.createElement('i');bar.style.height=height+'px';wave.append(bar);});
-     const progress=document.createElement('input');progress.type='range';progress.min='0';progress.max='1000';progress.value='0';progress.className='mithaq-audio-seek';progress.setAttribute('aria-label','موضع الصوت');
-     waveWrap.append(wave,progress);
-     const meta=document.createElement('div');meta.className='mithaq-audio-meta';
-     const duration=document.createElement('small');duration.textContent='0:00';
+     for(let i=0;i<40;i++){seed=(seed*1664525+1013904223)>>>0;const bar=document.createElement('i');bar.style.height=(7+(seed%22))+'px';wave.append(bar);}
+     const progress=document.createElement('input');progress.type='range';progress.min='0';progress.max='1000';progress.value='0';progress.className='mithaq-audio-seek';progress.setAttribute('aria-label','موضع الصوت');waveWrap.append(wave,progress);
+     const meta=document.createElement('div');meta.className='mithaq-audio-meta';const duration=document.createElement('small');duration.textContent='0:00';
      const speed=document.createElement('button');speed.type='button';speed.className='mithaq-audio-speed';speed.textContent='1x';speed.setAttribute('aria-label','تغيير سرعة تشغيل الصوت');
      const speeds=[1,1.5,2];let speedIndex=0;speed.addEventListener('click',()=>{speedIndex=(speedIndex+1)%speeds.length;media.playbackRate=speeds[speedIndex];speed.textContent=speeds[speedIndex]+'x';});
      const fmt=t=>{if(!Number.isFinite(t))return '0:00';const n=Math.floor(t);return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
      const paintProgress=()=>{const pct=media.duration?Math.min(100,Math.max(0,media.currentTime/media.duration*100)):0;wave.style.setProperty('--played',pct+'%');progress.value=String(Math.round(pct*10));};
      play.addEventListener('click',async()=>{if(media.paused){try{await media.play();}catch(e){status.textContent='تعذر تشغيل الصوت.';}}else media.pause();});
-     media.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','إيقاف الصوت مؤقتاً');});
-     media.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','استكمال تشغيل الصوت');});
-     media.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(media.duration);});
-     media.addEventListener('timeupdate',()=>{duration.textContent=fmt(media.currentTime)+' / '+fmt(media.duration);paintProgress();});
+     media.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','إيقاف الصوت مؤقتاً');});media.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','استكمال تشغيل الصوت');});
+     media.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(media.duration);});media.addEventListener('timeupdate',()=>{duration.textContent=fmt(media.currentTime)+' / '+fmt(media.duration);paintProgress();});
      media.addEventListener('ended',()=>{play.textContent='▶';progress.value='0';wave.style.setProperty('--played','0%');});
      progress.addEventListener('input',()=>{if(Number.isFinite(media.duration)){media.currentTime=media.duration*(Number(progress.value)/1000);paintProgress();}});
      meta.append(duration,speed);player.append(media,play,waveWrap,meta);p.append(player);
