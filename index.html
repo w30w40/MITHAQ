@@ -4201,7 +4201,7 @@ async function refreshChat(){
    layer.append(menuStyle);
    const deleteAction=document.createElement('button');deleteAction.type='button';deleteAction.className='mithaq-selection-action';deleteAction.setAttribute('aria-label','حذف');deleteAction.title='حذف';
    const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.textContent='🗑';
-   deleteAction.append(deleteIcon);deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
+   deleteAction.append(deleteIcon);deleteButtons.forEach(btn=>used.add(btn));deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
    if(deleteButtons.length)tools.append(deleteAction);
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
    const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.textContent='⋮';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
@@ -4210,7 +4210,8 @@ async function refreshChat(){
    if(moreMenu.childElementCount)tools.append(moreButton);
    toolbar.append(close,count,tools);
    layer.append(moreMenu);
-   document.addEventListener('click',event=>{if(!layer.contains(event.target))moreMenu.hidden=true;});
+   const hideSelectionMenu=event=>{if(!layer.isConnected){document.removeEventListener('click',hideSelectionMenu);return;}if(!layer.contains(event.target))moreMenu.hidden=true;};
+   document.addEventListener('click',hideSelectionMenu);
    const reactions=document.createElement('div');reactions.className='mithaq-selection-reactions';reactions.setAttribute('aria-label','تفاعل سريع');
    ['❤️','👍','😂','😮','😢','🙏'].forEach(emoji=>{
     const b=document.createElement('button');b.type='button';b.textContent=emoji;b.setAttribute('aria-label','تفاعل '+emoji);
