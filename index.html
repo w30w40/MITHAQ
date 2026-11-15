@@ -1302,20 +1302,23 @@ body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{margin:0!important}
 <style id="mithaq-whatsapp-voice-recorder">
 body.authenticated #messages .mithaq-chat-compose #chatRecordButton{touch-action:none;user-select:none;-webkit-user-select:none}
 body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{background:#d9fdd3!important;color:#087e69!important;box-shadow:0 0 0 5px #00806920}
-.mithaq-voice-live{display:flex;align-items:center;gap:10px;min-height:54px;margin:7px 9px;padding:8px 12px;border-radius:28px;background:#f0f2f5;color:#263238}
-.mithaq-voice-live-dot{width:9px;height:9px;border-radius:50%;background:#e53935;box-shadow:0 0 0 5px #e5393520;animation:mithaqVoicePulse 1s infinite}
+.mithaq-voice-live{display:flex;align-items:center;gap:8px;min-height:54px;margin:7px 9px;padding:8px 10px;border-radius:28px;background:#f0f2f5;color:#263238}
+.mithaq-voice-live-dot{width:9px;height:9px;flex:none;border-radius:50%;background:#e53935;box-shadow:0 0 0 5px #e5393520;animation:mithaqVoicePulse 1s infinite}
 .mithaq-voice-live strong{font-variant-numeric:tabular-nums;min-width:42px}
-.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1}
-.mithaq-voice-live-wave{display:block;flex:0 1 150px;width:150px;max-width:28vw;height:30px;overflow:visible}.mithaq-voice-live-wave{touch-action:none}
-.mithaq-voice-live button{width:38px;height:38px;min-width:38px;padding:0;border-radius:50%;background:#fff;color:#54656b}
+.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1;min-width:65px}
+.mithaq-voice-live-wave{display:block;flex:0 1 150px;width:150px;max-width:25vw;height:30px;overflow:visible;touch-action:none}
+.mithaq-voice-live button{flex:none;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%;background:#fff;color:#54656b}
 .mithaq-voice-live button:last-child{background:#008069;color:#fff}
 .mithaq-voice-live.locked{background:#d9fdd3}
-.mithaq-voice-preview{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;border:0;border-radius:18px;margin:7px 9px;background:#fff;box-shadow:0 1px 2px #0001}
+.mithaq-voice-live.locked .mithaq-voice-live-dot{animation:none}
+.mithaq-voice-preview{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:0;border-radius:18px;margin:7px 9px;background:#fff;box-shadow:0 1px 2px #0001}
 .mithaq-voice-preview strong{flex-basis:100%;font-size:12px;color:#667781}
-.mithaq-voice-preview audio{flex:1;min-width:150px;height:38px}
-.mithaq-voice-preview button{min-height:39px;padding:8px 14px;border-radius:20px}
+.mithaq-voice-preview audio{display:none}
+.mithaq-voice-preview input[type=range]{flex:1;min-width:75px;padding:0;accent-color:#008069}
+.mithaq-voice-preview small{font-size:11px;color:#667781;white-space:nowrap}
+.mithaq-voice-preview button{min-height:39px;min-width:39px;padding:8px 12px;border-radius:20px}
 @keyframes mithaqVoicePulse{50%{opacity:.35;transform:scale(.85)}}
-@media(max-width:520px){.mithaq-voice-live{gap:7px;padding:7px 9px}.mithaq-voice-live-hint{font-size:10px}.mithaq-voice-live-bars{flex-basis:35px}}
+@media(max-width:520px){.mithaq-voice-live{gap:5px;padding:7px}.mithaq-voice-live-hint{font-size:9px;min-width:48px}.mithaq-voice-live-wave{flex-basis:60px;max-width:18vw}.mithaq-voice-live button{width:33px;height:33px;min-width:33px;min-height:33px}}
 </style>
 </head>
 <body>
@@ -4096,21 +4099,24 @@ document.getElementById('chatFileInput').addEventListener('change',async e=>{con
 let mithaqRecorder=null,mithaqRecordChunks=[],mithaqRecordStream=null,mithaqPendingVoiceFile=null,mithaqPendingVoiceUrl=null;
 let mithaqVoiceStartedAt=0,mithaqVoiceTimer=null,mithaqVoiceLocked=false,mithaqVoiceGesture=null,mithaqVoiceStarting=false,mithaqVoiceCancelled=false;
 let mithaqVoiceAudioContext=null,mithaqVoiceAnalyser=null,mithaqVoiceAnimationFrame=0;
+let mithaqVoiceStopMode='preview',mithaqVoicePaused=false,mithaqVoiceElapsed=0,mithaqVoiceSegmentStartedAt=0;
 function mithaqVoiceTime(ms){const n=Math.max(0,Math.floor(ms/1000));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function mithaqVoiceElapsedNow(){return mithaqVoiceElapsed+(mithaqVoicePaused?0:Math.max(0,Date.now()-mithaqVoiceSegmentStartedAt));}
 function mithaqVoicePanel(){
  let p=document.getElementById('mithaqVoiceLivePanel');
  if(!p){
   p=document.createElement('div');p.id='mithaqVoiceLivePanel';p.className='mithaq-voice-live';
-  p.innerHTML='<span class="mithaq-voice-live-dot"></span><strong id="mithaqVoiceLiveTime">00:00</strong><span class="mithaq-voice-live-hint">اسحب لليسار للإلغاء · للأعلى للقفل</span><canvas class="mithaq-voice-live-wave" width="180" height="34" aria-label="مستوى الصوت المباشر"></canvas><button type="button" id="mithaqVoiceCancel" aria-label="إلغاء التسجيل">🗑</button><button type="button" id="mithaqVoiceStop" aria-label="إيقاف التسجيل">■</button>';
+  p.innerHTML='<span class="mithaq-voice-live-dot"></span><strong id="mithaqVoiceLiveTime">00:00</strong><span class="mithaq-voice-live-hint">اسحب لليسار للإلغاء · للأعلى للقفل</span><canvas class="mithaq-voice-live-wave" width="180" height="34" aria-label="الموجة الصوتية المباشرة"></canvas><button type="button" id="mithaqVoiceCancel" aria-label="إلغاء التسجيل">🗑</button><button type="button" id="mithaqVoicePause" aria-label="إيقاف مؤقت">Ⅱ</button><button type="button" id="mithaqVoiceStop" aria-label="إيقاف التسجيل">■</button>';
   document.getElementById('messageForm').before(p);
   p.querySelector('#mithaqVoiceCancel').addEventListener('click',mithaqCancelVoiceRecording);
-  p.querySelector('#mithaqVoiceStop').addEventListener('click',mithaqStopVoiceRecording);
+  p.querySelector('#mithaqVoicePause').addEventListener('click',mithaqVoiceTogglePause);
+  p.querySelector('#mithaqVoiceStop').addEventListener('click',()=>mithaqStopVoiceRecording('preview'));
  }
  return p;
 }
 function mithaqVoiceStartClock(){
  clearInterval(mithaqVoiceTimer);
- mithaqVoiceTimer=setInterval(()=>{const t=document.getElementById('mithaqVoiceLiveTime');if(t)t.textContent=mithaqVoiceTime(Date.now()-mithaqVoiceStartedAt);},200);
+ mithaqVoiceTimer=setInterval(()=>{const t=document.getElementById('mithaqVoiceLiveTime');if(t)t.textContent=mithaqVoiceTime(mithaqVoiceElapsedNow());},150);
 }
 function mithaqVoiceStopVisualizer(){
  if(mithaqVoiceAnimationFrame)cancelAnimationFrame(mithaqVoiceAnimationFrame);
@@ -4123,18 +4129,19 @@ function mithaqVoiceStartVisualizer(stream){
  const ctx=canvas.getContext('2d');if(!ctx)return;
  const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;
  try{
-  if(!mithaqVoiceAudioContext)mithaqVoiceAudioContext=new AudioCtx();mithaqVoiceAnalyser=mithaqVoiceAudioContext.createAnalyser();
-  mithaqVoiceAnalyser.fftSize=128;mithaqVoiceAnalyser.smoothingTimeConstant=.72;
+  if(!mithaqVoiceAudioContext)mithaqVoiceAudioContext=new AudioCtx();
+  mithaqVoiceAnalyser=mithaqVoiceAudioContext.createAnalyser();
+  mithaqVoiceAnalyser.fftSize=256;mithaqVoiceAnalyser.smoothingTimeConstant=.78;
   mithaqVoiceAudioContext.createMediaStreamSource(stream).connect(mithaqVoiceAnalyser);
-  const bins=new Uint8Array(mithaqVoiceAnalyser.frequencyBinCount);
+  const samples=new Uint8Array(mithaqVoiceAnalyser.fftSize);
   const draw=()=>{
-   if(!mithaqVoiceAnalyser||!canvas.isConnected)return;
-   mithaqVoiceAnalyser.getByteFrequencyData(bins);ctx.clearRect(0,0,canvas.width,canvas.height);
-   const count=30,gap=2,w=(canvas.width-gap*(count-1))/count;
+   if(!mithaqVoiceAnalyser||!canvas.isConnected||mithaqVoicePaused)return;
+   mithaqVoiceAnalyser.getByteTimeDomainData(samples);ctx.clearRect(0,0,canvas.width,canvas.height);
+   const count=30,gap=2,w=(canvas.width-gap*(count-1))/count,step=Math.floor(samples.length/count);
    for(let i=0;i<count;i++){
-    const v=bins[Math.min(bins.length-1,Math.floor(i/count*bins.length))]/255;
-    const h=Math.max(3,Math.min(canvas.height-2,(v*.88+.06)*canvas.height));
-    ctx.fillStyle='#008069';ctx.beginPath();ctx.roundRect(i*(w+gap), (canvas.height-h)/2,w,h,2);ctx.fill();
+    let sum=0;for(let j=0;j<step;j++){const v=(samples[i*step+j]-128)/128;sum+=v*v;}
+    const rms=Math.sqrt(sum/step),h=Math.max(3,Math.min(canvas.height-2,(rms*3.2+.035)*canvas.height));
+    ctx.fillStyle='#008069';ctx.beginPath();ctx.roundRect(i*(w+gap),(canvas.height-h)/2,w,h,2);ctx.fill();
    }
    mithaqVoiceAnimationFrame=requestAnimationFrame(draw);
   };
@@ -4144,8 +4151,74 @@ function mithaqVoiceStartVisualizer(stream){
 function mithaqVoiceResetButton(){
  const b=document.getElementById('chatRecordButton');if(b){b.classList.remove('recording');b.textContent='🎙️';b.setAttribute('aria-label','تسجيل رسالة صوتية');}
 }
+function mithaqVoiceSetLockedUI(){
+ const p=mithaqVoicePanel();p.classList.add('locked');
+ const hint=p.querySelector('.mithaq-voice-live-hint');
+ if(hint)hint.textContent='التسجيل مقفل · يمكنك الإيقاف المؤقت أو الإيقاف أو الحذف';
+}
+function mithaqVoiceTogglePause(){
+ if(!mithaqRecorder)return;
+ const button=document.getElementById('mithaqVoicePause'),hint=document.querySelector('#mithaqVoiceLivePanel .mithaq-voice-live-hint');
+ try{
+  if(mithaqRecorder.state==='recording'&&typeof mithaqRecorder.pause==='function'){
+   mithaqRecorder.pause();mithaqVoiceElapsed+=Date.now()-mithaqVoiceSegmentStartedAt;mithaqVoicePaused=true;
+   if(button){button.textContent='▶';button.setAttribute('aria-label','استكمال التسجيل');}
+   if(hint)hint.textContent='التسجيل متوقف مؤقتاً · اضغط ▶ للاستكمال';
+   if(mithaqVoiceAnimationFrame)cancelAnimationFrame(mithaqVoiceAnimationFrame);mithaqVoiceAnimationFrame=0;
+  }else if(mithaqRecorder.state==='paused'&&typeof mithaqRecorder.resume==='function'){
+   mithaqRecorder.resume();mithaqVoicePaused=false;mithaqVoiceSegmentStartedAt=Date.now();
+   if(button){button.textContent='Ⅱ';button.setAttribute('aria-label','إيقاف مؤقت');}
+   if(hint)hint.textContent='التسجيل مقفل · يمكنك الإيقاف المؤقت أو الإيقاف أو الحذف';
+   if(mithaqRecordStream)mithaqVoiceStartVisualizer(mithaqRecordStream);
+  }
+ }catch(err){document.getElementById('messageStatus').textContent='تعذر إيقاف التسجيل مؤقتاً: '+(err?.message||'');}
+}
+function mithaqVoiceClearPending(){
+ if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);
+ mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;
+}
+async function mithaqVoiceSendPending(sendButton,preview){
+ if(!mithaqPendingVoiceFile)return;
+ if(sendButton)sendButton.disabled=true;
+ const file=mithaqPendingVoiceFile;
+ try{
+  const sent=await uploadChatAttachment(file,'voice');
+  if(sent===true){mithaqVoiceClearPending();preview?.remove();}
+ }finally{if(sendButton&&sendButton.isConnected)sendButton.disabled=false;}
+}
+function mithaqVoiceShowPreview(blob,autoSend){
+ const ext=blob.type.includes('mp4')?'m4a':blob.type.includes('ogg')?'ogg':'webm';
+ mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type||'application/octet-stream'});
+ mithaqVoiceClearPending();
+ mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type||'application/octet-stream'});
+ mithaqPendingVoiceUrl=URL.createObjectURL(blob);
+ let preview=document.getElementById('mithaqVoicePreview');
+ if(!preview){preview=document.createElement('div');preview.id='mithaqVoicePreview';preview.className='mithaq-voice-preview';document.getElementById('messageForm').before(preview);}
+ preview.replaceChildren();
+ const label=document.createElement('strong');label.textContent=autoSend?'جارٍ إرسال الرسالة الصوتية':'معاينة الرسالة الصوتية';
+ const audio=document.createElement('audio');audio.preload='metadata';audio.src=mithaqPendingVoiceUrl;
+ const play=document.createElement('button');play.type='button';play.textContent='▶';play.setAttribute('aria-label','تشغيل المعاينة');
+ const seek=document.createElement('input');seek.type='range';seek.min='0';seek.max='1000';seek.value='0';seek.setAttribute('aria-label','تحريك موضع التسجيل');
+ const duration=document.createElement('small');duration.textContent='00:00';
+ const speed=document.createElement('button');speed.type='button';speed.textContent='1×';
+ const speeds=[1,1.5,2];let speedIndex=0;
+ play.addEventListener('click',async()=>{if(audio.paused){try{await audio.play();}catch{document.getElementById('messageStatus').textContent='تعذر تشغيل المعاينة.';}}else audio.pause();});
+ audio.addEventListener('play',()=>play.textContent='Ⅱ');audio.addEventListener('pause',()=>play.textContent='▶');
+ const fmt=t=>{if(!Number.isFinite(t))return '00:00';return mithaqVoiceTime(t*1000);};
+ audio.addEventListener('loadedmetadata',()=>duration.textContent=fmt(audio.duration));
+ audio.addEventListener('timeupdate',()=>{seek.value=String(audio.duration?Math.round(audio.currentTime/audio.duration*1000):0);duration.textContent=fmt(audio.currentTime)+' / '+fmt(audio.duration);});
+ seek.addEventListener('input',()=>{if(Number.isFinite(audio.duration))audio.currentTime=audio.duration*(Number(seek.value)/1000);});
+ speed.addEventListener('click',()=>{speedIndex=(speedIndex+1)%speeds.length;audio.playbackRate=speeds[speedIndex];speed.textContent=speeds[speedIndex]+'×';});
+ const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال';
+ send.addEventListener('click',()=>mithaqVoiceSendPending(send,preview));
+ const cancel=document.createElement('button');cancel.type='button';cancel.textContent='حذف';
+ cancel.addEventListener('click',()=>{mithaqVoiceClearPending();preview.remove();document.getElementById('messageStatus').textContent='حُذفت الرسالة الصوتية.';});
+ preview.append(label,audio,play,seek,duration,speed,send,cancel);
+ document.getElementById('messageStatus').textContent=autoSend?'جارٍ إرسال التسجيل الصوتي…':'استمع إلى التسجيل، ثم أرسله أو احذفه.';
+ if(autoSend)mithaqVoiceSendPending(send,preview).catch(err=>{document.getElementById('messageStatus').textContent='تعذر إرسال التسجيل: '+(err?.message||'حاول الإرسال مرة أخرى.');});
+}
 async function mithaqStartVoiceRecording(){
- if(mithaqRecorder&&mithaqRecorder.state==='recording')return true;
+ if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))return true;
  if(mithaqVoiceStarting)return false;
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){document.getElementById('messageStatus').textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return false;}
  mithaqVoiceStarting=true;
@@ -4157,85 +4230,72 @@ async function mithaqStartVoiceRecording(){
   mithaqRecorder=new MediaRecorder(stream,preferred?{mimeType:preferred}:undefined);
   mithaqRecorder.ondataavailable=e=>{if(e.data&&e.data.size)mithaqRecordChunks.push(e.data);};
   mithaqRecorder.onerror=e=>{console.warn('MediaRecorder error',e.error||e);document.getElementById('messageStatus').textContent='حدث خطأ أثناء تسجيل الصوت.';};
-  mithaqRecorder.onstop=()=>{
+  mithaqRecorder.onstop=async()=>{
    clearInterval(mithaqVoiceTimer);mithaqVoiceTimer=null;mithaqVoiceStopVisualizer();
    mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;
    const blob=new Blob(mithaqRecordChunks,{type:mithaqRecorder?.mimeType||'audio/webm'});
-   mithaqVoiceResetButton();document.getElementById('mithaqVoiceLivePanel')?.remove();
-   if(mithaqVoiceCancelled||!blob.size){document.getElementById('messageStatus').textContent='تم إلغاء التسجيل.';mithaqRecordChunks=[];return;}
-   const ext=blob.type.includes('mp4')?'m4a':blob.type.includes('ogg')?'ogg':'webm';
-   mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type||'application/octet-stream'});
-   if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);
-   mithaqPendingVoiceUrl=URL.createObjectURL(blob);
-   let preview=document.getElementById('mithaqVoicePreview');
-   if(!preview){preview=document.createElement('div');preview.id='mithaqVoicePreview';preview.className='mithaq-voice-preview';document.getElementById('messageForm').before(preview);}
-   preview.replaceChildren();
-   const label=document.createElement('strong');label.textContent='معاينة الرسالة الصوتية';
-   const audio=document.createElement('audio');audio.controls=true;audio.preload='metadata';audio.src=mithaqPendingVoiceUrl;
-   const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال';
-   send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{const sent=await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(sent!==true)return;if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
-   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='حذف';
-   cancel.addEventListener('click',()=>{if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();document.getElementById('messageStatus').textContent='حُذفت الرسالة الصوتية.';});
-   preview.append(label,audio,send,cancel);document.getElementById('messageStatus').textContent='استمع إلى التسجيل، ثم أرسله أو احذفه.';
-   mithaqRecordChunks=[];
+   const mode=mithaqVoiceStopMode;mithaqVoiceResetButton();document.getElementById('mithaqVoiceLivePanel')?.remove();
+   mithaqVoicePaused=false;mithaqVoiceLocked=false;mithaqVoiceElapsed=0;mithaqVoiceSegmentStartedAt=0;
+   if(mode==='cancel'||mithaqVoiceCancelled||!blob.size){document.getElementById('messageStatus').textContent='تم إلغاء التسجيل.';mithaqRecordChunks=[];return;}
+   mithaqRecordChunks=[];mithaqVoiceShowPreview(blob,mode==='send');
   };
-  mithaqVoiceStartedAt=Date.now();mithaqVoiceCancelled=false;mithaqVoiceLocked=!!mithaqVoiceGesture?.locked;
+  mithaqVoiceStartedAt=Date.now();mithaqVoiceElapsed=0;mithaqVoiceSegmentStartedAt=Date.now();mithaqVoiceCancelled=false;mithaqVoicePaused=false;mithaqVoiceStopMode='preview';mithaqVoiceLocked=!!mithaqVoiceGesture?.locked;
   mithaqRecorder.start(150);mithaqVoicePanel();mithaqVoiceStartClock();mithaqVoiceStartVisualizer(stream);
   const b=document.getElementById('chatRecordButton');b.classList.add('recording');b.textContent='●';b.setAttribute('aria-label','جارٍ تسجيل الرسالة الصوتية');
-  if(mithaqVoiceLocked){const p=mithaqVoicePanel();p.classList.add('locked');p.querySelector('.mithaq-voice-live-hint').textContent='التسجيل مقفل · أوقف أو احذف التسجيل';}
-  document.getElementById('messageStatus').textContent='جارٍ التسجيل… ارفع إصبعك للإيقاف والإعداد للإرسال.';
+  if(mithaqVoiceLocked)mithaqVoiceSetLockedUI();
+  document.getElementById('messageStatus').textContent='جارٍ التسجيل… ارفع إصبعك للإرسال أو اسحب للأعلى للقفل.';
   return true;
  }catch(err){mithaqVoiceStopVisualizer();mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;document.getElementById('messageStatus').textContent=err?.name==='NotAllowedError'?'لم تسمح بإذن استخدام الميكروفون.':'تعذر تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);return false;}
  finally{mithaqVoiceStarting=false;}
 }
-function mithaqStopVoiceRecording(){
- if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqVoiceCancelled=false;mithaqRecorder.stop();}
+function mithaqStopVoiceRecording(mode='preview'){
+ if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused')){mithaqVoiceStopMode=mode;mithaqVoiceCancelled=mode==='cancel';mithaqRecorder.stop();}
  mithaqVoiceGesture=null;mithaqVoiceResetButton();
 }
 function mithaqCancelVoiceRecording(){
- mithaqVoiceCancelled=true;
- if(mithaqRecorder&&mithaqRecorder.state==='recording')mithaqRecorder.stop();
+ mithaqVoiceCancelled=true;mithaqVoiceStopMode='cancel';
+ if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))mithaqRecorder.stop();
  else if(mithaqVoiceStarting&&mithaqVoiceGesture)mithaqVoiceGesture.cancelled=true;
- else{mithaqVoiceStopVisualizer();mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;}
+ else{mithaqVoiceStopVisualizer();mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;document.getElementById('mithaqVoiceLivePanel')?.remove();}
  mithaqVoiceGesture=null;mithaqVoiceResetButton();
 }
 const mithaqVoiceButton=document.getElementById('chatRecordButton');
 mithaqVoiceButton.addEventListener('pointerdown',async e=>{
  if(e.button!==undefined&&e.button!==0)return;
  e.preventDefault();
- if(mithaqVoiceStarting||(mithaqRecorder&&mithaqRecorder.state==='recording'))return;
+ if(mithaqVoiceStarting||(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused')))return;
  const gesture={id:e.pointerId,startX:e.clientX,startY:e.clientY,released:false,cancelled:false,locked:false};
- mithaqVoiceGesture=gesture;mithaqVoiceCancelled=false;
+ mithaqVoiceGesture=gesture;mithaqVoiceCancelled=false;mithaqVoiceStopMode='send';
  try{const AudioCtx=window.AudioContext||window.webkitAudioContext;if(AudioCtx&&!mithaqVoiceAudioContext){mithaqVoiceAudioContext=new AudioCtx();mithaqVoiceAudioContext.resume().catch(()=>{});}}catch(err){console.warn('AudioContext unavailable',err);}
  try{mithaqVoiceButton.setPointerCapture(e.pointerId);}catch{}
  const started=await mithaqStartVoiceRecording();
  if(mithaqVoiceGesture!==gesture)return;
  if(!started){mithaqVoiceGesture=null;return;}
  if(gesture.cancelled){mithaqCancelVoiceRecording();return;}
- if(gesture.locked){mithaqVoiceLocked=true;const p=mithaqVoicePanel();p.classList.add('locked');p.querySelector('.mithaq-voice-live-hint').textContent='التسجيل مقفل · أوقف أو احذف التسجيل';mithaqVoiceGesture=null;return;}
- if(gesture.released){mithaqVoiceGesture=null;mithaqStopVoiceRecording();}
+ if(gesture.locked){mithaqVoiceLocked=true;mithaqVoiceSetLockedUI();mithaqVoiceGesture=null;return;}
+ if(gesture.released){mithaqVoiceGesture=null;mithaqStopVoiceRecording('send');}
 });
 mithaqVoiceButton.addEventListener('pointermove',e=>{
  const g=mithaqVoiceGesture;if(!g||g.id!==e.pointerId||g.locked||g.cancelled)return;
  const dx=e.clientX-g.startX,dy=e.clientY-g.startY;
- if(dx < -95){g.cancelled=true;if(mithaqRecorder&&mithaqRecorder.state==='recording')mithaqCancelVoiceRecording();return;}
- if(dy < -65){g.locked=true;if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqVoiceLocked=true;const p=mithaqVoicePanel();p.classList.add('locked');p.querySelector('.mithaq-voice-live-hint').textContent='التسجيل مقفل · أوقف أو احذف التسجيل';document.getElementById('messageStatus').textContent='التسجيل مقفل. يمكنك إيقافه أو حذفه.';mithaqVoiceGesture=null;}}
+ if(dx < -95){g.cancelled=true;if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))mithaqCancelVoiceRecording();return;}
+ if(dy < -65){g.locked=true;if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused')){mithaqVoiceLocked=true;mithaqVoiceSetLockedUI();document.getElementById('messageStatus').textContent='التسجيل مقفل. يمكنك إيقافه مؤقتاً أو إيقافه أو حذفه.';mithaqVoiceGesture=null;}}
 });
 mithaqVoiceButton.addEventListener('pointerup',e=>{
  const g=mithaqVoiceGesture;if(!g||g.id!==e.pointerId)return;
  g.released=true;
- if(g.cancelled){if(mithaqRecorder&&mithaqRecorder.state==='recording')mithaqCancelVoiceRecording();return;}
+ if(g.cancelled){if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))mithaqCancelVoiceRecording();return;}
  if(g.locked)return;
- if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqVoiceGesture=null;mithaqStopVoiceRecording();}
+ if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused')){mithaqVoiceGesture=null;mithaqStopVoiceRecording('send');}
 });
 mithaqVoiceButton.addEventListener('pointercancel',e=>{
  const g=mithaqVoiceGesture;if(!g||g.id!==e.pointerId)return;
  g.cancelled=true;
- if(mithaqRecorder&&mithaqRecorder.state==='recording')mithaqCancelVoiceRecording();
+ if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))mithaqCancelVoiceRecording();
 });
 mithaqVoiceButton.addEventListener('lostpointercapture',e=>{
  const g=mithaqVoiceGesture;if(!g||g.id!==e.pointerId||g.locked||g.released||g.cancelled)return;
- g.cancelled=true;if(mithaqRecorder&&mithaqRecorder.state==='recording')mithaqCancelVoiceRecording();
+ g.cancelled=true;if(mithaqRecorder&&(mithaqRecorder.state==='recording'||mithaqRecorder.state==='paused'))mithaqCancelVoiceRecording();
 });
 mithaqVoiceButton.addEventListener('contextmenu',e=>e.preventDefault());
 document.getElementById('messageText').addEventListener('input',()=>{
