@@ -199,6 +199,11 @@ body.authenticated .card h2{color:#246b98}
 @media(max-width:520px){.mithaq-chat-menu{top:68px!important;left:8px!important}.mithaq-chat-tools-panel{top:100px!important;left:8px!important;right:8px!important;max-height:min(44dvh,330px)!important;padding:13px!important}}
 @media(max-height:620px){.mithaq-chat-tools-panel{top:82px!important;max-height:calc(100dvh - 180px)!important}}
 
+
+/* Long-press message actions: suppress the browser's native text-copy popup and show MITHAQ controls. */
+body.authenticated #messages .mithaq-chat-message-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:pan-y}
+body.authenticated #messages .mithaq-message-actions{display:flex;flex-wrap:wrap;gap:6px;padding-top:7px}
+body.authenticated #messages .mithaq-message-actions button{min-height:36px;padding:7px 11px;border-radius:18px;font-size:12px}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -4063,6 +4068,7 @@ async function refreshChat(){
   }
   const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':m.delivered_at?' delivered':'');ticks.textContent=(m.delivered_at||m.read_at)?'✓✓':'✓';ticks.title=m.read_at?'تمت قراءة الرسالة':m.delivered_at?'تم استلام الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
   if(!m.deleted_for_everyone_at){const actions=document.createElement('div');actions.className='mithaq-message-actions';const mine=m.sender_id===session.user.id;
+  const copy=document.createElement('button');copy.type='button';copy.textContent='نسخ';copy.addEventListener('click',async()=>{const value=m.body||m.attachment_name||m.location_label||'';if(!value){status.textContent='لا يوجد نص لنسخه.';return;}try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);else{const field=document.createElement('textarea');field.value=value;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('copy unavailable');}status.textContent='تم نسخ الرسالة.';}catch(_){status.textContent='تعذر النسخ من هذا المتصفح.';}});actions.append(copy);
   const forward=document.createElement('button');forward.type='button';forward.textContent='إعادة توجيه';forward.addEventListener('click',async()=>{try{
    let members=Array.isArray(mithaqMemberCache)?mithaqMemberCache:[];
    if(!members.length){const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});if(error)throw error;members=(data||[]).map(person=>({...person,details:person.details||{}}));mithaqMemberCache=members;}
@@ -4082,8 +4088,15 @@ async function refreshChat(){
   if(mine){const all=document.createElement('button');all.type='button';all.textContent='حذف للجميع';all.addEventListener('click',()=>mithaqDeleteMessage(m.id,true));actions.append(all);if(!m.attachment_path&&Date.now()-new Date(m.created_at).getTime()<=15*60*1000){const edit=document.createElement('button');edit.type='button';edit.textContent='تعديل';edit.addEventListener('click',async()=>{const value=prompt('عدّل نص الرسالة',m.body||'');if(value===null||!value.trim())return;const {error}=await supabaseClient.rpc('mithaq_chat_edit_message',{p_message_id:m.id,p_body:value.trim()});if(error){status.textContent='تعذر تعديل الرسالة: '+error.message;return;}await refreshChat();});actions.append(edit);}}
   const local=document.createElement('button');local.type='button';local.textContent='حذف لدي';local.addEventListener('click',()=>mithaqDeleteMessage(m.id,false));actions.append(local);p.append(actions);}
   p.classList.add('mithaq-chat-message-item');
+  let mithaqLongPressTimer=null,mithaqLongPressTriggered=false;
+  const revealMessageActions=()=>{box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p)node.classList.remove('show-actions');});p.classList.add('show-actions');};
+  p.addEventListener('pointerdown',event=>{if(event.target.closest('button,a,input,video,audio')||event.pointerType==='mouse')return;mithaqLongPressTriggered=false;clearTimeout(mithaqLongPressTimer);mithaqLongPressTimer=setTimeout(()=>{mithaqLongPressTriggered=true;revealMessageActions();},480);});
+  ['pointerup','pointercancel','pointerleave'].forEach(type=>p.addEventListener(type,()=>clearTimeout(mithaqLongPressTimer)));
+  p.addEventListener('contextmenu',event=>{if(event.target.closest('button,a,input,video,audio'))return;event.preventDefault();mithaqLongPressTriggered=true;revealMessageActions();});
+  p.addEventListener('selectstart',event=>{if(!event.target.closest('input,textarea'))event.preventDefault();});
   p.addEventListener('click',event=>{
    if(event.target.closest('button,a,input,video,audio'))return;
+   if(mithaqLongPressTriggered){mithaqLongPressTriggered=false;return;}
    box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p)node.classList.remove('show-actions');});
    p.classList.toggle('show-actions');
   });
