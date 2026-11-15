@@ -3806,18 +3806,25 @@ function mithaqShowChatSheet(title,description){
  return p;
 }
 async function mithaqChatPreference(field,value){
+ if(!mithaqIsUuid(currentUserId)||!mithaqIsUuid(activeChatUser))throw new Error('بيانات الحساب أو مستلم المحادثة غير مكتملة. أعد فتح المحادثة.');
  const {error}=await supabaseClient.rpc('mithaq_chat_set_preference',{p_peer_id:activeChatUser,p_theme:field==='theme'?value:null,p_muted:field==='muted'?value:null,p_favorite:field==='favorite'?value:null,p_shortcut:field==='shortcut'?value:null});
  if(error)throw error;
 }
 async function mithaqChatInboxPreference(field,value){
+ if(!mithaqIsUuid(currentUserId)||!mithaqIsUuid(activeChatUser))throw new Error('بيانات الحساب أو مستلم المحادثة غير مكتملة. أعد فتح المحادثة.');
  const {error}=await supabaseClient.from('mithaq_chat_preferences').upsert({user_id:currentUserId,peer_id:activeChatUser,[field]:value},{onConflict:'user_id,peer_id'});
  if(error)throw error;
 }
 
+function mithaqIsUuid(value){return typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);}
 document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
- const button=e.target.closest('[data-chat-action]');if(!button||!activeChatUser)return;
+ const button=e.target.closest('[data-chat-action]');if(!button)return;
  const action=button.dataset.chatAction;mithaqCloseChatMenu();
  const status=document.getElementById('messageStatus');
+ const {data:{session:menuSession}}=await supabaseClient.auth.getSession();
+ if(!menuSession){status.textContent='انتهت جلسة الدخول. سجّل الدخول مجدداً.';return;}
+ currentUserId=menuSession.user.id;
+ if(!mithaqIsUuid(activeChatUser)){status.textContent='تعذر تنفيذ العملية: بيانات مستلم المحادثة غير صالحة. افتح المحادثة من قائمة الأعضاء مجدداً.';return;}
  const make=(p,label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';if(primary)b.className='primary';b.textContent=label;b.addEventListener('click',async()=>{if(b.disabled)return;b.disabled=true;try{await fn();}catch(err){status.textContent='تعذر تنفيذ العملية: '+(err?.message||'خطأ غير معروف');}finally{if(!p.hidden)b.disabled=false;}});p.append(b);return b;};
  try{
   if(action==='privacy'){
@@ -4096,7 +4103,9 @@ document.getElementById('messageForm').addEventListener('submit',async e=>{
  try{
   const {data:{session}}=await supabaseClient.auth.getSession();
   if(!session){status.textContent='سجّل الدخول أولاً.';return;}
-  const {error}=await supabaseClient.from('messages').insert({sender_id:session.user.id,recipient_id:activeChatUser,body,reply_to_message_id:mithaqReplyTarget});
+  if(!mithaqIsUuid(activeChatUser)){status.textContent='تعذر الإرسال: بيانات مستلم المحادثة غير صالحة. أغلق المحادثة وافتحها مجدداً.';return;}
+  const replyId=mithaqIsUuid(mithaqReplyTarget)?mithaqReplyTarget:null;
+  const {error}=await supabaseClient.from('messages').insert({sender_id:session.user.id,recipient_id:activeChatUser,body,reply_to_message_id:replyId});
   if(error){status.textContent='تعذر الإرسال: '+error.message;return;}
   input.value='';mithaqReplyTarget=null;status.textContent='';await refreshChat();loadMithaqUnreadCount();
  }catch(error){
