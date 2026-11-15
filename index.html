@@ -3930,6 +3930,8 @@ function openMithaqImageViewer(url,alt){
  if(!mithaqViewerHistoryOpen){history.pushState({...history.state,mithaqImageViewer:true},'');mithaqViewerHistoryOpen=true;}
 }
 const chatMimeByExt={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',pdf:'application/pdf',txt:'text/plain',csv:'text/csv',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',zip:'application/zip',mp3:'audio/mpeg',m4a:'audio/mp4',ogg:'audio/ogg',wav:'audio/wav',aac:'audio/aac'};
+let mithaqActiveUploadXhr=null;
+function mithaqUploadFileWithProgress(path,file,mime,session,onProgress){return new Promise((resolve,reject)=>{const xhr=new XMLHttpRequest();mithaqActiveUploadXhr=xhr;const encodedPath=path.split('/').map(encodeURIComponent).join('/');xhr.open('POST',SUPABASE_URL.replace(/\\/$/,'')+'/storage/v1/object/mithaq-chat/'+encodedPath);xhr.setRequestHeader('apikey',SUPABASE_PUBLISHABLE_KEY);xhr.setRequestHeader('Authorization','Bearer '+session.access_token);xhr.setRequestHeader('Content-Type',mime);xhr.setRequestHeader('x-upsert','false');xhr.upload.onprogress=event=>{if(event.lengthComputable)onProgress(Math.round(event.loaded/event.total*100));};xhr.onload=()=>{mithaqActiveUploadXhr=null;let payload={};try{payload=JSON.parse(xhr.responseText||'{}');}catch{}if(xhr.status>=200&&xhr.status<300)resolve(payload);else reject(new Error(payload.message||payload.error||('Storage HTTP '+xhr.status)));};xhr.onerror=()=>{mithaqActiveUploadXhr=null;reject(new Error('تعذر الاتصال بخدمة رفع الملفات.'));};xhr.onabort=()=>{mithaqActiveUploadXhr=null;reject(new Error('تم إلغاء رفع الملف.'));};xhr.send(file);});}
 async function uploadChatAttachment(file,kind){
  const status=document.getElementById('messageStatus'),btn=document.getElementById('sendMessage');
  if(!file||!activeChatUser)return false;
@@ -3946,8 +3948,7 @@ async function uploadChatAttachment(file,kind){
  const safeName=(file.name||('voice-'+Date.now()+'.webm')).replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,90);
  const path=session.user.id+'/'+activeChatUser+'/'+Date.now()+'-'+crypto.randomUUID()+'-'+safeName;
  btn.disabled=true;status.textContent='جارٍ رفع المرفق...';
- const {error:uploadError}=await supabaseClient.storage.from('mithaq-chat').upload(path,file,{contentType:mime,upsert:false});
- if(uploadError){btn.disabled=false;status.textContent='تعذر رفع الملف: '+uploadError.message;return false;}
+ try{await mithaqUploadFileWithProgress(path,file,mime,session,percent=>{status.textContent='جارٍ رفع الملف... '+percent+'%';});}catch(uploadError){btn.disabled=false;status.textContent=uploadError.message==='تم إلغاء رفع الملف.'?uploadError.message:'تعذر رفع الملف: '+uploadError.message;return false;}
  const caption=(kind==='voice'?'':document.getElementById('messageText').value.trim());
  const {error:insertError}=await supabaseClient.from('messages').insert({sender_id:session.user.id,recipient_id:activeChatUser,body:caption,attachment_path:path,attachment_name:file.name||safeName,attachment_mime:mime,attachment_size:file.size,attachment_kind:kind||'file'});
  if(insertError){await supabaseClient.storage.from('mithaq-chat').remove([path]);btn.disabled=false;status.textContent='تم رفع الملف لكن تعذر إرساله: '+insertError.message;return false;}
@@ -3981,7 +3982,7 @@ async function previewAndUploadChatAttachment(file){
  sheet.append(preview);
  const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال المرفق';
  send.addEventListener('click',async()=>{send.disabled=true;const sent=await uploadChatAttachment(file,'file');if(sent===true){sheet.hidden=true;URL.revokeObjectURL(url);}else send.disabled=false;});
- const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء';cancel.addEventListener('click',()=>{sheet.hidden=true;URL.revokeObjectURL(url);});
+ const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء';cancel.addEventListener('click',()=>{if(mithaqActiveUploadXhr)mithaqActiveUploadXhr.abort();sheet.hidden=true;URL.revokeObjectURL(url);});
  sheet.append(send,cancel);
 }
 document.getElementById('chatFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file)await previewAndUploadChatAttachment(file);e.target.value='';});
@@ -4005,7 +4006,7 @@ document.getElementById('chatRecordButton').addEventListener('click',async()=>{
    let preview=document.getElementById('mithaqVoicePreview');if(!preview){preview=document.createElement('div');preview.id='mithaqVoicePreview';preview.className='mithaq-voice-preview';document.getElementById('messageForm').before(preview);}
    preview.replaceChildren();const label=document.createElement('strong');label.textContent='معاينة الرسالة الصوتية';const audio=document.createElement('audio');audio.controls=true;audio.src=mithaqPendingVoiceUrl;
    const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال الصوت';send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{const sent=await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(sent!==true)return;if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
-   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء التسجيل';cancel.addEventListener('click',()=>{if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();status.textContent='تم إلغاء الرسالة الصوتية.';});
+   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء التسجيل';cancel.addEventListener('click',()=>{if(mithaqActiveUploadXhr)mithaqActiveUploadXhr.abort();if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();status.textContent='تم إلغاء الرسالة الصوتية.';});
    preview.append(label,audio,send,cancel);status.textContent='استمع إلى التسجيل قبل الإرسال أو ألغِه.';
   };
   mithaqRecorder.start();button.textContent='■';button.classList.add('recording');status.textContent='جارٍ تسجيل الرسالة الصوتية... اضغط الميكروفون للإيقاف والإرسال.';
