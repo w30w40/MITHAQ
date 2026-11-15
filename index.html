@@ -1300,25 +1300,74 @@ body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{margin:0!important}
 </style>
 
 <style id="mithaq-whatsapp-voice-recorder">
-body.authenticated #messages .mithaq-chat-compose #chatRecordButton{touch-action:none;user-select:none;-webkit-user-select:none}
-body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{background:#d9fdd3!important;color:#087e69!important;box-shadow:0 0 0 5px #00806920}
-.mithaq-voice-live{display:flex;align-items:center;gap:8px;min-height:54px;margin:7px 9px;padding:8px 10px;border-radius:28px;background:#f0f2f5;color:#263238}
-.mithaq-voice-live-dot{width:9px;height:9px;flex:none;border-radius:50%;background:#e53935;box-shadow:0 0 0 5px #e5393520;animation:mithaqVoicePulse 1s infinite}
-.mithaq-voice-live strong{font-variant-numeric:tabular-nums;min-width:42px}
-.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1;min-width:65px}
-.mithaq-voice-live-wave{display:block;flex:0 1 150px;width:150px;max-width:25vw;height:30px;overflow:visible;touch-action:none}
-.mithaq-voice-live button{flex:none;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%;background:#fff;color:#54656b}
-.mithaq-voice-live button:last-child{background:#008069;color:#fff}
-.mithaq-voice-live.locked{background:#d9fdd3}
+/* MITHAQ voice composer — WhatsApp-style gestures, tuned to the approved dimensions */
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton{
+ touch-action:none;user-select:none;-webkit-user-select:none;
+ transition:background-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+ min-width:48px;min-height:48px;
+}
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{
+ background:#d9fdd3!important;color:#16845b!important;
+ box-shadow:0 0 0 5px #16845b20;transform:scale(.97)
+}
+.mithaq-voice-live{
+ display:flex;align-items:center;gap:10px;min-height:60px;
+ margin:8px 9px;padding:8px 12px;border-radius:28px;
+ background:#f0f2f5;color:#263238;
+ transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.mithaq-voice-live-dot{
+ width:9px;height:9px;flex:none;border-radius:50%;
+ background:#e5484d;box-shadow:0 0 0 5px #e5484d20;
+ animation:mithaqVoicePulse 1s infinite
+}
+.mithaq-voice-live strong{font-size:13px;font-variant-numeric:tabular-nums;min-width:42px}
+.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1;min-width:65px;line-height:1.4}
+.mithaq-voice-live-wave{
+ display:block;flex:0 1 150px;width:150px;max-width:25vw;height:34px;
+ overflow:visible;touch-action:none
+}
+.mithaq-voice-live button{
+ flex:none;width:44px;height:44px;min-width:44px;min-height:44px;
+ padding:0;border-radius:50%;background:#fff;color:#54656b;
+ display:inline-flex;align-items:center;justify-content:center;
+ transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease
+}
+.mithaq-voice-live button:active,.mithaq-voice-preview button:active{transform:scale(.94)}
+.mithaq-voice-live button:last-child{background:#16845b;color:#fff}
+.mithaq-voice-live.locked{
+ background:#d9fdd3;box-shadow:inset 0 0 0 1px #16845b18
+}
 .mithaq-voice-live.locked .mithaq-voice-live-dot{animation:none}
-.mithaq-voice-preview{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:0;border-radius:18px;margin:7px 9px;background:#fff;box-shadow:0 1px 2px #0001}
+.mithaq-voice-preview{
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+ min-height:60px;padding:10px 12px;border:1px solid #e2e9f0;
+ border-radius:18px;margin:8px 9px;background:#fff;
+ box-shadow:0 1px 2px #0000000d;
+ transition:box-shadow .18s ease,transform .18s ease
+}
 .mithaq-voice-preview strong{flex-basis:100%;font-size:12px;color:#667781}
 .mithaq-voice-preview audio{display:none}
-.mithaq-voice-preview input[type=range]{flex:1;min-width:75px;padding:0;accent-color:#008069}
-.mithaq-voice-preview small{font-size:11px;color:#667781;white-space:nowrap}
-.mithaq-voice-preview button{min-height:39px;min-width:39px;padding:8px 12px;border-radius:20px}
+.mithaq-voice-preview input[type=range]{
+ flex:1;min-width:75px;padding:0;accent-color:#16845b;min-height:30px
+}
+.mithaq-voice-preview small{font-size:11px;color:#667781;white-space:nowrap;font-variant-numeric:tabular-nums}
+.mithaq-voice-preview button{
+ min-height:44px;min-width:44px;padding:8px 12px;border-radius:22px;
+ transition:background-color .18s ease,transform .18s ease
+}
 @keyframes mithaqVoicePulse{50%{opacity:.35;transform:scale(.85)}}
-@media(max-width:520px){.mithaq-voice-live{gap:5px;padding:7px}.mithaq-voice-live-hint{font-size:9px;min-width:48px}.mithaq-voice-live-wave{flex-basis:60px;max-width:18vw}.mithaq-voice-live button{width:33px;height:33px;min-width:33px;min-height:33px}}
+@media(max-width:520px){
+ .mithaq-voice-live{gap:6px;padding:7px 9px;min-height:58px}
+ .mithaq-voice-live-hint{font-size:10px;min-width:48px}
+ .mithaq-voice-live-wave{flex-basis:60px;max-width:18vw;height:32px}
+ .mithaq-voice-live button{width:44px;height:44px;min-width:44px;min-height:44px}
+ .mithaq-voice-preview{gap:7px;padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mithaq-voice-live,.mithaq-voice-live button,.mithaq-voice-preview,.mithaq-voice-preview button,
+ body.authenticated #messages .mithaq-chat-compose #chatRecordButton{transition:none;animation:none}
+}
 </style>
 </head>
 <body>
@@ -4141,7 +4190,7 @@ function mithaqVoiceStartVisualizer(stream){
    for(let i=0;i<count;i++){
     let sum=0;for(let j=0;j<step;j++){const v=(samples[i*step+j]-128)/128;sum+=v*v;}
     const rms=Math.sqrt(sum/step),h=Math.max(3,Math.min(canvas.height-2,(rms*3.2+.035)*canvas.height));
-    ctx.fillStyle='#008069';ctx.beginPath();ctx.roundRect(i*(w+gap),(canvas.height-h)/2,w,h,2);ctx.fill();
+    ctx.fillStyle='#25D366';ctx.beginPath();if(typeof ctx.roundRect==='function'){ctx.roundRect(i*(w+gap),(canvas.height-h)/2,w,h,2);ctx.fill();}else{ctx.fillRect(i*(w+gap),(canvas.height-h)/2,w,h);}
    }
    mithaqVoiceAnimationFrame=requestAnimationFrame(draw);
   };
