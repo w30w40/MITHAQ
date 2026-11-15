@@ -1369,22 +1369,22 @@ body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{
  body.authenticated #messages .mithaq-chat-compose #chatRecordButton{transition:none;animation:none}
 }
 
-/* WhatsApp-inspired sent voice bubble */
-.mithaq-chat-audio-player{display:flex;align-items:center;gap:9px;width:min(330px,72vw);min-width:min(260px,68vw);padding:9px 10px;border-radius:18px;background:#d9fdd3;color:#244b32;direction:ltr}
+/* WhatsApp-style voice message: compact bubble, play control, real waveform, duration and speed */
+.mithaq-chat-audio-player{display:flex;align-items:center;gap:8px;width:min(310px,76vw);min-width:min(245px,76vw);min-height:62px;padding:7px 9px;border-radius:17px;background:#d9fdd3;color:#244b32;direction:ltr}
 .mithaq-chat-bubble.theirs .mithaq-chat-audio-player{background:#f1f3f4;color:#344054}
-.mithaq-audio-play{width:42px;height:42px;min-width:42px;flex:0 0 42px;border:0;border-radius:50%;background:#16845b;color:#fff;font-size:17px;display:grid;place-items:center}
+.mithaq-audio-play{width:40px;height:40px;min-width:40px;flex:0 0 40px;border:0;border-radius:50%;background:#16845b;color:#fff;font-size:16px;display:grid;place-items:center;padding:0}
 .mithaq-chat-bubble.theirs .mithaq-audio-play{background:#667781}
-.mithaq-audio-wave-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:42px;overflow:hidden}
-.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:36px;position:relative;--played:0%}
-.mithaq-audio-wave i{display:block;flex:1;min-width:2px;max-width:4px;border-radius:4px;background:#779889;opacity:.8}
-.mithaq-audio-wave:after{content:"";position:absolute;inset:0 auto 0 0;width:var(--played);background:#16845b;opacity:.16;pointer-events:none}
+.mithaq-audio-wave-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:43px;overflow:hidden}
+.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:34px;position:relative;--played:0%}
+.mithaq-audio-wave i{display:block;flex:1;min-width:2px;max-width:4px;border-radius:4px;background:#779889;opacity:.9;transition:height .12s linear}
+.mithaq-audio-wave:after{content:"";position:absolute;inset:0 auto 0 0;width:var(--played);background:#16845b;opacity:.28;pointer-events:none}
 .mithaq-chat-bubble.theirs .mithaq-audio-wave i{background:#9aa6ad}.mithaq-chat-bubble.theirs .mithaq-audio-wave:after{background:#52636c}
 .mithaq-audio-seek{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
-.mithaq-audio-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:35px}
+.mithaq-audio-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:32px}
 .mithaq-audio-meta small{font-size:10px;white-space:nowrap;color:#315b48;font-variant-numeric:tabular-nums}
-.mithaq-audio-speed{border:0;background:transparent;color:#315b48;font-size:11px;font-weight:700;padding:2px 3px;min-height:24px}
+.mithaq-audio-speed{border:0;background:transparent;color:#315b48;font-size:11px;font-weight:700;padding:1px 3px;min-height:22px;min-width:30px}
 .mithaq-chat-bubble.theirs .mithaq-audio-meta small,.mithaq-chat-bubble.theirs .mithaq-audio-speed{color:#52636c}
-@media(max-width:520px){.mithaq-chat-audio-player{gap:7px;padding:8px;width:min(300px,74vw)}.mithaq-audio-play{width:40px;height:40px;min-width:40px;flex-basis:40px}}
+@media(max-width:520px){.mithaq-chat-audio-player{gap:6px;padding:7px 8px;width:min(290px,78vw);min-width:min(230px,78vw)}.mithaq-audio-play{width:38px;height:38px;min-width:38px;flex-basis:38px}.mithaq-audio-wave{gap:1.5px}}
 </style>
 </head>
 <body>
@@ -4040,7 +4040,8 @@ async function refreshChat(){
      const waveWrap=document.createElement('div');waveWrap.className='mithaq-audio-wave-wrap';
      const wave=document.createElement('div');wave.className='mithaq-audio-wave';wave.setAttribute('aria-hidden','true');
      let seed=0;for(const ch of String(m.id||m.created_at||'voice'))seed=(seed*31+ch.charCodeAt(0))>>>0;
-     for(let i=0;i<40;i++){seed=(seed*1664525+1013904223)>>>0;const bar=document.createElement('i');bar.style.height=(7+(seed%22))+'px';wave.append(bar);}
+     const waveBars=[];for(let i=0;i<40;i++){seed=(seed*1664525+1013904223)>>>0;const bar=document.createElement('i');bar.style.height=(5+(seed%19))+'px';wave.append(bar);waveBars.push(bar);}
+     const loadRealWaveform=async()=>{if(wave.dataset.realWave==='1'||wave.dataset.loadingWave==='1')return;wave.dataset.loadingWave='1';let audioContext=null;try{const response=await fetch(url,{mode:'cors',credentials:'omit'});if(!response.ok)throw new Error('audio fetch failed');const buffer=await response.arrayBuffer();const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)throw new Error('Web Audio unavailable');audioContext=new AudioContextClass();const decoded=await audioContext.decodeAudioData(buffer);const channel=decoded.getChannelData(0);const count=waveBars.length;const stride=Math.max(1,Math.floor(channel.length/count));const peaks=[];for(let i=0;i<count;i++){const start=i*stride,end=Math.min(channel.length,start+stride);let sum=0;const step=Math.max(1,Math.floor(stride/180));let samples=0;for(let j=start;j<end;j+=step){const value=channel[j]||0;sum+=value*value;samples++;}peaks.push(Math.sqrt(sum/Math.max(1,samples)));}const max=Math.max(.0001,...peaks);peaks.forEach((peak,i)=>{waveBars[i].style.height=(4+Math.round((peak/max)*27))+'px';});wave.dataset.realWave='1';}catch(_){/* Keep fallback bars if decoding or CORS is unavailable. */}finally{delete wave.dataset.loadingWave;if(audioContext)try{await audioContext.close();}catch(_){}}};
      const progress=document.createElement('input');progress.type='range';progress.min='0';progress.max='1000';progress.value='0';progress.className='mithaq-audio-seek';progress.setAttribute('aria-label','موضع الصوت');waveWrap.append(wave,progress);
      const meta=document.createElement('div');meta.className='mithaq-audio-meta';const duration=document.createElement('small');duration.textContent='0:00';
      const speed=document.createElement('button');speed.type='button';speed.className='mithaq-audio-speed';speed.textContent='1x';speed.setAttribute('aria-label','تغيير سرعة تشغيل الصوت');
@@ -4049,7 +4050,7 @@ async function refreshChat(){
      const paintProgress=()=>{const pct=media.duration?Math.min(100,Math.max(0,media.currentTime/media.duration*100)):0;wave.style.setProperty('--played',pct+'%');progress.value=String(Math.round(pct*10));};
      play.addEventListener('click',async()=>{if(media.paused){try{await media.play();}catch(e){status.textContent='تعذر تشغيل الصوت.';}}else media.pause();});
      media.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','إيقاف الصوت مؤقتاً');});media.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','استكمال تشغيل الصوت');});
-     media.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(media.duration);});media.addEventListener('timeupdate',()=>{duration.textContent=fmt(media.currentTime)+' / '+fmt(media.duration);paintProgress();});
+     media.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(media.duration);loadRealWaveform();},{once:true});media.addEventListener('timeupdate',()=>{duration.textContent=fmt(media.currentTime)+' / '+fmt(media.duration);paintProgress();});
      media.addEventListener('ended',()=>{play.textContent='▶';progress.value='0';wave.style.setProperty('--played','0%');});
      progress.addEventListener('input',()=>{if(Number.isFinite(media.duration)){media.currentTime=media.duration*(Number(progress.value)/1000);paintProgress();}});
      meta.append(duration,speed);player.append(media,play,waveWrap,meta);p.append(player);
