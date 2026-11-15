@@ -3909,26 +3909,26 @@ function openMithaqImageViewer(url,alt){
 const chatMimeByExt={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',pdf:'application/pdf',txt:'text/plain',csv:'text/csv',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',zip:'application/zip',mp3:'audio/mpeg',m4a:'audio/mp4',ogg:'audio/ogg',wav:'audio/wav',aac:'audio/aac'};
 async function uploadChatAttachment(file,kind){
  const status=document.getElementById('messageStatus'),btn=document.getElementById('sendMessage');
- if(!file||!activeChatUser)return;
- const maxBytes=25*1024*1024;if(file.size>maxBytes){status.textContent='حجم الملف أكبر من 25 ميغابايت.';return;}
- const {data:{session}}=await supabaseClient.auth.getSession();if(!session){status.textContent='سجّل الدخول أولاً.';return;}
+ if(!file||!activeChatUser)return false;
+ const maxBytes=25*1024*1024;if(file.size>maxBytes){status.textContent='حجم الملف أكبر من 25 ميغابايت.';return false;}
+ const {data:{session}}=await supabaseClient.auth.getSession();if(!session){status.textContent='سجّل الدخول أولاً.';return false;}
  const ext=(file.name.split('.').pop()||'').toLowerCase();
  const blockedExtensions=['exe','msi','apk','aab','bat','cmd','com','scr','ps1','sh','bash','js','mjs','cjs','html','htm','php','jar','svg','hta'];
- if(blockedExtensions.includes(ext)){status.textContent='هذا النوع التنفيذي أو القابل لتشغيل محتوى نشط غير مسموح به لحماية الأعضاء.';return;}
+ if(blockedExtensions.includes(ext)){status.textContent='هذا النوع التنفيذي أو القابل لتشغيل محتوى نشط غير مسموح به لحماية الأعضاء.';return false;}
  const mime=(file.type||chatMimeByExt[ext]||'application/octet-stream').split(';')[0].trim().toLowerCase()||'application/octet-stream';
  if((kind==='voice'||mime.startsWith('image/')||mime.startsWith('audio/'))&&!mithaqMyPremium){
   await loadMithaqMyMembership();
-  if(!mithaqMyPremium){status.textContent='هذه الميزة متاحة لأعضاء ميثاق المميزين فقط. افتح الإعدادات ثم العضوية المميزة.';return;}
+  if(!mithaqMyPremium){status.textContent='هذه الميزة متاحة لأعضاء ميثاق المميزين فقط. افتح الإعدادات ثم العضوية المميزة.';return false;}
  }
  const safeName=(file.name||('voice-'+Date.now()+'.webm')).replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,90);
  const path=session.user.id+'/'+activeChatUser+'/'+Date.now()+'-'+crypto.randomUUID()+'-'+safeName;
  btn.disabled=true;status.textContent='جارٍ رفع المرفق...';
  const {error:uploadError}=await supabaseClient.storage.from('mithaq-chat').upload(path,file,{contentType:mime,upsert:false});
- if(uploadError){btn.disabled=false;status.textContent='تعذر رفع الملف: '+uploadError.message;return;}
+ if(uploadError){btn.disabled=false;status.textContent='تعذر رفع الملف: '+uploadError.message;return false;}
  const caption=(kind==='voice'?'':document.getElementById('messageText').value.trim());
  const {error:insertError}=await supabaseClient.from('messages').insert({sender_id:session.user.id,recipient_id:activeChatUser,body:caption,attachment_path:path,attachment_name:file.name||safeName,attachment_mime:mime,attachment_size:file.size,attachment_kind:kind||'file'});
- if(insertError){await supabaseClient.storage.from('mithaq-chat').remove([path]);btn.disabled=false;status.textContent='تم رفع الملف لكن تعذر إرساله: '+insertError.message;return;}
- if(kind!=='voice')document.getElementById('messageText').value='';btn.disabled=false;status.textContent='';await refreshChat();loadMithaqUnreadCount();
+ if(insertError){await supabaseClient.storage.from('mithaq-chat').remove([path]);btn.disabled=false;status.textContent='تم رفع الملف لكن تعذر إرساله: '+insertError.message;return false;}
+ if(kind!=='voice')document.getElementById('messageText').value='';btn.disabled=false;status.textContent='';await refreshChat();loadMithaqUnreadCount();return true;
 }
 document.getElementById('chatAttachButton').addEventListener('click',()=>document.getElementById('chatFileInput').click());
 document.getElementById('chatFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file)await uploadChatAttachment(file,'file');e.target.value='';});
@@ -3951,7 +3951,7 @@ document.getElementById('chatRecordButton').addEventListener('click',async()=>{
    if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=URL.createObjectURL(blob);
    let preview=document.getElementById('mithaqVoicePreview');if(!preview){preview=document.createElement('div');preview.id='mithaqVoicePreview';preview.className='mithaq-voice-preview';document.getElementById('messageForm').before(preview);}
    preview.replaceChildren();const label=document.createElement('strong');label.textContent='معاينة الرسالة الصوتية';const audio=document.createElement('audio');audio.controls=true;audio.src=mithaqPendingVoiceUrl;
-   const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال الصوت';send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
+   const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال الصوت';send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{const sent=await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(sent!==true)return;if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
    const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء التسجيل';cancel.addEventListener('click',()=>{if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();status.textContent='تم إلغاء الرسالة الصوتية.';});
    preview.append(label,audio,send,cancel);status.textContent='استمع إلى التسجيل قبل الإرسال أو ألغِه.';
   };
