@@ -1075,7 +1075,7 @@ a{color:#c2185b}
 #myprofile .member-profile-avatar{position:relative;isolation:isolate;overflow:hidden;cursor:pointer;padding:0;appearance:none;-webkit-appearance:none;font-family:inherit;line-height:1;touch-action:manipulation}
 #myprofile .member-profile-avatar:focus-visible{outline:3px solid #287ba5;outline-offset:4px}
 #myprofile .member-profile-avatar[aria-expanded="true"]{box-shadow:0 0 0 3px #287ba544,0 2px 12px #0001}
-.mithaq-full-member-profile-avatar{background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important}
+.mithaq-full-member-profile-avatar{background-repeat:no-repeat;background-color:#f8edf0}
 </style>
 <style id="mithaq-profile-backgrounds">
 .mithaq-background-settings[hidden],.mithaq-background-preview-wrap[hidden],.mithaq-chat-background-pair[hidden]{display:none!important}
@@ -3073,13 +3073,17 @@ async function renderMithaqChatBackgrounds(otherUserId){
 }
 function applyMithaqBackgroundToAvatar(avatar,background){
   if(!avatar)return;
+  if(!avatar.dataset.mithaqAvatarFallback)avatar.dataset.mithaqAvatarFallback=avatar.textContent?.trim()||'👤';
   avatar.style.removeProperty('background-image');avatar.style.removeProperty('background-size');avatar.style.removeProperty('background-position');avatar.style.removeProperty('background-repeat');
-  if(!background?.url)return;
+  if(!background?.url){avatar.textContent=avatar.dataset.mithaqAvatarFallback;return;}
   const x=Math.max(0,Math.min(100,Number(background.background_position_x??50)));
   const y=Math.max(0,Math.min(100,Number(background.background_position_y??50)));
-  avatar.style.backgroundImage='linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,.24)),url("'+background.url+'")';
-  avatar.style.backgroundSize=background.background_fit==='contain'?'contain':'cover';
-  avatar.style.backgroundPosition=x+'% '+y+'%';avatar.style.backgroundRepeat='no-repeat';
+  // The selected photo is the visible avatar itself: do not leave the default person glyph layered over it.
+  avatar.textContent='';
+  avatar.style.setProperty('background-image','url("'+background.url+'")','important');
+  avatar.style.setProperty('background-size',background.background_fit==='contain'?'contain':'cover','important');
+  avatar.style.setProperty('background-position',x+'% '+y+'%','important');
+  avatar.style.setProperty('background-repeat','no-repeat','important');
 }
 async function renderMithaqOwnProfileBackground(){
   const host=document.getElementById('myProfileBackgroundDisplay');const avatar=document.querySelector('#myprofile .member-profile-avatar');
