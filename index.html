@@ -204,6 +204,14 @@ body.authenticated .card h2{color:#246b98}
 body.authenticated #messages .mithaq-chat-message-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:pan-y}
 body.authenticated #messages .mithaq-message-actions{display:flex;flex-wrap:wrap;gap:6px;padding-top:7px}
 body.authenticated #messages .mithaq-message-actions button{min-height:36px;padding:7px 11px;border-radius:18px;font-size:12px}
+
+/* WhatsApp-like long-press contextual action sheet, anchored beside the selected message. */
+body.authenticated #messages .mithaq-chat-message-item.show-actions{outline:2px solid #25d366;outline-offset:2px;border-radius:12px}
+body.authenticated #messages .mithaq-chat-message-item .mithaq-message-actions{z-index:10020;box-sizing:border-box;display:none;flex-direction:column;align-items:stretch;gap:2px;padding:7px!important;overflow-y:auto;overscroll-behavior:contain;background:#fff!important;border:1px solid #e5e9e7;border-radius:14px;box-shadow:0 10px 32px #0003}
+body.authenticated #messages .mithaq-chat-message-item.show-actions .mithaq-message-actions{display:flex!important}
+body.authenticated #messages .mithaq-message-actions button{display:flex;align-items:center;justify-content:flex-start;min-height:46px;padding:9px 13px!important;border:0;border-radius:9px;background:#fff!important;color:#263238!important;text-align:right;font-size:14px}
+body.authenticated #messages .mithaq-message-actions button:active{background:#f0f2f5!important}
+body.authenticated #messages .mithaq-message-actions button:last-child{border-top:1px solid #edf0ef}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -4089,16 +4097,34 @@ async function refreshChat(){
   const local=document.createElement('button');local.type='button';local.textContent='حذف لدي';local.addEventListener('click',()=>mithaqDeleteMessage(m.id,false));actions.append(local);p.append(actions);}
   p.classList.add('mithaq-chat-message-item');
   let mithaqLongPressTimer=null,mithaqLongPressTriggered=false;
-  const revealMessageActions=()=>{box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p)node.classList.remove('show-actions');});p.classList.add('show-actions');};
-  p.addEventListener('pointerdown',event=>{if(event.target.closest('button,a,input,video,audio')||event.pointerType==='mouse')return;mithaqLongPressTriggered=false;clearTimeout(mithaqLongPressTimer);mithaqLongPressTimer=setTimeout(()=>{mithaqLongPressTriggered=true;revealMessageActions();},480);});
-  ['pointerup','pointercancel','pointerleave'].forEach(type=>p.addEventListener(type,()=>clearTimeout(mithaqLongPressTimer)));
-  p.addEventListener('contextmenu',event=>{if(event.target.closest('button,a,input,video,audio'))return;event.preventDefault();mithaqLongPressTriggered=true;revealMessageActions();});
+  const revealMessageActions=(x,y)=>{
+   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p){node.classList.remove('show-actions');const old=node.querySelector('.mithaq-message-actions');if(old){old.style.position='';old.style.left='';old.style.top='';old.style.width='';old.style.maxHeight='';}});
+   p.classList.add('show-actions');
+   const menu=p.querySelector('.mithaq-message-actions');if(menu){
+    const width=Math.min(280,window.innerWidth-24),height=Math.min(360,window.innerHeight*.62);
+    const rect=p.getBoundingClientRect();const left=Math.max(12,Math.min((Number.isFinite(x)?x:rect.left),window.innerWidth-width-12));
+    let top=Number.isFinite(y)?y+10:rect.bottom+8;if(top+height>window.innerHeight-12)top=Math.max(12,(Number.isFinite(y)?y:rect.top)-height-10);
+    menu.style.position='fixed';menu.style.left=left+'px';menu.style.top=top+'px';menu.style.width=width+'px';menu.style.maxHeight=height+'px';
+   }
+  };
+  const cancelLongPress=()=>{clearTimeout(mithaqLongPressTimer);mithaqLongPressTimer=null;};
+  const startLongPress=(event)=>{
+   if(event.target.closest('button,a,input,video,audio'))return;
+   mithaqLongPressTriggered=false;cancelLongPress();
+   const x=event.clientX??event.touches?.[0]?.clientX,y=event.clientY??event.touches?.[0]?.clientY;
+   mithaqLongPressTimer=setTimeout(()=>{mithaqLongPressTriggered=true;revealMessageActions(x,y);},550);
+  };
+  p.addEventListener('pointerdown',startLongPress);
+  p.addEventListener('touchstart',startLongPress,{passive:true});
+  ['pointerup','pointercancel','touchend','touchcancel'].forEach(type=>p.addEventListener(type,cancelLongPress));
+  p.addEventListener('contextmenu',event=>{if(event.target.closest('button,a,input,video,audio'))return;event.preventDefault();mithaqLongPressTriggered=true;revealMessageActions(event.clientX,event.clientY);});
   p.addEventListener('selectstart',event=>{if(!event.target.closest('input,textarea'))event.preventDefault();});
   p.addEventListener('click',event=>{
    if(event.target.closest('button,a,input,video,audio'))return;
    if(mithaqLongPressTriggered){mithaqLongPressTriggered=false;return;}
-   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p)node.classList.remove('show-actions');});
+   box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>{if(node!==p){node.classList.remove('show-actions');const old=node.querySelector('.mithaq-message-actions');if(old){old.style.position='';old.style.left='';old.style.top='';old.style.width='';old.style.maxHeight='';}}});
    p.classList.toggle('show-actions');
+   if(!p.classList.contains('show-actions')){const menu=p.querySelector('.mithaq-message-actions');if(menu){menu.style.position='';menu.style.left='';menu.style.top='';menu.style.width='';menu.style.maxHeight='';}}
   });
   messageFragment.append(p);
  }
