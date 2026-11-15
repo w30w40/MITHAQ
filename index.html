@@ -185,6 +185,18 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-admin-report p{margin:4px 0;color:#586879;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
 
 .mithaq-premium-contacts{display:grid;gap:9px;margin:14px 0}.mithaq-premium-contact-button{width:100%;text-align:center}.mithaq-admin-contact-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}.mithaq-admin-contact-row>div{flex:1;min-width:150px}.mithaq-admin-contact-row p{margin:5px 0 0;color:var(--muted);font-size:13px}.mithaq-admin-contact-row button{font-size:12px;padding:9px 12px}.mithaq-legal-details{margin:14px 0;padding:14px 16px;border:1px solid #e2e9f0;border-radius:14px;background:#f8fafc;line-height:1.9}.mithaq-legal-details summary{cursor:pointer;font-weight:750;color:#245b80}.mithaq-legal-details p{margin:10px 0;color:#45586a;font-size:14px;line-height:1.9}.mithaq-legal-details strong{color:#a56d16}
+
+/* Chat actions behave like a mobile bottom sheet and stay above the composer. */
+.mithaq-chat-menu{position:fixed!important;z-index:100500!important;top:76px!important;left:12px!important;right:auto!important;width:min(290px,calc(100vw - 24px))!important;max-height:calc(100dvh - 100px)!important;overflow:auto!important;overscroll-behavior:contain}
+.mithaq-chat-tools-panel{position:fixed!important;z-index:100600!important;left:10px!important;right:10px!important;bottom:calc(82px + env(safe-area-inset-bottom))!important;max-height:62dvh!important;overflow:auto!important;overscroll-behavior:contain;background:#fff!important;color:#26343c!important;border:1px solid #eadde2!important;border-radius:20px!important;box-shadow:0 12px 45px #14202b45!important;padding:16px!important;margin:0!important;direction:rtl}
+.mithaq-chat-tools-panel h3{margin:0 0 12px;font-size:17px}
+.mithaq-chat-tools-panel p{margin:5px 0 12px;color:#66737b;font-size:13px}
+.mithaq-chat-tools-panel button{min-height:44px;margin:4px 2px;padding:10px 14px;border-radius:12px;background:#f8eaf0;color:#7d3150}
+.mithaq-chat-tools-panel button.primary{background:#b83d61;color:#fff}
+.mithaq-chat-tools-panel input,.mithaq-chat-tools-panel textarea{width:100%;min-height:44px;margin:8px 0;padding:12px;border:1px solid #d9cbd1;border-radius:10px;background:#fff;color:#26343c}
+.mithaq-chat-tools-panel .mithaq-sheet-close{float:left;background:#f1f1f1;color:#344}
+@media(max-width:520px){.mithaq-chat-menu{top:68px!important;left:8px!important}.mithaq-chat-tools-panel{left:8px!important;right:8px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;max-height:58dvh!important}}
+
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -3620,48 +3632,61 @@ const mithaqSelectedMessageIds=new Set();
 function mithaqCloseChatMenu(){const m=document.getElementById('mithaqChatMenu');if(m)m.hidden=true;const b=document.getElementById('mithaqChatMenuTrigger');if(b)b.setAttribute('aria-expanded','false');}
 document.getElementById('mithaqChatMenuTrigger').addEventListener('click',()=>{const m=document.getElementById('mithaqChatMenu');m.hidden=!m.hidden;document.getElementById('mithaqChatMenuTrigger').setAttribute('aria-expanded',String(!m.hidden));});
 document.addEventListener('click',e=>{if(!e.target.closest('.mithaq-chat-menu-wrap'))mithaqCloseChatMenu();});
-function mithaqChatToolsPanel(){return document.getElementById('mithaqChatToolsPanel');}
+function mithaqChatToolsPanel(){const p=document.getElementById('mithaqChatToolsPanel');if(p&&p.parentElement!==document.body)document.body.append(p);return p;}
+function mithaqShowChatSheet(title,description){
+ const p=mithaqChatToolsPanel();p.replaceChildren();p.hidden=false;
+ const h=document.createElement('h3');h.textContent=title;p.append(h);
+ const close=document.createElement('button');close.type='button';close.className='mithaq-sheet-close';close.textContent='إغلاق';close.addEventListener('click',()=>p.hidden=true);p.append(close);
+ if(description){const d=document.createElement('p');d.textContent=description;p.append(d);}
+ return p;
+}
 async function mithaqChatPreference(field,value){
  const {error}=await supabaseClient.rpc('mithaq_chat_set_preference',{p_peer_id:activeChatUser,p_theme:field==='theme'?value:null,p_muted:field==='muted'?value:null,p_favorite:field==='favorite'?value:null,p_shortcut:field==='shortcut'?value:null});
  if(error)throw error;
 }
+
 document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
  const button=e.target.closest('[data-chat-action]');if(!button||!activeChatUser)return;
- const action=button.dataset.chatAction;mithaqCloseChatMenu();const panel=mithaqChatToolsPanel();panel.hidden=false;panel.replaceChildren();
+ const action=button.dataset.chatAction;mithaqCloseChatMenu();
  const status=document.getElementById('messageStatus');
- const addButton=(label,fn)=>{const b=document.createElement('button');b.type='button';b.className='secondary';b.textContent=label;b.addEventListener('click',fn);panel.append(b);};
+ const make=(p,label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';if(primary)b.className='primary';b.textContent=label;b.addEventListener('click',fn);p.append(b);return b;};
  try{
   if(action==='select'){
-   mithaqChatSelectMode=!mithaqChatSelectMode;mithaqSelectedMessageIds.clear();await refreshChat();
-   if(mithaqChatSelectMode){addButton('حذف المحدد لدي',()=>mithaqDeleteSelected(false));addButton('حذف المحدد للجميع (رسائلي فقط)',()=>mithaqDeleteSelected(true));addButton('إلغاء التحديد',()=>{mithaqChatSelectMode=false;mithaqSelectedMessageIds.clear();panel.hidden=true;refreshChat();});}
-   else panel.hidden=true;
+   mithaqChatSelectMode=true;mithaqSelectedMessageIds.clear();await refreshChat();
+   const p=mithaqShowChatSheet('تحديد الرسائل','حدد الرسائل من داخل المحادثة، ثم اختر الإجراء المطلوب.');
+   make(p,'حذف المحدد لدي',()=>mithaqDeleteSelected(false),true);
+   make(p,'حذف المحدد للجميع (رسائلي فقط)',()=>mithaqDeleteSelected(true));
+   make(p,'إلغاء التحديد',()=>{mithaqChatSelectMode=false;mithaqSelectedMessageIds.clear();p.hidden=true;refreshChat();});
   }else if(action==='delete'){
-   const id=prompt('أدخل رقم الرسالة بعد تفعيل «تحديد الرسائل»، أو استخدم أزرار الحذف أسفل كل رسالة.');if(id)status.textContent='استخدم زر الحذف الظاهر أسفل الرسالة المطلوبة.';
-   addButton('تفعيل تحديد الرسائل',()=>{mithaqChatSelectMode=true;refreshChat();});
+   mithaqChatSelectMode=true;mithaqSelectedMessageIds.clear();await refreshChat();
+   const p=mithaqShowChatSheet('حذف الرسائل','حدد رسالة أو أكثر من المحادثة، ثم اختر طريقة الحذف.');
+   make(p,'حذف المحدد لدي',()=>mithaqDeleteSelected(false),true);
+   make(p,'حذف المحدد للجميع (رسائلي فقط)',()=>mithaqDeleteSelected(true));
+   make(p,'إلغاء',()=>{mithaqChatSelectMode=false;mithaqSelectedMessageIds.clear();p.hidden=true;refreshChat();});
   }else if(action==='theme'){
-   panel.textContent='اختر خلفية المحادثة: ';[['default','الافتراضية'],['pink','وردية'],['blue','زرقاء'],['dark','داكنة'],['nature','هادئة']].forEach(([v,l])=>addButton(l,async()=>{await mithaqChatPreference('theme',v);document.getElementById('chatPanel').dataset.chatTheme=v;panel.hidden=true;}));
+   const p=mithaqShowChatSheet('خلفية المحادثة','اختر المظهر الذي تفضله لهذه المحادثة فقط.');
+   [['default','الافتراضية'],['pink','وردية'],['blue','زرقاء'],['dark','داكنة'],['nature','هادئة']].forEach(([v,l])=>make(p,l,async()=>{await mithaqChatPreference('theme',v);document.getElementById('chatPanel').dataset.chatTheme=v;p.hidden=true;}));
   }else if(action==='block'){
-   if(!confirm('هل تريد حظر هذا العضو؟ لن تتمكن من مواصلة مراسلته.'))return;
-   const {error}=await supabaseClient.rpc('mithaq_chat_set_block',{p_peer_id:activeChatUser,p_block:true});if(error)throw error;
-   status.textContent='تم تسجيل الحظر. لن تُحذف المحادثة السابقة.';document.getElementById('messageForm').hidden=true;
+   const p=mithaqShowChatSheet('حظر العضو','لن تتمكن من إرسال الرسائل لهذا العضو بعد الحظر.');
+   make(p,'تأكيد الحظر',async()=>{const {error}=await supabaseClient.rpc('mithaq_chat_set_block',{p_peer_id:activeChatUser,p_block:true});if(error)throw error;document.getElementById('messageForm').hidden=true;status.textContent='تم حظر العضو.';p.hidden=true;},true);
+   make(p,'إلغاء',()=>p.hidden=true);
   }else if(action==='report'){
-   const reason=prompt('اكتب سبب الإبلاغ عن المحادثة (3 أحرف على الأقل):');if(!reason||reason.trim().length<3)return;
-   const {data:{session}}=await supabaseClient.auth.getSession();
-   const {error}=await supabaseClient.from('mithaq_chat_reports').insert({reporter_id:session.user.id,reported_id:activeChatUser,reason:reason.trim().slice(0,1000)});
-   if(error)throw error;status.textContent='تم إرسال البلاغ إلى إدارة ميثاق.';
+   const p=mithaqShowChatSheet('الإبلاغ عن المحادثة','اكتب سبب البلاغ ليصل إلى إدارة ميثاق.');
+   const input=document.createElement('textarea');input.maxLength=1000;input.placeholder='سبب الإبلاغ...';input.setAttribute('aria-label','سبب الإبلاغ');p.append(input);
+   make(p,'إرسال البلاغ',async()=>{const reason=input.value.trim();if(reason.length<3){input.focus();return;}const {data:{session}}=await supabaseClient.auth.getSession();const {error}=await supabaseClient.from('mithaq_chat_reports').insert({reporter_id:session.user.id,reported_id:activeChatUser,reason});if(error)throw error;status.textContent='تم إرسال البلاغ إلى إدارة ميثاق.';p.hidden=true;},true);
   }else if(action==='favorite'||action==='mute'||action==='shortcut'){
    const field=action==='favorite'?'favorite':action==='mute'?'muted':'shortcut';
-   await mithaqChatPreference(field,true);status.textContent=action==='favorite'?'أضيفت المحادثة للمفضلة.':action==='mute'?'تم كتم المحادثة على مستوى تفضيلاتك.':'تم حفظ اختصار المحادثة في تفضيلاتك.';
+   const p=mithaqShowChatSheet(action==='favorite'?'المفضلة':action==='mute'?'كتم الإشعارات':'اختصار المحادثة',action==='favorite'?'أضف هذه المحادثة إلى قائمة المفضلة.':action==='mute'?'أوقف تنبيهات هذه المحادثة على حسابك.':'احفظ المحادثة ضمن اختصاراتك.');
+   make(p,'تأكيد',async()=>{await mithaqChatPreference(field,true);status.textContent=action==='favorite'?'أضيفت للمفضلة.':action==='mute'?'تم كتم المحادثة.':'تم حفظ الاختصار.';p.hidden=true;},true);
+   make(p,'إلغاء',()=>p.hidden=true);
   }else if(action==='search'){
-   const term=prompt('اكتب كلمة البحث داخل هذه المحادثة:');if(!term)return;
-   const nodes=[...document.querySelectorAll('#chatMessages .mithaq-chat-caption')];
-   const found=nodes.find(n=>n.textContent.toLocaleLowerCase().includes(term.toLocaleLowerCase()));
-   if(found){found.closest('.mithaq-chat-bubble').scrollIntoView({behavior:'smooth',block:'center'});found.closest('.mithaq-chat-bubble').classList.add('selected');}
-   else status.textContent='لا توجد رسالة مطابقة ضمن الرسائل المحمّلة.';
+   const p=mithaqShowChatSheet('البحث داخل المحادثة','اكتب كلمة أو عبارة للعثور عليها في الرسائل المحمّلة.');
+   const input=document.createElement('input');input.type='search';input.placeholder='ابحث في الرسائل...';input.setAttribute('aria-label','كلمة البحث');p.append(input);
+   make(p,'بحث',()=>{const term=input.value.trim().toLocaleLowerCase();if(!term)return;const nodes=[...document.querySelectorAll('#chatMessages .mithaq-chat-caption')];const found=nodes.find(n=>n.textContent.toLocaleLowerCase().includes(term));if(found){document.querySelectorAll('#chatMessages .selected').forEach(n=>n.classList.remove('selected'));found.closest('.mithaq-chat-bubble').classList.add('selected');found.closest('.mithaq-chat-bubble').scrollIntoView({behavior:'smooth',block:'center'});p.hidden=true;}else{const d=p.querySelector('p');if(d)d.textContent='لا توجد رسالة مطابقة ضمن الرسائل المحمّلة.';}},true);
   }else if(action==='clear'){
-   if(!confirm('سيتم إخفاء رسائل هذه المحادثة من حسابك فقط، ولن تُحذف عند الطرف الآخر. متابعة؟'))return;
-   const {error}=await supabaseClient.rpc('mithaq_chat_clear_local',{p_peer_id:activeChatUser});if(error)throw error;
-   status.textContent='تم مسح محتوى المحادثة من حسابك فقط.';await refreshChat();
+   const p=mithaqShowChatSheet('مسح محتوى المحادثة','سيتم إخفاء الرسائل من حسابك فقط. لن تُحذف عند الطرف الآخر.');
+   make(p,'مسح من حسابي',async()=>{const {error}=await supabaseClient.rpc('mithaq_chat_clear_local',{p_peer_id:activeChatUser});if(error)throw error;status.textContent='تم مسح المحادثة من حسابك فقط.';p.hidden=true;await refreshChat();},true);
+   make(p,'إلغاء',()=>p.hidden=true);
   }
  }catch(err){status.textContent='تعذر تنفيذ العملية: '+(err.message||'خطأ غير معروف');}
 });
