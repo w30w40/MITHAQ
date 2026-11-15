@@ -1369,22 +1369,22 @@ body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{
  body.authenticated #messages .mithaq-chat-compose #chatRecordButton{transition:none;animation:none}
 }
 
-/* WhatsApp-style voice message: compact bubble, play control, real waveform, duration and speed */
-.mithaq-chat-audio-player{display:flex;align-items:center;gap:8px;width:min(310px,76vw);min-width:min(245px,76vw);min-height:62px;padding:7px 9px;border-radius:17px;background:#d9fdd3;color:#244b32;direction:ltr}
+/* WhatsApp-matched compact voice bubble dimensions */
+.mithaq-chat-audio-player{box-sizing:border-box;display:flex;align-items:center;gap:6px;width:min(280px,74vw);min-width:min(205px,74vw);min-height:56px;padding:6px 8px;border-radius:15px;background:#d9fdd3;color:#244b32;direction:ltr}
 .mithaq-chat-bubble.theirs .mithaq-chat-audio-player{background:#f1f3f4;color:#344054}
-.mithaq-audio-play{width:40px;height:40px;min-width:40px;flex:0 0 40px;border:0;border-radius:50%;background:#16845b;color:#fff;font-size:16px;display:grid;place-items:center;padding:0}
+.mithaq-audio-play{width:36px;height:36px;min-width:36px;flex:0 0 36px;border:0;border-radius:50%;background:#16845b;color:#fff;font-size:15px;display:grid;place-items:center;padding:0}
 .mithaq-chat-bubble.theirs .mithaq-audio-play{background:#667781}
-.mithaq-audio-wave-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:43px;overflow:hidden}
-.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:34px;position:relative;--played:0%}
-.mithaq-audio-wave i{display:block;flex:1;min-width:2px;max-width:4px;border-radius:4px;background:#779889;opacity:.9;transition:height .12s linear}
+.mithaq-audio-wave-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:36px;overflow:hidden}
+.mithaq-audio-wave{display:flex;align-items:center;justify-content:space-between;gap:1.5px;width:100%;height:30px;position:relative;--played:0%}
+.mithaq-audio-wave i{display:block;flex:1;min-width:1.5px;max-width:4px;border-radius:4px;background:#779889;opacity:.9;transition:height .12s linear}
 .mithaq-audio-wave:after{content:"";position:absolute;inset:0 auto 0 0;width:var(--played);background:#16845b;opacity:.28;pointer-events:none}
 .mithaq-chat-bubble.theirs .mithaq-audio-wave i{background:#9aa6ad}.mithaq-chat-bubble.theirs .mithaq-audio-wave:after{background:#52636c}
 .mithaq-audio-seek{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
-.mithaq-audio-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:32px}
-.mithaq-audio-meta small{font-size:10px;white-space:nowrap;color:#315b48;font-variant-numeric:tabular-nums}
-.mithaq-audio-speed{border:0;background:transparent;color:#315b48;font-size:11px;font-weight:700;padding:1px 3px;min-height:22px;min-width:30px}
+.mithaq-audio-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:29px}
+.mithaq-audio-meta small{font-size:9px;white-space:nowrap;color:#315b48;font-variant-numeric:tabular-nums}
+.mithaq-audio-speed{border:0;background:transparent;color:#315b48;font-size:10px;font-weight:700;padding:0 2px;min-height:19px;min-width:27px}
 .mithaq-chat-bubble.theirs .mithaq-audio-meta small,.mithaq-chat-bubble.theirs .mithaq-audio-speed{color:#52636c}
-@media(max-width:520px){.mithaq-chat-audio-player{gap:6px;padding:7px 8px;width:min(290px,78vw);min-width:min(230px,78vw)}.mithaq-audio-play{width:38px;height:38px;min-width:38px;flex-basis:38px}.mithaq-audio-wave{gap:1.5px}}
+@media(max-width:520px){.mithaq-chat-audio-player{gap:5px;padding:5px 7px;width:min(265px,74vw);min-width:min(195px,74vw);min-height:52px}.mithaq-audio-play{width:34px;height:34px;min-width:34px;flex-basis:34px}.mithaq-audio-wave{gap:1px;height:28px}}
 </style>
 </head>
 <body>
