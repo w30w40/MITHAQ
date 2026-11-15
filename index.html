@@ -4067,6 +4067,7 @@ async function refreshChat(){
  const box=document.getElementById('chatMessages'),status=document.getElementById('messageStatus');
  if(!activeChatUser)return;
  const renderVersion=++mithaqChatRenderVersion;
+ try{
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session||renderVersion!==mithaqChatRenderVersion)return;
  const fields='id,sender_id,recipient_id,body,created_at,read_at,attachment_path,attachment_name,attachment_mime,attachment_size,attachment_kind,deleted_for_everyone_at,reply_to_message_id,edited_at,forwarded_from_message_id,delivered_at,location_latitude,location_longitude,location_label';
  const {data,error}=await supabaseClient.from('messages').select(fields).or('and(sender_id.eq.'+session.user.id+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+session.user.id+')').order('created_at',{ascending:true}).limit(200);
@@ -4113,7 +4114,7 @@ async function refreshChat(){
       const waveWrap=document.createElement('div');waveWrap.className='mithaq-audio-wave-wrap';
       const wave=document.createElement('div');wave.className='mithaq-audio-wave';wave.setAttribute('aria-hidden','true');
       wave.innerHTML='<svg viewBox="0 0 240 36" width="240" height="36" fill="currentColor" aria-hidden="true"><rect x="2" y="13" width="3" height="10" rx="1.5"/><rect x="10" y="7" width="3" height="22" rx="1.5"/><rect x="18" y="11" width="3" height="14" rx="1.5"/><rect x="26" y="3" width="3" height="30" rx="1.5"/><rect x="34" y="10" width="3" height="16" rx="1.5"/><rect x="42" y="6" width="3" height="24" rx="1.5"/><rect x="50" y="14" width="3" height="8" rx="1.5"/><rect x="58" y="4" width="3" height="28" rx="1.5"/><rect x="66" y="9" width="3" height="18" rx="1.5"/><rect x="74" y="13" width="3" height="10" rx="1.5"/><rect x="82" y="5" width="3" height="26" rx="1.5"/><rect x="90" y="11" width="3" height="14" rx="1.5"/><rect x="98" y="2" width="3" height="32" rx="1.5"/><rect x="106" y="8" width="3" height="20" rx="1.5"/><rect x="114" y="13" width="3" height="10" rx="1.5"/><rect x="122" y="5" width="3" height="26" rx="1.5"/><rect x="130" y="10" width="3" height="16" rx="1.5"/><rect x="138" y="3" width="3" height="30" rx="1.5"/><rect x="146" y="12" width="3" height="12" rx="1.5"/><rect x="154" y="7" width="3" height="22" rx="1.5"/><rect x="162" y="14" width="3" height="8" rx="1.5"/><rect x="170" y="4" width="3" height="28" rx="1.5"/><rect x="178" y="9" width="3" height="18" rx="1.5"/><rect x="186" y="5" width="3" height="26" rx="1.5"/><rect x="194" y="12" width="3" height="12" rx="1.5"/><rect x="202" y="7" width="3" height="22" rx="1.5"/><rect x="210" y="3" width="3" height="30" rx="1.5"/><rect x="218" y="11" width="3" height="14" rx="1.5"/><rect x="226" y="6" width="3" height="24" rx="1.5"/><rect x="234" y="13" width="3" height="10" rx="1.5"/></svg>';
-      progress.type='range';progress.min='0';progress.max='1000';progress.value='0';progress.className='mithaq-audio-seek';progress.setAttribute('aria-label','موضع الصوت');waveWrap.append(wave,progress);
+      const progress=document.createElement('input');progress.type='range';progress.min='0';progress.max='1000';progress.value='0';progress.className='mithaq-audio-seek';progress.setAttribute('aria-label','موضع الصوت');waveWrap.append(wave,progress);
       const duration=document.createElement('small');duration.className='mithaq-audio-duration';duration.textContent='0:00';waveWrap.append(duration);
       const speed=document.createElement('button');speed.type='button';speed.className='mithaq-audio-speed';speed.textContent='1x';speed.setAttribute('aria-label','تغيير سرعة تشغيل الصوت');
       const speeds=[1,1.5,2];let speedIndex=0;speed.addEventListener('click',()=>{speedIndex=(speedIndex+1)%speeds.length;media.playbackRate=speeds[speedIndex];speed.textContent=speeds[speedIndex]+'x';});
@@ -4266,6 +4267,10 @@ async function refreshChat(){
  if(renderVersion!==mithaqChatRenderVersion)return;
  box.replaceChildren(messageFragment);
  box.scrollTop=box.scrollHeight;status.textContent='';
+ }catch(error){
+  console.error('MITHAQ refreshChat failed:',error);
+  if(renderVersion===mithaqChatRenderVersion)status.textContent='تعذر عرض الرسائل: '+(error?.message||'حدث خطأ غير متوقع. أعد فتح المحادثة.');
+ }
 }
 let mithaqViewerHistoryOpen=false;
 function closeMithaqImageViewer(){
