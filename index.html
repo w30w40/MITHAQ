@@ -1235,6 +1235,50 @@ a{color:#c2185b}
 .mithaq-inbox-filters{display:flex;gap:6px;flex-wrap:wrap}
 .mithaq-inbox-filters button{min-height:40px;padding:7px 12px;border-radius:999px}
 .mithaq-inbox-filters button[aria-pressed="true"]{background:var(--accent,#6c63ff);color:white}
+
+/* WhatsApp-inspired live chat UI — presentation only; existing Supabase message flow is unchanged */
+body.authenticated #messages .mithaq-messages-card{padding:0;overflow:hidden;border:1px solid #d9e4df;border-radius:12px;background:#fff;box-shadow:0 2px 10px #10251a12}
+body.authenticated #messages .mithaq-inbox-toolbar{padding:14px;background:#f0f2f5;border-bottom:1px solid #e1e6e3}
+body.authenticated #messages .mithaq-inbox-search label{color:#53636a;font-size:12px}
+body.authenticated #messages .mithaq-inbox-search input{border:0;border-radius:9px;background:#fff;min-height:43px}
+body.authenticated #messages .mithaq-inbox-filters{display:flex;gap:6px;overflow-x:auto;padding-top:10px}
+body.authenticated #messages .mithaq-inbox-filters button{flex:0 0 auto;border-radius:20px;padding:8px 14px;background:#fff;color:#52636a;border:1px solid #dce4e0;font-size:12px}
+body.authenticated #messages .mithaq-inbox-filters button[aria-pressed="true"]{background:#d9fdd3;color:#176b48;border-color:#b8e7b0}
+body.authenticated #messages #conversationList{padding:8px;background:#fff}
+body.authenticated #messages #chatPanel{margin:0!important;background:#efeae2;border:0;min-height:min(76vh,820px);display:flex;flex-direction:column}
+body.authenticated #messages #chatPanel[hidden]{display:none!important}
+body.authenticated #messages #chatPanel>header.mithaq-chat-header{position:relative!important;top:auto!important;z-index:4!important;display:flex!important;align-items:center;gap:10px;min-height:64px;padding:8px 12px!important;background:#008069!important;color:#fff!important;box-shadow:0 1px 3px #0002!important}
+body.authenticated #messages .mithaq-chat-header:after{display:none!important}
+body.authenticated #messages .mithaq-chat-back,body.authenticated #messages .mithaq-chat-menu-trigger{color:#fff!important;background:transparent!important;border:0!important;font-size:24px;padding:7px 9px}
+body.authenticated #messages .mithaq-chat-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#d9fdd3;color:#176b48}
+body.authenticated #messages .mithaq-chat-head-copy{flex:1;min-width:0}
+body.authenticated #messages .mithaq-chat-title-button{display:block;max-width:100%;padding:2px 0;background:transparent;color:#fff;font-size:16px;font-weight:700;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.authenticated #messages #chatPresenceText{display:block;color:#e2f5ef;font-size:11px}
+body.authenticated #messages .mithaq-chat-menu{z-index:20;top:calc(100% + 4px);background:#fff;border:1px solid #e2e8e5;border-radius:9px;box-shadow:0 8px 25px #0002}
+body.authenticated #messages .mithaq-chat-menu button{color:#34434a;background:#fff}
+body.authenticated #messages #mithaqChatToolsPanel{background:#fff;padding:10px;border-bottom:1px solid #e2e8e5}
+body.authenticated #messages #mithaqChatBackgrounds{background:#efeae2}
+body.authenticated #messages #chatProfileCard{margin:0;padding:12px;background:#fff;border:0;border-bottom:1px solid #e5e9e7}
+body.authenticated #messages #chatMessages.mithaq-chat-messages{flex:1;min-height:260px;max-height:none;height:clamp(330px,58vh,680px);overflow-y:auto;overscroll-behavior:contain;padding:18px 12px;background-color:#efeae2;background-image:radial-gradient(#b8afa333 .7px,transparent .7px);background-size:14px 14px;border:0;border-radius:0;gap:5px}
+body.authenticated #messages .mithaq-chat-bubble{position:relative;max-width:min(82%,520px);width:fit-content;padding:7px 10px 8px;border:0;border-radius:8px;font-size:14px;line-height:1.55;box-shadow:0 1px 1px #0002}
+body.authenticated #messages .mithaq-chat-bubble.mine{align-self:flex-end;background:#d9fdd3;color:#1f2c25;border-bottom-right-radius:2px}
+body.authenticated #messages .mithaq-chat-bubble.theirs{align-self:flex-start;background:#fff;color:#263238;border:0;border-bottom-left-radius:2px}
+body.authenticated #messages .mithaq-chat-compose{display:flex;align-items:flex-end;gap:7px;margin:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:#f0f2f5;border-top:1px solid #e1e6e3}
+body.authenticated #messages .mithaq-chat-compose .field{min-width:0;flex:1}
+body.authenticated #messages .mithaq-chat-compose textarea{display:block;width:100%;min-height:43px;max-height:120px;padding:11px 15px;border:0;border-radius:22px;background:#fff;color:#263238;resize:none;box-shadow:0 1px 2px #0000000d}
+body.authenticated #messages .mithaq-chat-tool{flex:0 0 40px;width:40px;min-width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:#54656b;font-size:19px}
+body.authenticated #messages .mithaq-chat-send{flex:0 0 43px;width:43px;min-width:43px;height:43px;min-height:43px;padding:0;border-radius:50%;background:#008069;color:#fff;font-size:20px;box-shadow:0 1px 3px #0002}
+body.authenticated #messages #messageStatus{margin:0;padding:5px 12px;background:#f0f2f5;color:#64736d;font-size:11px}
+body.authenticated #messages .mithaq-chat-message-meta{color:#667781}
+@media(max-width:700px){
+ body.authenticated #messages .mithaq-messages-card{margin-inline:-1px;border-radius:10px}
+ body.authenticated #messages #chatPanel{min-height:calc(100dvh - 190px)}
+ body.authenticated #messages #chatMessages.mithaq-chat-messages{height:calc(100dvh - 310px);min-height:280px;max-height:none;padding:14px 9px}
+ body.authenticated #messages .mithaq-chat-bubble{max-width:88%;font-size:14px}
+ body.authenticated #messages .mithaq-chat-compose{gap:3px;padding-inline:6px}
+ body.authenticated #messages .mithaq-chat-tool{flex-basis:34px;width:34px;min-width:34px}
+ body.authenticated #messages .mithaq-chat-send{flex-basis:40px;width:40px;min-width:40px;height:40px;min-height:40px}
+}
 </style>
 
 </head>
