@@ -3530,7 +3530,7 @@ async function openChat(userId,name){
   if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
   document.getElementById('chatPanel').dataset.chatTheme=prefResult.data?.theme||'default';
   mithaqTypingEnabled=privacyResult.data?.typing_indicators!==false;
-  if(!mithaqTypingEnabled&&activeChatChannel)activeChatChannel.track({user_id:currentUserId,typing:false}).catch(()=>{});
+  if(!mithaqTypingEnabled&&activeChatChannel)activeChatChannel.untrack().catch(()=>{});
   const blocked=!!blockResult.data?.length;
   document.getElementById('messageForm').hidden=blocked;
   if(blocked)document.getElementById('messageStatus').textContent='المراسلة متوقفة لوجود حظر بين الحسابين.';
@@ -3577,7 +3577,7 @@ async function openChat(userId,name){
   }).on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_reactions'},()=>{if(activeChatUser===userId)refreshChat();})
   .on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_pins'},()=>{if(activeChatUser===userId)refreshChat();})
   .on('presence',{event:'sync'},()=>{if(activeChatUser!==userId||!activeChatChannel)return;const state=activeChatChannel.presenceState();const peer=state[userId]||[];const typing=peer.some(meta=>meta.typing===true);if(typing)document.getElementById('chatPresenceText').textContent='يكتب الآن...';else{const dot=document.getElementById('chatPresenceDot');document.getElementById('chatPresenceText').textContent=dot&&!dot.hidden?'متصل الآن':'غير متصل حالياً';}})
-  .subscribe(async channelStatus=>{if(channelStatus==='SUBSCRIBED'&&activeChatChannel)await activeChatChannel.track({user_id:session.user.id,typing:false});});
+  .subscribe(channelStatus=>{if(channelStatus!=='SUBSCRIBED')console.warn('MITHAQ private presence channel:',channelStatus);});
 }
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
@@ -3779,7 +3779,7 @@ document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
    const lastSeen=makeToggle('إظهار آخر ظهور وحالة الاتصال',settings?.show_last_seen!==false);
    const reads=makeToggle('إظهار مؤشرات قراءة الرسائل',settings?.read_receipts!==false);
    const typing=makeToggle('إظهار مؤشر «يكتب الآن»',settings?.typing_indicators!==false);
-   make(p,'حفظ إعدادات الخصوصية',async()=>{const {error}=await supabaseClient.from('mithaq_chat_privacy_settings').upsert({user_id:currentUserId,show_last_seen:lastSeen.checked,read_receipts:reads.checked,typing_indicators:typing.checked,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)throw error;mithaqTypingEnabled=typing.checked;if(!typing.checked&&activeChatChannel)await activeChatChannel.track({user_id:currentUserId,typing:false});status.textContent='تم حفظ إعدادات الخصوصية.';p.hidden=true;},true);
+   make(p,'حفظ إعدادات الخصوصية',async()=>{const {error}=await supabaseClient.from('mithaq_chat_privacy_settings').upsert({user_id:currentUserId,show_last_seen:lastSeen.checked,read_receipts:reads.checked,typing_indicators:typing.checked,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)throw error;mithaqTypingEnabled=typing.checked;if(!typing.checked&&activeChatChannel)await activeChatChannel.untrack();status.textContent='تم حفظ إعدادات الخصوصية.';p.hidden=true;},true);
    make(p,'إلغاء',()=>p.hidden=true);
   }else if(action==='select'){
    mithaqChatSelectMode=true;mithaqSelectedMessageIds.clear();await refreshChat();
@@ -3982,7 +3982,7 @@ document.getElementById('messageText').addEventListener('input',()=>{
  if(!activeChatChannel||!activeChatUser||!mithaqTypingEnabled)return;
  if(!mithaqTypingActive){mithaqTypingActive=true;activeChatChannel.track({user_id:currentUserId,typing:true}).catch(()=>{});}
  if(mithaqTypingTimer)clearTimeout(mithaqTypingTimer);
- mithaqTypingTimer=setTimeout(()=>{if(activeChatChannel)activeChatChannel.track({user_id:currentUserId,typing:false}).catch(()=>{});mithaqTypingActive=false;},1600);
+ mithaqTypingTimer=setTimeout(()=>{if(activeChatChannel)activeChatChannel.untrack().catch(()=>{});mithaqTypingActive=false;},1600);
 });
 document.getElementById('messageForm').addEventListener('submit',async e=>{
  e.preventDefault();
