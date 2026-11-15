@@ -3651,7 +3651,7 @@ document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
  const button=e.target.closest('[data-chat-action]');if(!button||!activeChatUser)return;
  const action=button.dataset.chatAction;mithaqCloseChatMenu();
  const status=document.getElementById('messageStatus');
- const make=(p,label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';if(primary)b.className='primary';b.textContent=label;b.addEventListener('click',fn);p.append(b);return b;};
+ const make=(p,label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';if(primary)b.className='primary';b.textContent=label;b.addEventListener('click',async()=>{if(b.disabled)return;b.disabled=true;try{await fn();}catch(err){status.textContent='تعذر تنفيذ العملية: '+(err?.message||'خطأ غير معروف');}finally{if(!p.hidden)b.disabled=false;}});p.append(b);return b;};
  try{
   if(action==='select'){
    mithaqChatSelectMode=true;mithaqSelectedMessageIds.clear();await refreshChat();
@@ -3713,8 +3713,13 @@ async function refreshChat(){
  const {data,error}=await supabaseClient.from('messages').select(fields).or('and(sender_id.eq.'+session.user.id+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+session.user.id+')').order('created_at',{ascending:true}).limit(200);
  if(error){if(renderVersion===mithaqChatRenderVersion)status.textContent='تعذر تحميل الرسائل: '+error.message;return;}
  if(renderVersion!==mithaqChatRenderVersion)return;
- const {data:hiddenRows,error:hiddenError}=await supabaseClient.from('mithaq_chat_hidden_messages').select('message_id').eq('user_id',session.user.id);
- if(hiddenError){status.textContent='تعذر تحميل إعدادات عرض الرسائل: '+hiddenError.message;return;}
+ const visibleMessageIds=(data||[]).map(m=>m.id);
+ let hiddenRows=[];
+ if(visibleMessageIds.length){
+  const {data:rows,error:hiddenError}=await supabaseClient.from('mithaq_chat_hidden_messages').select('message_id').eq('user_id',session.user.id).in('message_id',visibleMessageIds);
+  if(hiddenError){status.textContent='تعذر تحميل إعدادات إخفاء الرسائل: '+hiddenError.message;return;}
+  hiddenRows=rows||[];
+ }
  const hiddenIds=new Set((hiddenRows||[]).map(x=>x.message_id));
  const messageFragment=document.createDocumentFragment();
  for(const m of (data||[])){
