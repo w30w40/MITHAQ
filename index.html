@@ -1223,6 +1223,7 @@ a{color:#c2185b}
 </style>
 
 <style id="mithaq-global-chat-feature-styles">
+.mithaq-chat-ticks.delivered{opacity:.9}.mithaq-chat-ticks.read{color:#2196f3}
 .mithaq-chat-reply-quote{border-inline-start:3px solid var(--accent,#6c63ff);padding:7px 10px;margin:0 0 8px;background:rgba(108,99,255,.08);border-radius:8px;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mithaq-chat-edited,.mithaq-chat-pinned{display:inline-block;font-size:.72rem;opacity:.72;margin-inline-start:6px}
 .mithaq-message-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
@@ -3546,6 +3547,7 @@ async function openChat(userId,name){
   document.getElementById('chatPresenceText').textContent=online?'متصل الآن':'غير متصل حالياً';
  }catch(e){if(request===mithaqOpenChatRequest)console.warn('MITHAQ chat profile:',e);}
  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
+ const {error:deliveredError}=await supabaseClient.rpc('mithaq_mark_messages_delivered',{p_sender_id:userId});if(deliveredError)console.warn('MITHAQ mark-delivered:',deliveredError.message);
  const {error:readError}=await supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});if(readError)console.warn('MITHAQ mark-read:',readError.message);else loadMithaqUnreadCount();
  await messagesPromise;
  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
@@ -3561,7 +3563,7 @@ async function openChat(userId,name){
  activeChatChannel=supabaseClient.channel(channelName,{config:{presence:{key:session.user.id}}})
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
    const m=payload.new;
-   if(m.sender_id===userId&&activeChatUser===userId){refreshChat();supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});loadMithaqUnreadCount();}
+   if(m.sender_id===userId&&activeChatUser===userId){refreshChat();supabaseClient.rpc('mithaq_mark_messages_delivered',{p_sender_id:userId}).then(()=>supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId}));loadMithaqUnreadCount();}
   })
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
    const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
@@ -3827,7 +3829,7 @@ async function refreshChat(){
  if(!activeChatUser)return;
  const renderVersion=++mithaqChatRenderVersion;
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session||renderVersion!==mithaqChatRenderVersion)return;
- const fields='id,sender_id,recipient_id,body,created_at,read_at,attachment_path,attachment_name,attachment_mime,attachment_size,attachment_kind,deleted_for_everyone_at,reply_to_message_id,edited_at,forwarded_from_message_id';
+ const fields='id,sender_id,recipient_id,body,created_at,read_at,attachment_path,attachment_name,attachment_mime,attachment_size,attachment_kind,deleted_for_everyone_at,reply_to_message_id,edited_at,forwarded_from_message_id,delivered_at';
  const {data,error}=await supabaseClient.from('messages').select(fields).or('and(sender_id.eq.'+session.user.id+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+session.user.id+')').order('created_at',{ascending:true}).limit(200);
  if(error){if(renderVersion===mithaqChatRenderVersion)status.textContent='تعذر تحميل الرسائل: '+error.message;return;}
  if(renderVersion!==mithaqChatRenderVersion)return;
@@ -3867,7 +3869,7 @@ async function refreshChat(){
     else{const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.className='mithaq-chat-file';link.textContent='📄 '+(m.attachment_name||'فتح الملف المرفق');p.append(link);}
    }else{const unavailable=document.createElement('small');unavailable.textContent='تعذر فتح المرفق';p.append(unavailable);}
   }
-  const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':'');ticks.textContent='✓✓';ticks.title=m.read_at?'تمت قراءة الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
+  const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':m.delivered_at?' delivered':'');ticks.textContent=m.delivered_at?'✓✓':'✓';ticks.title=m.read_at?'تمت قراءة الرسالة':m.delivered_at?'تم استلام الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
   if(!m.deleted_for_everyone_at){const actions=document.createElement('div');actions.className='mithaq-message-actions';const mine=m.sender_id===session.user.id;
   const forward=document.createElement('button');forward.type='button';forward.textContent='إعادة توجيه';forward.addEventListener('click',async()=>{try{
    let members=Array.isArray(mithaqMemberCache)?mithaqMemberCache:[];
