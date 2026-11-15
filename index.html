@@ -1298,6 +1298,25 @@ body.mithaq-chat-open #chatPanel{background:#f0f2f5!important}
 /* The header already occupies its own 66px flex row; do not add a second 66px offset. */
 body.mithaq-chat-open #chatPanel>.mithaq-chat-messages{margin:0!important}
 </style>
+
+<style id="mithaq-whatsapp-voice-recorder">
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton{touch-action:none;user-select:none;-webkit-user-select:none}
+body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{background:#d9fdd3!important;color:#087e69!important;box-shadow:0 0 0 5px #00806920}
+.mithaq-voice-live{display:flex;align-items:center;gap:10px;min-height:54px;margin:7px 9px;padding:8px 12px;border-radius:28px;background:#f0f2f5;color:#263238}
+.mithaq-voice-live-dot{width:9px;height:9px;border-radius:50%;background:#e53935;box-shadow:0 0 0 5px #e5393520;animation:mithaqVoicePulse 1s infinite}
+.mithaq-voice-live strong{font-variant-numeric:tabular-nums;min-width:42px}
+.mithaq-voice-live-hint{font-size:11px;color:#667781;flex:1}
+.mithaq-voice-live-bars{height:23px;flex:0 1 62px;background:repeating-linear-gradient(90deg,#008069 0 3px,transparent 3px 7px);mask-image:linear-gradient(90deg,#000,transparent);opacity:.75}
+.mithaq-voice-live button{width:38px;height:38px;min-width:38px;padding:0;border-radius:50%;background:#fff;color:#54656b}
+.mithaq-voice-live button:last-child{background:#008069;color:#fff}
+.mithaq-voice-live.locked{background:#d9fdd3}
+.mithaq-voice-preview{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;border:0;border-radius:18px;margin:7px 9px;background:#fff;box-shadow:0 1px 2px #0001}
+.mithaq-voice-preview strong{flex-basis:100%;font-size:12px;color:#667781}
+.mithaq-voice-preview audio{flex:1;min-width:150px;height:38px}
+.mithaq-voice-preview button{min-height:39px;padding:8px 14px;border-radius:20px}
+@keyframes mithaqVoicePulse{50%{opacity:.35;transform:scale(.85)}}
+@media(max-width:520px){.mithaq-voice-live{gap:7px;padding:7px 9px}.mithaq-voice-live-hint{font-size:10px}.mithaq-voice-live-bars{flex-basis:35px}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -4075,30 +4094,59 @@ async function previewAndUploadChatAttachment(file){
 }
 document.getElementById('chatFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file)await previewAndUploadChatAttachment(file);e.target.value='';});
 let mithaqRecorder=null,mithaqRecordChunks=[],mithaqRecordStream=null,mithaqPendingVoiceFile=null,mithaqPendingVoiceUrl=null;
-document.getElementById('chatRecordButton').addEventListener('click',async()=>{
- const button=document.getElementById('chatRecordButton'),status=document.getElementById('messageStatus');
- if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqRecorder.stop();button.textContent='🎙️';button.classList.remove('recording');return;}
- if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){status.textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return;}
+let mithaqVoiceStartedAt=0,mithaqVoiceTimer=null,mithaqVoiceLocked=false,mithaqVoicePointer=null,mithaqVoiceStartX=0,mithaqVoiceStartY=0,mithaqVoiceCancelled=false;
+function mithaqVoiceTime(ms){const n=Math.max(0,Math.floor(ms/1000));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function mithaqVoicePanel(){let p=document.getElementById('mithaqVoiceLivePanel');if(!p){p=document.createElement('div');p.id='mithaqVoiceLivePanel';p.className='mithaq-voice-live';p.innerHTML='<span class="mithaq-voice-live-dot"></span><strong id="mithaqVoiceLiveTime">00:00</strong><span class="mithaq-voice-live-hint">اسحب لليسار للإلغاء · للأعلى للقفل</span><span class="mithaq-voice-live-bars" aria-hidden="true"></span><button type="button" id="mithaqVoiceCancel" aria-label="إلغاء التسجيل">🗑</button><button type="button" id="mithaqVoiceStop" aria-label="إيقاف التسجيل">■</button>';document.getElementById('messageForm').before(p);p.querySelector('#mithaqVoiceCancel').addEventListener('click',mithaqCancelVoiceRecording);p.querySelector('#mithaqVoiceStop').addEventListener('click',mithaqStopVoiceRecording);}return p;}
+function mithaqVoiceStartClock(){clearInterval(mithaqVoiceTimer);mithaqVoiceTimer=setInterval(()=>{const t=document.getElementById('mithaqVoiceLiveTime');if(t)t.textContent=mithaqVoiceTime(Date.now()-mithaqVoiceStartedAt);},200);}
+async function mithaqStartVoiceRecording(){
+ if(mithaqRecorder&&mithaqRecorder.state==='recording')return true;
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){document.getElementById('messageStatus').textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return false;}
  try{
   mithaqRecordStream=await navigator.mediaDevices.getUserMedia({audio:true});mithaqRecordChunks=[];
   const preferred=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t));
   mithaqRecorder=new MediaRecorder(mithaqRecordStream,preferred?{mimeType:preferred}:undefined);
   mithaqRecorder.ondataavailable=e=>{if(e.data.size)mithaqRecordChunks.push(e.data);};
   mithaqRecorder.onstop=()=>{
-   mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;
+   clearInterval(mithaqVoiceTimer);mithaqVoiceTimer=null;mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;
    const blob=new Blob(mithaqRecordChunks,{type:mithaqRecorder.mimeType||'audio/webm'});
+   if(mithaqVoiceCancelled||!blob.size){document.getElementById('mithaqVoiceLivePanel')?.remove();document.getElementById('messageStatus').textContent='تم إلغاء التسجيل.';return;}
    const ext=blob.type.includes('mp4')?'m4a':'webm';
    mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type});
    if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=URL.createObjectURL(blob);
+   document.getElementById('mithaqVoiceLivePanel')?.remove();
    let preview=document.getElementById('mithaqVoicePreview');if(!preview){preview=document.createElement('div');preview.id='mithaqVoicePreview';preview.className='mithaq-voice-preview';document.getElementById('messageForm').before(preview);}
-   preview.replaceChildren();const label=document.createElement('strong');label.textContent='معاينة الرسالة الصوتية';const audio=document.createElement('audio');audio.controls=true;audio.src=mithaqPendingVoiceUrl;
-   const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال الصوت';send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{const sent=await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(sent!==true)return;if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
-   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='إلغاء التسجيل';cancel.addEventListener('click',()=>{if(mithaqActiveUploadXhr)mithaqActiveUploadXhr.abort();if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();status.textContent='تم إلغاء الرسالة الصوتية.';});
-   preview.append(label,audio,send,cancel);status.textContent='استمع إلى التسجيل قبل الإرسال أو ألغِه.';
+   preview.replaceChildren();
+   const label=document.createElement('strong');label.textContent='معاينة الرسالة الصوتية';
+   const audio=document.createElement('audio');audio.controls=true;audio.preload='metadata';audio.src=mithaqPendingVoiceUrl;
+   const send=document.createElement('button');send.type='button';send.className='primary';send.textContent='إرسال';send.addEventListener('click',async()=>{if(!mithaqPendingVoiceFile)return;send.disabled=true;try{const sent=await uploadChatAttachment(mithaqPendingVoiceFile,'voice');if(sent!==true)return;if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();}finally{send.disabled=false;}});
+   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='حذف';cancel.addEventListener('click',()=>{if(mithaqPendingVoiceUrl)URL.revokeObjectURL(mithaqPendingVoiceUrl);mithaqPendingVoiceUrl=null;mithaqPendingVoiceFile=null;preview.remove();document.getElementById('messageStatus').textContent='حُذفت الرسالة الصوتية.';});
+   preview.append(label,audio,send,cancel);document.getElementById('messageStatus').textContent='استمع إلى التسجيل، ثم أرسله أو احذفه.';
   };
-  mithaqRecorder.start();button.textContent='■';button.classList.add('recording');status.textContent='جارٍ تسجيل الرسالة الصوتية... اضغط الميكروفون للإيقاف والإرسال.';
- }catch(err){status.textContent='لم نتمكن من تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);}
+  mithaqVoiceStartedAt=Date.now();mithaqVoiceCancelled=false;mithaqVoiceLocked=false;
+  mithaqRecorder.start(150);mithaqVoicePanel();mithaqVoiceStartClock();
+  const b=document.getElementById('chatRecordButton');b.classList.add('recording');b.textContent='●';b.setAttribute('aria-label','جارٍ تسجيل الرسالة الصوتية');
+  document.getElementById('messageStatus').textContent='جارٍ التسجيل… ارفع إصبعك للإيقاف والإعداد للإرسال.';
+  return true;
+ }catch(err){document.getElementById('messageStatus').textContent='تعذر تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);return false;}
+}
+function mithaqStopVoiceRecording(){if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqVoiceCancelled=false;mithaqRecorder.stop();}const b=document.getElementById('chatRecordButton');b.classList.remove('recording');b.textContent='🎙️';b.setAttribute('aria-label','تسجيل رسالة صوتية');}
+function mithaqCancelVoiceRecording(){if(mithaqRecorder&&mithaqRecorder.state==='recording'){mithaqVoiceCancelled=true;mithaqRecorder.stop();}const b=document.getElementById('chatRecordButton');b.classList.remove('recording');b.textContent='🎙️';b.setAttribute('aria-label','تسجيل رسالة صوتية');}
+const mithaqVoiceButton=document.getElementById('chatRecordButton');
+mithaqVoiceButton.addEventListener('pointerdown',async e=>{
+ if(e.button!==undefined&&e.button!==0)return;e.preventDefault();if(mithaqRecorder&&mithaqRecorder.state==='recording')return;
+ mithaqVoicePointer=e.pointerId;mithaqVoiceStartX=e.clientX;mithaqVoiceStartY=e.clientY;mithaqVoiceCancelled=false;
+ try{mithaqVoiceButton.setPointerCapture(e.pointerId);}catch{}
+ await mithaqStartVoiceRecording();
 });
+mithaqVoiceButton.addEventListener('pointermove',e=>{
+ if(mithaqVoicePointer!==e.pointerId||!mithaqRecorder||mithaqRecorder.state!=='recording'||mithaqVoiceLocked)return;
+ const dx=e.clientX-mithaqVoiceStartX,dy=e.clientY-mithaqVoiceStartY;
+ if(dx < -95){mithaqVoiceCancelled=true;mithaqCancelVoiceRecording();mithaqVoicePointer=null;return;}
+ if(dy < -65){mithaqVoiceLocked=true;const p=mithaqVoicePanel();p.classList.add('locked');p.querySelector('.mithaq-voice-live-hint').textContent='التسجيل مقفل · أوقف أو احذف التسجيل';document.getElementById('messageStatus').textContent='التسجيل مقفل. يمكنك إيقافه أو حذفه.';mithaqVoicePointer=null;}
+});
+mithaqVoiceButton.addEventListener('pointerup',e=>{if(mithaqVoicePointer!==e.pointerId)return;mithaqVoicePointer=null;if(mithaqRecorder&&mithaqRecorder.state==='recording'&&!mithaqVoiceLocked)mithaqStopVoiceRecording();});
+mithaqVoiceButton.addEventListener('pointercancel',e=>{if(mithaqVoicePointer!==e.pointerId)return;mithaqVoicePointer=null;if(mithaqRecorder&&mithaqRecorder.state==='recording'&&!mithaqVoiceLocked)mithaqCancelVoiceRecording();});
+mithaqVoiceButton.addEventListener('contextmenu',e=>e.preventDefault());
 document.getElementById('messageText').addEventListener('input',()=>{
  if(!activeChatChannel||!activeChatUser||!mithaqTypingEnabled)return;
  if(!mithaqTypingActive){mithaqTypingActive=true;activeChatChannel.track({user_id:currentUserId,typing:true}).catch(()=>{});}
