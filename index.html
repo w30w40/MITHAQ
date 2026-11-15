@@ -4123,8 +4123,10 @@ async function refreshChat(){
   let mithaqLongPressTimer=null,mithaqLongPressTriggered=false;
   const closeMithaqSelection=()=>{
    const layer=document.getElementById('mithaq-selection-layer');if(!layer)return;
-   const hosts=layer.__selectedMessages||[layer.__messageHost],actions=layer.querySelector('.mithaq-message-actions');
-   if(layer.__messageHost&&actions)layer.__messageHost.append(actions);
+   const hosts=layer.__selectedMessages||[layer.__messageHost],actions=layer.__originalActions||layer.querySelector('.mithaq-message-actions');
+   (layer.__originalButtons||[]).forEach(btn=>actions?.append(btn));
+   const actionHost=layer.__actionHost||layer.__messageHost;
+   if(actionHost&&actions)actionHost.append(actions);
    hosts.forEach(host=>host?.classList.remove('show-actions','mithaq-message-selected'));
    layer.remove();
   };
@@ -4144,7 +4146,7 @@ async function refreshChat(){
    box.querySelectorAll('.mithaq-chat-message-item.show-actions').forEach(node=>node.classList.remove('show-actions','mithaq-message-selected'));
    p.classList.add('show-actions','mithaq-message-selected');
    const actions=p.querySelector('.mithaq-message-actions');if(!actions)return;
-   const layer=document.createElement('div');layer.id='mithaq-selection-layer';layer.__messageHost=p;
+   const layer=document.createElement('div');layer.id='mithaq-selection-layer';layer.__messageHost=p;layer.__actionHost=p;layer.__originalActions=actions;layer.__originalButtons=[...actions.querySelectorAll('button')];
    const backdrop=document.createElement('button');backdrop.type='button';backdrop.className='mithaq-selection-backdrop';backdrop.setAttribute('aria-label','إغلاق تحديد الرسالة');backdrop.addEventListener('click',closeMithaqSelection);
    const toolbar=document.createElement('div');toolbar.className='mithaq-selection-toolbar';toolbar.setAttribute('role','toolbar');toolbar.setAttribute('aria-label','إجراءات الرسالة المحددة');
    const close=document.createElement('button');close.type='button';close.className='mithaq-selection-close';close.textContent='×';close.setAttribute('aria-label','إلغاء التحديد');close.addEventListener('click',closeMithaqSelection);
