@@ -3370,34 +3370,46 @@ document.addEventListener('click',event=>{
  if(viewer&&!viewer.hidden&&event.target===viewer)viewer.hidden=true;
 });
 
+let mithaqOpenChatRequest=0;
 async function openChat(userId,name){
+ const request=++mithaqOpenChatRequest;
  activeChatUser=userId;activeChatName=name;
- const panel=document.getElementById('chatPanel');panel.hidden=false;document.body.classList.add('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
+ const panel=document.getElementById('chatPanel'),conversationList=document.getElementById('conversationList');
+ // Switch the visible conversation synchronously; do not wait for profile/network requests.
+ panel.hidden=false;conversationList.hidden=true;document.body.classList.add('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
+ document.getElementById('chatMessages').replaceChildren();
+ document.getElementById('messageStatus').textContent='جارٍ فتح المحادثة...';
  document.getElementById('chatTitle').textContent=name||'محادثة';document.getElementById('chatTitle').setAttribute('aria-label','عرض ملف '+(name||'العضو'));
  document.getElementById('chatHeaderAvatar').textContent='👤';
  document.getElementById('chatPresenceDot').hidden=true;
  document.getElementById('chatPresenceText').textContent='عضو ميثاق';
  renderMithaqChatBackgrounds(userId).catch(error=>console.warn('MITHAQ chat backgrounds:',error));
+ // Load messages immediately in parallel with the non-essential profile header details.
+ const messagesPromise=refreshChat();
  try{
   const {data:profile}=await supabaseClient.from('profiles').select('display_name,country,region,marriage_type,life_text,last_seen_at').eq('id',userId).maybeSingle();
+  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
   const {data:publicRows}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[userId]});
+  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
   const gender=String(publicRows?.[0]?.details?.gender||'').trim().toLowerCase();
   document.getElementById('chatHeaderAvatar').textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   decorateMithaqMemberAvatar(document.getElementById('chatHeaderAvatar'),userId);
   const online=!!profile?.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
   document.getElementById('chatPresenceDot').hidden=!online;
   document.getElementById('chatPresenceText').textContent=online?'متصل الآن':'غير متصل حالياً';
- }catch(e){console.warn('MITHAQ chat profile:',e);}
+ }catch(e){if(request===mithaqOpenChatRequest)console.warn('MITHAQ chat profile:',e);}
+ if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
  const {error:readError}=await supabaseClient.rpc('mithaq_mark_messages_read',{p_sender_id:userId});if(readError)console.warn('MITHAQ mark-read:',readError.message);else loadMithaqUnreadCount();
- await refreshChat();
- // show('messages') starts an asynchronous conversation-list load which can hide
- // chatPanel after this chat has already opened. Reassert the selected chat after
- // its first message render so the composer remains available on mobile.
- panel.hidden=false;document.body.classList.add('mithaq-chat-open');
+ await messagesPromise;
+ if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
+ // Keep the selected conversation stable; stale requests may never replace it.
+ panel.hidden=false;conversationList.hidden=true;document.body.classList.add('mithaq-chat-open');
  const composer=document.getElementById('messageForm');
  if(composer){composer.style.setProperty('display','flex','important');composer.scrollIntoView({behavior:'smooth',block:'nearest'});}
  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
+ if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
+ if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
  const channelName='mithaq-chat-'+[session.user.id,userId].sort().join('-');
  activeChatChannel=supabaseClient.channel(channelName)
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+session.user.id},payload=>{
@@ -3414,7 +3426,7 @@ async function openChat(userId,name){
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
  if(activeChatChannel){await supabaseClient.removeChannel(activeChatChannel);activeChatChannel=null;}
- activeChatUser=null;clearMithaqChatBackground();runMithaqPageLoad('conversations',loadConversations);
+ activeChatUser=null;mithaqOpenChatRequest++;document.getElementById('conversationList').hidden=false;clearMithaqChatBackground();runMithaqPageLoad('conversations',loadConversations);
 });
 
 async function showChatMemberProfile(requestedUserId=activeChatUser,requestedName='',backTarget='chat'){
