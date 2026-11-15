@@ -3118,7 +3118,7 @@ async function loadConversations(){
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
   const gender=String(person?.details?.gender||'').trim().toLowerCase();
   const avatar=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
-  const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at&&(!pref?.last_read_at||new Date(m.created_at)>new Date(pref.last_read_at))).length;
+  const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at&&!m.deleted_for_everyone_at&&(!pref?.last_read_at||new Date(m.created_at)>new Date(pref.last_read_at))).length;
   const preview=last?.deleted_for_everyone_at?'تم حذف الرسالة':last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
   const pref=preferencesById.get(id);
   return {id,name,last,unread,avatar,preview,favorite:!!pref?.favorite,muted:!!pref?.muted,archived:!!pref?.archived,pinned:!!pref?.pinned};
