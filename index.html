@@ -3402,6 +3402,17 @@ async function openChat(userId,name){
  document.getElementById('chatPresenceDot').hidden=true;
  document.getElementById('chatPresenceText').textContent='عضو ميثاق';
  renderMithaqChatBackgrounds(userId).catch(error=>console.warn('MITHAQ chat backgrounds:',error));
+ // Restore this conversation's personal settings without delaying its first render.
+ Promise.all([
+  supabaseClient.from('mithaq_chat_preferences').select('theme,muted,favorite,shortcut').eq('user_id',currentUserId).eq('peer_id',userId).maybeSingle(),
+  supabaseClient.from('mithaq_chat_blocks').select('blocker_id').or('and(blocker_id.eq.'+currentUserId+',blocked_id.eq.'+userId+'),and(blocker_id.eq.'+userId+',blocked_id.eq.'+currentUserId+')')
+ ]).then(([prefResult,blockResult])=>{
+  if(request!==mithaqOpenChatRequest||activeChatUser!==userId)return;
+  document.getElementById('chatPanel').dataset.chatTheme=prefResult.data?.theme||'default';
+  const blocked=!!blockResult.data?.length;
+  document.getElementById('messageForm').hidden=blocked;
+  if(blocked)document.getElementById('messageStatus').textContent='المراسلة متوقفة لوجود حظر بين الحسابين.';
+ }).catch(error=>console.warn('MITHAQ chat preferences:',error));
  // Load messages immediately in parallel with the non-essential profile header details.
  const messagesPromise=refreshChat();
  try{
