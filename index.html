@@ -1610,7 +1610,7 @@ body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{ba
 <section id="settings" class="tab hidden">
 <div class="card settings-list">
 
-<button class="settings-item" id="settingsPremiumOpen" type="button"><span class="settings-icon">⭐</span><span><strong>العضوية المميزة</strong><small>الرسائل الصوتية ومشاركة الصور ومراسلات أكثر</small></span><span class="settings-arrow">‹</span></button>
+<button class="settings-item" id="settingsPremiumOpen" type="button"><span class="settings-icon">⭐</span><span><strong>العضوية المميزة</strong><small>مشاركة الصور ومراسلات أكثر</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item" id="settingsBackgroundOpen" type="button" aria-expanded="false" aria-controls="mithaqBackgroundSettings"><span class="settings-icon">🖼️</span><span><strong>الخلفية الشخصية</strong><small>إدارة الخلفية الشخصية ورفع صورة تظهر للطرف الآخر في المحادثة</small></span><span class="settings-arrow">‹</span></button>
 <button class="settings-item settings-logout" id="settingsSignOut" type="button"><span class="settings-icon">↪</span><span><strong>تسجيل الخروج</strong><small>الخروج من حسابك على هذا الجهاز</small></span><span class="settings-arrow">‹</span></button>
 <p id="settingsStatus" class="notice" aria-live="polite"></p>
@@ -1618,7 +1618,7 @@ body.authenticated #messages .mithaq-chat-compose #chatRecordButton.recording{ba
 <div class="card mithaq-premium-card" id="mithaqPremiumPanel" hidden>
  <div class="member-profile-card-head"><h2>العضوية المميزة</h2><span class="mithaq-premium-mark">⭐</span></div>
  <p id="mithaqPremiumStatus" class="mithaq-premium-status" aria-live="polite">جارٍ التحقق من حالة العضوية...</p>
- <ul class="mithaq-premium-benefits"><li>شارة ذهبية بجانب صورتك.</li><li>إرسال الرسائل الصوتية.</li><li>مشاركة الصور في المحادثات.</li><li>مزايا مراسلة أوسع، بعد تحديد حد المراسلات المجاني قبل الإطلاق.</li></ul>
+ <ul class="mithaq-premium-benefits"><li>شارة ذهبية بجانب صورتك.</li><li>مشاركة الصور في المحادثات.</li><li>مزايا مراسلة أوسع، بعد تحديد حد المراسلات المجاني قبل الإطلاق.</li></ul>
  <p class="muted">لطلب العضوية المميزة، اختر أحد أرقام واتساب الإدارة. ستُفتح رسالة جاهزة تتضمن بيانات حسابك وطلب الاشتراك، ولن يتم خصم أي مبلغ تلقائياً.</p>
  <div id="mithaqPremiumContacts" class="mithaq-premium-contacts"><p class="notice">جارٍ تحميل أرقام التواصل...</p></div>
  <p id="mithaqPremiumContactStatus" class="notice" aria-live="polite"></p>
@@ -4123,7 +4123,7 @@ function mithaqVoiceStartVisualizer(stream){
  const ctx=canvas.getContext('2d');if(!ctx)return;
  const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;
  try{
-  mithaqVoiceAudioContext=new AudioCtx();mithaqVoiceAnalyser=mithaqVoiceAudioContext.createAnalyser();
+  if(!mithaqVoiceAudioContext)mithaqVoiceAudioContext=new AudioCtx();mithaqVoiceAnalyser=mithaqVoiceAudioContext.createAnalyser();
   mithaqVoiceAnalyser.fftSize=128;mithaqVoiceAnalyser.smoothingTimeConstant=.72;
   mithaqVoiceAudioContext.createMediaStreamSource(stream).connect(mithaqVoiceAnalyser);
   const bins=new Uint8Array(mithaqVoiceAnalyser.frequencyBinCount);
@@ -4151,7 +4151,7 @@ async function mithaqStartVoiceRecording(){
  mithaqVoiceStarting=true;
  try{
   const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  if(mithaqVoiceGesture?.cancelled){stream.getTracks().forEach(t=>t.stop());return false;}
+  if(mithaqVoiceGesture?.cancelled){stream.getTracks().forEach(t=>t.stop());mithaqVoiceStopVisualizer();return false;}
   mithaqRecordStream=stream;mithaqRecordChunks=[];
   const preferred=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t));
   mithaqRecorder=new MediaRecorder(stream,preferred?{mimeType:preferred}:undefined);
@@ -4185,7 +4185,7 @@ async function mithaqStartVoiceRecording(){
   if(mithaqVoiceLocked){const p=mithaqVoicePanel();p.classList.add('locked');p.querySelector('.mithaq-voice-live-hint').textContent='التسجيل مقفل · أوقف أو احذف التسجيل';}
   document.getElementById('messageStatus').textContent='جارٍ التسجيل… ارفع إصبعك للإيقاف والإعداد للإرسال.';
   return true;
- }catch(err){document.getElementById('messageStatus').textContent=err?.name==='NotAllowedError'?'لم تسمح بإذن استخدام الميكروفون.':'تعذر تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);return false;}
+ }catch(err){mithaqVoiceStopVisualizer();mithaqRecordStream?.getTracks().forEach(t=>t.stop());mithaqRecordStream=null;document.getElementById('messageStatus').textContent=err?.name==='NotAllowedError'?'لم تسمح بإذن استخدام الميكروفون.':'تعذر تشغيل الميكروفون. تحقق من إذن المتصفح.';console.warn(err);return false;}
  finally{mithaqVoiceStarting=false;}
 }
 function mithaqStopVoiceRecording(){
@@ -4206,6 +4206,7 @@ mithaqVoiceButton.addEventListener('pointerdown',async e=>{
  if(mithaqVoiceStarting||(mithaqRecorder&&mithaqRecorder.state==='recording'))return;
  const gesture={id:e.pointerId,startX:e.clientX,startY:e.clientY,released:false,cancelled:false,locked:false};
  mithaqVoiceGesture=gesture;mithaqVoiceCancelled=false;
+ try{const AudioCtx=window.AudioContext||window.webkitAudioContext;if(AudioCtx&&!mithaqVoiceAudioContext){mithaqVoiceAudioContext=new AudioCtx();mithaqVoiceAudioContext.resume().catch(()=>{});}}catch(err){console.warn('AudioContext unavailable',err);}
  try{mithaqVoiceButton.setPointerCapture(e.pointerId);}catch{}
  const started=await mithaqStartVoiceRecording();
  if(mithaqVoiceGesture!==gesture)return;
