@@ -4106,7 +4106,7 @@ function mithaqVoicePanel(){
  let p=document.getElementById('mithaqVoiceLivePanel');
  if(!p){
   p=document.createElement('div');p.id='mithaqVoiceLivePanel';p.className='mithaq-voice-live';
-  p.innerHTML='<span class="mithaq-voice-live-dot"></span><strong id="mithaqVoiceLiveTime">00:00</strong><span class="mithaq-voice-live-hint">اسحب لليسار للإلغاء · للأعلى للقفل</span><canvas class="mithaq-voice-live-wave" width="180" height="34" aria-label="الموجة الصوتية المباشرة"></canvas><button type="button" id="mithaqVoiceCancel" aria-label="إلغاء التسجيل">🗑</button><button type="button" id="mithaqVoicePause" aria-label="إيقاف مؤقت">Ⅱ</button><button type="button" id="mithaqVoiceStop" aria-label="إيقاف التسجيل">■</button>';
+  p.innerHTML='<span class="mithaq-voice-live-dot"></span><strong id="mithaqVoiceLiveTime">00:00</strong><span class="mithaq-voice-live-hint">اسحب لليسار للإلغاء · للأعلى للقفل</span><canvas class="mithaq-voice-live-wave" width="180" height="34" aria-label="الموجة الصوتية المباشرة"></canvas><button type="button" id="mithaqVoiceCancel" aria-label="إلغاء التسجيل">🗑</button><button type="button" id="mithaqVoicePause" aria-label="إيقاف مؤقت" hidden>Ⅱ</button><button type="button" id="mithaqVoiceStop" aria-label="إيقاف التسجيل" hidden>■</button>'
   document.getElementById('messageForm').before(p);
   p.querySelector('#mithaqVoiceCancel').addEventListener('click',mithaqCancelVoiceRecording);
   p.querySelector('#mithaqVoicePause').addEventListener('click',mithaqVoiceTogglePause);
@@ -4153,6 +4153,7 @@ function mithaqVoiceResetButton(){
 }
 function mithaqVoiceSetLockedUI(){
  const p=mithaqVoicePanel();p.classList.add('locked');
+ p.querySelector('#mithaqVoicePause').hidden=false;p.querySelector('#mithaqVoiceStop').hidden=false;
  const hint=p.querySelector('.mithaq-voice-live-hint');
  if(hint)hint.textContent='التسجيل مقفل · يمكنك الإيقاف المؤقت أو الإيقاف أو الحذف';
 }
@@ -4188,7 +4189,6 @@ async function mithaqVoiceSendPending(sendButton,preview){
 }
 function mithaqVoiceShowPreview(blob,autoSend){
  const ext=blob.type.includes('mp4')?'m4a':blob.type.includes('ogg')?'ogg':'webm';
- mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type||'application/octet-stream'});
  mithaqVoiceClearPending();
  mithaqPendingVoiceFile=new File([blob],'voice-'+Date.now()+'.'+ext,{type:blob.type||'application/octet-stream'});
  mithaqPendingVoiceUrl=URL.createObjectURL(blob);
@@ -4223,8 +4223,9 @@ async function mithaqStartVoiceRecording(){
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){document.getElementById('messageStatus').textContent='تسجيل الصوت غير مدعوم في هذا المتصفح.';return false;}
  mithaqVoiceStarting=true;
  try{
+  const requestGesture=mithaqVoiceGesture;
   const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  if(mithaqVoiceGesture?.cancelled){stream.getTracks().forEach(t=>t.stop());mithaqVoiceStopVisualizer();return false;}
+  if(requestGesture?.cancelled||(mithaqVoiceGesture!==requestGesture&&!requestGesture?.locked)){stream.getTracks().forEach(t=>t.stop());mithaqVoiceStopVisualizer();return false;}
   mithaqRecordStream=stream;mithaqRecordChunks=[];
   const preferred=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t));
   mithaqRecorder=new MediaRecorder(stream,preferred?{mimeType:preferred}:undefined);
@@ -4239,7 +4240,7 @@ async function mithaqStartVoiceRecording(){
    if(mode==='cancel'||mithaqVoiceCancelled||!blob.size){document.getElementById('messageStatus').textContent='تم إلغاء التسجيل.';mithaqRecordChunks=[];return;}
    mithaqRecordChunks=[];mithaqVoiceShowPreview(blob,mode==='send');
   };
-  mithaqVoiceStartedAt=Date.now();mithaqVoiceElapsed=0;mithaqVoiceSegmentStartedAt=Date.now();mithaqVoiceCancelled=false;mithaqVoicePaused=false;mithaqVoiceStopMode='preview';mithaqVoiceLocked=!!mithaqVoiceGesture?.locked;
+  mithaqVoiceStartedAt=Date.now();mithaqVoiceElapsed=0;mithaqVoiceSegmentStartedAt=Date.now();mithaqVoiceCancelled=false;mithaqVoicePaused=false;mithaqVoiceStopMode='preview';mithaqVoiceLocked=!!requestGesture?.locked;
   mithaqRecorder.start(150);mithaqVoicePanel();mithaqVoiceStartClock();mithaqVoiceStartVisualizer(stream);
   const b=document.getElementById('chatRecordButton');b.classList.add('recording');b.textContent='●';b.setAttribute('aria-label','جارٍ تسجيل الرسالة الصوتية');
   if(mithaqVoiceLocked)mithaqVoiceSetLockedUI();
