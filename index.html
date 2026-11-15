@@ -3253,15 +3253,10 @@ async function renderMithaqChatBackgrounds(otherUserId){
   messages.style.backgroundPosition='center,'+x+'% '+y+'%';
   messages.style.backgroundRepeat='no-repeat';
   messages.classList.add('mithaq-chat-messages-has-background');
+  // Keep the other member's background as the chat canvas only.
+  // Do not inject background labels or preview tiles into the conversation layout.
   const host=document.getElementById('mithaqChatBackgrounds');
-  if(host){
-   const tile=document.createElement('div');tile.className='mithaq-chat-background-tile';
-   const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','عرض خلفية الطرف الآخر بحجم كامل');
-   const img=document.createElement('img');img.src=background.url;img.alt='خلفية الطرف الآخر';img.loading='lazy';img.decoding='async';
-   const caption=document.createElement('small');caption.textContent='خلفية الطرف الآخر · اضغط للتكبير';
-   button.append(img,caption);button.addEventListener('click',()=>openMithaqImageViewer(background.url,'خلفية الطرف الآخر'));
-   tile.append(button);host.append(tile);host.hidden=false;
-  }
+  if(host){host.replaceChildren();host.hidden=true;}
  }else if(background?.storageMissing){
   console.warn('MITHAQ: active background record has no accessible storage object for chat owner',otherUserId);
  }
