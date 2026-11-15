@@ -1221,6 +1221,17 @@ a{color:#c2185b}
 .mithaq-conversation-side{align-items:flex-end}
 @media(max-width:600px){.mithaq-inbox-toolbar{gap:9px;padding-bottom:11px}.mithaq-inbox-filters button{min-height:44px;font-size:12px}.mithaq-conversation-row{min-height:78px!important}}
 </style>
+
+<style id="mithaq-global-chat-feature-styles">
+.mithaq-chat-reply-quote{border-inline-start:3px solid var(--accent,#6c63ff);padding:7px 10px;margin:0 0 8px;background:rgba(108,99,255,.08);border-radius:8px;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mithaq-chat-edited,.mithaq-chat-pinned{display:inline-block;font-size:.72rem;opacity:.72;margin-inline-start:6px}
+.mithaq-message-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mithaq-message-actions button,.mithaq-chat-search-results button{min-height:36px;border:1px solid var(--border-color,#ddd);border-radius:9px;padding:5px 9px;background:var(--card-bg,#fff);color:inherit}
+.mithaq-chat-search-results{display:grid;gap:6px;margin-top:10px;max-height:40vh;overflow:auto}
+.mithaq-inbox-filters{display:flex;gap:6px;flex-wrap:wrap}
+.mithaq-inbox-filters button{min-height:40px;padding:7px 12px;border-radius:999px}
+.mithaq-inbox-filters button[aria-pressed="true"]{background:var(--accent,#6c63ff);color:white}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -3555,7 +3566,7 @@ async function openChat(userId,name){
   })
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+session.user.id},payload=>{
    const m=payload.new;if(m.recipient_id===userId&&activeChatUser===userId)refreshChat();
-  }).subscribe();
+  }).on('postgres_changes',{event:'*',schema:'public',table:'mithaq_chat_message_reactions'},()=>{if(activeChatUser===userId)refreshChat();}).subscribe();
 }
 document.getElementById('chatBack').addEventListener('click',async()=>{
  document.getElementById('chatPanel').hidden=true;document.body.classList.remove('mithaq-chat-open');document.getElementById('chatProfileCard').hidden=true;
@@ -3785,7 +3796,7 @@ document.getElementById('mithaqChatMenu').addEventListener('click',async e=>{
   }else if(action==='search'){
    const p=mithaqShowChatSheet('البحث داخل المحادثة','اكتب كلمة أو عبارة للعثور عليها في الرسائل المحمّلة.');
    const input=document.createElement('input');input.type='search';input.placeholder='ابحث في الرسائل...';input.setAttribute('aria-label','كلمة البحث');p.append(input);
-   make(p,'بحث',()=>{const term=input.value.trim().toLocaleLowerCase();if(!term)return;const nodes=[...document.querySelectorAll('#chatMessages .mithaq-chat-caption')];const found=nodes.find(n=>n.textContent.toLocaleLowerCase().includes(term));if(found){document.querySelectorAll('#chatMessages .selected').forEach(n=>n.classList.remove('selected'));found.closest('.mithaq-chat-bubble').classList.add('selected');found.closest('.mithaq-chat-bubble').scrollIntoView({behavior:'smooth',block:'center'});p.hidden=true;}else{const d=p.querySelector('p');if(d)d.textContent='لا توجد رسالة مطابقة ضمن الرسائل المحمّلة.';}},true);
+   make(p,'بحث',async()=>{const term=input.value.trim();if(!term)return;const pattern='%'+term.replace(/[,%]/g,'')+'%';const {data,error}=await supabaseClient.from('messages').select('id,body,created_at').or('and(sender_id.eq.'+currentUserId+',recipient_id.eq.'+activeChatUser+'),and(sender_id.eq.'+activeChatUser+',recipient_id.eq.'+currentUserId+')').ilike('body',pattern).order('created_at',{ascending:false}).limit(50);if(error)throw error;if(!data?.length){const d=p.querySelector('p');if(d)d.textContent='لا توجد رسالة مطابقة في هذه المحادثة.';return;}const results=document.createElement('div');results.className='mithaq-chat-search-results';data.forEach(item=>{const hit=document.createElement('button');hit.type='button';hit.textContent=(item.body||'رسالة')+' · '+new Date(item.created_at).toLocaleString('ar');hit.addEventListener('click',()=>{const node=[...document.querySelectorAll('#chatMessages .mithaq-chat-bubble')].find(el=>el.textContent.includes(item.body));if(node){node.scrollIntoView({behavior:'smooth',block:'center'});node.classList.add('selected');}else status.textContent='وجدنا الرسالة في البحث، لكنها خارج الرسائل المعروضة حالياً.';p.hidden=true;});results.append(hit);});p.append(results);},true);
   }else if(action==='clear'){
    const p=mithaqShowChatSheet('مسح محتوى المحادثة','سيتم إخفاء الرسائل من حسابك فقط. لن تُحذف عند الطرف الآخر.');
    make(p,'مسح من حسابي',async()=>{const {error}=await supabaseClient.rpc('mithaq_chat_clear_local',{p_peer_id:activeChatUser});if(error)throw error;status.textContent='تم مسح المحادثة من حسابك فقط.';p.hidden=true;await refreshChat();},true);
@@ -3852,7 +3863,7 @@ async function refreshChat(){
   const time=document.createElement('time');time.className='mithaq-chat-time';time.dateTime=m.created_at;time.textContent=new Date(m.created_at).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});if(m.sender_id===session.user.id){const ticks=document.createElement('span');ticks.className='mithaq-chat-ticks'+(m.read_at?' read':'');ticks.textContent='✓✓';ticks.title=m.read_at?'تمت قراءة الرسالة':'تم إرسال الرسالة';time.append(ticks);}p.append(time);
   if(!m.deleted_for_everyone_at){const actions=document.createElement('div');actions.className='mithaq-message-actions';const mine=m.sender_id===session.user.id;
   const reply=document.createElement('button');reply.type='button';reply.textContent='رد';reply.addEventListener('click',()=>{mithaqReplyTarget=m.id;document.getElementById('messageStatus').textContent='رد على: '+(m.body||'مرفق')+' — اكتب ردك الآن';document.getElementById('messageText').focus();});actions.append(reply);
-  const react=document.createElement('button');react.type='button';react.textContent='👍 '+(reactionRows.filter(r=>r.message_id===m.id).length||'');react.addEventListener('click',async()=>{const existing=reactionRows.find(r=>r.message_id===m.id&&r.user_id===session.user.id&&r.emoji==='👍');const result=existing?await supabaseClient.from('mithaq_chat_message_reactions').delete().eq('id',existing.id):await supabaseClient.from('mithaq_chat_message_reactions').insert({message_id:m.id,user_id:session.user.id,emoji:'👍'});if(result.error){status.textContent='تعذر حفظ التفاعل: '+result.error.message;return;}await refreshChat();});actions.append(react);
+  const react=document.createElement('button');react.type='button';react.textContent='😊 '+(reactionRows.filter(r=>r.message_id===m.id).length||'');react.addEventListener('click',()=>{const sheet=mithaqShowChatSheet('التفاعل مع الرسالة','اختر رمزًا للتفاعل. يمكنك إزالة تفاعلك بالضغط عليه مرة أخرى.');['👍','❤️','😂','😮','😢','🙏'].forEach(emoji=>{const choice=document.createElement('button');choice.type='button';choice.textContent=emoji+' '+reactionRows.filter(r=>r.message_id===m.id&&r.emoji===emoji).length;choice.addEventListener('click',async()=>{const existing=reactionRows.find(r=>r.message_id===m.id&&r.user_id===session.user.id&&r.emoji===emoji);const result=existing?await supabaseClient.from('mithaq_chat_message_reactions').delete().eq('id',existing.id):await supabaseClient.from('mithaq_chat_message_reactions').insert({message_id:m.id,user_id:session.user.id,emoji});if(result.error){status.textContent='تعذر حفظ التفاعل: '+result.error.message;return;}sheet.hidden=true;await refreshChat();});sheet.append(choice);});});actions.append(react);
   const pin=document.createElement('button');pin.type='button';pin.textContent=pinnedIds.has(m.id)?'إلغاء التثبيت':'تثبيت';pin.addEventListener('click',async()=>{const result=pinnedIds.has(m.id)?await supabaseClient.from('mithaq_chat_message_pins').delete().eq('message_id',m.id).eq('user_id',session.user.id):await supabaseClient.from('mithaq_chat_message_pins').insert({message_id:m.id,user_id:session.user.id});if(result.error){status.textContent='تعذر تحديث التثبيت: '+result.error.message;return;}await refreshChat();});actions.append(pin);
   if(mine){const all=document.createElement('button');all.type='button';all.textContent='حذف للجميع';all.addEventListener('click',()=>mithaqDeleteMessage(m.id,true));actions.append(all);if(!m.attachment_path&&Date.now()-new Date(m.created_at).getTime()<=15*60*1000){const edit=document.createElement('button');edit.type='button';edit.textContent='تعديل';edit.addEventListener('click',async()=>{const value=prompt('عدّل نص الرسالة',m.body||'');if(value===null||!value.trim())return;const {error}=await supabaseClient.rpc('mithaq_chat_edit_message',{p_message_id:m.id,p_body:value.trim()});if(error){status.textContent='تعذر تعديل الرسالة: '+error.message;return;}await refreshChat();});actions.append(edit);}}
   const local=document.createElement('button');local.type='button';local.textContent='حذف لدي';local.addEventListener('click',()=>mithaqDeleteMessage(m.id,false));actions.append(local);p.append(actions);}
