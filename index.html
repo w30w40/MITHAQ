@@ -1409,11 +1409,11 @@ body.authenticated #messages .mithaq-chat-message-item.mithaq-message-selected{o
 #mithaq-selection-layer .mithaq-selection-backdrop{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;border-radius:0;background:transparent!important;pointer-events:none}
 #messages:has(~ #mithaq-selection-layer) .mithaq-message-actions{display:none!important}
 body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-message-actions{display:none!important}
-#mithaq-selection-layer .mithaq-selection-toolbar{position:absolute;top:0;left:0;right:0;min-height:60px;display:flex;align-items:center;gap:9px;padding:calc(7px + env(safe-area-inset-top)) 12px 7px;background:#f0f2f5;border-radius:0 0 14px 14px;box-shadow:0 2px 8px #0001;direction:rtl;pointer-events:auto}
-#mithaq-selection-layer .mithaq-selection-close{width:42px;height:42px;min-width:42px;padding:0;border-radius:50%;background:transparent;color:#263238;font-size:27px}
-#mithaq-selection-layer .mithaq-selection-count{font-size:18px;font-weight:600;color:#263238;min-width:18px}
-#mithaq-selection-layer .mithaq-selection-tools{display:flex;align-items:center;justify-content:flex-start;gap:5px;overflow-x:auto;flex:1;scrollbar-width:none}
-#mithaq-selection-layer .mithaq-selection-action{display:flex!important;flex:0 0 44px!important;width:44px!important;height:44px!important;min-height:44px!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important;padding:3px!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#263238!important}
+#mithaq-selection-layer .mithaq-selection-toolbar{position:absolute;top:0;left:0;right:0;min-height:56px;display:flex;align-items:center;gap:3px;padding:calc(5px + env(safe-area-inset-top)) 9px 5px;background:#f0f2f5;border-radius:0;box-shadow:0 1px 3px #0002;direction:rtl;pointer-events:auto}
+#mithaq-selection-layer .mithaq-selection-close{width:40px;height:44px;min-width:40px;padding:0;border-radius:50%;background:transparent;color:#263238;font-size:26px}
+#mithaq-selection-layer .mithaq-selection-count{font-size:18px;font-weight:600;color:#263238;min-width:22px;text-align:center}
+#mithaq-selection-layer .mithaq-selection-tools{display:flex;align-items:center;justify-content:space-between;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none}
+#mithaq-selection-layer .mithaq-selection-action{display:flex!important;flex:0 0 42px!important;width:42px!important;height:44px!important;min-height:44px!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important;padding:2px!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#263238!important}
 #mithaq-selection-layer .mithaq-selection-action:active{background:#dfe4e8!important}
 #mithaq-selection-layer .mithaq-selection-action-icon{display:flex;align-items:center;justify-content:center;width:24px;height:24px;line-height:1}#mithaq-selection-layer .mithaq-selection-action-icon svg,#mithaq-selection-layer .mithaq-selection-close svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 #mithaq-selection-layer .mithaq-selection-action-label{display:none!important}
@@ -1421,7 +1421,7 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
 #mithaq-selection-layer .mithaq-selection-reactions button{width:38px;height:38px;min-width:38px;padding:0;border-radius:50%;background:#f4f6f7;font-size:21px}
 #mithaq-selection-layer .mithaq-selection-reactions button:active{transform:scale(1.14);background:#e7f6ec}
 #mithaq-selection-layer .mithaq-message-actions{display:flex!important;flex-direction:row!important;align-items:center!important;gap:3px!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
-@media(max-width:520px){#mithaq-selection-layer .mithaq-selection-toolbar{gap:4px;padding-left:8px;padding-right:8px}#mithaq-selection-layer .mithaq-selection-action{flex-basis:40px!important;width:40px!important}#mithaq-selection-layer .mithaq-selection-reactions{gap:3px;padding:5px 7px}#mithaq-selection-layer .mithaq-selection-reactions button{width:35px;height:35px;min-width:35px}}
+@media(max-width:520px){#mithaq-selection-layer .mithaq-selection-toolbar{gap:2px;padding-left:6px;padding-right:6px}#mithaq-selection-layer .mithaq-selection-close{width:36px;min-width:36px}#mithaq-selection-layer .mithaq-selection-action{flex-basis:38px!important;width:38px!important}#mithaq-selection-layer .mithaq-selection-reactions{gap:3px;padding:5px 7px}#mithaq-selection-layer .mithaq-selection-reactions button{width:35px;height:35px;min-width:35px}}
 </style>
 </head>
 <body>
@@ -4194,8 +4194,10 @@ async function refreshChat(){
     btn.addEventListener('click',()=>setTimeout(closeMithaqSelection,0),{once:true});
    };
    makeAction(replyButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14l-5-5 5-5M4 9h9a7 7 0 0 1 7 7v2"/></svg>','رد');
-   makeAction(forwardButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>','إعادة توجيه');
-   makeAction(pinButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l-1 5 3 3v2H6v-2l3-3-1-5zM12 14v7"/></svg>','تثبيت الرسالة');
+   const starAction=document.createElement('button');starAction.type='button';starAction.className='mithaq-selection-action';starAction.setAttribute('aria-label','تمييز بنجمة');starAction.title='تمييز بنجمة';
+   const starIcon=document.createElement('span');starIcon.className='mithaq-selection-action-icon';starIcon.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>';starAction.append(starIcon);
+   starAction.addEventListener('click',async()=>{starAction.disabled=true;try{const existing=await supabaseClient.from('mithaq_chat_message_stars').select('message_id').eq('message_id',m.id).eq('user_id',session.user.id).maybeSingle();if(existing.error)throw existing.error;const result=existing.data?await supabaseClient.from('mithaq_chat_message_stars').delete().eq('message_id',m.id).eq('user_id',session.user.id):await supabaseClient.from('mithaq_chat_message_stars').insert({message_id:m.id,user_id:session.user.id});if(result.error)throw result.error;closeMithaqSelection();status.textContent=existing.data?'أزيلت النجمة من الرسالة.':'تم تمييز الرسالة بنجمة.';}catch(err){status.textContent='تعذر تمييز الرسالة: '+(err?.message||'حاول مرة أخرى');starAction.disabled=false;}});
+   tools.append(starAction);
    const menuStyle=document.createElement('style');
    menuStyle.textContent='#mithaq-selection-layer .mithaq-selection-menu{position:absolute;top:calc(64px + env(safe-area-inset-top));left:10px;z-index:3;min-width:190px;max-width:min(260px,calc(100vw - 20px));padding:7px;background:#fff;border:1px solid #e1e5e8;border-radius:13px;box-shadow:0 8px 28px #0003;display:flex;flex-direction:column;gap:3px;pointer-events:auto}#mithaq-selection-layer .mithaq-selection-menu[hidden]{display:none!important}#mithaq-selection-layer .mithaq-selection-menu button{display:flex!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;min-height:44px!important;padding:9px 12px!important;border:0!important;border-radius:8px!important;background:#fff!important;color:#263238!important;text-align:right!important;font-size:14px!important;white-space:normal!important}#mithaq-selection-layer .mithaq-selection-menu button:active{background:#f0f2f5!important}#mithaq-selection-layer .mithaq-selection-more{font-size:25px!important}';
    layer.append(menuStyle);
@@ -4203,6 +4205,7 @@ async function refreshChat(){
    const deleteIcon=document.createElement('span');deleteIcon.className='mithaq-selection-action-icon';deleteIcon.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-7 0 1 14h4l1-14M10 10v7m4-7v7"/></svg>';
    deleteAction.append(deleteIcon);deleteButtons.forEach(btn=>used.add(btn));deleteAction.addEventListener('click',()=>{const target=deleteButtons[0];closeMithaqSelection();if(target)target.click();});
    if(deleteButtons.length)tools.append(deleteAction);
+   makeAction(forwardButton,'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5l7 7-7 7M21 12H9a6 6 0 0 0-6 6"/></svg>','إعادة توجيه');
    const moreMenu=document.createElement('div');moreMenu.className='mithaq-selection-menu';moreMenu.hidden=true;moreMenu.setAttribute('aria-label','المزيد من الخيارات');
    const moreButton=document.createElement('button');moreButton.type='button';moreButton.className='mithaq-selection-action mithaq-selection-more';moreButton.innerHTML='<span class="mithaq-selection-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>';moreButton.setAttribute('aria-label','المزيد');moreButton.title='المزيد';
    moreButton.addEventListener('click',()=>{moreMenu.hidden=!moreMenu.hidden;});
