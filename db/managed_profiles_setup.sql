@@ -57,7 +57,11 @@ grant execute on function public.mithaq_list_managed_profiles() to authenticated
 
 -- These management functions are restricted to the primary owner in private.admin_users.
 create or replace function public.mithaq_admin_list_managed_profiles()
-returns setof private.mithaq_managed_profiles
+returns table (
+  id uuid, display_name text, gender text, age integer, country text,
+  region text, marriage_type text, life_text text, details jsonb,
+  is_active boolean, created_at timestamptz, updated_at timestamptz
+)
 language plpgsql
 stable
 security definer
@@ -70,8 +74,10 @@ begin
     raise exception 'owner_only' using errcode = '42501';
   end if;
   return query
-    select * from private.mithaq_managed_profiles
-    order by created_at desc;
+    select m.id,m.display_name,m.gender,m.age,m.country,m.region,m.marriage_type,
+           m.life_text,m.details,m.is_active,m.created_at,m.updated_at
+    from private.mithaq_managed_profiles m
+    order by m.created_at desc;
 end;
 $function$;
 
