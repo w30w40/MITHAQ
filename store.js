@@ -565,3 +565,93 @@
   }
   window.loadMithaqStore = loadMithaqStore;
 })();
+
+// Individual visual backgrounds for platform-managed virtual profiles.
+// These are decorative gradients (not photographs or identities) and remain stable per profile.
+(() => {
+  const hashProfileId = value => {
+    let hash = 2166136261;
+    for (const char of String(value || 'mithaq')) {
+      hash ^= char.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  };
+  const managedBackground = id => {
+    const seed = hashProfileId(id);
+    const hue = seed % 360;
+    const second = (hue + 28 + ((seed >>> 9) % 72)) % 360;
+    const third = (hue + 155 + ((seed >>> 17) % 55)) % 360;
+    return {
+      image: `radial-gradient(circle at 12% 18%, hsl(${third} 78% 92% / .72), transparent 42%), linear-gradient(132deg, hsl(${hue} 72% 95%), hsl(${second} 68% 91%) 58%, hsl(${third} 70% 96%))`,
+      border: `hsl(${hue} 48% 82%)`,
+      accent: `hsl(${hue} 48% 36%)`
+    };
+  };
+  const paintManagedBackground = (node, id, kind = 'card') => {
+    if (!node || !id) return;
+    const palette = managedBackground(id);
+    node.style.setProperty('background-image', palette.image, 'important');
+    node.style.setProperty('background-color', '#fff4f7', 'important');
+    node.style.setProperty('border-color', palette.border, 'important');
+    node.dataset.mithaqManagedBackground = 'true';
+    if (kind === 'avatar') {
+      node.style.setProperty('background-image', palette.image, 'important');
+      node.style.setProperty('color', palette.accent, 'important');
+      node.style.setProperty('border', '2px solid #ffffffcc', 'important');
+      node.style.setProperty('box-shadow', '0 3px 12px #65334a18', 'important');
+    }
+  };
+  const managedRows = () => {
+    try { return (typeof mithaqMemberCache !== 'undefined' ? mithaqMemberCache : []).filter(person => person?.is_platform_managed === true); }
+    catch (_) { return []; }
+  };
+  const originalRenderMembers = window.renderMithaqMembers;
+  if (typeof originalRenderMembers === 'function') {
+    window.renderMithaqMembers = function (...args) {
+      const result = originalRenderMembers.apply(this, args);
+      const rows = managedRows();
+      const cards = [...document.querySelectorAll('#membersGrid .mithaq-directory-card')];
+      const used = new Set();
+      cards.forEach(card => {
+        const name = card.querySelector('h3')?.textContent?.trim();
+        const profile = rows.find(person => !used.has(person.id) && String(person.display_name || '').trim() === name);
+        if (!profile) return;
+        used.add(profile.id);
+        paintManagedBackground(card, profile.id);
+        paintManagedBackground(card.querySelector('.mithaq-directory-avatar'), profile.id, 'avatar');
+      });
+      return result;
+    };
+  }
+  const originalShowManagedProfile = window.showManagedMemberProfile;
+  if (typeof originalShowManagedProfile === 'function') {
+    window.showManagedMemberProfile = function (person, ...args) {
+      const result = originalShowManagedProfile.call(this, person, ...args);
+      const page = document.getElementById('mithaqFullMemberProfile');
+      if (page && person?.is_platform_managed === true) {
+        paintManagedBackground(page.querySelector('.mithaq-full-member-profile-hero'), person.id);
+        paintManagedBackground(page.querySelector('.mithaq-full-member-profile-avatar'), person.id, 'avatar');
+      }
+      return result;
+    };
+  }
+  const originalHomeFeed = window.loadMithaqHomeFeed;
+  if (typeof originalHomeFeed === 'function') {
+    window.loadMithaqHomeFeed = async function (...args) {
+      const result = await originalHomeFeed.apply(this, args);
+      const rows = managedRows();
+      const cards = [...document.querySelectorAll('#homeLiveFeed .mithaq-live-member')];
+      const used = new Set();
+      cards.forEach(card => {
+        const name = card.querySelector('h3')?.textContent?.trim();
+        const profile = rows.find(person => !used.has(person.id) && String(person.display_name || '').trim() === name);
+        if (!profile) return;
+        used.add(profile.id);
+        paintManagedBackground(card, profile.id);
+        paintManagedBackground(card.querySelector('.mithaq-live-avatar'), profile.id, 'avatar');
+      });
+      return result;
+    };
+  }
+})();
