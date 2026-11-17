@@ -212,6 +212,11 @@ body.authenticated #messages .mithaq-chat-message-item.show-actions .mithaq-mess
 body.authenticated #messages .mithaq-message-actions button{display:flex;align-items:center;justify-content:flex-start;min-height:46px;padding:9px 13px!important;border:0;border-radius:9px;background:#fff!important;color:#263238!important;text-align:right;font-size:14px}
 body.authenticated #messages .mithaq-message-actions button:active{background:#f0f2f5!important}
 body.authenticated #messages .mithaq-message-actions button:last-child{border-top:1px solid #edf0ef}
+
+.mithaq-managed-member-label{display:inline-block!important;width:max-content;max-width:100%;margin:5px 0!important;padding:5px 9px;border-radius:9px;background:#fff0f4;border:1px solid #efcbd5;color:#9e3555!important;font-size:11px!important;font-weight:750;line-height:1.6}
+.mithaq-managed-disclosure{margin:14px 0;padding:13px 15px;border:1px solid #efcbd5;border-right:4px solid #d94368;border-radius:12px;background:#fff4f6;color:#87374f;font-size:13px;line-height:1.9}
+
+.mithaq-managed-admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #f0e3e6}.mithaq-managed-admin-row p{margin:5px 0 0;color:#7b8790;font-size:12px}.mithaq-managed-admin-row .row{flex-wrap:wrap;justify-content:flex-end}.mithaq-managed-admin-row .row button{padding:8px 11px;font-size:12px}#mithaqManagedAdminForm{margin-top:18px;padding:15px;border:1px solid #f0dfe5;border-radius:14px;background:#fff9fa}#mithaqManagedAdminForm[hidden]{display:none!important}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -1674,6 +1679,24 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
   <div id="mithaqAdminStats" class="mithaq-admin-stats"></div>
   <button id="mithaqOpenSiteAnalytics" class="primary" type="button" hidden>📊 إحصائيات زوار الموقع</button>
 </div>
+<div class="card mithaq-admin-card" id="mithaqManagedProfilesAdmin" hidden>
+ <div class="mithaq-admin-heading"><div><h2>الحسابات تحت إدارة ميثاق</h2><p class="muted">إدارة الملفات الافتراضية المنشورة للأعضاء. هذه الملفات لا تستقبل رسائل أو تفاعلات.</p></div></div>
+ <p id="mithaqManagedAdminStatus" class="notice" aria-live="polite"></p>
+ <div class="field"><label for="mithaqManagedAdminSearch">البحث بالاسم</label><input id="mithaqManagedAdminSearch" type="search" placeholder="اكتب اسم الحساب للبحث"></div>
+ <div id="mithaqManagedAdminList"></div>
+ <form id="mithaqManagedAdminForm" hidden>
+  <h3>تعديل الملف</h3><input id="mithaqManagedAdminId" type="hidden">
+  <div class="field"><label for="mithaqManagedAdminName">الاسم الرباعي</label><input id="mithaqManagedAdminName" maxlength="120" required></div>
+  <div class="row">
+   <div class="field"><label for="mithaqManagedAdminAge">العمر</label><input id="mithaqManagedAdminAge" type="number" min="18" max="80" required></div>
+   <div class="field"><label for="mithaqManagedAdminMarriage">نوع الزواج</label><select id="mithaqManagedAdminMarriage"><option value="معلن">معلن</option><option value="مسيار">مسيار</option></select></div>
+  </div>
+  <div class="field"><label for="mithaqManagedAdminRegion">المدينة</label><input id="mithaqManagedAdminRegion" maxlength="120" required></div>
+  <div class="field"><label for="mithaqManagedAdminAbout">النبذة</label><textarea id="mithaqManagedAdminAbout" rows="3" maxlength="1500"></textarea></div>
+  <label><input id="mithaqManagedAdminActive" type="checkbox" checked> إظهار الملف للأعضاء</label>
+  <div class="row"><button class="primary" type="submit">حفظ التعديلات</button><button class="secondary" id="mithaqManagedAdminCancel" type="button">إلغاء</button></div>
+ </form>
+</div>
 <div class="card mithaq-admin-card" id="mithaqPremiumContactsAdmin" hidden>
  <div class="mithaq-admin-heading"><div><h2>أرقام واتساب اشتراكات العضوية المميزة</h2><p class="muted">أضف أرقام الإدارة أو عدّلها أو عطّلها. تظهر الأرقام النشطة للأعضاء فقط.</p></div></div>
  <div class="field"><label for="mithaqPremiumContactLabel">اسم جهة التواصل</label><input id="mithaqPremiumContactLabel" maxlength="60" value="واتساب الإدارة" placeholder="مثال: إدارة ميثاق"></div>
@@ -2601,6 +2624,88 @@ function mithaqAdminStat(label,value){
  const number=document.createElement('strong');number.textContent=String(value??0);
  card.append(name,number);return card;
 }
+
+let mithaqManagedAdminRows=[];
+async function loadManagedProfilesAdmin(){
+ const panel=document.getElementById('mithaqManagedProfilesAdmin');
+ const status=document.getElementById('mithaqManagedAdminStatus');
+ const host=document.getElementById('mithaqManagedAdminList');
+ if(!panel||!status||!host)return;
+ panel.hidden=true;
+ const {data,error}=await supabaseClient.rpc('mithaq_admin_list_managed_profiles');
+ if(error){status.textContent=error.message==='owner_only'?'إدارة هذه الحسابات متاحة للمالك الأساسي فقط.':'تعذر تحميل الحسابات الإدارية: '+error.message;return;}
+ panel.hidden=false;mithaqManagedAdminRows=data||[];
+ renderManagedAdminRows();
+ status.textContent='تم تحميل '+mithaqManagedAdminRows.length+' ملفاً تحت إدارة ميثاق.';
+}
+function renderManagedAdminRows(){
+ const host=document.getElementById('mithaqManagedAdminList');if(!host)return;
+ const query=(document.getElementById('mithaqManagedAdminSearch')?.value||'').trim().toLocaleLowerCase('ar');
+ host.replaceChildren();
+ const rows=mithaqManagedAdminRows.filter(row=>String(row.display_name||'').toLocaleLowerCase('ar').includes(query)).slice(0,100);
+ if(!rows.length){host.textContent='لا توجد نتائج مطابقة.';return;}
+ rows.forEach(profile=>{
+  const row=document.createElement('div');row.className='mithaq-managed-admin-row';
+  const info=document.createElement('div');const name=document.createElement('strong');name.textContent=profile.display_name;
+  const meta=document.createElement('p');meta.textContent=(profile.gender||'')+' • '+profile.age+' سنة • '+profile.region+' • '+(profile.is_active?'ظاهر':'موقوف');
+  info.append(name,meta);
+  const actions=document.createElement('div');actions.className='row';
+  const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='تعديل';edit.addEventListener('click',()=>editManagedAdminProfile(profile.id));
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='secondary';toggle.textContent=profile.is_active?'إيقاف':'نشر';toggle.addEventListener('click',()=>saveManagedAdminProfile(profile,{is_active:!profile.is_active}));
+  const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='حذف';remove.addEventListener('click',async()=>{if(!confirm('هل تريد حذف هذا الملف الافتراضي نهائياً؟'))return;const {error}=await supabaseClient.rpc('mithaq_admin_delete_managed_profile',{p_id:profile.id});if(error){alert('تعذر الحذف: '+error.message);return;}mithaqManagedAdminRows=mithaqManagedAdminRows.filter(item=>item.id!==profile.id);renderManagedAdminRows();});
+  actions.append(edit,toggle,remove);row.append(info,actions);host.append(row);
+ });
+ if(mithaqManagedAdminRows.length>rows.length){const note=document.createElement('p');note.className='notice';note.textContent='تظهر أول 100 نتيجة فقط. استخدم البحث للوصول إلى بقية الملفات.';host.append(note);}
+}
+function editManagedAdminProfile(id){
+ const profile=mithaqManagedAdminRows.find(row=>row.id===id);if(!profile)return;
+ document.getElementById('mithaqManagedAdminId').value=profile.id;
+ document.getElementById('mithaqManagedAdminName').value=profile.display_name||'';
+ document.getElementById('mithaqManagedAdminAge').value=profile.age||18;
+ document.getElementById('mithaqManagedAdminMarriage').value=profile.marriage_type||'معلن';
+ document.getElementById('mithaqManagedAdminRegion').value=profile.region||'';
+ document.getElementById('mithaqManagedAdminAbout').value=profile.life_text||'';
+ document.getElementById('mithaqManagedAdminActive').checked=!!profile.is_active;
+ const form=document.getElementById('mithaqManagedAdminForm');form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'center'});
+}
+async function saveManagedAdminProfile(profile,override={}){
+ const details={...(profile.details||{})};
+ const args={
+  p_id:profile.id,
+  p_display_name:override.display_name??profile.display_name,
+  p_age:override.age??profile.age,
+  p_region:override.region??profile.region,
+  p_marriage_type:override.marriage_type??profile.marriage_type,
+  p_life_text:override.life_text??profile.life_text,
+  p_details:details,
+  p_is_active:override.is_active??profile.is_active
+ };
+ const {error}=await supabaseClient.rpc('mithaq_admin_update_managed_profile',args);
+ if(error){alert('تعذر حفظ الملف: '+error.message);return;}
+ const {data}=await supabaseClient.rpc('mithaq_admin_list_managed_profiles');
+ mithaqManagedAdminRows=data||[];renderManagedAdminRows();
+}
+document.getElementById('mithaqManagedAdminSearch')?.addEventListener('input',renderManagedAdminRows);
+document.getElementById('mithaqManagedAdminCancel')?.addEventListener('click',()=>{document.getElementById('mithaqManagedAdminForm').hidden=true;});
+document.getElementById('mithaqManagedAdminForm')?.addEventListener('submit',async event=>{
+ event.preventDefault();
+ const id=document.getElementById('mithaqManagedAdminId').value;
+ const profile=mithaqManagedAdminRows.find(row=>row.id===id);if(!profile)return;
+ const details={...(profile.details||{}),age:Number(document.getElementById('mithaqManagedAdminAge').value),city:document.getElementById('mithaqManagedAdminRegion').value};
+ const args={
+  p_id:id,p_display_name:document.getElementById('mithaqManagedAdminName').value.trim(),
+  p_age:Number(document.getElementById('mithaqManagedAdminAge').value),
+  p_region:document.getElementById('mithaqManagedAdminRegion').value.trim(),
+  p_marriage_type:document.getElementById('mithaqManagedAdminMarriage').value,
+  p_life_text:document.getElementById('mithaqManagedAdminAbout').value,
+  p_details:details,p_is_active:document.getElementById('mithaqManagedAdminActive').checked
+ };
+ const {error}=await supabaseClient.rpc('mithaq_admin_update_managed_profile',args);
+ if(error){document.getElementById('mithaqManagedAdminStatus').textContent='تعذر الحفظ: '+error.message;return;}
+ document.getElementById('mithaqManagedAdminForm').hidden=true;
+ await loadManagedProfilesAdmin();
+});
+
 async function loadMithaqAdminPanel(){
  const status=document.getElementById('mithaqAdminStatus');
  const statsHost=document.getElementById('mithaqAdminStats');
@@ -2608,7 +2713,7 @@ async function loadMithaqAdminPanel(){
  if(!await refreshMithaqAdminAccess()){status.textContent='هذه الصفحة مخصصة للمشرف المعتمد فقط.';statsHost.replaceChildren();membersHost.replaceChildren();return;}
  status.textContent='جارٍ تحميل بيانات الإدارة...';
  statsHost.replaceChildren();membersHost.replaceChildren();
- await Promise.all([loadMithaqPremiumContactsAdmin(),loadMithaqModeratorManagement(),loadMithaqPremiumSubscriptionsAdmin()]);
+ await Promise.all([loadMithaqPremiumContactsAdmin(),loadMithaqModeratorManagement(),loadMithaqPremiumSubscriptionsAdmin(),loadManagedProfilesAdmin()]);
  const reportsHost=document.getElementById('mithaqAdminReports');
  const statsCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_stats'):Promise.resolve({data:null,error:null});
  const peopleCall=isMithaqAdmin?supabaseClient.rpc('mithaq_admin_list_members'):supabaseClient.rpc('mithaq_moderator_list_members');
@@ -3048,7 +3153,7 @@ async function loadMithaqHomeFeed(){
   const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
   const gender=String(person.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
-  decorateMithaqMemberAvatar(avatar,person.id);
+  if(person.is_platform_managed!==true)decorateMithaqMemberAvatar(avatar,person.id);
   avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
   dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
@@ -3123,7 +3228,7 @@ function renderMithaqMembers(){
  people.sort((a,b)=>mithaqMemberViewMode==='newest'||sortMode==='newest'?(new Date(b.created_at||b.joined_at||b.updated_at||0).getTime()-new Date(a.created_at||a.joined_at||a.updated_at||0).getTime()):sortMode==='name'?String(a.display_name||'').localeCompare(String(b.display_name||''),'ar'):(new Date(b.last_seen_at||0).getTime()-new Date(a.last_seen_at||0).getTime()));
  host.replaceChildren();
  if(!people.length){status.textContent=query?'لا توجد نتائج مطابقة لبحثك.':'لا يوجد أعضاء آخرون حالياً.';return;}
- status.textContent='عدد الأعضاء: '+people.length;
+ status.textContent='عدد الملفات المعروضة: '+people.length;
  people.forEach(person=>{
   const card=document.createElement('article');card.className='mithaq-directory-card';
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
@@ -3132,12 +3237,60 @@ function renderMithaqMembers(){
   decorateMithaqMemberAvatar(avatar,person.id);
   const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);if(mithaqPremiumMemberIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
-  const meta=document.createElement('p');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
-  const presence=document.createElement('p');const online=!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=online?'🟢 متصل الآن':'⚪ غير متصل حالياً';
-  const button=document.createElement('button');button.type='button';button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';avatar.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));card.append(avatar,name,meta,presence,button);host.append(card);
+  const managed=person.is_platform_managed===true;
+  const managedLabel=managed?document.createElement('p'):null;
+  if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
+  const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
+  const button=document.createElement('button');button.type='button';
+  if(managed){button.textContent='غير متاح للتواصل';button.disabled=true;button.setAttribute('aria-label','هذا الملف الافتراضي لا يستقبل الرسائل أو التفاعلات');}
+  else{button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});}
+  avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';
+  avatar.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
+  card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,button);host.append(card);
  });
 }
+
+function showManagedMemberProfile(person){
+ const existing=document.getElementById('mithaqFullMemberProfile');
+ if(existing)existing.remove();
+ const page=document.createElement('section');
+ page.id='mithaqFullMemberProfile';
+ page.className='mithaq-full-member-profile';
+ page.setAttribute('dir','rtl');
+ page.setAttribute('aria-label','ملف افتراضي تحت إدارة ميثاق');
+ const header=document.createElement('header');
+ header.className='mithaq-full-member-profile-header';
+ const back=document.createElement('button');
+ back.type='button';back.className='mithaq-full-member-profile-back';back.textContent='← رجوع للأعضاء';
+ back.addEventListener('click',()=>page.remove());
+ const heading=document.createElement('strong');heading.textContent='الملف الشخصي';
+ header.append(back,heading);
+ const content=document.createElement('div');content.className='mithaq-full-member-profile-content';
+ const hero=document.createElement('div');hero.className='mithaq-full-member-profile-hero';
+ const avatar=document.createElement('div');avatar.className='mithaq-full-member-profile-avatar';
+ avatar.textContent=person.details?.gender==='أنثى'?'👩🏻':'👨🏻';
+ const identity=document.createElement('div');
+ const name=document.createElement('h2');name.textContent=person.display_name||'ملف تحت إدارة ميثاق';
+ const label=document.createElement('p');label.className='mithaq-managed-member-label';label.textContent='تحت إدارة ميثاق • حساب افتراضي';
+ const sub=document.createElement('p');sub.textContent=[person.country,person.region].filter(Boolean).join(' • ');
+ identity.append(name,label,sub);hero.append(avatar,identity);content.append(hero);
+ const disclosure=document.createElement('div');disclosure.className='mithaq-managed-disclosure';
+ disclosure.textContent='هذا ملف افتراضي أنشأته وتديره منصة ميثاق، وليس حساب شخص حقيقي. لا يستقبل رسائل أو طلبات اهتمام.';
+ content.append(disclosure);
+ const details=person.details||{};
+ const fields=[['العمر',details.age?details.age+' سنة':'غير محدد'],['الجنس',details.gender||'غير محدد'],['المدينة',details.city||person.region||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||'غير محدد'],['الحالة الاجتماعية',details.marital_status||'غير محدد'],['الأطفال',details.children||'غير محدد'],['نوع الزواج',person.marriage_type||'غير محدد']];
+ const card=document.createElement('section');card.className='mithaq-profile-meta';
+ const title=document.createElement('h3');title.textContent='معلومات الملف';card.append(title);
+ fields.forEach(([labelText,value])=>{const row=document.createElement('div');row.className='mithaq-profile-meta-row';const l=document.createElement('span');l.textContent=labelText;const v=document.createElement('strong');v.textContent=value;row.append(l,v);card.append(row);});
+ content.append(card);
+ const about=document.createElement('section');about.className='mithaq-profile-meta';
+ const aboutTitle=document.createElement('h3');aboutTitle.textContent='نبذة تعريفية افتراضية';
+ const aboutText=document.createElement('p');aboutText.textContent=details.about||person.life_text||'ملف افتراضي تحت إدارة ميثاق.';
+ about.append(aboutTitle,aboutText);content.append(about);
+ page.append(header,content);document.body.append(page);
+}
+
 async function loadMembers(){
  const status=document.getElementById('membersStatus');
  if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
@@ -3146,10 +3299,14 @@ async function loadMembers(){
  status.textContent='جارٍ تحميل جميع الأعضاء المتاحين...';
  const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
- mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
- mithaqMemberCache=(data||[]).map(person=>({...person,details:person.details||{}}));
+ const {data:managedRows,error:managedError}=await supabaseClient.rpc('mithaq_list_managed_profiles');
+ if(managedError)console.warn('MITHAQ managed profiles unavailable:',managedError.message);
+ const realRows=(data||[]).map(person=>({...person,details:person.details||{},is_platform_managed:false,can_interact:true}));
+ const managedProfiles=(managedRows||[]).map(person=>({...person,details:person.details||{},is_platform_managed:true,can_interact:false}));
+ mithaqPremiumMemberIds=await loadMithaqPremiumIds(realRows.map(person=>person.id));
+ mithaqMemberCache=[...realRows,...managedProfiles];
  renderMithaqMembers();
- if(!mithaqMemberCache.length)status.textContent='لا يوجد أعضاء متاحون للعرض حالياً.';
+ if(!mithaqMemberCache.length)status.textContent='لا يوجد أعضاء أو ملفات إدارية متاحة للعرض حالياً.';
 }
 function populateMithaqCountryFilter(){
  const select=document.getElementById('mithaqCountryFilter');if(!select||typeof phoneCountryRows==='undefined')return;
