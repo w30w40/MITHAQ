@@ -3153,7 +3153,7 @@ async function loadMithaqHomeFeed(){
   const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
   const gender=String(person.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
-  decorateMithaqMemberAvatar(avatar,person.id);
+  if(person.is_platform_managed!==true)decorateMithaqMemberAvatar(avatar,person.id);
   avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
   dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
