@@ -2655,7 +2655,7 @@ function renderManagedAdminRows(){
   const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='حذف';remove.addEventListener('click',async()=>{if(!confirm('هل تريد حذف هذا الملف الافتراضي نهائياً؟'))return;const {error}=await supabaseClient.rpc('mithaq_admin_delete_managed_profile',{p_id:profile.id});if(error){alert('تعذر الحذف: '+error.message);return;}mithaqManagedAdminRows=mithaqManagedAdminRows.filter(item=>item.id!==profile.id);renderManagedAdminRows();});
   actions.append(edit,toggle,remove);row.append(info,actions);host.append(row);
  });
- if(mithaqManagedAdminRows.length>rows.length)host.append(el('p','notice','تظهر أول 100 نتيجة فقط. استخدم البحث للوصول إلى بقية الملفات.'));
+ if(mithaqManagedAdminRows.length>rows.length){const note=document.createElement('p');note.className='notice';note.textContent='تظهر أول 100 نتيجة فقط. استخدم البحث للوصول إلى بقية الملفات.';host.append(note);}
 }
 function editManagedAdminProfile(id){
  const profile=mithaqManagedAdminRows.find(row=>row.id===id);if(!profile)return;
