@@ -2746,12 +2746,23 @@ async function showAuthSession(){
  applyAuthenticatedSession(data.session||null);
 }
 async function restoreAuthSession(){
+ let restoreError=null;
  try{
-  if(!supabaseClient){applyAuthenticatedSession(null);return;}
-  const {data,error}=await supabaseClient.auth.getSession();
-  if(error){console.error('MITHAQ session restore:',error.message);applyAuthenticatedSession(null);return;}
-  if(data.session){
-   applyAuthenticatedSession(data.session);
+  if(!supabaseClient)throw (supabaseInitError||new Error('تعذر تهيئة اتصال Supabase.'));
+  let result=null;
+  for(let attempt=0;attempt<3;attempt++){
+   result=await supabaseClient.auth.getSession();
+   if(!result.error)break;
+   restoreError=result.error;
+   const message=String(result.error.message||result.error);
+   const retryable=/network|fetch|timeout|temporar|connection|load failed/i.test(message);
+   if(!retryable||attempt===2)throw result.error;
+   await new Promise(resolve=>setTimeout(resolve,600*(attempt+1)));
+  }
+  if(result?.error)throw result.error;
+  const session=result?.data?.session||null;
+  if(session){
+   applyAuthenticatedSession(session);
    let target='home';
    try{const saved=sessionStorage.getItem(MITHAQ_ROUTE_KEY);if(saved&&Array.from(document.querySelectorAll('.tab')).some(tab=>tab.id===saved))target=saved;}catch(_){}
    let allowed=false;
@@ -2765,6 +2776,21 @@ async function restoreAuthSession(){
   }else{
    applyAuthenticatedSession(null);
    try{sessionStorage.removeItem(MITHAQ_ROUTE_KEY);}catch(_){}
+   showEntry('login');
+  }
+ }catch(error){
+  restoreError=error;
+  console.error('MITHAQ session restore failed; preserving login state:',error);
+  if(!document.body.classList.contains('authenticated')){
+   showEntry('login');
+   const status=document.getElementById('entryLoginStatus');
+   if(status)status.textContent='تعذر التحقق من جلسة الدخول بسبب مشكلة اتصال. لم يتم حذف حسابك. أعد المحاولة أو سجّل الدخول من جديد.';
+   let retry=document.getElementById('mithaqRetrySessionRestore');
+   if(!retry){
+    retry=document.createElement('button');retry.id='mithaqRetrySessionRestore';retry.type='button';retry.className='entry-switch';retry.textContent='إعادة محاولة استعادة الجلسة';
+    retry.addEventListener('click',()=>{const s=document.getElementById('entryLoginStatus');if(s)s.textContent='جارٍ التحقق من الجلسة...';restoreAuthSession();});
+    document.getElementById('entryLogin')?.append(retry);
+   }
   }
  }finally{
   document.documentElement.classList.remove('mithaq-auth-pending');
@@ -5055,8 +5081,9 @@ searchCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(searchCi
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .catch(error => console.warn('تعذر تسجيل خدمة تطبيق ميثاق:', error));
+    navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
+      .then(registration => registration.update())
+      .catch(error => console.warn('تعذر تحديث خدمة تطبيق ميثاق:', error));
   });
 }
 </script>
