@@ -3300,7 +3300,9 @@ function showManagedMemberProfile(person){
 }
 
 async function loadMembers(){
+ const host=document.getElementById('membersGrid');
  const status=document.getElementById('membersStatus');
+ if(!host||!status)return;
  if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
@@ -3484,9 +3486,9 @@ async function loadConversations(){
   const last=(data||[]).find(m=>m.sender_id===id||m.recipient_id===id);
   const gender=String(person?.details?.gender||'').trim().toLowerCase();
   const avatar=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  const pref=preferencesById.get(id);
   const unread=(data||[]).filter(m=>m.sender_id===id&&m.recipient_id===session.user.id&&!m.read_at&&!m.deleted_for_everyone_at&&(!pref?.last_read_at||new Date(m.created_at)>new Date(pref.last_read_at))).length;
   const preview=last?.deleted_for_everyone_at?'تم حذف الرسالة':last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
-  const pref=preferencesById.get(id);
   return {id,name,last,unread,avatar,preview,favorite:!!pref?.favorite,muted:!!pref?.muted,archived:!!pref?.archived,pinned:!!pref?.pinned};
  });
  renderMithaqConversationList();
@@ -4071,7 +4073,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   actionsPanel.append(messageButton,interestButton,interestChoice,menuWrap,reportForm,actionStatus);
   content.append(actionsPanel);
 
-  const labels={age:'العمر',gender:'الجنس',city:'المدينة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:'الحجاب',body_build:'بنية الجسم',skin_color:'لون البشرة',origin:'الأصل',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم'};
+  const labels={age:'العمر',gender:'الجنس',city:'المدينة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:'الحجاب',body_build:'بنية الجسم',skin_color:'لون البشرة',origin:'الأصل',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي'};
   const formatValue=value=>{
    if(value===null||value===undefined||value==='')return '';
    if(Array.isArray(value))return value.map(v=>typeof v==='object'?JSON.stringify(v):String(v)).join('، ');
@@ -4091,7 +4093,8 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   addSection('المعلومات الأساسية',[
    ['الدولة',profile?.country],['المنطقة / المدينة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
-  const detailEntries=Object.entries(details).filter(([key])=>!/(^_|password|token|secret|email|phone|mobile|address|private|consent)/i.test(key)).map(([key,value])=>[labels[key]||key.replace(/[_-]+/g,' '),value]);
+  const publicProfileFields=new Set(['age','gender','city','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','origin','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title']);
+  const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
   addSection('المواصفات الشخصية',detailEntries);
   addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
   if(content.childElementCount<=1){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد مواصفات إضافية منشورة لهذا العضو حالياً.';content.append(empty);}
