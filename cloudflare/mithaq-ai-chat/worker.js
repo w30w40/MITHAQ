@@ -11,8 +11,8 @@ const GITHUB_API="https://api.github.com";
 const GITHUB_OWNER="w30w40";
 const GITHUB_REPO="MITHAQ";
 function safeRepoPath(value){
- const path=cleanText(value,240).replace(/^\\/+|\\/+$/g,"");
- if(!path||path.split("/").some(part=>!part||part==="."||part==="..")||/(^|\\/)\\.env($|\\.)|(^|\\/)(id_rsa|.*\\.pem|.*\\.key)$/i.test(path))return null;
+ const path=cleanText(value,240).replace(/^\/+|\/+$/g,"");
+ if(!path||path.split("/").some(part=>!part||part==="."||part==="..")||/(^|\/)\.env($|\.)|(^|\/)(id_rsa|.*\.pem|.*\.key)$/i.test(path))return null;
  return path;
 }
 async function githubFetch(env,path,init){
@@ -25,7 +25,7 @@ async function githubFetch(env,path,init){
  return fetch(GITHUB_API+path,{...(init||{}),headers});
 }
 function decodeBase64Utf8(value){
- const binary=atob(String(value||"").replace(/\\s/g,""));
+ const binary=atob(String(value||"").replace(/\s/g,""));
  const bytes=new Uint8Array(binary.length);
  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
  return new TextDecoder().decode(bytes);
@@ -157,7 +157,7 @@ export default { async fetch(request,env) {
     const fileType=cleanText(file.type,100).toLowerCase();
     const fileKind=cleanText(file.kind,20);
     if(fileKind==="image"){
-     if(!/^image\\/(jpeg|png|webp|gif)$/.test(fileType)||typeof file.data!=="string"||!file.data.startsWith("data:"+fileType+";base64,")||file.data.length>7*1024*1024)return json({error:"الصورة المرفقة غير صالحة أو أكبر من الحد المسموح: "+fileName},400,origin);
+     if(!/^image\/(jpeg|png|webp|gif)$/.test(fileType)||typeof file.data!=="string"||!file.data.startsWith("data:"+fileType+";base64,")||file.data.length>7*1024*1024)return json({error:"الصورة المرفقة غير صالحة أو أكبر من الحد المسموح: "+fileName},400,origin);
      const vision=await env.AI.run("@cf/moondream/moondream3.1-9B-A2B",{task:"query",image:file.data,question:userText||"حلل الصورة المرفقة واشرح محتواها والنصوص الظاهرة فيها باللغة العربية.",reasoning:true,temperature:0.2,max_tokens:1200});
      attachmentContext.push("تحليل الصورة "+fileName+": "+cleanText(vision&&vision.answer||vision&&vision.caption||"",5000));
     }else if(fileKind==="audio"){
