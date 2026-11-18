@@ -163,10 +163,12 @@
   if(disclosure)disclosure.textContent='هذا ملف افتراضي تديره منصة ميثاق، وليس حساب شخص حقيقي. المحادثة المتاحة تتم مع مساعد ذكاء اصطناعي تابع للمنصة.';
   const avatarNode=page.querySelector('.mithaq-full-member-profile-avatar');apply(avatarNode,person.id,person.gender||person.details?.gender);
   const contentNode=page.querySelector('.mithaq-full-member-profile-content');
-  if(contentNode&&!contentNode.querySelector('.mithaq-managed-actions')){
-   const actions=document.createElement('div');actions.className='mithaq-managed-actions';
-   actions.append(interestButton(person.id),managedAIChatButton(person));
-   contentNode.append(actions);
+  if(contentNode){
+   let actions=contentNode.querySelector('.mithaq-managed-actions');
+   if(!actions){actions=document.createElement('div');actions.className='mithaq-managed-actions';contentNode.append(actions);}
+   actions.replaceChildren(interestButton(person.id),managedAIChatButton(person));
+   const note=contentNode.querySelector('.mithaq-managed-note');
+   if(note)note.textContent='يمكنك استعراض الملف وإضافته إلى اهتماماتك وبدء محادثة مع مساعد الذكاء الاصطناعي التابع لميثاق. الحساب افتراضي ولا يمثّل شخصاً حقيقياً.';
   }
  };
  setTimeout(refreshManagedCards,350);
