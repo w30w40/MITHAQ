@@ -1682,7 +1682,7 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
   <button id="mithaqOpenSiteAnalytics" class="primary" type="button" hidden>📊 إحصائيات زوار الموقع</button>
 </div>
 <div class="card mithaq-admin-card" id="mithaqManagedProfilesAdmin" hidden>
- <div class="mithaq-admin-heading"><div><h2>الحسابات تحت إدارة ميثاق</h2><p class="muted">إدارة الملفات الافتراضية المنشورة للأعضاء. هذه الملفات لا تستقبل رسائل أو تفاعلات.</p></div></div>
+ <div class="mithaq-admin-heading"><div><h2>الحسابات تحت إدارة ميثاق</h2><p class="muted">إدارة الملفات الافتراضية المنشورة للأعضاء. تظهر بوضوح كملفات افتراضية وتتيح محادثة مع مساعد ميثاق الذكي.</p></div></div>
  <p id="mithaqManagedAdminStatus" class="notice" aria-live="polite"></p>
  <div class="field"><label for="mithaqManagedAdminSearch">البحث بالاسم</label><input id="mithaqManagedAdminSearch" type="search" placeholder="اكتب اسم الحساب للبحث"></div>
  <div id="mithaqManagedAdminList"></div>
@@ -3286,10 +3286,11 @@ function renderMithaqMembers(){
   const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
   const button=document.createElement('button');button.type='button';
-  if(managed){button.textContent='غير متاح للتواصل';button.disabled=true;button.setAttribute('aria-label','هذا الملف الافتراضي لا يستقبل الرسائل أو التفاعلات');}
+  if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
   else{button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});}
   avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';
   avatar.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
+  name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
   card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,button);host.append(card);
  });
  if(visiblePeople.length<people.length){
