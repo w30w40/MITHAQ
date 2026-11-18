@@ -10,7 +10,9 @@ const required = [
   'id="aiAssistant"',
   'id="mithaqAdminChatForm"',
   'id="mithaqAiRunDiagnostics"',
-  'navigator.serviceWorker.register'
+  'navigator.serviceWorker.register',
+  'window.reportMithaqClientError',
+  'mithaq_admin_ai_client_errors'
 ];
 const missing = required.filter((needle) => !html.includes(needle));
 if (missing.length) {
@@ -52,5 +54,19 @@ if (swResult.status !== 0) {
   console.error("Service worker syntax check failed:");
   console.error(swResult.stderr || swResult.stdout);
 }
+const worker = readFileSync("cloudflare/mithaq-ai-chat/worker.js", "utf8");
+const workerFile = join(tmpdir(), "mithaq-worker-check.mjs");
+writeFileSync(workerFile, worker, "utf8");
+const workerResult = spawnSync(process.execPath, ["--check", workerFile], { encoding: "utf8" });
+unlinkSync(workerFile);
+if (workerResult.status !== 0) {
+  failed = true;
+  console.error("MITHAQ AI Worker syntax check failed:");
+  console.error(workerResult.stderr || workerResult.stdout);
+}
+if (!worker.includes('/client-error') || !worker.includes('mithaq_report_client_error')) {
+  failed = true;
+  console.error("MITHAQ AI Worker is missing the client error reporting endpoint.");
+}
 if (failed) process.exit(1);
-console.log(`MITHAQ static checks passed: required app markers, ${scripts.length} inline scripts, and service worker syntax.`);
+console.log(`MITHAQ static checks passed: required app markers, ${scripts.length} inline scripts, service worker, and AI Worker syntax.`);
