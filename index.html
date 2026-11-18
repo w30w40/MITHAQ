@@ -1826,13 +1826,13 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
  <div class="mithaq-ai-admin">
   <div class="mithaq-ai-hero">
    <div class="mithaq-ai-hero-head"><div class="mithaq-ai-orb" aria-hidden="true">✦</div><div><h2 style="margin:0">مساعد ميثاق الذكي</h2><p class="mithaq-ai-muted" style="margin:4px 0 0">مركز التحليل والفحص والتجارب — للإدارة الرئيسية فقط</p></div></div>
-   <p class="mithaq-ai-muted">هذه هي المرحلة الأولى: لوحة إدارية محمية وفحوصات اتصال أساسية حقيقية. سيُربط محرك المحادثة وتنفيذ الأوامر والتجارب المعزولة في المرحلة التالية؛ لن ندّعي تنفيذ أو إصلاح شيء قبل ربطه واختباره.</p>
+   <p class="mithaq-ai-muted">المساعد متصل بمحرك الذكاء الاصطناعي وقاعدة بيانات ميثاق. يستطيع تحليل البيانات واقتراح تعديلات وحذف محدد بعد موافقتك. فحص الواجهة وتجارب الإصلاح والنشر الآلي ما زالت قدرات قيد البناء، ولن يعلن نجاحها دون اختبار فعلي.</p>
   </div>
   <div class="mithaq-ai-grid">
    <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">سيعمل لاحقاً ببيانات اختبار منفصلة، دون لمس حسابات الأعضاء الحقيقية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">سيعرض التغيير ونتيجة الاختبار وخطة التراجع قبل أي نشر حساس.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">سيُفعّل بعد تجهيز بيئة اختبار منفصلة؛ لا تُجرى التجارب حالياً على حسابات الأعضاء الحقيقية.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">يعرض حالياً فحوص الاتصال والواجهة الأساسية؛ تعديل ملفات الموقع والنشر من داخل المحادثة لم يُفعّل بعد.</div></div>
   </div>
   <div class="card" style="margin-top:14px">
    <h3>فحص ميثاق الآن</h3><p class="mithaq-ai-muted">ينفذ الفحوصات الأولية المتاحة من هذه الصفحة، ويعرض نتيجة كل اختبار بوضوح.</p>
@@ -2672,6 +2672,10 @@ async function runMithaqAiInitialDiagnostics(){
   add('جلسة الدخول',!!session&&!error,session&&!error?'تم العثور على جلسة دخول صالحة.':'تعذر تأكيد جلسة الدخول: '+(error?.message||'لا توجد جلسة.'));
   const {data:admin,error:adminError}=await supabaseClient.rpc('mithaq_is_primary_admin');
   add('صلاحية الإدارة الرئيسية',!adminError&&admin===true,!adminError&&admin===true?'أكدت قاعدة البيانات صلاحية الإدارة الرئيسية.':'لم تؤكد قاعدة البيانات صلاحية الإدارة الرئيسية.', 'fail');
+  if(!adminError&&admin===true){
+   const {data:overview, error:overviewError}=await supabaseClient.rpc('mithaq_admin_ai_read',{p_action:'overview'});
+   add('قراءة قاعدة البيانات الإدارية',!overviewError&&!!overview,!overviewError&&overview?'نجح استدعاء إجراء القراءة الإدارية من Supabase.':'فشل استدعاء القراءة: '+(overviewError?.message||'لم تصل بيانات.'),'fail');
+  }
   const required=['mithaqBottomNav','messages','members','myprofile','aiAssistant'];
   const missing=required.filter(id=>!document.getElementById(id));
   add('عناصر التطبيق الأساسية',missing.length===0,missing.length===0?'الأقسام الأساسية المطلوبة موجودة في الصفحة.':'عناصر غير موجودة: '+missing.join('، '),missing.length?'warn':'');
