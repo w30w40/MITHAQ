@@ -3234,10 +3234,10 @@ function renderMithaqMembers(){
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
   const gender=String(person.details?.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
+  const managed=person.is_platform_managed===true;
   if(!managed)decorateMithaqMemberAvatar(avatar,person.id);
   const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);if(mithaqPremiumMemberIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
-  const managed=person.is_platform_managed===true;
   const managedLabel=managed?document.createElement('p'):null;
   if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
   const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'رقم العضوية: '+(person.member_number??'غير متاح'),person.details?.age?person.details.age+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
