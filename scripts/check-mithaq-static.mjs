@@ -14,7 +14,9 @@ const required = [
   'window.reportMithaqClientError',
   'mithaq_admin_ai_client_errors',
   'id="mithaqAdminChatFiles"',
-  'id="mithaqAdminChatAttach"'
+  'id="mithaqAdminChatAttach"',
+  'نسخ الرد',
+  "addEventListener('paste'"
 ];
 const missing = required.filter((needle) => !html.includes(needle));
 if (missing.length) {
