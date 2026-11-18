@@ -7,12 +7,116 @@ function json(data,status,origin) { return new Response(JSON.stringify(data),{st
 async function supabase(path,token,init) { const headers=new Headers(init&&init.headers?init.headers:{});headers.set("apikey",SUPABASE_KEY);headers.set("Authorization","Bearer "+token);if(init&&init.body)headers.set("Content-Type","application/json");return fetch(SUPABASE_URL+path,{...(init||{}),headers}); }
 function cleanText(value,max) { return String(value==null?"":value).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").trim().slice(0,max); }
 function profileFacts(profile) { const d=profile.details&&typeof profile.details==="object"?profile.details:{};return ["اسم الملف: "+cleanText(profile.display_name,100),"الجنس: "+cleanText(profile.gender,30),"العمر: "+(profile.age||"غير محدد"),"الدولة: "+cleanText(profile.country,80),"المدينة/المنطقة: "+cleanText(profile.region||d.city,80),"نوع الزواج: "+cleanText(profile.marriage_type,40),"نبذة الملف: "+cleanText(profile.life_text||d.about,500),"التعليم: "+cleanText(d.education,80),"العمل: "+cleanText(d.job,80),"الحالة الاجتماعية: "+cleanText(d.marital_status,80)].join("\n"); }
+const GITHUB_API="https://api.github.com";
+const GITHUB_OWNER="w30w40";
+const GITHUB_REPO="MITHAQ";
+function safeRepoPath(value){
+ const path=cleanText(value,240).replace(/^\\/+|\\/+$/g,"");
+ if(!path||path.split("/").some(part=>!part||part==="."||part==="..")||/(^|\\/)\\.env($|\\.)|(^|\\/)(id_rsa|.*\\.pem|.*\\.key)$/i.test(path))return null;
+ return path;
+}
+async function githubFetch(env,path,init){
+ const headers=new Headers(init&&init.headers?init.headers:{});
+ headers.set("Authorization","Bearer "+env.GITHUB_TOKEN);
+ headers.set("Accept","application/vnd.github+json");
+ headers.set("X-GitHub-Api-Version","2022-11-28");
+ headers.set("User-Agent","MITHAQ-Admin-AI");
+ if(init&&init.body)headers.set("Content-Type","application/json");
+ return fetch(GITHUB_API+path,{...(init||{}),headers});
+}
+function decodeBase64Utf8(value){
+ const binary=atob(String(value||"").replace(/\\s/g,""));
+ const bytes=new Uint8Array(binary.length);
+ for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+ return new TextDecoder().decode(bytes);
+}
+function encodeBase64Utf8(value){
+ const bytes=new TextEncoder().encode(String(value||""));
+ let binary="";
+ for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+ return btoa(binary);
+}
+async function githubAdminAction(env,body){
+ const action=cleanText(body.action,32);
+ const base="/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO;
+ const ref=cleanText(body.ref,80)||"main";
+ if(!["main","mithaq-ai-staging"].includes(ref)&&!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(ref))return {status:400,data:{error:"اسم الفرع غير مسموح."}};
+ if(action==="status"){
+  const r=await githubFetch(env,base);
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)return {status:r.status,data:{error:cleanText(d.message,240)||"تعذر قراءة المستودع."}};
+  return {status:200,data:{ok:true,repository:d.full_name,default_branch:d.default_branch,private:d.private,archived:d.archived,permissions:d.permissions||{},html_url:d.html_url}};
+ }
+ if(action==="tree"){
+  const r=await githubFetch(env,base+"/git/trees/"+encodeURIComponent(ref)+"?recursive=1");
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)return {status:r.status,data:{error:cleanText(d.message,240)||"تعذر قراءة ملفات المستودع."}};
+  return {status:200,data:{ok:true,ref,truncated:!!d.truncated,files:(d.tree||[]).filter(x=>x.type==="blob").slice(0,500).map(x=>({path:x.path,size:x.size}))}};
+ }
+ if(action==="read_file"){
+  const path=safeRepoPath(body.path);
+  if(!path)return {status:400,data:{error:"مسار الملف غير صالح."}};
+  const r=await githubFetch(env,base+"/contents/"+path.split("/").map(encodeURIComponent).join("/")+"?ref="+encodeURIComponent(ref));
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)return {status:r.status,data:{error:cleanText(d.message,240)||"تعذر قراءة الملف."}};
+  if(d.type!=="file"||!d.content)return {status:415,data:{error:"هذا المسار ليس ملفاً نصياً قابلاً للقراءة."}};
+  const content=decodeBase64Utf8(d.content);
+  return {status:200,data:{ok:true,path,ref,size:d.size,sha:d.sha,content:content.slice(0,120000),truncated:content.length>120000}};
+ }
+ if(action==="workflow_runs"){
+  const r=await githubFetch(env,base+"/actions/runs?branch="+encodeURIComponent(ref)+"&per_page=10");
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)return {status:r.status,data:{error:cleanText(d.message,240)||"تعذر قراءة نتائج الاختبارات."}};
+  return {status:200,data:{ok:true,runs:(d.workflow_runs||[]).map(x=>({id:x.id,name:x.name,status:x.status,conclusion:x.conclusion,head_branch:x.head_branch,head_sha:x.head_sha,html_url:x.html_url,created_at:x.created_at,updated_at:x.updated_at}))}};
+ }
+ if(action==="create_branch"){
+  if(body.confirm!==true)return {status:200,data:{ok:true,confirmation_required:true,preview:{action,branch:body.branch,base_ref:body.base_ref||"main"}}};
+  const branch=cleanText(body.branch,60),baseRef=cleanText(body.base_ref,80)||"main";
+  if(!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(branch)||!["main","mithaq-ai-staging"].includes(baseRef))return {status:400,data:{error:"يسمح بإنشاء فرع تطوير منفصل فقط."}};
+  const baseResponse=await githubFetch(env,base+"/git/ref/heads/"+encodeURIComponent(baseRef));
+  const baseData=await baseResponse.json().catch(()=>({}));
+  if(!baseResponse.ok)return {status:baseResponse.status,data:{error:"تعذر تحديد الفرع الأساسي."}};
+  const created=await githubFetch(env,base+"/git/refs",{method:"POST",body:JSON.stringify({ref:"refs/heads/"+branch,sha:baseData.object.sha})});
+  const result=await created.json().catch(()=>({}));
+  if(!created.ok)return {status:created.status,data:{error:cleanText(result.message,240)||"تعذر إنشاء فرع التطوير."}};
+  return {status:201,data:{ok:true,branch,sha:result.object&&result.object.sha}};
+ }
+ if(action==="commit_file"){
+  if(body.confirm!==true)return {status:200,data:{ok:true,confirmation_required:true,preview:{action,path:body.path,branch:body.branch,message:body.message}}};
+  const path=safeRepoPath(body.path),branch=cleanText(body.branch,60),content=typeof body.content==="string"?body.content:null,message=cleanText(body.message,180)||"MITHAQ admin assistant update";
+  if(!path||!content||content.length>350000||!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(branch))return {status:400,data:{error:"يسمح بتعديل ملف نصي محدود على فرع تطوير فقط، ولا يسمح بالكتابة على main."}};
+  const filePath=base+"/contents/"+path.split("/").map(encodeURIComponent).join("/");
+  const current=await githubFetch(env,filePath+"?ref="+encodeURIComponent(branch));
+  const currentData=await current.json().catch(()=>({}));
+  if(!current.ok&&current.status!==404)return {status:current.status,data:{error:"تعذر قراءة الملف قبل تعديله."}};
+  const payload={message,content:encodeBase64Utf8(content),branch};
+  if(current.ok&&currentData.sha)payload.sha=currentData.sha;
+  const written=await githubFetch(env,filePath,{method:"PUT",body:JSON.stringify(payload)});
+  const writtenData=await written.json().catch(()=>({}));
+  if(!written.ok)return {status:written.status,data:{error:cleanText(writtenData.message,240)||"فشل حفظ الملف على فرع التطوير."}};
+  return {status:200,data:{ok:true,path,branch,commit_sha:writtenData.commit&&writtenData.commit.sha,html_url:writtenData.content&&writtenData.content.html_url}};
+ }
+ if(action==="create_pr"){
+  if(body.confirm!==true)return {status:200,data:{ok:true,confirmation_required:true,preview:{action,head:body.head,base:"main",title:body.title}}};
+  const head=cleanText(body.head,60),title=cleanText(body.title,180)||"MITHAQ AI proposed changes",prBody=cleanText(body.body,5000)||"Changes prepared by MITHAQ AI on a separate development branch.";
+  if(!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(head))return {status:400,data:{error:"طلب الدمج يجب أن يأتي من فرع تطوير مخصص."}};
+  const existing=await githubFetch(env,base+"/pulls?state=open&head="+GITHUB_OWNER+":"+encodeURIComponent(head)+"&base=main");
+  const existingData=await existing.json().catch(()=>[]);
+  if(existing.ok&&Array.isArray(existingData)&&existingData.length)return {status:200,data:{ok:true,existing:true,number:existingData[0].number,html_url:existingData[0].html_url}};
+  const created=await githubFetch(env,base+"/pulls",{method:"POST",body:JSON.stringify({title,head,base:"main",body:prBody,draft:false})});
+  const createdData=await created.json().catch(()=>({}));
+  if(!created.ok)return {status:created.status,data:{error:cleanText(createdData.message,240)||"تعذر إنشاء طلب مراجعة."}};
+  return {status:201,data:{ok:true,number:createdData.number,html_url:createdData.html_url}};
+ }
+ return {status:400,data:{error:"أمر GitHub غير معروف."}};
+}
+
 export default { async fetch(request,env) {
  const origin=request.headers.get("Origin")||"";
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:cors(origin)});
  const url=new URL(request.url);
  if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"mithaq-managed-ai",model:MODEL,admin_capabilities:{database_read:true,database_mutations:"allowlisted_with_explicit_confirmation",source_editing:!!env.GITHUB_TOKEN,isolated_sandbox:false,automated_tests:true,external_monitoring:true,runtime_error_reporting:true,assistant_deploy:false,github_token_configured:!!env.GITHUB_TOKEN,multimodal_attachments:true}},200,origin);
- if(request.method!=="POST"||!(["/chat","/admin-chat","/client-error"].includes(url.pathname)))return json({error:"المسار غير متاح."},404,origin);
+ if(request.method!=="POST"||!(["/chat","/admin-chat","/client-error","/github-admin"].includes(url.pathname)))return json({error:"المسار غير متاح."},404,origin);
  if(!ALLOWED_ORIGINS.has(origin))return json({error:"مصدر الطلب غير مسموح."},403,origin);
  const token=(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"").trim();
  if(!token)return json({error:"سجّل الدخول أولاً."},401,origin);
@@ -21,6 +125,13 @@ export default { async fetch(request,env) {
   if(!userResponse.ok)return json({error:"جلسة الدخول غير صالحة. سجّل الدخول من جديد."},401,origin);
   const user=await userResponse.json();if(!user||!user.id)return json({error:"تعذر التحقق من العضوية."},401,origin);
   const body=await request.json().catch(()=>({}));
+  if(url.pathname==="/github-admin"){
+   if(!env.GITHUB_TOKEN)return json({error:"لم يُضف GitHub Token إلى أسرار العامل بعد."},503,origin);
+   const adminCheck=await supabase("/rest/v1/rpc/mithaq_is_primary_admin",token,{method:"POST",body:"{}"});
+   if(!adminCheck.ok||await adminCheck.json().catch(()=>false)!==true)return json({error:"هذه الأداة متاحة للإدارة الرئيسية فقط."},403,origin);
+   const result=await githubAdminAction(env,body);
+   return json(result.data,result.status,origin);
+  }
   if(url.pathname==="/client-error"){
    const eventType=cleanText(body.event_type,32);
    const safeMessage=cleanText(body.message,1000).replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[email]").replace(/(bearer\s+)[A-Za-z0-9._-]+/gi,"$1[redacted]").replace(/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,"[token]");
