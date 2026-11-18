@@ -42,7 +42,7 @@ export default { async fetch(request,env) {
     return json({ok:true,reply:"أقدر حالياً على: قراءة إحصائيات ميثاق، واستعراض الأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول؛ واقتراح تعديل أو حذف سجل محدد ضمن الجداول والأعمدة المسموحة، ولا ينفذ التغيير إلا بعد تأكيدك الصريح وتأكيد قاعدة البيانات.\n\nلا تحتاج إلى إرسال لقطات شاشة. ما لم يُربط بعد: تعديل ملفات الموقع من هذه المحادثة، مختبر تجارب معزول، اختبار آلي شامل، والنشر من داخل المساعد. لذلك لن أدّعي أنني أصلحت الصفحة أو اختبرتها أو نشرتها. فحص الاتصال الحالي لا يثبت أن كل وظائف التطبيق تعمل.",model:MODEL,database:{connected:true,action:"capabilities",write_operations:"allowlisted_with_confirmation",source_editing:false,sandbox:false,automated_testing:false,assistant_deploy:false}},200,origin);
    }
    let dataAction="overview";
-   if(/أخطاء التشغيل|اخطاء التشغيل|الأخطاء|الاخطاء|الأعطال|الاعطال|سجل الأخطاء|سجلات الأخطاء|خطأ تقني|خطا تقني/.test(userText))dataAction="client_errors";
+   if(/أخطاء التشغيل|اخطاء التشغيل|الأخطاء|الاخطاء|الأعطال|الاعطال|سجل الأخطاء|سجلات الأخطاء|خطأ تقني|خطا تقني|تحديث الصفحة|استعادة الجلسة|خلل التحديث|مشكلة التحديث|خلل في الصفحة|خطأ في الصفحة/.test(userText))dataAction="client_errors";
    else if(/الاعضاء|الأعضاء|عضو|أعضاء|المشتركين|المستخدمين/.test(userText))dataAction="members";
    else if(/الاشتراك|الاشتراكات|اشتراك|التميز|المميزين/.test(userText))dataAction="subscriptions";
    else if(/الافتراضي|الافتراضية|الوهمي|الوهمية|الحسابات المدارة/.test(userText))dataAction="managed_profiles";
