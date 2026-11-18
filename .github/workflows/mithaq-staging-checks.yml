@@ -2,7 +2,7 @@ name: MITHAQ staging checks and production monitoring
 
 on:
   push:
-    branches: [main, mithaq-ai-staging, mithaq-runtime-error-monitor, mithaq-ai-control-plane]
+    branches: [main, mithaq-ai-staging, mithaq-runtime-error-monitor, mithaq-ai-control-plane, mithaq-chat-copy-paste]
   pull_request:
     branches: [main, mithaq-ai-staging]
   schedule:
