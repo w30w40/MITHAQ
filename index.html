@@ -2695,10 +2695,6 @@ function initMithaqAdminChat(){
       payload.reply='لم أحفظ التعديل؛ ألغيتَ الموافقة ولم يتغير المستودع.';
       status.textContent='أُلغيت العملية ولم يتم تعديل GitHub.';
      }
-    }else{
-     payload.reply='لم أحفظ التعديل؛ ألغيتَ الموافقة ولم يتغير المستودع.';
-     status.textContent='أُلغيت العملية ولم يتم تعديل GitHub.';
-    }
     }else if(payload.action_proposal){
      const proposal=payload.action_proposal;
      const summary='العملية المقترحة: '+(proposal.operation==='delete'?'حذف':'تعديل')+'\\nالجدول: '+proposal.table+'\\nمعرّف السجل: '+proposal.id+'\\nالبيانات: '+JSON.stringify(proposal.values||{});
