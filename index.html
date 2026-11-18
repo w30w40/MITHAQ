@@ -2616,7 +2616,23 @@ function saveMithaqAdminChatHistory(){try{localStorage.setItem(MITHAQ_ADMIN_CHAT
 function renderMithaqAdminChat(){
  const host=document.getElementById('mithaqAdminChatLog');if(!host)return;host.replaceChildren();
  if(!mithaqAdminChatHistory.length){const empty=document.createElement('div');empty.className='mithaq-ai-muted';empty.textContent='ابدأ المحادثة بسؤال عن ميثاق أو بطلب تحليل أو خطة تطوير.';host.append(empty);return;}
- for(const item of mithaqAdminChatHistory){const bubble=document.createElement('div');bubble.className='mithaq-admin-chat-message '+item.role;const who=document.createElement('small');who.textContent=item.role==='user'?'أنت':'مساعد ميثاق';const body=document.createElement('div');body.textContent=item.content;bubble.append(who,body);host.append(bubble);}
+ for(const item of mithaqAdminChatHistory){
+  const bubble=document.createElement('div');bubble.className='mithaq-admin-chat-message '+item.role;
+  const who=document.createElement('small');who.textContent=item.role==='user'?'أنت':'مساعد ميثاق';
+  const body=document.createElement('div');body.textContent=item.content;bubble.append(who,body);
+  if(item.role==='assistant'){
+   const copy=document.createElement('button');copy.type='button';copy.className='secondary';copy.textContent='نسخ الرد';copy.style.cssText='margin-top:8px;padding:5px 10px;font-size:12px;width:auto';
+   copy.addEventListener('click',async()=>{
+    try{
+     if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(item.content);
+     else{const temp=document.createElement('textarea');temp.value=item.content;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.select();document.execCommand('copy');temp.remove();}
+     copy.textContent='تم النسخ';setTimeout(()=>{copy.textContent='نسخ الرد';},1600);
+    }catch(_){copy.textContent='تعذر النسخ';}
+   });
+   bubble.append(copy);
+  }
+  host.append(bubble);
+ }
  host.scrollTop=host.scrollHeight;
 }
 function initMithaqAdminChat(){
@@ -2628,6 +2644,12 @@ function initMithaqAdminChat(){
  fileInput?.addEventListener('change',()=>{
   selectedFiles.splice(0,selectedFiles.length,...Array.from(fileInput.files||[]).slice(0,3));
   if(fileNames)fileNames.textContent=selectedFiles.length?selectedFiles.map(f=>f.name).join('، '):'يمكن إرفاق 3 ملفات بحد أقصى';
+ });
+ input?.addEventListener('paste',event=>{
+  const pasted=Array.from(event.clipboardData?.items||[]).map(item=>item.kind==='file'?item.getAsFile():null).filter(file=>file&&(/^(image|audio)\\//.test(file.type)));
+  if(!pasted.length)return;
+  selectedFiles.splice(0,3,...selectedFiles,...pasted);
+  if(fileNames)fileNames.textContent=selectedFiles.map(f=>f.name).join('، ')+' — أُضيف من الحافظة';
  });
  loadMithaqAdminChatHistory();renderMithaqAdminChat();
  document.getElementById('mithaqAdminChatClear')?.addEventListener('click',()=>{
