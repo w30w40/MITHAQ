@@ -30,6 +30,15 @@ function decodeBase64Utf8(value){
  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
  return new TextDecoder().decode(bytes);
 }
+function decodeDataUriBytes(value){
+ const data=String(value||"");
+ const comma=data.indexOf(",");
+ if(comma<0)throw new Error("invalid_data_uri");
+ const binary=atob(data.slice(comma+1));
+ const bytes=new Uint8Array(binary.length);
+ for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+ return bytes;
+}
 function encodeBase64Utf8(value){
  const bytes=new TextEncoder().encode(String(value||""));
  let binary="";
@@ -188,6 +197,16 @@ export default { async fetch(request,env) {
      const audioBase64=file.data.slice(file.data.indexOf(",")+1);
      const transcription=await env.AI.run("@cf/openai/whisper-large-v3-turbo",{audio:audioBase64});
      attachmentContext.push("تفريغ الصوت "+fileName+": "+cleanText(transcription&&transcription.text||"",7000));
+    }else if(fileKind==="document"){
+     const supportedTypes=["application/pdf","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/vnd.ms-excel","application/vnd.oasis.opendocument.text","application/vnd.oasis.opendocument.spreadsheet","application/xml"];
+     if(!supportedTypes.includes(fileType)||typeof file.data!=="string"||!file.data.startsWith("data:"+fileType+";base64,")||file.data.length>11*1024*1024)return json({error:"المستند غير صالح أو نوعه غير مدعوم: "+fileName},400,origin);
+     try{
+      const bytes=decodeDataUriBytes(file.data);
+      const converted=await env.AI.toMarkdown({name:fileName,blob:new Blob([bytes],{type:fileType})});
+      const documentResult=Array.isArray(converted)?converted[0]:converted;
+      if(documentResult&&documentResult.format!=="error"&&documentResult.data)attachmentContext.push("محتوى المستند "+fileName+": "+cleanText(documentResult.data,30000));
+      else attachmentContext.push("تعذر استخراج نص المستند "+fileName+": "+cleanText(documentResult&&documentResult.error||"لم يرجع محول المستندات محتوى قابلاً للقراءة.",500));
+     }catch(documentError){attachmentContext.push("تعذر تحويل المستند "+fileName+": "+cleanText(documentError&&documentError.message||"خطأ في محول المستندات.",500));}
     }else if(fileKind==="text"){
      attachmentContext.push("محتوى الملف النصي "+fileName+": "+cleanText(file.text,30000));
     }else if(fileKind==="video"){
