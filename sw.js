@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mithaq-shell-v3-features-ai-20261118';
+const CACHE_NAME = 'mithaq-shell-v4-auth-restore-20261118';
 const APP_SHELL = ['./', './manifest.webmanifest', './icons/mithaq-icon.svg'];
 
 self.addEventListener('install', event => {
