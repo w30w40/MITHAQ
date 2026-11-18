@@ -1826,14 +1826,14 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
  <div class="mithaq-ai-admin">
   <div class="mithaq-ai-hero">
    <div class="mithaq-ai-hero-head"><div class="mithaq-ai-orb" aria-hidden="true">✦</div><div><h2 style="margin:0">مساعد ميثاق الذكي</h2><p class="mithaq-ai-muted" style="margin:4px 0 0">مركز التحليل والفحص والتجارب — للإدارة الرئيسية فقط</p></div></div>
-   <p class="mithaq-ai-muted">المساعد متصل بمحرك الذكاء الاصطناعي وقاعدة بيانات ميثاق. قراءة البيانات والتعديلات المحددة والحذف المسموح بعد التأكيد متاحة. تعديل ملفات الموقع ومختبر التجارب والاختبار الآلي والنشر من داخل المحادثة غير مفعّلة حالياً؛ لن نعرضها كقدرات جاهزة قبل ربط GitHub وبيئة اختبار مستقلة والتحقق منها.</p>
+   <p class="mithaq-ai-muted">مساعد الإدارة يستطيع قراءة بيانات Supabase وسجل الأعطال، واستقبال الصور والتسجيلات الصوتية والملفات النصية. عند ربط GitHub Token يمكنه فحص ملفات المستودع واقتراح تعديلات تُحفظ على فرع تطوير بعد موافقتك، مع تشغيل فحوصات GitHub Actions. لا يكتب مباشرة إلى الفرع الرئيسي ولا ينشر إلى الإنتاج دون مراجعة.</p>
   </div>
   <div class="mithaq-ai-grid">
    <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">غير مفعّل حالياً. يتطلب بيئة اختبار منفصلة عن قاعدة بيانات الأعضاء، مع بيانات تجريبية فقط.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">📡</span><strong>رصد أخطاء التشغيل</strong><div class="mithaq-ai-muted">يرسل أخطاء JavaScript وفشل تحميل الموارد وأخطاء استعادة الجلسة من المتصفحات المسجلة إلى سجل آمن للإدارة الرئيسية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تعديل الملفات والنشر غير مفعّلين. ربط GitHub غير موجود حالياً في أسرار العامل، كما لم تُجهّز بيئة اختبار منفصلة.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تُجهّز التعديلات على فرع تطوير منفصل بعد ربط GitHub Token وموافقتك. لا يتم تعديل الموقع الحي مباشرة. مختبر قاعدة البيانات المنفصل يحتاج تهيئة مستقلة.</div></div>
   </div>
   <div class="card" style="margin-top:14px">
    <h3>فحص ميثاق الآن</h3><p class="mithaq-ai-muted">ينفذ الفحوصات الأولية المتاحة من هذه الصفحة، ويعرض نتيجة كل اختبار بوضوح.</p>
@@ -1843,7 +1843,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
    <h3>محادثة مساعد ميثاق</h3><button type="button" class="secondary" id="mithaqAdminChatClear" style="margin:6px 0 10px">مسح سجل المحادثة على هذا الجهاز</button>
-   <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية، ويستطيع قراءة بيانات الإدارة وسجل أخطاء التشغيل المرسلة من المتصفحات. ويمكنه اقتراح تعديلات أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. مراقبة الموقع الدورية تعمل عبر GitHub Actions. تعديل ملفات الموقع ومختبر التجارب المعزول والاختبارات الشاملة والنشر من داخل المحادثة غير مفعّلة بعد. لا تحتاج إلى إرسال لقطات شاشة.</p>
+   <p class="mithaq-ai-muted">يقرأ بيانات Supabase وسجل أخطاء التشغيل، ويستقبل الصور والصوت والملفات النصية من زر الإرفاق. بعد ربط GitHub Token يستطيع قراءة ملفات المستودع وتجهيز تعديلات على فرع تطوير، مع موافقتك قبل الحفظ. اختبارات GitHub Actions تعمل تلقائياً عند دفع التغييرات للفروع المفعّلة. لا تحتاج إلى إرسال لقطات شاشة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
     <input id="mithaqAdminChatFiles" type="file" multiple accept="image/*,audio/*,video/*,text/plain,text/markdown,text/csv,application/json,.log,.js,.css,.html,.sql" hidden>
@@ -2750,7 +2750,9 @@ async function runMithaqAiInitialDiagnostics(){
    const caps=payload?.admin_capabilities||{};
    add('تعديل ملفات الموقع',caps.source_editing===true,'الحالة: '+(caps.source_editing?'متاح':'غير مفعّل حالياً')+(caps.github_token_configured?' — سر GitHub موجود':' — لم يُربط GitHub Token بالعامل'),'warn');
    add('مختبر التجارب المعزول',caps.isolated_sandbox===true,caps.isolated_sandbox?'بيئة التجارب متاحة.':'لم تُجهّز بيئة اختبار مستقلة بعد.','warn');
-   add('الاختبار الآلي والنشر',caps.automated_tests===true&&caps.assistant_deploy===true,caps.automated_tests&&caps.assistant_deploy?'الاختبارات والنشر متاحان.':'الاختبار الآلي والنشر من داخل المساعد غير مفعّلين بعد.','warn');
+   const testsReady=caps.automated_tests==='github_actions_on_push'||caps.automated_tests===true;
+   add('الاختبارات الآلية',testsReady,testsReady?'فحوصات GitHub Actions تعمل تلقائياً عند دفع التغييرات للفروع المفعّلة.':'الاختبارات الآلية غير مهيأة.','warn');
+   add('النشر من داخل المساعد',caps.assistant_deploy===true,caps.assistant_deploy?'النشر متاح.':'النشر التلقائي للإنتاج غير مفعّل؛ تتم مراجعة التغييرات قبل النشر.','warn');
   }catch(workerError){add('خدمة مساعد الذكاء الاصطناعي',false,'تعذر الوصول إلى نقطة فحص الخدمة من هذه الصفحة: '+(workerError?.message||'خطأ اتصال.'),'warn');}
   status.textContent='انتهى الفحص الأولي. هذه النتائج لا تمثل اختباراً شاملاً لكل وظائف المنصة.';
  }catch(error){status.textContent='توقف الفحص بسبب خطأ: '+(error?.message||String(error));}
