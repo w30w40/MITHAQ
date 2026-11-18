@@ -1842,7 +1842,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
    <h3>محادثة مساعد ميثاق</h3>
-   <p class="mithaq-ai-muted">مساعد متصل بقاعدة بيانات ميثاق الفعلية. يستطيع قراءة الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. يمكنه قراءة البيانات، كما يمكن تنفيذ أوامر تعديل أو حذف محددة بعد تأكيدك الصريح. استخدم الصيغة «نفذ:» متبوعة بأمر JSON.</p>
+   <p class="mithaq-ai-muted">مساعد متصل بقاعدة بيانات ميثاق الفعلية. يستطيع قراءة الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. يمكنه قراءة البيانات، كما يمكن تنفيذ أوامر تعديل أو حذف محددة بعد تأكيدك الصريح. اكتب طلبك بالعربية مباشرة؛ سيقترح المساعد العملية والسجل، ولن ينفذ أي تغيير أو حذف إلا بعد تأكيدك.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
     <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
@@ -2639,7 +2639,22 @@ function initMithaqAdminChat(){
     const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message,history:previous})});
     payload=await response.json().catch(()=>({}));
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر الحصول على رد من المساعد (HTTP '+response.status+').');
-    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
+    if(payload.action_proposal){
+     const proposal=payload.action_proposal;
+     const summary='العملية المقترحة: '+(proposal.operation==='delete'?'حذف':'تعديل')+'\\nالجدول: '+proposal.table+'\\nمعرّف السجل: '+proposal.id+'\\nالبيانات: '+JSON.stringify(proposal.values||{});
+     if(window.confirm(summary+'\\n\\nهل توافق على تنفيذها الآن؟')){
+      status.textContent='جارٍ تنفيذ العملية بعد موافقتك...';
+      const execute=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message:'تنفيذ العملية التي وافقت عليها',mutation:{...proposal,confirm:true}})});
+      const result=await execute.json().catch(()=>({}));
+      if(!execute.ok||!result?.ok)throw new Error(result?.error||'فشل التنفيذ؛ لم تؤكد قاعدة البيانات نجاح العملية.');
+      payload.reply=String(result.reply||'أكدت قاعدة البيانات نجاح العملية.');
+      status.textContent='نجح التنفيذ في قاعدة البيانات وتم تسجيله.';
+     }else{
+      payload.reply='لم أنفذ العملية؛ ألغيتَ التأكيد. لم تتغير البيانات.';
+      status.textContent='أُلغيت العملية ولم يتم تعديل البيانات.';
+     }
+    }
+    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();if(!payload.action_proposal)status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
    }
   }catch(error){status.textContent=error?.message||'تعذر إرسال الرسالة.';}
   finally{send.disabled=false;input.focus();}
