@@ -2625,7 +2625,7 @@ function initMithaqAdminChat(){
    const previous=mithaqAdminChatHistory.slice(-12);
    mithaqAdminChatHistory.push({role:'user',content:message});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
    let payload;
-   const command=message.match(/^نفذ\\s*:\\s*(\\{[\\s\\S]*\\})$/);
+   const command=message.match(/^نفذ\s*:\s*(\{[\s\S]*\})$/);
    if(command){
     let mutation;try{mutation=JSON.parse(command[1]);}catch(_){throw new Error('صيغة أمر التنفيذ غير صحيحة. أرسل JSON صالحاً بعد كلمة «نفذ:».');}
     if(!mutation||!['update','delete'].includes(mutation.operation)||!mutation.table||!mutation.id)throw new Error('الأمر يحتاج operation وtable وid، وvalues عند التعديل.');
