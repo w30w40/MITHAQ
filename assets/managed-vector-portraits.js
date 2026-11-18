@@ -16,4 +16,56 @@
  if(typeof oldDecorate==='function')window.decorateMithaqMemberAvatar=function(node,id){oldDecorate.apply(this,arguments);const person=typeof mithaqMemberCache!=='undefined'&&Array.isArray(mithaqMemberCache)?mithaqMemberCache.find(x=>String(x.id)===String(id)&&x.is_platform_managed===true):null;if(person)apply(node,id,person.details&&person.details.gender);};
  const oldProfile=window.showManagedMemberProfile;
  if(typeof oldProfile==='function')window.showManagedMemberProfile=function(person){oldProfile.apply(this,arguments);apply(document.querySelector('#mithaqFullMemberProfile .mithaq-full-member-profile-avatar'),person.id,person.details&&person.details.gender);};
+
+ // Managed profiles: make safe, clearly disclosed interactions clickable.
+ const interestKey='mithaq-managed-profile-interests-v1';
+ function readInterests(){try{return JSON.parse(localStorage.getItem(interestKey)||'[]')}catch(_){return []}}
+ function writeInterests(ids){try{localStorage.setItem(interestKey,JSON.stringify(ids))}catch(_){}}
+ function isInterested(id){return readInterests().includes(String(id))}
+ function toggleInterest(id,button){
+  const ids=readInterests(),key=String(id),next=ids.includes(key)?ids.filter(x=>x!==key):ids.concat(key);
+  writeInterests(next);if(button){button.textContent=next.includes(key)?'✓ ضمن الاهتمامات':'＋ إضافة للاهتمام';button.setAttribute('aria-pressed',next.includes(key)?'true':'false');}
+ }
+ function interestButton(id){
+  const b=document.createElement('button');b.type='button';b.className='mithaq-managed-interest-button';
+  b.textContent=isInterested(id)?'✓ ضمن الاهتمامات':'＋ إضافة للاهتمام';b.setAttribute('aria-pressed',isInterested(id)?'true':'false');
+  b.addEventListener('click',()=>toggleInterest(id,b));return b;
+ }
+ const actionCss=document.createElement('style');
+ actionCss.textContent='.mithaq-managed-actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.mithaq-managed-actions button,.mithaq-managed-interest-button{min-height:42px;border-radius:12px;padding:9px 13px;background:#fce8ef;color:#a52c52;border:1px solid #efc6d4;font-weight:700}.mithaq-managed-actions .mithaq-managed-message{background:#f1f4f7;color:#425466;border-color:#dce3ea}.mithaq-managed-note{padding:10px 12px;border-radius:10px;background:#fff8e8;border:1px solid #f0dfb2;color:#75551b;font-size:12px;line-height:1.8;margin-top:8px}';
+ document.head.appendChild(actionCss);
+ function refreshManagedCards(){
+  document.querySelectorAll('#membersGrid .mithaq-directory-card').forEach(card=>{
+   const label=card.querySelector('.mithaq-managed-member-label');if(!label)return;
+   const personName=card.querySelector('h3')?.textContent||'';
+   const person=typeof mithaqMemberCache!=='undefined'&&Array.isArray(mithaqMemberCache)?mithaqMemberCache.find(p=>p.is_platform_managed===true&&String(p.display_name||'')===personName):null;
+   if(!person)return;
+   const old=card.querySelector('.mithaq-managed-interest-button');if(old)return;
+   const oldButton=[...card.querySelectorAll('button')].find(b=>b.disabled||b.textContent.includes('غير متاح'));
+   if(oldButton)oldButton.replaceWith(interestButton(person.id));
+   else card.append(interestButton(person.id));
+  });
+ }
+ const grid=document.getElementById('membersGrid');
+ if(grid&&typeof MutationObserver!=='undefined')new MutationObserver(refreshManagedCards).observe(grid,{childList:true,subtree:true});
+ document.addEventListener('click',()=>setTimeout(refreshManagedCards,0),true);
+ const previousProfile=window.showManagedMemberProfile;
+ if(typeof previousProfile==='function')window.showManagedMemberProfile=function(person){
+  previousProfile.apply(this,arguments);
+  const page=document.getElementById('mithaqFullMemberProfile');if(!page)return;
+  const disclosure=page.querySelector('.mithaq-managed-disclosure');
+  if(disclosure)disclosure.textContent='هذا ملف افتراضي تديره منصة ميثاق، وليس حساب شخص حقيقي. يمكنك استعراضه وإضافته إلى اهتماماتك؛ لا يوجد شخص يستقبل الرسائل أو يرد عليها.';
+  const content=page.querySelector('.mithaq-full-member-profile-content');
+  if(content&&!content.querySelector('.mithaq-managed-actions')){
+   const actions=document.createElement('div');actions.className='mithaq-managed-actions';
+   actions.append(interestButton(person.id));
+   const msg=document.createElement('button');msg.type='button';msg.className='mithaq-managed-message';msg.textContent='✉ إرسال رسالة';
+   msg.addEventListener('click',()=>window.alert('هذا حساب افتراضي تحت إدارة ميثاق، ولا يوجد شخص حقيقي يستقبل الرسائل أو يرد عليها. يمكنك إضافة الملف إلى اهتماماتك.'));
+   actions.append(msg);
+   const note=document.createElement('p');note.className='mithaq-managed-note';note.textContent='التفاعل المتاح: عرض الملف وإضافته أو إزالته من الاهتمامات. زر الرسالة يعرض هذا التنبيه ولا يرسل رسالة لشخص وهمي.';
+   content.append(actions,note);
+  }
+ };
+ setTimeout(refreshManagedCards,300);
+
 })();
