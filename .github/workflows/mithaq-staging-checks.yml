@@ -1,0 +1,23 @@
+name: MITHAQ staging checks
+
+on:
+  push:
+    branches: [mithaq-ai-staging]
+  pull_request:
+    branches: [main, mithaq-ai-staging]
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check MITHAQ HTML, inline JavaScript, and service worker
+        run: node scripts/check-mithaq-static.mjs
