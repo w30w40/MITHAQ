@@ -1,0 +1,110 @@
+name: MITHAQ staging checks and production monitoring
+
+on:
+  push:
+    branches: [mithaq-ai-staging]
+  pull_request:
+    branches: [main, mithaq-ai-staging]
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  static-checks:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check MITHAQ HTML, inline JavaScript, and service worker
+        run: node scripts/check-mithaq-static.mjs
+
+  production-monitor:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check production website and AI service
+        id: smoke
+        continue-on-error: true
+        run: node scripts/monitor-mithaq-production.mjs
+      - name: Open or update monitoring incident
+        if: steps.smoke.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "[MITHAQ MONITOR] Production health check failed";
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100
+            });
+            const existing = open.data.find(issue => issue.title === title);
+            const body = [
+              "The scheduled production monitor detected a failure.",
+              "",
+              "- Website: https://mithaq-esv.pages.dev/",
+              "- AI worker: https://mithaq-ai-chat.w0000000000w00.workers.dev/health",
+              "- Workflow run: " + context.serverUrl + "/" + context.repo.owner + "/" + context.repo.repo + "/actions/runs/" + context.runId,
+              "",
+              "Review the failing step logs. This alert does not claim that a repair was performed."
+            ].join("\n");
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body
+              });
+            }
+      - name: Close resolved monitoring incident
+        if: steps.smoke.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "[MITHAQ MONITOR] Production health check failed";
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100
+            });
+            const existing = open.data.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: "The latest scheduled production smoke check passed. Closing this monitoring incident."
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                state: "closed"
+              });
+            }
+      - name: Fail workflow if production monitor failed
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1
