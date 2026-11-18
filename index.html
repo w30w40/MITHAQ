@@ -3230,7 +3230,7 @@ function renderMithaqMembers(){
  if(!people.length){status.textContent=query?'لا توجد نتائج مطابقة لبحثك.':'لا يوجد أعضاء آخرون حالياً.';return;}
  status.textContent='عدد الملفات المعروضة: '+people.length;
  people.forEach(person=>{
-  const card=document.createElement('article');card.className='mithaq-directory-card';
+  const card=document.createElement('article');card.className='mithaq-directory-card';card.dataset.managedProfileId=person.is_platform_managed===true?String(person.id):'';
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
   const gender=String(person.details?.gender||'').trim().toLowerCase();
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
