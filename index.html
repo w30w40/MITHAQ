@@ -3228,8 +3228,10 @@ function renderMithaqMembers(){
  people.sort((a,b)=>mithaqMemberViewMode==='newest'||sortMode==='newest'?(new Date(b.created_at||b.joined_at||b.updated_at||0).getTime()-new Date(a.created_at||a.joined_at||a.updated_at||0).getTime()):sortMode==='name'?String(a.display_name||'').localeCompare(String(b.display_name||''),'ar'):(new Date(b.last_seen_at||0).getTime()-new Date(a.last_seen_at||0).getTime()));
  host.replaceChildren();
  if(!people.length){status.textContent=query?'لا توجد نتائج مطابقة لبحثك.':'لا يوجد أعضاء آخرون حالياً.';return;}
- status.textContent='عدد الملفات المعروضة: '+people.length;
- people.forEach(person=>{
+ const visibleLimit=Math.max(30,Number(host.dataset.visibleLimit)||30);
+ const visiblePeople=people.slice(0,visibleLimit);
+ status.textContent='عرض '+visiblePeople.length+' من '+people.length+' ملف';
+ visiblePeople.forEach(person=>{
   const card=document.createElement('article');card.className='mithaq-directory-card';card.dataset.managedProfileId=person.is_platform_managed===true?String(person.id):'';
   const avatar=document.createElement('div');avatar.className='mithaq-directory-avatar';
   const gender=String(person.details?.gender||'').trim().toLowerCase();
@@ -3249,6 +3251,12 @@ function renderMithaqMembers(){
   avatar.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
   card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,button);host.append(card);
  });
+ if(visiblePeople.length<people.length){
+  const more=document.createElement('button');more.type='button';more.className='mithaq-load-more-members';
+  more.textContent='عرض 30 عضواً إضافياً';
+  more.addEventListener('click',()=>{host.dataset.visibleLimit=String(visibleLimit+30);renderMithaqMembers();});
+  host.append(more);
+ }
 }
 
 function showManagedMemberProfile(person){
@@ -3296,7 +3304,8 @@ async function loadMembers(){
  if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
- status.textContent='جارٍ تحميل جميع الأعضاء المتاحين...';
+ host.dataset.visibleLimit='30';
+ status.textContent='جارٍ تحميل الأعضاء...';
  const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
  const {data:managedRows,error:managedError}=await supabaseClient.rpc('mithaq_list_managed_profiles');
