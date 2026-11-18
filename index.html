@@ -1826,14 +1826,14 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
  <div class="mithaq-ai-admin">
   <div class="mithaq-ai-hero">
    <div class="mithaq-ai-hero-head"><div class="mithaq-ai-orb" aria-hidden="true">✦</div><div><h2 style="margin:0">مساعد ميثاق الذكي</h2><p class="mithaq-ai-muted" style="margin:4px 0 0">مركز التحليل والفحص والتجارب — للإدارة الرئيسية فقط</p></div></div>
-   <p class="mithaq-ai-muted">المساعد متصل بمحرك الذكاء الاصطناعي وقاعدة بيانات ميثاق. قراءة البيانات والتعديلات المحددة والحذف المسموح بعد التأكيد متاحة. تعديل ملفات الموقع ومختبر التجارب والاختبار الآلي والنشر من داخل المحادثة غير مفعّلة حالياً؛ لن نعرضها كقدرات جاهزة قبل ربط GitHub وبيئة اختبار مستقلة والتحقق منها.</p>
+   <p class="mithaq-ai-muted">مساعد الإدارة يستطيع قراءة بيانات Supabase وسجل الأعطال، واستقبال الصور والتسجيلات الصوتية والملفات النصية. عند ربط GitHub Token يمكنه فحص ملفات المستودع واقتراح تعديلات تُحفظ على فرع تطوير بعد موافقتك، مع تشغيل فحوصات GitHub Actions. لا يكتب مباشرة إلى الفرع الرئيسي ولا ينشر إلى الإنتاج دون مراجعة.</p>
   </div>
   <div class="mithaq-ai-grid">
    <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">غير مفعّل حالياً. يتطلب بيئة اختبار منفصلة عن قاعدة بيانات الأعضاء، مع بيانات تجريبية فقط.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">📡</span><strong>رصد أخطاء التشغيل</strong><div class="mithaq-ai-muted">يرسل أخطاء JavaScript وفشل تحميل الموارد وأخطاء استعادة الجلسة من المتصفحات المسجلة إلى سجل آمن للإدارة الرئيسية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تعديل الملفات والنشر غير مفعّلين. ربط GitHub غير موجود حالياً في أسرار العامل، كما لم تُجهّز بيئة اختبار منفصلة.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تُجهّز التعديلات على فرع تطوير منفصل بعد ربط GitHub Token وموافقتك. لا يتم تعديل الموقع الحي مباشرة. مختبر قاعدة البيانات المنفصل يحتاج تهيئة مستقلة.</div></div>
   </div>
   <div class="card" style="margin-top:14px">
    <h3>فحص ميثاق الآن</h3><p class="mithaq-ai-muted">ينفذ الفحوصات الأولية المتاحة من هذه الصفحة، ويعرض نتيجة كل اختبار بوضوح.</p>
@@ -1843,10 +1843,15 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
    <h3>محادثة مساعد ميثاق</h3><button type="button" class="secondary" id="mithaqAdminChatClear" style="margin:6px 0 10px">مسح سجل المحادثة على هذا الجهاز</button>
-   <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية، ويستطيع قراءة بيانات الإدارة وسجل أخطاء التشغيل المرسلة من المتصفحات. ويمكنه اقتراح تعديلات أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. مراقبة الموقع الدورية تعمل عبر GitHub Actions. تعديل ملفات الموقع ومختبر التجارب المعزول والاختبارات الشاملة والنشر من داخل المحادثة غير مفعّلة بعد. لا تحتاج إلى إرسال لقطات شاشة.</p>
+   <p class="mithaq-ai-muted">يقرأ بيانات Supabase وسجل أخطاء التشغيل، ويستقبل الصور والصوت ومستندات PDF وWord وExcel والملفات النصية من زر الإرفاق. بعد ربط GitHub Token يستطيع قراءة ملفات المستودع وتجهيز تعديلات على فرع تطوير، مع موافقتك قبل الحفظ. اختبارات GitHub Actions تعمل تلقائياً عند دفع التغييرات للفروع المفعّلة. لا تحتاج إلى إرسال لقطات شاشة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
-    <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
+    <input id="mithaqAdminChatFiles" type="file" multiple accept="image/*,audio/*,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/vnd.oasis.opendocument.text,application/vnd.oasis.opendocument.spreadsheet,application/xml,.pdf,.docx,.xlsx,.xls,.odt,.ods,.html,.htm,.xml,.log,.js,.css,.sql" hidden>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0">
+     <button type="button" class="secondary" id="mithaqAdminChatAttach" aria-label="إرفاق صور أو صوت أو ملفات">📎 إرفاق صورة أو صوت أو ملف</button>
+     <span id="mithaqAdminChatFileNames" class="mithaq-ai-muted">يمكن إرفاق 3 ملفات بحد أقصى</span>
+    </div>
+    <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك أو أرسل مرفقاً إلى مساعد ميثاق..."></textarea>
     <button type="submit" class="primary" id="mithaqAdminChatSend" style="margin-top:9px;width:100%">إرسال</button>
    </form>
    <p id="mithaqAdminChatStatus" class="mithaq-ai-muted" role="status" aria-live="polite">المحادثة متاحة للإدارة الرئيسية فقط. يُحفظ سجل هذه المحادثة على هذا الجهاز.</p>
@@ -2601,6 +2606,7 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){document.documentElement.removeAttribute('data-mithaq-initial-route');if(id==='aiAssistant'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));refreshMithaqAdminAccess().then(ok=>{if(ok&&isMithaqAdmin)show('aiAssistant',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}if(id==='members'&&!memberChoice){const current=document.querySelector('.tab:not(.hidden)');if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=document.querySelector('.tab:not(.hidden)');if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){runMithaqPageLoad('home-feed',loadMithaqHomeFeed);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='myprofile')runMithaqPageLoad('myprofile',refreshProfileAccess);if(id==='members'){resetMemberEntry();runMithaqPageLoad('members',loadMembers);}if(id==='messages'){runMithaqPageLoad('conversations',loadConversations);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='settings')loadMithaqBackgroundSettings();if(id==='notifications')runMithaqPageLoad('notifications',loadMithaqNotifications);if(id==='admin')runMithaqPageLoad('admin',loadMithaqAdminPanel);if(id==='siteAnalyticsPage')runMithaqPageLoad('site-analytics',loadMithaqSiteAnalytics);}
 const MITHAQ_ADMIN_CHAT_ENDPOINT='https://mithaq-ai-chat.w0000000000w00.workers.dev/admin-chat';
+const MITHAQ_ADMIN_GITHUB_ENDPOINT='https://mithaq-ai-chat.w0000000000w00.workers.dev/github-admin';
 const MITHAQ_ADMIN_CHAT_STORAGE_KEY='mithaq-admin-ai-history-v1';
 let mithaqAdminChatHistory=[];
 function loadMithaqAdminChatHistory(){
@@ -2616,6 +2622,13 @@ function renderMithaqAdminChat(){
 function initMithaqAdminChat(){
  const form=document.getElementById('mithaqAdminChatForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
  const input=document.getElementById('mithaqAdminChatInput'),send=document.getElementById('mithaqAdminChatSend'),status=document.getElementById('mithaqAdminChatStatus');
+ const fileInput=document.getElementById('mithaqAdminChatFiles'),attachButton=document.getElementById('mithaqAdminChatAttach'),fileNames=document.getElementById('mithaqAdminChatFileNames');
+ const selectedFiles=[];
+ attachButton?.addEventListener('click',()=>fileInput?.click());
+ fileInput?.addEventListener('change',()=>{
+  selectedFiles.splice(0,selectedFiles.length,...Array.from(fileInput.files||[]).slice(0,3));
+  if(fileNames)fileNames.textContent=selectedFiles.length?selectedFiles.map(f=>f.name).join('، '):'يمكن إرفاق 3 ملفات بحد أقصى';
+ });
  loadMithaqAdminChatHistory();renderMithaqAdminChat();
  document.getElementById('mithaqAdminChatClear')?.addEventListener('click',()=>{
   if(!window.confirm('هل تريد مسح سجل المحادثة المحفوظ على هذا الجهاز فقط؟'))return;
@@ -2623,13 +2636,36 @@ function initMithaqAdminChat(){
   if(status)status.textContent='تم مسح سجل المحادثة المحلي. لم تتغير بيانات قاعدة البيانات.';
  });
  form.addEventListener('submit',async event=>{
-  event.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;
-  send.disabled=true;status.textContent='جارٍ التحقق من صلاحية الإدارة...';
+  event.preventDefault();const message=input.value.trim();if((!message&&!selectedFiles.length)||send.disabled)return;
+  if(selectedFiles.length>3){status.textContent='يمكن إرفاق ثلاثة ملفات كحد أقصى.';return;}
+  const totalBytes=selectedFiles.reduce((sum,file)=>sum+file.size,0);if(totalBytes>12*1024*1024){status.textContent='إجمالي المرفقات يتجاوز 12 ميغابايت.';return;}
+  send.disabled=true;status.textContent='جارٍ تجهيز المرفقات والتحقق من صلاحية الإدارة...';
   try{
    const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqPrimaryAdmin)throw new Error('هذه المحادثة مخصصة للإدارة الرئيسية فقط.');
    const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session?.access_token)throw new Error('انتهت جلسة الدخول. سجّل الدخول مجدداً.');
    const previous=mithaqAdminChatHistory.slice(-12);
-   mithaqAdminChatHistory.push({role:'user',content:message});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
+   const attachments=[];
+   for(const file of selectedFiles){
+    const type=String(file.type||'application/octet-stream').toLowerCase();
+    if(file.size>8*1024*1024)throw new Error('الملف '+file.name+' يتجاوز الحد المسموح (8 ميغابايت).');
+    const item={name:file.name.slice(0,180),type,size:file.size,kind:'unsupported'};
+    if(type.startsWith('image/')){
+     if(file.size>5*1024*1024)throw new Error('الصورة '+file.name+' يجب ألا تتجاوز 5 ميغابايت.');
+     if(!['image/jpeg','image/png','image/webp','image/gif'].includes(type))throw new Error('صيغة الصورة غير مدعومة: '+file.name);
+     item.kind='image';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصورة '+file.name));reader.readAsDataURL(file);});
+    }else if(type.startsWith('audio/')){
+     if(!['audio/mpeg','audio/mp3','audio/wav','audio/x-wav','audio/webm','audio/ogg','audio/mp4','audio/aac','audio/flac'].includes(type))throw new Error('صيغة الصوت غير مدعومة: '+file.name);
+     item.kind='audio';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصوت '+file.name));reader.readAsDataURL(file);});
+    }else if(['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','application/vnd.oasis.opendocument.text','application/vnd.oasis.opendocument.spreadsheet','application/xml'].includes(type)||/\\.(pdf|docx|xlsx|xls|odt|ods|xml)$/i.test(file.name)){
+     item.kind='document';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة المستند '+file.name));reader.readAsDataURL(file);});
+    }else if(type.startsWith('text/')||/\\.(txt|md|csv|json|log|js|css|html|sql)$/i.test(file.name)){
+     if(file.size>1024*1024)throw new Error('الملف النصي '+file.name+' أكبر من 1 ميغابايت.');
+     item.kind='text';item.text=(await file.text()).slice(0,30000);
+    }
+    attachments.push(item);
+   }
+   const attachmentLabel=attachments.length?'\\n[مرفقات: '+attachments.map(a=>a.name+' ('+a.kind+')').join('، ')+']':'';
+   mithaqAdminChatHistory.push({role:'user',content:(message||'راجع المرفقات')+attachmentLabel});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
    let payload;
    const command=message.match(/^نفذ\s*:\s*(\{[\s\S]*\})$/);
    if(command){
@@ -2642,10 +2678,24 @@ function initMithaqAdminChat(){
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر تنفيذ العملية (HTTP '+response.status+').');
     mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'تم تنفيذ العملية.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();status.textContent='تم تنفيذ الأمر في قاعدة البيانات وتسجيله في سجل التدقيق.';
    }else{
-    const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message,history:previous})});
+    const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message:message||'حلل المرفقات المرفقة وأخبرني بما تحتويه.',history:previous,attachments})});
     payload=await response.json().catch(()=>({}));
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر الحصول على رد من المساعد (HTTP '+response.status+').');
-    if(payload.action_proposal){
+    if(payload.github_action_proposal){
+     const proposal=payload.github_action_proposal;
+     const summary='تعديل برمجي مقترح\\nالملف: '+proposal.path+'\\nالفرع: '+proposal.branch+'\\nالسبب: '+(proposal.message||'تعديل مقترح')+'\\nحجم الكود: '+String(proposal.content||'').length+' حرف\\n\\nسيُحفظ على فرع تطوير فقط ولن يُنشر مباشرة إلى الموقع الحي.';
+     if(window.confirm(summary+'\\n\\nهل توافق على حفظ التعديل في GitHub؟')){
+      status.textContent='جارٍ حفظ التعديل على فرع التطوير...';
+      const commit=await fetch(MITHAQ_ADMIN_GITHUB_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({action:'commit_file',branch:proposal.branch,path:proposal.path,content:proposal.content,message:proposal.message,confirm:true})});
+      const commitResult=await commit.json().catch(()=>({}));
+      if(!commit.ok||!commitResult?.ok)throw new Error(commitResult?.error||'تعذر حفظ التعديل في GitHub.');
+      payload.reply='تم حفظ التعديل على فرع التطوير '+proposal.branch+'\\nالملف: '+proposal.path+'\\nCommit: '+(commitResult.commit_sha||'تم إنشاؤه')+'\\nلم يتم دمج التعديل إلى main أو نشره للإنتاج.';
+      status.textContent='تم حفظ التعديل على فرع التطوير. لم يتغير الموقع الحي.';
+     }else{
+      payload.reply='لم أحفظ التعديل؛ ألغيتَ الموافقة ولم يتغير المستودع.';
+      status.textContent='أُلغيت العملية ولم يتم تعديل GitHub.';
+     }
+    }else if(payload.action_proposal){
      const proposal=payload.action_proposal;
      const summary='العملية المقترحة: '+(proposal.operation==='delete'?'حذف':'تعديل')+'\\nالجدول: '+proposal.table+'\\nمعرّف السجل: '+proposal.id+'\\nالبيانات: '+JSON.stringify(proposal.values||{});
      if(window.confirm(summary+'\\n\\nهل توافق على تنفيذها الآن؟')){
@@ -2660,7 +2710,7 @@ function initMithaqAdminChat(){
       status.textContent='أُلغيت العملية ولم يتم تعديل البيانات.';
      }
     }
-    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();if(!payload.action_proposal)status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
+    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();selectedFiles.splice(0);if(fileInput)fileInput.value='';if(fileNames)fileNames.textContent='يمكن إرفاق 3 ملفات بحد أقصى';if(!payload.action_proposal)status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
    }
   }catch(error){status.textContent=error?.message||'تعذر إرسال الرسالة.';}
   finally{send.disabled=false;input.focus();}
@@ -2696,7 +2746,9 @@ async function runMithaqAiInitialDiagnostics(){
    const caps=payload?.admin_capabilities||{};
    add('تعديل ملفات الموقع',caps.source_editing===true,'الحالة: '+(caps.source_editing?'متاح':'غير مفعّل حالياً')+(caps.github_token_configured?' — سر GitHub موجود':' — لم يُربط GitHub Token بالعامل'),'warn');
    add('مختبر التجارب المعزول',caps.isolated_sandbox===true,caps.isolated_sandbox?'بيئة التجارب متاحة.':'لم تُجهّز بيئة اختبار مستقلة بعد.','warn');
-   add('الاختبار الآلي والنشر',caps.automated_tests===true&&caps.assistant_deploy===true,caps.automated_tests&&caps.assistant_deploy?'الاختبارات والنشر متاحان.':'الاختبار الآلي والنشر من داخل المساعد غير مفعّلين بعد.','warn');
+   const testsReady=caps.automated_tests==='github_actions_on_push'||caps.automated_tests===true;
+   add('الاختبارات الآلية',testsReady,testsReady?'فحوصات GitHub Actions تعمل تلقائياً عند دفع التغييرات للفروع المفعّلة.':'الاختبارات الآلية غير مهيأة.','warn');
+   add('النشر من داخل المساعد',caps.assistant_deploy===true,caps.assistant_deploy?'النشر متاح.':'النشر التلقائي للإنتاج غير مفعّل؛ تتم مراجعة التغييرات قبل النشر.','warn');
   }catch(workerError){add('خدمة مساعد الذكاء الاصطناعي',false,'تعذر الوصول إلى نقطة فحص الخدمة من هذه الصفحة: '+(workerError?.message||'خطأ اتصال.'),'warn');}
   status.textContent='انتهى الفحص الأولي. هذه النتائج لا تمثل اختباراً شاملاً لكل وظائف المنصة.';
  }catch(error){status.textContent='توقف الفحص بسبب خطأ: '+(error?.message||String(error));}

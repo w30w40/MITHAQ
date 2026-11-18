@@ -12,7 +12,9 @@ const required = [
   'id="mithaqAiRunDiagnostics"',
   'navigator.serviceWorker.register',
   'window.reportMithaqClientError',
-  'mithaq_admin_ai_client_errors'
+  'mithaq_admin_ai_client_errors',
+  'id="mithaqAdminChatFiles"',
+  'id="mithaqAdminChatAttach"'
 ];
 const missing = required.filter((needle) => !html.includes(needle));
 if (missing.length) {
@@ -64,7 +66,7 @@ if (workerResult.status !== 0) {
   console.error("MITHAQ AI Worker syntax check failed:");
   console.error(workerResult.stderr || workerResult.stdout);
 }
-if (!worker.includes('/client-error') || !worker.includes('mithaq_report_client_error')) {
+if (!worker.includes('/client-error') || !worker.includes('mithaq_report_client_error') || !worker.includes('/github-admin') || !worker.includes('githubAdminAction')) {
   failed = true;
   console.error("MITHAQ AI Worker is missing the client error reporting endpoint.");
 }
