@@ -1842,7 +1842,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
    <h3>محادثة مساعد ميثاق</h3>
-   <p class="mithaq-ai-muted">اكتب طلبك بالعربية وتابع الردود في نفس المحادثة. هذه المرحلة تدعم الحوار والتحليل؛ تنفيذ تغييرات الموقع وقاعدة البيانات سيضاف لاحقاً بأدوات محمية وموافقات واضحة.</p>
+   <p class="mithaq-ai-muted">مساعد متصل بقاعدة بيانات ميثاق الفعلية. يستطيع قراءة الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. صلاحياته الحالية قراءة فقط؛ أي تعديل يحتاج ربط إجراء محدد وموافقة صريحة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
     <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
@@ -2620,14 +2620,14 @@ function initMithaqAdminChat(){
   event.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;
   send.disabled=true;status.textContent='جارٍ التحقق من صلاحية الإدارة...';
   try{
-   const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqAdmin)throw new Error('هذه المحادثة مخصصة للإدارة الرئيسية فقط.');
+   const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqPrimaryAdmin)throw new Error('هذه المحادثة مخصصة للإدارة الرئيسية فقط.');
    const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session?.access_token)throw new Error('انتهت جلسة الدخول. سجّل الدخول مجدداً.');
    const previous=mithaqAdminChatHistory.slice(-12);
    mithaqAdminChatHistory.push({role:'user',content:message});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
    const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message,history:previous})});
    const payload=await response.json().catch(()=>({}));
    if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر الحصول على رد من المساعد (HTTP '+response.status+').');
-   mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();status.textContent='تم استلام الرد. المساعد متصل، لكن أدوات تنفيذ التغييرات لم تُفعّل بعد.';
+   mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية (وضع القراءة فقط).':'تم استلام الرد.';
   }catch(error){status.textContent=error?.message||'تعذر إرسال الرسالة.';}
   finally{send.disabled=false;input.focus();}
  });
@@ -2636,14 +2636,14 @@ async function runMithaqAiInitialDiagnostics(){
  const status=document.getElementById('mithaqAiDiagnosticStatus'),host=document.getElementById('mithaqAiDiagnosticResults'),button=document.getElementById('mithaqAiRunDiagnostics');
  if(!status||!host||!button)return;
  const allowed=await refreshMithaqAdminAccess();
- if(!allowed||!isMithaqAdmin){status.textContent='غير مصرح: هذه الفحوصات للمشرف الرئيسي فقط.';return;}
+ if(!allowed||!isMithaqPrimaryAdmin){status.textContent='غير مصرح: هذه الفحوصات للمشرف الرئيسي فقط.';return;}
  button.disabled=true;host.replaceChildren();status.textContent='جارٍ تنفيذ الفحوصات الأولية...';
  const add=(name,ok,detail,level='')=>{const item=document.createElement('div');item.className='mithaq-ai-result '+(ok?'ok':level||'warn');const strong=document.createElement('strong');strong.textContent=(ok?'✓ ':'! ')+name;const p=document.createElement('div');p.textContent=detail;item.append(strong,p);host.append(item);};
  try{
   const {data:{session},error}=await supabaseClient.auth.getSession();
   add('جلسة الدخول',!!session&&!error,session&&!error?'تم العثور على جلسة دخول صالحة.':'تعذر تأكيد جلسة الدخول: '+(error?.message||'لا توجد جلسة.'));
-  const {data:admin,error:adminError}=await supabaseClient.rpc('mithaq_is_admin');
-  add('صلاحية المشرف الرئيسي',!adminError&&admin===true,!adminError&&admin===true?'أكدت قاعدة البيانات صلاحية المشرف الرئيسي.':'لم تؤكد قاعدة البيانات صلاحية المشرف الرئيسي.', 'fail');
+  const {data:admin,error:adminError}=await supabaseClient.rpc('mithaq_is_primary_admin');
+  add('صلاحية الإدارة الرئيسية',!adminError&&admin===true,!adminError&&admin===true?'أكدت قاعدة البيانات صلاحية الإدارة الرئيسية.':'لم تؤكد قاعدة البيانات صلاحية الإدارة الرئيسية.', 'fail');
   const required=['mithaqBottomNav','messages','members','myprofile','aiAssistant'];
   const missing=required.filter(id=>!document.getElementById(id));
   add('عناصر التطبيق الأساسية',missing.length===0,missing.length===0?'الأقسام الأساسية المطلوبة موجودة في الصفحة.':'عناصر غير موجودة: '+missing.join('، '),missing.length?'warn':'');
@@ -2748,21 +2748,22 @@ if(supabaseClient){
 }else{
  document.documentElement.classList.remove('mithaq-auth-pending');
 }
-let isMithaqAdmin=false,isMithaqModerator=false;
+let isMithaqAdmin=false,isMithaqModerator=false,isMithaqPrimaryAdmin=false;
 async function refreshMithaqAdminAccess(){
  const link=document.getElementById('mithaqAdminMenuLink');
  const aiButton=document.querySelector('[data-bottom-ai]');
- if(!supabaseClient){isMithaqAdmin=false;isMithaqModerator=false;document.body.classList.remove('mithaq-main-admin');if(link)link.hidden=true;if(aiButton)aiButton.hidden=true;return false;}
+ if(!supabaseClient){isMithaqAdmin=false;isMithaqModerator=false;isMithaqPrimaryAdmin=false;document.body.classList.remove('mithaq-main-admin');if(link)link.hidden=true;if(aiButton)aiButton.hidden=true;return false;}
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){isMithaqAdmin=false;isMithaqModerator=false;document.body.classList.remove('mithaq-main-admin');if(link)link.hidden=true;if(aiButton)aiButton.hidden=true;return false;}
- const [{data:admin,error:adminError},{data:moderator,error:moderatorError}]=await Promise.all([
-  supabaseClient.rpc('mithaq_is_admin'),supabaseClient.rpc('mithaq_is_moderator')
+ if(!session){isMithaqAdmin=false;isMithaqModerator=false;isMithaqPrimaryAdmin=false;document.body.classList.remove('mithaq-main-admin');if(link)link.hidden=true;if(aiButton)aiButton.hidden=true;return false;}
+ const [{data:admin,error:adminError},{data:moderator,error:moderatorError},{data:primaryAdmin,error:primaryAdminError}]=await Promise.all([
+  supabaseClient.rpc('mithaq_is_admin'),supabaseClient.rpc('mithaq_is_moderator'),supabaseClient.rpc('mithaq_is_primary_admin')
  ]);
  isMithaqAdmin=!adminError&&admin===true;
  isMithaqModerator=!moderatorError&&moderator===true;
+ isMithaqPrimaryAdmin=!primaryAdminError&&primaryAdmin===true;
  const allowed=isMithaqAdmin||isMithaqModerator;
  document.body.classList.toggle('mithaq-main-admin',isMithaqAdmin);
- if(aiButton)aiButton.hidden=!isMithaqAdmin;
+ if(aiButton)aiButton.hidden=!isMithaqPrimaryAdmin;
  const analyticsButton=document.getElementById('mithaqOpenSiteAnalytics');if(analyticsButton)analyticsButton.hidden=!isMithaqAdmin;
  if(link)link.hidden=!allowed;
  const homeWidget=document.getElementById('mithaqAdminHomeWidget');if(homeWidget)homeWidget.hidden=!allowed;
