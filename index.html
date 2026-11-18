@@ -217,6 +217,8 @@ body.authenticated #messages .mithaq-message-actions button:last-child{border-to
 .mithaq-managed-disclosure{margin:14px 0;padding:13px 15px;border:1px solid #efcbd5;border-right:4px solid #d94368;border-radius:12px;background:#fff4f6;color:#87374f;font-size:13px;line-height:1.9}
 
 .mithaq-managed-admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #f0e3e6}.mithaq-managed-admin-row p{margin:5px 0 0;color:#7b8790;font-size:12px}.mithaq-managed-admin-row .row{flex-wrap:wrap;justify-content:flex-end}.mithaq-managed-admin-row .row button{padding:8px 11px;font-size:12px}#mithaqManagedAdminForm{margin-top:18px;padding:15px;border:1px solid #f0dfe5;border-radius:14px;background:#fff9fa}#mithaqManagedAdminForm[hidden]{display:none!important}
+
+.mithaq-ai-chat{margin-top:16px}.mithaq-ai-messages{display:flex;flex-direction:column;gap:9px;max-height:340px;overflow:auto;padding:10px;background:#fff7f9;border:1px solid #f1dce3;border-radius:14px;margin:12px 0}.mithaq-ai-bubble{max-width:88%;padding:10px 13px;border-radius:14px;line-height:1.8;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}.mithaq-ai-bubble.assistant{align-self:flex-start;background:#e8f3fa;color:#244f78;border-bottom-left-radius:4px}.mithaq-ai-bubble.member{align-self:flex-end;background:#f9e3ea;color:#71384b;border-bottom-right-radius:4px}.mithaq-ai-form{display:flex;gap:8px;align-items:center}.mithaq-ai-form input{flex:1;min-width:0}.mithaq-ai-form button{white-space:nowrap}
 </style>
 <style id="mithaq-refresh">
 :root{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#24364b;background:#f3f7fc;--green:#1e5d91;--green2:#2879b8;--gold:#d5b16e;--muted:#718096;--line:#e2eaf3;--surface:#fff}
@@ -3323,8 +3325,48 @@ function showManagedMemberProfile(person){
  const sub=document.createElement('p');sub.textContent=[person.country,person.region].filter(Boolean).join(' • ');
  identity.append(name,label,sub);hero.append(avatar,identity);content.append(hero);
  const disclosure=document.createElement('div');disclosure.className='mithaq-managed-disclosure';
- disclosure.textContent='هذا ملف افتراضي أنشأته وتديره منصة ميثاق، وليس حساب شخص حقيقي. لا يستقبل رسائل أو طلبات اهتمام.';
+ disclosure.textContent='هذا ملف افتراضي تديره منصة ميثاق. المحادثة التالية مع مساعد ذكاء اصطناعي، وليست مع شخص حقيقي.';
  content.append(disclosure);
+ const aiSection=document.createElement('section');aiSection.className='mithaq-profile-meta mithaq-ai-chat';
+ const aiTitle=document.createElement('h3');aiTitle.textContent='محادثة مع مساعد ميثاق الذكي';
+ const aiHint=document.createElement('p');aiHint.className='muted';aiHint.textContent='يمكنك السؤال عن التوافق والزواج والقيم العامة. سيخبرك المساعد بوضوح أنه ذكاء اصطناعي.';
+ const aiMessages=document.createElement('div');aiMessages.className='mithaq-ai-messages';aiMessages.setAttribute('aria-live','polite');
+ const aiStatus=document.createElement('p');aiStatus.className='notice';aiStatus.textContent='جارٍ تجهيز المحادثة...';
+ const aiForm=document.createElement('form');aiForm.className='mithaq-ai-form';
+ const aiInput=document.createElement('input');aiInput.type='text';aiInput.maxLength=1500;aiInput.required=true;aiInput.placeholder='اكتب رسالتك هنا...';aiInput.setAttribute('aria-label','رسالتك إلى مساعد ميثاق');
+ const aiSend=document.createElement('button');aiSend.type='submit';aiSend.className='primary';aiSend.textContent='إرسال';
+ aiForm.append(aiInput,aiSend);aiSection.append(aiTitle,aiHint,aiMessages,aiForm,aiStatus);content.append(aiSection);
+ const addAiMessage=(text,type)=>{
+  const bubble=document.createElement('div');bubble.className='mithaq-ai-bubble '+(type==='member'?'member':'assistant');bubble.textContent=text;aiMessages.append(bubble);aiMessages.scrollTop=aiMessages.scrollHeight;
+ };
+ const aiEndpoint='https://mithaq-ai-chat.w0000000000w00.workers.dev/chat';
+ (async()=>{
+  try{
+   const {data:{session}}=await supabaseClient.auth.getSession();
+   if(!session){aiStatus.textContent='سجّل الدخول لاستخدام المحادثة الذكية.';aiSend.disabled=true;return;}
+   const {data:conversation,error:conversationError}=await supabaseClient.from('mithaq_managed_ai_conversations').select('id').eq('member_user_id',session.user.id).eq('managed_profile_id',person.id).maybeSingle();
+   if(conversationError)throw conversationError;
+   if(conversation?.id){
+    const {data:history,error:historyError}=await supabaseClient.from('mithaq_managed_ai_messages').select('sender_type,content').eq('conversation_id',conversation.id).order('created_at',{ascending:true}).limit(50);
+    if(historyError)throw historyError;
+    (history||[]).forEach(item=>addAiMessage(item.content,item.sender_type==='member'?'member':'assistant'));
+   }else addAiMessage('مرحباً بك. أنا مساعد افتراضي تابع لميثاق، ولست شخصاً حقيقياً. كيف أستطيع مساعدتك؟','assistant');
+   aiStatus.textContent='المحادثة جاهزة.';
+  }catch(error){aiStatus.textContent='تعذر تحميل المحادثة السابقة. يمكنك تجربة إرسال رسالة.';console.warn('MITHAQ AI history:',error);}
+ })();
+ aiForm.addEventListener('submit',async event=>{
+  event.preventDefault();const message=aiInput.value.trim();if(!message||aiSend.disabled)return;
+  aiInput.value='';aiInput.disabled=true;aiSend.disabled=true;aiStatus.textContent='جارٍ إرسال الرسالة وتوليد الرد...';addAiMessage(message,'member');
+  try{
+   const {data:{session}}=await supabaseClient.auth.getSession();
+   if(!session)throw new Error('انتهت جلسة الدخول. سجّل الدخول من جديد.');
+   const response=await fetch(aiEndpoint,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({profileId:person.id,message})});
+   const payload=await response.json().catch(()=>({}));
+   if(!response.ok||!payload.ok)throw new Error(payload.error||'تعذر الحصول على رد من المساعد.');
+   addAiMessage(payload.reply,'assistant');aiStatus.textContent='ردّ المساعد الذكي.';
+  }catch(error){aiStatus.textContent=error.message||'تعذر الاتصال بالمساعد الذكي. حاول لاحقاً.';}
+  finally{aiInput.disabled=false;aiSend.disabled=false;aiInput.focus();}
+ });
  const details=person.details||{};
  const fields=[['العمر',details.age?details.age+' سنة':'غير محدد'],['الجنس',details.gender||'غير محدد'],['المدينة',details.city||person.region||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||'غير محدد'],['الحالة الاجتماعية',details.marital_status||'غير محدد'],['الأطفال',details.children||'غير محدد'],['نوع الزواج',person.marriage_type||'غير محدد']];
  const card=document.createElement('section');card.className='mithaq-profile-meta';
