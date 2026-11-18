@@ -2606,6 +2606,7 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){document.documentElement.removeAttribute('data-mithaq-initial-route');if(id==='aiAssistant'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));refreshMithaqAdminAccess().then(ok=>{if(ok&&isMithaqAdmin)show('aiAssistant',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}if(id==='members'&&!memberChoice){const current=document.querySelector('.tab:not(.hidden)');if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=document.querySelector('.tab:not(.hidden)');if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){runMithaqPageLoad('home-feed',loadMithaqHomeFeed);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='myprofile')runMithaqPageLoad('myprofile',refreshProfileAccess);if(id==='members'){resetMemberEntry();runMithaqPageLoad('members',loadMembers);}if(id==='messages'){runMithaqPageLoad('conversations',loadConversations);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='settings')loadMithaqBackgroundSettings();if(id==='notifications')runMithaqPageLoad('notifications',loadMithaqNotifications);if(id==='admin')runMithaqPageLoad('admin',loadMithaqAdminPanel);if(id==='siteAnalyticsPage')runMithaqPageLoad('site-analytics',loadMithaqSiteAnalytics);}
 const MITHAQ_ADMIN_CHAT_ENDPOINT='https://mithaq-ai-chat.w0000000000w00.workers.dev/admin-chat';
+const MITHAQ_ADMIN_GITHUB_ENDPOINT='https://mithaq-ai-chat.w0000000000w00.workers.dev/github-admin';
 const MITHAQ_ADMIN_CHAT_STORAGE_KEY='mithaq-admin-ai-history-v1';
 let mithaqAdminChatHistory=[];
 function loadMithaqAdminChatHistory(){
@@ -2680,7 +2681,25 @@ function initMithaqAdminChat(){
     const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message:message||'حلل المرفقات المرفقة وأخبرني بما تحتويه.',history:previous,attachments})});
     payload=await response.json().catch(()=>({}));
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر الحصول على رد من المساعد (HTTP '+response.status+').');
-    if(payload.action_proposal){
+    if(payload.github_action_proposal){
+     const proposal=payload.github_action_proposal;
+     const summary='تعديل برمجي مقترح\\nالملف: '+proposal.path+'\\nالفرع: '+proposal.branch+'\\nالسبب: '+(proposal.message||'تعديل مقترح')+'\\nحجم الكود: '+String(proposal.content||'').length+' حرف\\n\\nسيُحفظ على فرع تطوير فقط ولن يُنشر مباشرة إلى الموقع الحي.';
+     if(window.confirm(summary+'\\n\\nهل توافق على حفظ التعديل في GitHub؟')){
+      status.textContent='جارٍ حفظ التعديل على فرع التطوير...';
+      const commit=await fetch(MITHAQ_ADMIN_GITHUB_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({action:'commit_file',branch:proposal.branch,path:proposal.path,content:proposal.content,message:proposal.message,confirm:true})});
+      const commitResult=await commit.json().catch(()=>({}));
+      if(!commit.ok||!commitResult?.ok)throw new Error(commitResult?.error||'تعذر حفظ التعديل في GitHub.');
+      payload.reply='تم حفظ التعديل على فرع التطوير '+proposal.branch+'\\nالملف: '+proposal.path+'\\nCommit: '+(commitResult.commit_sha||'تم إنشاؤه')+'\\nلم يتم دمج التعديل إلى main أو نشره للإنتاج.';
+      status.textContent='تم حفظ التعديل على فرع التطوير. لم يتغير الموقع الحي.';
+     }else{
+      payload.reply='لم أحفظ التعديل؛ ألغيتَ الموافقة ولم يتغير المستودع.';
+      status.textContent='أُلغيت العملية ولم يتم تعديل GitHub.';
+     }
+    }else{
+     payload.reply='لم أحفظ التعديل؛ ألغيتَ الموافقة ولم يتغير المستودع.';
+     status.textContent='أُلغيت العملية ولم يتم تعديل GitHub.';
+    }
+    }else if(payload.action_proposal){
      const proposal=payload.action_proposal;
      const summary='العملية المقترحة: '+(proposal.operation==='delete'?'حذف':'تعديل')+'\\nالجدول: '+proposal.table+'\\nمعرّف السجل: '+proposal.id+'\\nالبيانات: '+JSON.stringify(proposal.values||{});
      if(window.confirm(summary+'\\n\\nهل توافق على تنفيذها الآن؟')){
