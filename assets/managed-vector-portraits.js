@@ -13,7 +13,7 @@
  function apply(node,id,gender){if(!node)return;node.classList.add('mithaq-managed-vector-avatar');node.innerHTML=portrait(id,gender);node.setAttribute('aria-label','رسم رمزي لحساب افتراضي');}
  const css=document.createElement('style');css.textContent='.mithaq-managed-vector-avatar{overflow:hidden!important;padding:0!important;background:#f7e9ed!important;display:flex!important;align-items:center!important;justify-content:center!important}.mithaq-managed-vector-avatar svg{display:block;width:100%;height:100%}.mithaq-full-member-profile-avatar.mithaq-managed-vector-avatar{width:88px;height:88px;border-radius:50%;flex:none}';document.head.appendChild(css);
  const oldDecorate=window.decorateMithaqMemberAvatar;
- if(typeof oldDecorate==='function')window.decorateMithaqMemberAvatar=function(node,id){oldDecorate.apply(this,arguments);const person=typeof mithaqMemberCache!=='undefined'&&Array.isArray(mithaqMemberCache)?mithaqMemberCache.find(x=>String(x.id)===String(id)&&x.is_platform_managed===true):null;if(person)apply(node,id,person.details&&person.details.gender);};
+ if(typeof oldDecorate==='function')window.decorateMithaqMemberAvatar=function(node,id){const person=typeof mithaqMemberCache!=='undefined'&&Array.isArray(mithaqMemberCache)?mithaqMemberCache.find(x=>String(x.id)===String(id)&&x.is_platform_managed===true):null;if(person){apply(node,id,person.details&&person.details.gender);return;}oldDecorate.apply(this,arguments);};
  const oldProfile=window.showManagedMemberProfile;
  if(typeof oldProfile==='function')window.showManagedMemberProfile=function(person){oldProfile.apply(this,arguments);apply(document.querySelector('#mithaqFullMemberProfile .mithaq-full-member-profile-avatar'),person.id,person.details&&person.details.gender);};
 
