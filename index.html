@@ -2646,9 +2646,9 @@ function initMithaqAdminChat(){
   if(fileNames)fileNames.textContent=selectedFiles.length?selectedFiles.map(f=>f.name).join('، '):'يمكن إرفاق 3 ملفات بحد أقصى';
  });
  input?.addEventListener('paste',event=>{
-  const pasted=Array.from(event.clipboardData?.items||[]).map(item=>item.kind==='file'?item.getAsFile():null).filter(file=>file&&(/^(image|audio)\\//.test(file.type)));
+  const pasted=Array.from(event.clipboardData?.items||[]).map(item=>item.kind==='file'?item.getAsFile():null).filter(file=>file&&(/^(image|audio)\//.test(file.type)));
   if(!pasted.length)return;
-  selectedFiles.splice(0,3,...selectedFiles,...pasted);
+  const merged=[...selectedFiles,...pasted].slice(0,3);selectedFiles.splice(0,selectedFiles.length,...merged);
   if(fileNames)fileNames.textContent=selectedFiles.map(f=>f.name).join('، ')+' — أُضيف من الحافظة';
  });
  loadMithaqAdminChatHistory();renderMithaqAdminChat();
