@@ -1439,6 +1439,26 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
 .mithaq-chat-bubble.theirs .mithaq-audio-wave{color:#9aa6ad}
 </style>
 <style id="mithaq-read-receipt-blue-svg">.mithaq-chat-ticks.read svg{display:inline-block;width:20px;height:20px;vertical-align:middle;color:#53BDEB}</style>
+<style id="mithaq-ai-admin-style">
+.mithaq-bottom-nav button[data-bottom-ai] .bottom-icon{font-size:25px}
+body.authenticated .mithaq-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mithaq-ai-admin{max-width:900px;margin:14px auto 28px}
+.mithaq-ai-hero{border:1px solid #ead8e0;background:linear-gradient(135deg,#fff8fb,#f2f7ff);border-radius:20px;padding:18px;margin-bottom:14px}
+.mithaq-ai-hero-head{display:flex;align-items:center;gap:12px}
+.mithaq-ai-orb{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#fff;color:#a83f72;font-size:26px;box-shadow:0 5px 18px #9b47751c}
+.mithaq-ai-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mithaq-ai-tile{border:1px solid #e7eaf0;border-radius:15px;padding:13px;background:#fff;min-width:0}
+.mithaq-ai-tile strong{display:block;margin:5px 0}
+.mithaq-ai-muted{color:#718096;font-size:12px;line-height:1.7}
+.mithaq-ai-run{width:100%;margin-top:12px}
+.mithaq-ai-results{display:grid;gap:8px;margin-top:12px}
+.mithaq-ai-result{border:1px solid #e6ebf0;border-radius:12px;padding:11px;background:#fff;font-size:13px;line-height:1.7}
+.mithaq-ai-result.ok{border-color:#b9dfc7;background:#f5fff8}
+.mithaq-ai-result.warn{border-color:#ecd6a2;background:#fffcf4}
+.mithaq-ai-result.fail{border-color:#e9b8b8;background:#fff7f7}
+.mithaq-ai-command{width:100%;min-height:92px;border:1px solid #dce3eb;border-radius:13px;padding:12px;font:inherit;resize:vertical}
+@media(max-width:600px){.mithaq-ai-grid{grid-template-columns:1fr}.mithaq-bottom-nav button{font-size:10px}.mithaq-bottom-nav button .bottom-icon{font-size:23px}}
+</style>
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -1793,6 +1813,33 @@ body:has(#mithaq-selection-layer) #messages .mithaq-chat-message-item .mithaq-me
  </div>
 </section>
 <section id="menuFeature" class="tab hidden"><div class="card"><div class="mithaq-feature-page-head"><button type="button" class="secondary" data-feature-back>← رجوع</button><span id="mithaqFeatureIcon">💗</span></div><h2 id="mithaqFeatureTitle">قائمة الاهتمام</h2><p id="mithaqFeatureDescription" class="muted"></p><div id="mithaqFeatureContent" class="mithaq-feature-content"><p id="mithaqFeatureStatus"></p><div id="mithaqFeatureList"></div></div></div></section>
+
+<section id="aiAssistant" class="tab hidden" aria-label="مساعد ميثاق الذكي">
+ <div class="mithaq-ai-admin">
+  <div class="mithaq-ai-hero">
+   <div class="mithaq-ai-hero-head"><div class="mithaq-ai-orb" aria-hidden="true">✦</div><div><h2 style="margin:0">مساعد ميثاق الذكي</h2><p class="mithaq-ai-muted" style="margin:4px 0 0">مركز التحليل والفحص والتجارب — للإدارة الرئيسية فقط</p></div></div>
+   <p class="mithaq-ai-muted">هذه هي المرحلة الأولى: لوحة إدارية محمية وفحوصات اتصال أساسية حقيقية. سيُربط محرك المحادثة وتنفيذ الأوامر والتجارب المعزولة في المرحلة التالية؛ لن ندّعي تنفيذ أو إصلاح شيء قبل ربطه واختباره.</p>
+  </div>
+  <div class="mithaq-ai-grid">
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">سيعمل لاحقاً ببيانات اختبار منفصلة، دون لمس حسابات الأعضاء الحقيقية.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">سيعرض التغيير ونتيجة الاختبار وخطة التراجع قبل أي نشر حساس.</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+   <h3>فحص ميثاق الآن</h3><p class="mithaq-ai-muted">ينفذ الفحوصات الأولية المتاحة من هذه الصفحة، ويعرض نتيجة كل اختبار بوضوح.</p>
+   <button type="button" class="primary mithaq-ai-run" id="mithaqAiRunDiagnostics">▶ بدء الفحص الأولي</button>
+   <div id="mithaqAiDiagnosticStatus" class="mithaq-ai-muted" role="status" aria-live="polite" style="margin-top:10px">لم يبدأ الفحص بعد.</div>
+   <div id="mithaqAiDiagnosticResults" class="mithaq-ai-results"></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+   <h3>أوامرك للمساعد</h3>
+   <p class="mithaq-ai-muted">واجهة الأوامر ستقبل تعليماتك بالعربية في المرحلة التالية بعد ربط محرك الذكاء الاصطناعي وتحديد أدواته وصلاحياته. حالياً لا يتم إرسال أو تنفيذ أي أمر من هذا الحقل.</p>
+   <textarea class="mithaq-ai-command" id="mithaqAiCommandDraft" placeholder="مثال: افحص سبب بطء صفحة الأعضاء..." disabled></textarea>
+   <button type="button" class="secondary" disabled style="margin-top:9px;width:100%">سيتم تفعيل تنفيذ الأوامر بعد ربط المحرك</button>
+  </div>
+ </div>
+</section>
 
 </main>
 <div class="mithaq-bottom-nav" id="mithaqBottomNav" aria-label="التنقل السفلي">
@@ -2538,7 +2585,33 @@ document.querySelectorAll('[data-feature-back]').forEach(b=>b.addEventListener('
 
 
 
-function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){document.documentElement.removeAttribute('data-mithaq-initial-route');if(id==='members'&&!memberChoice){const current=document.querySelector('.tab:not(.hidden)');if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=document.querySelector('.tab:not(.hidden)');if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){runMithaqPageLoad('home-feed',loadMithaqHomeFeed);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='myprofile')runMithaqPageLoad('myprofile',refreshProfileAccess);if(id==='members'){resetMemberEntry();runMithaqPageLoad('members',loadMembers);}if(id==='messages'){runMithaqPageLoad('conversations',loadConversations);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='settings')loadMithaqBackgroundSettings();if(id==='notifications')runMithaqPageLoad('notifications',loadMithaqNotifications);if(id==='admin')runMithaqPageLoad('admin',loadMithaqAdminPanel);if(id==='siteAnalyticsPage')runMithaqPageLoad('site-analytics',loadMithaqSiteAnalytics);}
+function show(id,fromBack=false,verifiedAdmin=false,memberChoice=false){document.documentElement.removeAttribute('data-mithaq-initial-route');if(id==='aiAssistant'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));refreshMithaqAdminAccess().then(ok=>{if(ok&&isMithaqAdmin)show('aiAssistant',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}if(id==='members'&&!memberChoice){const current=document.querySelector('.tab:not(.hidden)');if(current&&current.id!=='home')show('home',true);const chooser=document.getElementById('memberEntryChooser');if(chooser){chooser.hidden=false;chooser.scrollIntoView({behavior:'smooth',block:'nearest'});}closeMemberDrawer();return;}if(id==='admin'&&!verifiedAdmin){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));nav.forEach(b=>b.classList.remove('active'));const status=document.getElementById('mithaqAdminStatus');if(status)status.textContent='جارٍ التحقق من صلاحية المشرف...';refreshMithaqAdminAccess().then(ok=>{if(ok)show('admin',fromBack,true);else show('home',true);}).catch(()=>show('home',true));return;}const current=document.querySelector('.tab:not(.hidden)');if(!fromBack&&current&&current.id!==id)tabHistory.push(current.id);saveMithaqRoute(id);document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('hidden',t.id!==id));nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('[data-bottom-go]').forEach(b=>b.classList.toggle('active',b.dataset.bottomGo===id));if(id==='home'){runMithaqPageLoad('home-feed',loadMithaqHomeFeed);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='myprofile')runMithaqPageLoad('myprofile',refreshProfileAccess);if(id==='members'){resetMemberEntry();runMithaqPageLoad('members',loadMembers);}if(id==='messages'){runMithaqPageLoad('conversations',loadConversations);runMithaqPageLoad('unread-count',loadMithaqUnreadCount);}if(id==='settings')loadMithaqBackgroundSettings();if(id==='notifications')runMithaqPageLoad('notifications',loadMithaqNotifications);if(id==='admin')runMithaqPageLoad('admin',loadMithaqAdminPanel);if(id==='siteAnalyticsPage')runMithaqPageLoad('site-analytics',loadMithaqSiteAnalytics);}
+async function runMithaqAiInitialDiagnostics(){
+ const status=document.getElementById('mithaqAiDiagnosticStatus'),host=document.getElementById('mithaqAiDiagnosticResults'),button=document.getElementById('mithaqAiRunDiagnostics');
+ if(!status||!host||!button)return;
+ const allowed=await refreshMithaqAdminAccess();
+ if(!allowed||!isMithaqAdmin){status.textContent='غير مصرح: هذه الفحوصات للمشرف الرئيسي فقط.';return;}
+ button.disabled=true;host.replaceChildren();status.textContent='جارٍ تنفيذ الفحوصات الأولية...';
+ const add=(name,ok,detail,level='')=>{const item=document.createElement('div');item.className='mithaq-ai-result '+(ok?'ok':level||'warn');const strong=document.createElement('strong');strong.textContent=(ok?'✓ ':'! ')+name;const p=document.createElement('div');p.textContent=detail;item.append(strong,p);host.append(item);};
+ try{
+  const {data:{session},error}=await supabaseClient.auth.getSession();
+  add('جلسة الدخول',!!session&&!error,session&&!error?'تم العثور على جلسة دخول صالحة.':'تعذر تأكيد جلسة الدخول: '+(error?.message||'لا توجد جلسة.'));
+  const {data:admin,error:adminError}=await supabaseClient.rpc('mithaq_is_admin');
+  add('صلاحية المشرف الرئيسي',!adminError&&admin===true,!adminError&&admin===true?'أكدت قاعدة البيانات صلاحية المشرف الرئيسي.':'لم تؤكد قاعدة البيانات صلاحية المشرف الرئيسي.', 'fail');
+  const required=['mithaqBottomNav','messages','members','myprofile','aiAssistant'];
+  const missing=required.filter(id=>!document.getElementById(id));
+  add('عناصر التطبيق الأساسية',missing.length===0,missing.length===0?'الأقسام الأساسية المطلوبة موجودة في الصفحة.':'عناصر غير موجودة: '+missing.join('، '),missing.length?'warn':'');
+  try{
+   const response=await fetch('https://mithaq-ai-chat.w0000000000w00.workers.dev/health',{method:'GET',cache:'no-store'});
+   const payload=await response.json();
+   const healthy=response.ok&&payload?.ok===true;
+   add('خدمة مساعد الذكاء الاصطناعي',healthy,healthy?'استجابت نقطة فحص الخدمة بنجاح.':'وصل رد غير سليم من الخدمة (HTTP '+response.status+').',healthy?'':'warn');
+  }catch(workerError){add('خدمة مساعد الذكاء الاصطناعي',false,'تعذر الوصول إلى نقطة فحص الخدمة من هذه الصفحة: '+(workerError?.message||'خطأ اتصال.'),'warn');}
+  status.textContent='انتهى الفحص الأولي. هذه النتائج لا تمثل اختباراً شاملاً لكل وظائف المنصة.';
+ }catch(error){status.textContent='توقف الفحص بسبب خطأ: '+(error?.message||String(error));}
+ finally{button.disabled=false;}
+}
+document.getElementById('mithaqAiRunDiagnostics')?.addEventListener('click',runMithaqAiInitialDiagnostics);
  function goBack(){const previous=tabHistory.pop()||'home';show(previous,true);}
  ['members','myprofile','messages','settings','help','about','notifications'].forEach(id=>{const section=document.getElementById(id);if(!section)return;const back=document.createElement('button');back.type='button';back.className='mithaq-section-back';back.textContent='← رجوع';back.addEventListener('click',goBack);section.insertBefore(back,section.firstChild);});
 function showProfileReadView(){document.getElementById('profileReadView').hidden=false;document.getElementById('profileEditView').hidden=true;}
@@ -2547,6 +2620,7 @@ document.getElementById('editProfileOpen').addEventListener('click',showProfileE
 document.getElementById('mithaqAdminHomeOpen').addEventListener('click',()=>show('admin'));
 document.getElementById('cancelProfileEdit').addEventListener('click',showProfileReadView);
 nav.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+document.querySelector('[data-bottom-ai]')?.addEventListener('click',()=>show('aiAssistant'));
 /* Legacy authentication modal removed: MITHAQ now uses the dedicated five-step signup form and the dedicated login form above. Keeping this obsolete block caused null-element errors and interrupted session restoration. */
 async function touchMithaqLastSeen(session){if(!session||!supabaseClient)return;const {error}=await supabaseClient.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',session.user.id);if(error)console.warn('MITHAQ last-seen update:',error.message);}
 let mithaqPresenceHeartbeatTimer=null;
@@ -2602,9 +2676,10 @@ async function restoreAuthSession(){
    let target='home';
    try{const saved=sessionStorage.getItem(MITHAQ_ROUTE_KEY);if(saved&&Array.from(document.querySelectorAll('.tab')).some(tab=>tab.id===saved))target=saved;}catch(_){}
    let allowed=false;
-   if(target==='admin'||target==='siteAnalyticsPage')allowed=await refreshMithaqAdminAccess();
+   if(target==='admin'||target==='siteAnalyticsPage'||target==='aiAssistant')allowed=await refreshMithaqAdminAccess();
    else Promise.resolve().then(()=>refreshMithaqAdminAccess()).catch(error=>console.warn('MITHAQ role refresh:',error));
    if(target==='siteAnalyticsPage'&&!isMithaqAdmin)target='home';
+   if(target==='aiAssistant'&&!isMithaqAdmin)target='home';
    if(target==='admin'&&!allowed)target='home';
    show(target,true,false,target==='members');
    if(target==='menuFeature'){let feature='interest';try{feature=sessionStorage.getItem('mithaq-last-feature-v1')||'interest';}catch(_){}if(mithaqFeaturePages[feature])openMithaqFeature(feature,true);else show('home',true);}
