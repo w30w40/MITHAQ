@@ -138,7 +138,7 @@ export default { async fetch(request,env) {
  const origin=request.headers.get("Origin")||"";
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:cors(origin)});
  const url=new URL(request.url);
- if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"mithaq-managed-ai",model:MODEL,admin_capabilities:{database_read:true,database_mutations:"allowlisted_with_explicit_confirmation",source_editing:!!env.GITHUB_TOKEN,isolated_sandbox:false,automated_tests:true,external_monitoring:true,runtime_error_reporting:true,assistant_deploy:false,github_token_configured:!!env.GITHUB_TOKEN,multimodal_attachments:true}},200,origin);
+ if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"mithaq-managed-ai",model:MODEL,admin_capabilities:{database_read:true,database_mutations:"allowlisted_with_explicit_confirmation",source_editing:!!env.GITHUB_TOKEN,isolated_sandbox:false,automated_tests:"github_actions_on_push",external_monitoring:true,runtime_error_reporting:true,assistant_deploy:false,github_token_configured:!!env.GITHUB_TOKEN,multimodal_attachments:true}},200,origin);
  if(request.method!=="POST"||!(["/chat","/admin-chat","/client-error","/github-admin"].includes(url.pathname)))return json({error:"المسار غير متاح."},404,origin);
  if(!ALLOWED_ORIGINS.has(origin))return json({error:"مصدر الطلب غير مسموح."},403,origin);
  const token=(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"").trim();
@@ -199,7 +199,9 @@ export default { async fetch(request,env) {
    if(!attachmentContext.length&&attachments.length)return json({error:"لم أتمكن من قراءة أي مرفق. جرّب صورة أو صوتاً أو ملفاً نصياً."},415,origin);
    const capabilityIntent=/(وش|ايش|ماذا|ما الذي|ماهي|ما هي).*(تقدر|تستطيع|يمكنك|صلاحياتك|تسوي|تفعل)|^(وش|ايش) تقدر/i.test(userText);
    if(capabilityIntent){
-    return json({ok:true,reply:"أقدر حالياً على: قراءة إحصائيات ميثاق، واستعراض الأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول؛ واقتراح تعديل أو حذف سجل محدد ضمن الجداول والأعمدة المسموحة، ولا ينفذ التغيير إلا بعد تأكيدك الصريح وتأكيد قاعدة البيانات.\n\nلا تحتاج إلى إرسال لقطات شاشة. ما لم يُربط بعد: تعديل ملفات الموقع من هذه المحادثة، مختبر تجارب معزول، اختبار آلي شامل، والنشر من داخل المساعد. لذلك لن أدّعي أنني أصلحت الصفحة أو اختبرتها أو نشرتها. فحص الاتصال الحالي لا يثبت أن كل وظائف التطبيق تعمل.",model:MODEL,database:{connected:true,action:"capabilities",write_operations:"allowlisted_with_confirmation",source_editing:false,sandbox:false,automated_testing:false,assistant_deploy:false}},200,origin);
+    const githubReady=!!env.GITHUB_TOKEN;
+    const githubStatus=githubReady?"GitHub مربوط: يمكن قراءة المستودع ونتائج الاختبارات، وتجهيز تعديلات على فرع تطوير منفصل بعد موافقتك.":"GitHub غير مربوط داخل العامل بعد؛ يلزم إضافة GITHUB_TOKEN كسر في Cloudflare.";
+    return json({ok:true,reply:"أقدر حالياً على: قراءة بيانات Supabase الإدارية وسجل أخطاء المتصفحات؛ تحليل الصور والصوت والملفات النصية المرفقة؛ وفحص مستودع GitHub وقراءة نتائج Actions إذا كان الرمز مربوطاً. "+githubStatus+"\\n\\nالتعديلات البرمجية تُحفظ على فروع mithaq-ai-* فقط، ولا أكتب مباشرة على main. اختبارات GitHub Actions تعمل تلقائياً عند دفع تغييرات للفروع المفعلة، ويمكنني قراءة نتائجها عند ربط GitHub. مختبر Supabase المعزول يحتاج إنشاء فرع تطوير وقد يترتب عليه رسوم؛ والنشر إلى الإنتاج لا يزال يحتاج مراجعة منفصلة. لا تحتاج إلى إرسال لقطات شاشة.",model:MODEL,database:{connected:true,action:"capabilities",write_operations:"allowlisted_with_confirmation",source_editing:githubReady,github_integration:githubReady,sandbox:false,automated_testing:"github_actions_on_push",assistant_deploy:false,multimodal_attachments:true}},200,origin);
    }
    let dataAction="overview";
    if(/أخطاء التشغيل|اخطاء التشغيل|الأخطاء|الاخطاء|الأعطال|الاعطال|سجل الأخطاء|سجلات الأخطاء|خطأ تقني|خطا تقني|تحديث الصفحة|استعادة الجلسة|خلل التحديث|مشكلة التحديث|خلل في الصفحة|خطأ في الصفحة/.test(userText))dataAction="client_errors";
