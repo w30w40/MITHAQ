@@ -19,9 +19,9 @@ if (missing.length) {
 }
 
 const scripts = [];
-const pattern = /<script\\b([^>]*)>([\\s\\S]*?)<\\/script\\s*>/gi;
+const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
 for (const match of html.matchAll(pattern)) {
-  if (/\\bsrc\\s*=/.test(match[1])) continue;
+  if (/\bsrc\s*=/.test(match[1])) continue;
   const source = match[2].trim();
   if (source) scripts.push(source);
 }
