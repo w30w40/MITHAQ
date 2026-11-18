@@ -6,7 +6,8 @@ const checks = [
       response.ok &&
       body.includes('id="entryGate"') &&
       body.includes('id="aiAssistant"') &&
-      body.includes('id="mithaqAdminChatForm"'),
+      body.includes('id="mithaqAdminChatForm"') &&
+      body.includes('window.reportMithaqClientError'),
   },
   {
     name: "MITHAQ service worker",
@@ -21,7 +22,9 @@ const checks = [
       if (!response.ok) return false;
       try {
         const data = JSON.parse(body);
-        return data.ok === true && data.service === "mithaq-managed-ai";
+        return data.ok === true &&
+          data.service === "mithaq-managed-ai" &&
+          data.admin_capabilities?.runtime_error_reporting === true;
       } catch {
         return false;
       }
