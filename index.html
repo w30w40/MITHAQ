@@ -1826,13 +1826,13 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
  <div class="mithaq-ai-admin">
   <div class="mithaq-ai-hero">
    <div class="mithaq-ai-hero-head"><div class="mithaq-ai-orb" aria-hidden="true">✦</div><div><h2 style="margin:0">مساعد ميثاق الذكي</h2><p class="mithaq-ai-muted" style="margin:4px 0 0">مركز التحليل والفحص والتجارب — للإدارة الرئيسية فقط</p></div></div>
-   <p class="mithaq-ai-muted">المساعد متصل بمحرك الذكاء الاصطناعي وقاعدة بيانات ميثاق. يستطيع تحليل البيانات واقتراح تعديلات وحذف محدد بعد موافقتك. فحص الواجهة وتجارب الإصلاح والنشر الآلي ما زالت قدرات قيد البناء، ولن يعلن نجاحها دون اختبار فعلي.</p>
+   <p class="mithaq-ai-muted">المساعد متصل بمحرك الذكاء الاصطناعي وقاعدة بيانات ميثاق. قراءة البيانات والتعديلات المحددة والحذف المسموح بعد التأكيد متاحة. تعديل ملفات الموقع ومختبر التجارب والاختبار الآلي والنشر من داخل المحادثة غير مفعّلة حالياً؛ لن نعرضها كقدرات جاهزة قبل ربط GitHub وبيئة اختبار مستقلة والتحقق منها.</p>
   </div>
   <div class="mithaq-ai-grid">
    <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">سيُفعّل بعد تجهيز بيئة اختبار منفصلة؛ لا تُجرى التجارب حالياً على حسابات الأعضاء الحقيقية.</div></div>
-   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">يعرض حالياً فحوص الاتصال والواجهة الأساسية؛ تعديل ملفات الموقع والنشر من داخل المحادثة لم يُفعّل بعد.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">غير مفعّل حالياً. يتطلب بيئة اختبار منفصلة عن قاعدة بيانات الأعضاء، مع بيانات تجريبية فقط.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تعديل الملفات والنشر غير مفعّلين. ربط GitHub غير موجود حالياً في أسرار العامل، كما لم تُجهّز بيئة اختبار منفصلة.</div></div>
   </div>
   <div class="card" style="margin-top:14px">
    <h3>فحص ميثاق الآن</h3><p class="mithaq-ai-muted">ينفذ الفحوصات الأولية المتاحة من هذه الصفحة، ويعرض نتيجة كل اختبار بوضوح.</p>
@@ -1841,8 +1841,8 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
    <div id="mithaqAiDiagnosticResults" class="mithaq-ai-results"></div>
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
-   <h3>محادثة مساعد ميثاق</h3>
-   <p class="mithaq-ai-muted">مساعد متصل بقاعدة بيانات ميثاق الفعلية. يستطيع قراءة الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. يمكنه قراءة البيانات، كما يمكن تنفيذ أوامر تعديل أو حذف محددة بعد تأكيدك الصريح. اكتب طلبك بالعربية مباشرة؛ سيقترح المساعد العملية والسجل، ولن ينفذ أي تغيير أو حذف إلا بعد تأكيدك.</p>
+   <h3>محادثة مساعد ميثاق</h3><button type="button" class="secondary" id="mithaqAdminChatClear" style="margin:6px 0 10px">مسح سجل المحادثة على هذا الجهاز</button>
+   <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية: يقرأ الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. ويمكنه تعديل أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. تعديل ملفات الموقع ومختبر التجارب والاختبارات الآلية والنشر من داخل المحادثة غير متاحة حتى الآن.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
     <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
@@ -2616,6 +2616,11 @@ function initMithaqAdminChat(){
  const form=document.getElementById('mithaqAdminChatForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
  const input=document.getElementById('mithaqAdminChatInput'),send=document.getElementById('mithaqAdminChatSend'),status=document.getElementById('mithaqAdminChatStatus');
  loadMithaqAdminChatHistory();renderMithaqAdminChat();
+ document.getElementById('mithaqAdminChatClear')?.addEventListener('click',()=>{
+  if(!window.confirm('هل تريد مسح سجل المحادثة المحفوظ على هذا الجهاز فقط؟'))return;
+  mithaqAdminChatHistory=[];saveMithaqAdminChatHistory();renderMithaqAdminChat();
+  if(status)status.textContent='تم مسح سجل المحادثة المحلي. لم تتغير بيانات قاعدة البيانات.';
+ });
  form.addEventListener('submit',async event=>{
   event.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;
   send.disabled=true;status.textContent='جارٍ التحقق من صلاحية الإدارة...';
@@ -2684,6 +2689,10 @@ async function runMithaqAiInitialDiagnostics(){
    const payload=await response.json();
    const healthy=response.ok&&payload?.ok===true;
    add('خدمة مساعد الذكاء الاصطناعي',healthy,healthy?'استجابت نقطة فحص الخدمة بنجاح.':'وصل رد غير سليم من الخدمة (HTTP '+response.status+').',healthy?'':'warn');
+   const caps=payload?.admin_capabilities||{};
+   add('تعديل ملفات الموقع',caps.source_editing===true,'الحالة: '+(caps.source_editing?'متاح':'غير مفعّل حالياً')+(caps.github_token_configured?' — سر GitHub موجود':' — لم يُربط GitHub Token بالعامل'),'warn');
+   add('مختبر التجارب المعزول',caps.isolated_sandbox===true,caps.isolated_sandbox?'بيئة التجارب متاحة.':'لم تُجهّز بيئة اختبار مستقلة بعد.','warn');
+   add('الاختبار الآلي والنشر',caps.automated_tests===true&&caps.assistant_deploy===true,caps.automated_tests&&caps.assistant_deploy?'الاختبارات والنشر متاحان.':'الاختبار الآلي والنشر من داخل المساعد غير مفعّلين بعد.','warn');
   }catch(workerError){add('خدمة مساعد الذكاء الاصطناعي',false,'تعذر الوصول إلى نقطة فحص الخدمة من هذه الصفحة: '+(workerError?.message||'خطأ اتصال.'),'warn');}
   status.textContent='انتهى الفحص الأولي. هذه النتائج لا تمثل اختباراً شاملاً لكل وظائف المنصة.';
  }catch(error){status.textContent='توقف الفحص بسبب خطأ: '+(error?.message||String(error));}
