@@ -1846,7 +1846,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
    <p class="mithaq-ai-muted">يقرأ بيانات Supabase وسجل أخطاء التشغيل، ويستقبل الصور والصوت والملفات النصية من زر الإرفاق. بعد ربط GitHub Token يستطيع قراءة ملفات المستودع وتجهيز تعديلات على فرع تطوير، مع موافقتك قبل الحفظ. اختبارات GitHub Actions تعمل تلقائياً عند دفع التغييرات للفروع المفعّلة. لا تحتاج إلى إرسال لقطات شاشة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
-    <input id="mithaqAdminChatFiles" type="file" multiple accept="image/*,audio/*,video/*,text/plain,text/markdown,text/csv,application/json,.log,.js,.css,.html,.sql" hidden>
+    <input id="mithaqAdminChatFiles" type="file" multiple accept="image/*,audio/*,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/vnd.oasis.opendocument.text,application/vnd.oasis.opendocument.spreadsheet,application/xml,.pdf,.docx,.xlsx,.xls,.odt,.ods,.html,.htm,.xml,.log,.js,.css,.sql" hidden>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0">
      <button type="button" class="secondary" id="mithaqAdminChatAttach" aria-label="إرفاق صور أو صوت أو ملفات">📎 إرفاق صورة أو صوت أو ملف</button>
      <span id="mithaqAdminChatFileNames" class="mithaq-ai-muted">يمكن إرفاق 3 ملفات بحد أقصى</span>
@@ -2656,11 +2656,11 @@ function initMithaqAdminChat(){
     }else if(type.startsWith('audio/')){
      if(!['audio/mpeg','audio/mp3','audio/wav','audio/x-wav','audio/webm','audio/ogg','audio/mp4','audio/aac','audio/flac'].includes(type))throw new Error('صيغة الصوت غير مدعومة: '+file.name);
      item.kind='audio';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصوت '+file.name));reader.readAsDataURL(file);});
+    }else if(['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','application/vnd.oasis.opendocument.text','application/vnd.oasis.opendocument.spreadsheet','application/xml'].includes(type)||/\\.(pdf|docx|xlsx|xls|odt|ods|xml)$/i.test(file.name)){
+     item.kind='document';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة المستند '+file.name));reader.readAsDataURL(file);});
     }else if(type.startsWith('text/')||/\\.(txt|md|csv|json|log|js|css|html|sql)$/i.test(file.name)){
      if(file.size>1024*1024)throw new Error('الملف النصي '+file.name+' أكبر من 1 ميغابايت.');
      item.kind='text';item.text=(await file.text()).slice(0,30000);
-    }else if(type.startsWith('video/')){
-     item.kind='video';item.note='تم استلام اسم ملف الفيديو فقط؛ تحليل الفيديو غير متاح بعد.';
     }
     attachments.push(item);
    }
