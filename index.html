@@ -1846,7 +1846,12 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
    <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية، ويستطيع قراءة بيانات الإدارة وسجل أخطاء التشغيل المرسلة من المتصفحات. ويمكنه اقتراح تعديلات أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. مراقبة الموقع الدورية تعمل عبر GitHub Actions. تعديل ملفات الموقع ومختبر التجارب المعزول والاختبارات الشاملة والنشر من داخل المحادثة غير مفعّلة بعد. لا تحتاج إلى إرسال لقطات شاشة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
-    <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
+    <input id="mithaqAdminChatFiles" type="file" multiple accept="image/*,audio/*,video/*,text/plain,text/markdown,text/csv,application/json,.log,.js,.css,.html,.sql" hidden>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0">
+     <button type="button" class="secondary" id="mithaqAdminChatAttach" aria-label="إرفاق صور أو صوت أو ملفات">📎 إرفاق صورة أو صوت أو ملف</button>
+     <span id="mithaqAdminChatFileNames" class="mithaq-ai-muted">يمكن إرفاق 3 ملفات بحد أقصى</span>
+    </div>
+    <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك أو أرسل مرفقاً إلى مساعد ميثاق..."></textarea>
     <button type="submit" class="primary" id="mithaqAdminChatSend" style="margin-top:9px;width:100%">إرسال</button>
    </form>
    <p id="mithaqAdminChatStatus" class="mithaq-ai-muted" role="status" aria-live="polite">المحادثة متاحة للإدارة الرئيسية فقط. يُحفظ سجل هذه المحادثة على هذا الجهاز.</p>
@@ -2616,6 +2621,13 @@ function renderMithaqAdminChat(){
 function initMithaqAdminChat(){
  const form=document.getElementById('mithaqAdminChatForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
  const input=document.getElementById('mithaqAdminChatInput'),send=document.getElementById('mithaqAdminChatSend'),status=document.getElementById('mithaqAdminChatStatus');
+ const fileInput=document.getElementById('mithaqAdminChatFiles'),attachButton=document.getElementById('mithaqAdminChatAttach'),fileNames=document.getElementById('mithaqAdminChatFileNames');
+ const selectedFiles=[];
+ attachButton?.addEventListener('click',()=>fileInput?.click());
+ fileInput?.addEventListener('change',()=>{
+  selectedFiles.splice(0,selectedFiles.length,...Array.from(fileInput.files||[]).slice(0,3));
+  if(fileNames)fileNames.textContent=selectedFiles.length?selectedFiles.map(f=>f.name).join('، '):'يمكن إرفاق 3 ملفات بحد أقصى';
+ });
  loadMithaqAdminChatHistory();renderMithaqAdminChat();
  document.getElementById('mithaqAdminChatClear')?.addEventListener('click',()=>{
   if(!window.confirm('هل تريد مسح سجل المحادثة المحفوظ على هذا الجهاز فقط؟'))return;
@@ -2623,13 +2635,35 @@ function initMithaqAdminChat(){
   if(status)status.textContent='تم مسح سجل المحادثة المحلي. لم تتغير بيانات قاعدة البيانات.';
  });
  form.addEventListener('submit',async event=>{
-  event.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;
-  send.disabled=true;status.textContent='جارٍ التحقق من صلاحية الإدارة...';
+  event.preventDefault();const message=input.value.trim();if((!message&&!selectedFiles.length)||send.disabled)return;
+  if(selectedFiles.length>3)throw new Error('يمكن إرفاق ثلاثة ملفات كحد أقصى.');
+  const totalBytes=selectedFiles.reduce((sum,file)=>sum+file.size,0);if(totalBytes>12*1024*1024)throw new Error('إجمالي المرفقات يتجاوز 12 ميغابايت.');
+  send.disabled=true;status.textContent='جارٍ تجهيز المرفقات والتحقق من صلاحية الإدارة...';
   try{
    const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqPrimaryAdmin)throw new Error('هذه المحادثة مخصصة للإدارة الرئيسية فقط.');
    const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session?.access_token)throw new Error('انتهت جلسة الدخول. سجّل الدخول مجدداً.');
    const previous=mithaqAdminChatHistory.slice(-12);
-   mithaqAdminChatHistory.push({role:'user',content:message});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
+   const attachments=[];
+   for(const file of selectedFiles){
+    const type=String(file.type||'application/octet-stream').toLowerCase();
+    if(file.size>8*1024*1024)throw new Error('الملف '+file.name+' يتجاوز الحد المسموح (8 ميغابايت).');
+    const item={name:file.name.slice(0,180),type,size:file.size,kind:'unsupported'};
+    if(type.startsWith('image/')){
+     if(!['image/jpeg','image/png','image/webp','image/gif'].includes(type))throw new Error('صيغة الصورة غير مدعومة: '+file.name);
+     item.kind='image';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصورة '+file.name));reader.readAsDataURL(file);});
+    }else if(type.startsWith('audio/')){
+     if(!['audio/mpeg','audio/mp3','audio/wav','audio/x-wav','audio/webm','audio/ogg','audio/mp4','audio/aac','audio/flac'].includes(type))throw new Error('صيغة الصوت غير مدعومة: '+file.name);
+     item.kind='audio';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصوت '+file.name));reader.readAsDataURL(file);});
+    }else if(type.startsWith('text/')||/\\.(txt|md|csv|json|log|js|css|html|sql)$/i.test(file.name)){
+     if(file.size>1024*1024)throw new Error('الملف النصي '+file.name+' أكبر من 1 ميغابايت.');
+     item.kind='text';item.text=(await file.text()).slice(0,30000);
+    }else if(type.startsWith('video/')){
+     item.kind='video';item.note='تم استلام اسم ملف الفيديو فقط؛ تحليل الفيديو غير متاح بعد.';
+    }
+    attachments.push(item);
+   }
+   const attachmentLabel=attachments.length?'\\n[مرفقات: '+attachments.map(a=>a.name+' ('+a.kind+')').join('، ')+']':'';
+   mithaqAdminChatHistory.push({role:'user',content:(message||'راجع المرفقات')+attachmentLabel});saveMithaqAdminChatHistory();renderMithaqAdminChat();input.value='';status.textContent='يفكر مساعد ميثاق...';
    let payload;
    const command=message.match(/^نفذ\s*:\s*(\{[\s\S]*\})$/);
    if(command){
@@ -2642,7 +2676,7 @@ function initMithaqAdminChat(){
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر تنفيذ العملية (HTTP '+response.status+').');
     mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'تم تنفيذ العملية.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();status.textContent='تم تنفيذ الأمر في قاعدة البيانات وتسجيله في سجل التدقيق.';
    }else{
-    const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message,history:previous})});
+    const response=await fetch(MITHAQ_ADMIN_CHAT_ENDPOINT,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({message:message||'حلل المرفقات المرفقة وأخبرني بما تحتويه.',history:previous,attachments})});
     payload=await response.json().catch(()=>({}));
     if(!response.ok||!payload?.ok)throw new Error(payload?.error||'تعذر الحصول على رد من المساعد (HTTP '+response.status+').');
     if(payload.action_proposal){
@@ -2660,7 +2694,7 @@ function initMithaqAdminChat(){
       status.textContent='أُلغيت العملية ولم يتم تعديل البيانات.';
      }
     }
-    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();if(!payload.action_proposal)status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
+    mithaqAdminChatHistory.push({role:'assistant',content:String(payload.reply||'لم يصل رد نصي.')});saveMithaqAdminChatHistory();renderMithaqAdminChat();selectedFiles.splice(0);if(fileInput)fileInput.value='';if(fileNames)fileNames.textContent='يمكن إرفاق 3 ملفات بحد أقصى';if(!payload.action_proposal)status.textContent=payload.database?.connected?'تم الرد باستخدام بيانات قاعدة بيانات ميثاق الحقيقية.':'تم استلام الرد.';
    }
   }catch(error){status.textContent=error?.message||'تعذر إرسال الرسالة.';}
   finally{send.disabled=false;input.focus();}
