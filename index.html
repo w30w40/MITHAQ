@@ -2636,8 +2636,8 @@ function initMithaqAdminChat(){
  });
  form.addEventListener('submit',async event=>{
   event.preventDefault();const message=input.value.trim();if((!message&&!selectedFiles.length)||send.disabled)return;
-  if(selectedFiles.length>3)throw new Error('يمكن إرفاق ثلاثة ملفات كحد أقصى.');
-  const totalBytes=selectedFiles.reduce((sum,file)=>sum+file.size,0);if(totalBytes>12*1024*1024)throw new Error('إجمالي المرفقات يتجاوز 12 ميغابايت.');
+  if(selectedFiles.length>3){status.textContent='يمكن إرفاق ثلاثة ملفات كحد أقصى.';return;}
+  const totalBytes=selectedFiles.reduce((sum,file)=>sum+file.size,0);if(totalBytes>12*1024*1024){status.textContent='إجمالي المرفقات يتجاوز 12 ميغابايت.';return;}
   send.disabled=true;status.textContent='جارٍ تجهيز المرفقات والتحقق من صلاحية الإدارة...';
   try{
    const allowed=await refreshMithaqAdminAccess();if(!allowed||!isMithaqPrimaryAdmin)throw new Error('هذه المحادثة مخصصة للإدارة الرئيسية فقط.');
@@ -2649,6 +2649,7 @@ function initMithaqAdminChat(){
     if(file.size>8*1024*1024)throw new Error('الملف '+file.name+' يتجاوز الحد المسموح (8 ميغابايت).');
     const item={name:file.name.slice(0,180),type,size:file.size,kind:'unsupported'};
     if(type.startsWith('image/')){
+     if(file.size>5*1024*1024)throw new Error('الصورة '+file.name+' يجب ألا تتجاوز 5 ميغابايت.');
      if(!['image/jpeg','image/png','image/webp','image/gif'].includes(type))throw new Error('صيغة الصورة غير مدعومة: '+file.name);
      item.kind='image';item.data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('تعذرت قراءة الصورة '+file.name));reader.readAsDataURL(file);});
     }else if(type.startsWith('audio/')){
