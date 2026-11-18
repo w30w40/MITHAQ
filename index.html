@@ -1832,6 +1832,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
    <div class="mithaq-ai-tile"><span aria-hidden="true">🩺</span><strong>فحص الاتصال والخدمات</strong><div class="mithaq-ai-muted">اختبار جلسة الإدارة واتصال قاعدة البيانات وخدمة المساعد.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧭</span><strong>مراجعة واجهة التطبيق</strong><div class="mithaq-ai-muted">التحقق من وجود أقسام التنقل الأساسية في الصفحة الحالية.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🧪</span><strong>مختبر التجارب</strong><div class="mithaq-ai-muted">غير مفعّل حالياً. يتطلب بيئة اختبار منفصلة عن قاعدة بيانات الأعضاء، مع بيانات تجريبية فقط.</div></div>
+   <div class="mithaq-ai-tile"><span aria-hidden="true">📡</span><strong>رصد أخطاء التشغيل</strong><div class="mithaq-ai-muted">يرسل أخطاء JavaScript وفشل تحميل الموارد وأخطاء استعادة الجلسة من المتصفحات المسجلة إلى سجل آمن للإدارة الرئيسية.</div></div>
    <div class="mithaq-ai-tile"><span aria-hidden="true">🛠️</span><strong>الإصلاحات المراقبة</strong><div class="mithaq-ai-muted">تعديل الملفات والنشر غير مفعّلين. ربط GitHub غير موجود حالياً في أسرار العامل، كما لم تُجهّز بيئة اختبار منفصلة.</div></div>
   </div>
   <div class="card" style="margin-top:14px">
@@ -1842,7 +1843,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   </div>
   <div class="card" style="margin-top:14px" id="mithaqAdminChatCard">
    <h3>محادثة مساعد ميثاق</h3><button type="button" class="secondary" id="mithaqAdminChatClear" style="margin:6px 0 10px">مسح سجل المحادثة على هذا الجهاز</button>
-   <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية: يقرأ الإحصائيات والأعضاء والاشتراكات والملفات الافتراضية وبنية الجداول. ويمكنه تعديل أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. تعديل ملفات الموقع ومختبر التجارب والاختبارات الآلية والنشر من داخل المحادثة غير متاحة حتى الآن.</p>
+   <p class="mithaq-ai-muted">متصل بقاعدة البيانات الفعلية، ويستطيع قراءة بيانات الإدارة وسجل أخطاء التشغيل المرسلة من المتصفحات. ويمكنه اقتراح تعديلات أو حذف سجلات محددة ضمن قائمة مسموحة وبعد تأكيدك. مراقبة الموقع الدورية تعمل عبر GitHub Actions. تعديل ملفات الموقع ومختبر التجارب المعزول والاختبارات الشاملة والنشر من داخل المحادثة غير مفعّلة بعد. لا تحتاج إلى إرسال لقطات شاشة.</p>
    <div id="mithaqAdminChatLog" class="mithaq-admin-chat-log" role="log" aria-live="polite" aria-label="سجل محادثة مساعد الإدارة"></div>
    <form id="mithaqAdminChatForm" class="mithaq-admin-chat-form">
     <textarea class="mithaq-ai-command" id="mithaqAdminChatInput" maxlength="3000" rows="3" placeholder="اكتب رسالتك إلى مساعد ميثاق..." required></textarea>
@@ -2433,7 +2434,7 @@ const nav=[...document.querySelectorAll('nav button')];
 const MITHAQ_ROUTE_KEY='mithaq-last-page-v1';
 function saveMithaqRoute(id){try{sessionStorage.setItem(MITHAQ_ROUTE_KEY,id);}catch(_){}}
 const mithaqPageLoads=new Map();
-function runMithaqPageLoad(key,loader){if(mithaqPageLoads.has(key))return mithaqPageLoads.get(key);const task=Promise.resolve().then(loader).catch(error=>{console.error('MITHAQ page load failed ('+key+'):',error);const active=document.querySelector('.tab:not(.hidden)');const messages={home:['homeFeedStatus','تعذر تحميل محتوى الرئيسية. تحقق من الاتصال ثم أعد فتح الصفحة.'],myprofile:['profileStatus','تعذر تحميل ملفك بسبب مشكلة اتصال. أعد فتح ملفي الشخصي للمحاولة.'],members:['membersStatus','تعذر تحميل الأعضاء بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],conversations:['conversationList','تعذر تحميل المراسلات بسبب مشكلة اتصال. أعد فتح البريد الداخلي للمحاولة.'],notifications:['mithaqNotificationsStatus','تعذر تحميل الإشعارات بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],admin:['mithaqAdminStatus','تعذر تحميل لوحة الإدارة بسبب مشكلة اتصال.'], 'site-analytics':['mithaqAnalyticsStatus','تعذر تحميل الإحصائيات بسبب مشكلة اتصال.']};const item=messages[key];if(item&&active?.id===(key==='conversations'?'messages':key==='site-analytics'?'siteAnalyticsPage':key)){const node=document.getElementById(item[0]);if(node)node.textContent=item[1];}}).finally(()=>{if(mithaqPageLoads.get(key)===task)mithaqPageLoads.delete(key);});mithaqPageLoads.set(key,task);return task;}
+function runMithaqPageLoad(key,loader){if(mithaqPageLoads.has(key))return mithaqPageLoads.get(key);const task=Promise.resolve().then(loader).catch(error=>{console.error('MITHAQ page load failed ('+key+'):',error);window.reportMithaqClientError?.('javascript','فشل تحميل قسم التطبيق: '+key,location.pathname,null,null);const active=document.querySelector('.tab:not(.hidden)');const messages={home:['homeFeedStatus','تعذر تحميل محتوى الرئيسية. تحقق من الاتصال ثم أعد فتح الصفحة.'],myprofile:['profileStatus','تعذر تحميل ملفك بسبب مشكلة اتصال. أعد فتح ملفي الشخصي للمحاولة.'],members:['membersStatus','تعذر تحميل الأعضاء بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],conversations:['conversationList','تعذر تحميل المراسلات بسبب مشكلة اتصال. أعد فتح البريد الداخلي للمحاولة.'],notifications:['mithaqNotificationsStatus','تعذر تحميل الإشعارات بسبب مشكلة اتصال. أعد فتح الصفحة للمحاولة.'],admin:['mithaqAdminStatus','تعذر تحميل لوحة الإدارة بسبب مشكلة اتصال.'], 'site-analytics':['mithaqAnalyticsStatus','تعذر تحميل الإحصائيات بسبب مشكلة اتصال.']};const item=messages[key];if(item&&active?.id===(key==='conversations'?'messages':key==='site-analytics'?'siteAnalyticsPage':key)){const node=document.getElementById(item[0]);if(node)node.textContent=item[1];}}).finally(()=>{if(mithaqPageLoads.get(key)===task)mithaqPageLoads.delete(key);});mithaqPageLoads.set(key,task);return task;}
 const tabHistory=[];
 const drawer=document.getElementById('memberDrawer');
 function closeMemberDrawer(){document.body.classList.remove('drawer-open');document.getElementById('memberMenuOpen').setAttribute('aria-expanded','false');}
@@ -2680,6 +2681,9 @@ async function runMithaqAiInitialDiagnostics(){
   if(!adminError&&admin===true){
    const {data:overview, error:overviewError}=await supabaseClient.rpc('mithaq_admin_ai_read',{p_action:'overview'});
    add('قراءة قاعدة البيانات الإدارية',!overviewError&&!!overview,!overviewError&&overview?'نجح استدعاء إجراء القراءة الإدارية من Supabase.':'فشل استدعاء القراءة: '+(overviewError?.message||'لم تصل بيانات.'),'fail');
+   const {data:runtimeErrors,error:runtimeErrorsError}=await supabaseClient.rpc('mithaq_admin_ai_client_errors',{p_limit:20});
+   const runtimeErrorRows=Array.isArray(runtimeErrors)?runtimeErrors:[];
+   add('سجل أخطاء التشغيل من المتصفحات',!runtimeErrorsError,runtimeErrorsError?'تعذر قراءة سجل الأخطاء: '+runtimeErrorsError.message:runtimeErrorRows.length?'يوجد '+runtimeErrorRows.length+' بلاغاً حديثاً. افتح المحادثة واطلب: حلل أخطاء التشغيل.':'لا توجد بلاغات مسجلة بعد تفعيل الرصد؛ هذا لا يثبت خلو كل الوظائف من الأخطاء.',runtimeErrorsError?'warn':'');
   }
   const required=['mithaqBottomNav','messages','members','myprofile','aiAssistant'];
   const missing=required.filter(id=>!document.getElementById(id));
@@ -2789,6 +2793,7 @@ async function restoreAuthSession(){
   }
  }catch(error){
   restoreError=error;
+  window.reportMithaqClientError?.('javascript','تعذر استعادة جلسة الدخول بعد إعادة تحميل الصفحة',location.pathname,null,null);
   console.error('MITHAQ session restore failed; preserving login state:',error);
   if(!document.body.classList.contains('authenticated')){
    showEntry('login');
@@ -2805,6 +2810,28 @@ async function restoreAuthSession(){
   document.documentElement.classList.remove('mithaq-auth-pending');
  }
 }
+let mithaqLastClientErrorSentAt=0;
+window.reportMithaqClientError=async function(eventType,message,sourcePath,lineNumber,columnNumber){
+ try{
+  if(!supabaseClient)return;
+  const now=Date.now();if(now-mithaqLastClientErrorSentAt<10000)return;
+  const {data,error}=await supabaseClient.auth.getSession();
+  const accessToken=data?.session?.access_token;
+  if(error||!accessToken)return;
+  mithaqLastClientErrorSentAt=now;
+  let safePath='';try{const parsed=new URL(sourcePath||location.pathname,location.origin);if(parsed.origin===location.origin)safePath=parsed.pathname;}catch(_){}
+  await fetch('https://mithaq-ai-chat.w0000000000w00.workers.dev/client-error',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({event_type:eventType,message:String(message||'خطأ غير معروف').slice(0,1000),source_path:safePath,line_number:Number.isInteger(lineNumber)?lineNumber:null,column_number:Number.isInteger(columnNumber)?columnNumber:null}),keepalive:true});
+ }catch(reportError){console.warn('MITHAQ client error report was not delivered:',reportError?.message||reportError);}
+};
+window.addEventListener('error',event=>{
+ const target=event.target;
+ if(target&&target!==window){const source=target.src||target.href||'';window.reportMithaqClientError?.('resource','تعذر تحميل مورد في الصفحة',source,null,null);return;}
+ window.reportMithaqClientError?.('javascript',event.message||'خطأ JavaScript غير معروف',event.filename||location.pathname,event.lineno,event.colno);
+},true);
+window.addEventListener('unhandledrejection',event=>{
+ const reason=event.reason;const message=typeof reason==='string'?reason:reason?.message||'Promise rejection غير معالج';
+ window.reportMithaqClientError?.('promise_rejection',message,location.pathname,null,null);
+});
 if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((event,session)=>{
   if(event!=='INITIAL_SESSION'&&event!=='TOKEN_REFRESHED')applyAuthenticatedSession(session);
