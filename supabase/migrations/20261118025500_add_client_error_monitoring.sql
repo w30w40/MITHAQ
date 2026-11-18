@@ -3,7 +3,7 @@
 -- Writes and reads are performed only through tightly scoped SECURITY DEFINER RPCs
 -- that validate auth.uid() and, for reads, the primary-admin allowlist.
 
-create table public.mithaq_client_error_events (
+create table if not exists public.mithaq_client_error_events (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   event_type text not null check (event_type in ('javascript', 'promise_rejection', 'resource')),
@@ -14,9 +14,9 @@ create table public.mithaq_client_error_events (
   created_at timestamptz not null default now()
 );
 
-create index mithaq_client_error_events_created_at_idx
+create index if not exists mithaq_client_error_events_created_at_idx
   on public.mithaq_client_error_events (created_at desc);
-create index mithaq_client_error_events_user_created_idx
+create index if not exists mithaq_client_error_events_user_created_idx
   on public.mithaq_client_error_events (user_id, created_at desc);
 
 alter table public.mithaq_client_error_events enable row level security;
