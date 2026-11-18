@@ -84,17 +84,26 @@ async function githubAdminAction(env,body){
  if(action==="commit_file"){
   if(body.confirm!==true)return {status:200,data:{ok:true,confirmation_required:true,preview:{action,path:body.path,branch:body.branch,message:body.message}}};
   const path=safeRepoPath(body.path),branch=cleanText(body.branch,60),content=typeof body.content==="string"?body.content:null,message=cleanText(body.message,180)||"MITHAQ admin assistant update";
-  if(!path||!content||content.length>350000||!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(branch))return {status:400,data:{error:"يسمح بتعديل ملف نصي محدود على فرع تطوير فقط، ولا يسمح بالكتابة على main."}};
-  const filePath=base+"/contents/"+path.split("/").map(encodeURIComponent).join("/");
-  const current=await githubFetch(env,filePath+"?ref="+encodeURIComponent(branch));
-  const currentData=await current.json().catch(()=>({}));
-  if(!current.ok&&current.status!==404)return {status:current.status,data:{error:"تعذر قراءة الملف قبل تعديله."}};
-  const payload={message,content:encodeBase64Utf8(content),branch};
-  if(current.ok&&currentData.sha)payload.sha=currentData.sha;
-  const written=await githubFetch(env,filePath,{method:"PUT",body:JSON.stringify(payload)});
-  const writtenData=await written.json().catch(()=>({}));
-  if(!written.ok)return {status:written.status,data:{error:cleanText(writtenData.message,240)||"فشل حفظ الملف على فرع التطوير."}};
-  return {status:200,data:{ok:true,path,branch,commit_sha:writtenData.commit&&writtenData.commit.sha,html_url:writtenData.content&&writtenData.content.html_url}};
+  if(!path||!content||content.length>750000||!/^mithaq-ai-[a-z0-9-]{3,40}$/.test(branch))return {status:400,data:{error:"يسمح بتعديل ملف نصي حتى 750 كيلوبايت على فرع تطوير فقط، ولا يسمح بالكتابة على main."}};
+  const refResponse=await githubFetch(env,base+"/git/ref/heads/"+encodeURIComponent(branch));
+  const refData=await refResponse.json().catch(()=>({}));
+  if(!refResponse.ok)return {status:refResponse.status,data:{error:"تعذر تحديد آخر نسخة من فرع التطوير."}};
+  const parentResponse=await githubFetch(env,base+"/git/commits/"+refData.object.sha);
+  const parentData=await parentResponse.json().catch(()=>({}));
+  if(!parentResponse.ok||!parentData.tree||!parentData.tree.sha)return {status:502,data:{error:"تعذر قراءة شجرة ملفات الفرع."}};
+  const blobResponse=await githubFetch(env,base+"/git/blobs",{method:"POST",body:JSON.stringify({content,encoding:"utf-8"})});
+  const blobData=await blobResponse.json().catch(()=>({}));
+  if(!blobResponse.ok)return {status:blobResponse.status,data:{error:cleanText(blobData.message,240)||"تعذر تجهيز محتوى الملف."}};
+  const treeResponse=await githubFetch(env,base+"/git/trees",{method:"POST",body:JSON.stringify({base_tree:parentData.tree.sha,tree:[{path,mode:"100644",type:"blob",sha:blobData.sha}]})});
+  const treeData=await treeResponse.json().catch(()=>({}));
+  if(!treeResponse.ok)return {status:treeResponse.status,data:{error:cleanText(treeData.message,240)||"تعذر إنشاء شجرة التعديل."}};
+  const commitResponse=await githubFetch(env,base+"/git/commits",{method:"POST",body:JSON.stringify({message,tree:treeData.sha,parents:[refData.object.sha]})});
+  const commitData=await commitResponse.json().catch(()=>({}));
+  if(!commitResponse.ok)return {status:commitResponse.status,data:{error:cleanText(commitData.message,240)||"تعذر إنشاء الالتزام."}};
+  const updateRef=await githubFetch(env,base+"/git/refs/heads/"+encodeURIComponent(branch),{method:"PATCH",body:JSON.stringify({sha:commitData.sha,force:false})});
+  const updateData=await updateRef.json().catch(()=>({}));
+  if(!updateRef.ok)return {status:updateRef.status,data:{error:cleanText(updateData.message,240)||"تم إنشاء الالتزام لكن تعذر تحديث الفرع."}};
+  return {status:200,data:{ok:true,path,branch,commit_sha:commitData.sha,html_url:commitData.html_url}};
  }
  if(action==="create_pr"){
   if(body.confirm!==true)return {status:200,data:{ok:true,confirmation_required:true,preview:{action,head:body.head,base:"main",title:body.title}}};
