@@ -2395,6 +2395,39 @@ document.getElementById('memberMenuOpen').addEventListener('click',()=>{const is
 document.getElementById('memberMenuClose').addEventListener('click',closeMemberDrawer);
 document.getElementById('memberDrawerBackdrop').addEventListener('click',closeMemberDrawer);
 document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.menuGo;show(id);closeMemberDrawer();}));
+async function loadMithaqMemberRelations(action){
+ const status=document.getElementById('mithaqFeatureStatus'),host=document.getElementById('mithaqFeatureList');
+ if(!status||!host||!supabaseClient)return;
+ host.replaceChildren();
+ status.textContent=action==='interest'?'جارٍ تحميل قائمة اهتمامك...':action==='ignore'?'جارٍ تحميل قائمة التجاهل...':'جارٍ تحميل الاهتمام المتبادل...';
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session){status.textContent='سجّل الدخول لعرض هذه القائمة.';return;}
+ const {data,error}=await supabaseClient.rpc('mithaq_list_member_relations',{p_action:action});
+ if(error){status.textContent='تعذر تحميل القائمة: '+error.message;return;}
+ if(!data?.length){status.textContent=action==='interest'?'لم تضف أي عضو إلى قائمة اهتمامك بعد.':action==='ignore'?'قائمة التجاهل فارغة.':'لا يوجد اهتمام متبادل حالياً.';return;}
+ status.textContent='عدد الأعضاء: '+data.length;
+ data.forEach(person=>{
+  const row=document.createElement('article');row.className='mithaq-feature-member-row';
+  const avatar=document.createElement('span');avatar.className='mithaq-feature-member-avatar';avatar.textContent='👤';
+  const info=document.createElement('div');info.className='mithaq-feature-member-info';
+  const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;
+  name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
+  const meta=document.createElement('small');meta.textContent=['رقم العضوية: '+(person.member_number??'غير متاح'),person.country,person.region].filter(Boolean).join(' • ');
+  info.append(name,meta);
+  const actionButton=document.createElement('button');actionButton.type='button';actionButton.className='secondary';
+  if(action==='interest'||action==='ignore'){
+   actionButton.textContent=action==='interest'?'إزالة من الاهتمام':'إلغاء التجاهل';
+   actionButton.addEventListener('click',async()=>{
+    actionButton.disabled=true;
+    const {error:saveError}=await supabaseClient.rpc('mithaq_manage_member_action',{p_target_id:person.id,p_action:action,p_enabled:false});
+    if(saveError){status.textContent='تعذر تحديث القائمة: '+saveError.message;actionButton.disabled=false;return;}
+    row.remove();const remaining=host.querySelectorAll('.mithaq-feature-member-row').length;
+    status.textContent=remaining?'عدد الأعضاء: '+remaining:(action==='interest'?'قائمة اهتمامك فارغة.':'قائمة التجاهل فارغة.');
+   });
+  }else{actionButton.textContent='اهتمام متبادل';actionButton.disabled=true;}
+  row.append(avatar,info,actionButton);host.append(row);
+ });
+}
 async function loadMithaqInterestedBy(){
  const status=document.getElementById('mithaqFeatureStatus'),host=document.getElementById('mithaqFeatureList');
  if(!status||!host||!supabaseClient)return;
@@ -2464,15 +2497,19 @@ const mithaqFeaturePages={
  blog:{title:'مدونة ميثاق',icon:'📝',description:'مقالات ونصائح حول التعارف الجاد والاستعداد للزواج.',content:'قسم المدونة أُضيف إلى القائمة، ومحتواه التحريري لم يُنشر بعد.'},
  card:{title:'بطاقة ميثاق',icon:'💌',description:'ميثاق منصة للتعارف الجاد بقصد الزواج، مع احترام الخصوصية ووضوح الموافقة بين الأعضاء.',content:'ميثاق — تعارف جاد، خصوصية، واحترام متبادل. شارك التطبيق مع من قد يستفيد منه.'}
 };
-function openMithaqFeature(key){
+function openMithaqFeature(key,restoring=false){
  const item=mithaqFeaturePages[key];if(!item)return;
+ try{sessionStorage.setItem('mithaq-last-feature-v1',key);}catch(_){}
  document.getElementById('mithaqFeatureIcon').textContent=item.icon;
  document.getElementById('mithaqFeatureTitle').textContent=item.title;
  document.getElementById('mithaqFeatureDescription').textContent=item.description;
  const content=document.getElementById('mithaqFeatureContent');
  content.replaceChildren();const status=document.createElement('p');status.id='mithaqFeatureStatus';status.className='muted';status.textContent=item.content;
  const list=document.createElement('div');list.id='mithaqFeatureList';content.append(status,list);
- show('menuFeature');closeMemberDrawer();
+ show('menuFeature',restoring);closeMemberDrawer();
+ if(key==='interest')loadMithaqMemberRelations('interest');
+ if(key==='ignored')loadMithaqMemberRelations('ignore');
+ if(key==='mutualInterest')loadMithaqMemberRelations('mutual');
  if(key==='interestedBy')loadMithaqInterestedBy();
  if(key==='visitors')loadMithaqProfileVisitors();
 }
@@ -2567,7 +2604,8 @@ async function restoreAuthSession(){
    else Promise.resolve().then(()=>refreshMithaqAdminAccess()).catch(error=>console.warn('MITHAQ role refresh:',error));
    if(target==='siteAnalyticsPage'&&!isMithaqAdmin)target='home';
    if(target==='admin'&&!allowed)target='home';
-   show(target,target==='home',false,target==='members');
+   show(target,true,false,target==='members');
+   if(target==='menuFeature'){let feature='interest';try{feature=sessionStorage.getItem('mithaq-last-feature-v1')||'interest';}catch(_){}if(mithaqFeaturePages[feature])openMithaqFeature(feature,true);else show('home',true);}
   }else{
    applyAuthenticatedSession(null);
    try{sessionStorage.removeItem(MITHAQ_ROUTE_KEY);}catch(_){}
@@ -2626,6 +2664,7 @@ function mithaqAdminStat(label,value){
 }
 
 let mithaqManagedAdminRows=[];
+let mithaqManagedAdminLimit=100;
 async function loadManagedProfilesAdmin(){
  const panel=document.getElementById('mithaqManagedProfilesAdmin');
  const status=document.getElementById('mithaqManagedAdminStatus');
@@ -2634,7 +2673,7 @@ async function loadManagedProfilesAdmin(){
  panel.hidden=true;
  const {data,error}=await supabaseClient.rpc('mithaq_admin_list_managed_profiles');
  if(error){status.textContent=error.message==='owner_only'?'إدارة هذه الحسابات متاحة للمالك الأساسي فقط.':'تعذر تحميل الحسابات الإدارية: '+error.message;return;}
- panel.hidden=false;mithaqManagedAdminRows=data||[];
+ panel.hidden=false;mithaqManagedAdminRows=data||[];mithaqManagedAdminLimit=100;
  renderManagedAdminRows();
  status.textContent='تم تحميل '+mithaqManagedAdminRows.length+' ملفاً تحت إدارة ميثاق.';
 }
@@ -2642,7 +2681,7 @@ function renderManagedAdminRows(){
  const host=document.getElementById('mithaqManagedAdminList');if(!host)return;
  const query=(document.getElementById('mithaqManagedAdminSearch')?.value||'').trim().toLocaleLowerCase('ar');
  host.replaceChildren();
- const rows=mithaqManagedAdminRows.filter(row=>String(row.display_name||'').toLocaleLowerCase('ar').includes(query)).slice(0,100);
+ const rows=mithaqManagedAdminRows.filter(row=>String(row.display_name||'').toLocaleLowerCase('ar').includes(query)).slice(0,mithaqManagedAdminLimit);
  if(!rows.length){host.textContent='لا توجد نتائج مطابقة.';return;}
  rows.forEach(profile=>{
   const row=document.createElement('div');row.className='mithaq-managed-admin-row';
@@ -2655,7 +2694,7 @@ function renderManagedAdminRows(){
   const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='حذف';remove.addEventListener('click',async()=>{if(!confirm('هل تريد حذف هذا الملف الافتراضي نهائياً؟'))return;const {error}=await supabaseClient.rpc('mithaq_admin_delete_managed_profile',{p_id:profile.id});if(error){alert('تعذر الحذف: '+error.message);return;}mithaqManagedAdminRows=mithaqManagedAdminRows.filter(item=>item.id!==profile.id);renderManagedAdminRows();});
   actions.append(edit,toggle,remove);row.append(info,actions);host.append(row);
  });
- if(mithaqManagedAdminRows.length>rows.length){const note=document.createElement('p');note.className='notice';note.textContent='تظهر أول 100 نتيجة فقط. استخدم البحث للوصول إلى بقية الملفات.';host.append(note);}
+ if(mithaqManagedAdminRows.filter(row=>String(row.display_name||'').toLocaleLowerCase('ar').includes(query)).length>rows.length){const more=document.createElement('button');more.type='button';more.className='secondary';more.textContent='عرض 100 ملف إضافي';more.addEventListener('click',()=>{mithaqManagedAdminLimit+=100;renderManagedAdminRows();});host.append(more);}
 }
 function editManagedAdminProfile(id){
  const profile=mithaqManagedAdminRows.find(row=>row.id===id);if(!profile)return;
