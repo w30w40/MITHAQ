@@ -5216,7 +5216,44 @@ searchCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(searchCi
 
 
 <script>
-(()=>{if(!('serviceWorker'in navigator)||location.protocol!=='https:')return;navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});}).catch(err=>console.warn('MITHAQ update check failed',err));})();
+(()=>{
+ if(!('serviceWorker'in navigator)||location.protocol!=='https:')return;
+ const routeKey='mithaq-last-page-v1',pendingKey='mithaq-silent-update-pending-v1',scrollKey='mithaq-silent-update-scroll-v1';
+ let hadController=!!navigator.serviceWorker.controller;
+ let reloadQueued=false;
+ const saveState=()=>{
+  try{
+   const active=document.querySelector('.tab:not(.hidden)');
+   if(active&&active.id)sessionStorage.setItem(routeKey,active.id);
+   sessionStorage.setItem(scrollKey,String(window.scrollY||0));
+  }catch(_){}
+ };
+ const applyPending=()=>{
+  if(reloadQueued||document.visibilityState!=='visible')return;
+  try{if(sessionStorage.getItem(pendingKey)!=='1')return;sessionStorage.removeItem(pendingKey);reloadQueued=true;saveState();location.reload();}catch(_){}
+ };
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(!hadController){hadController=true;return;}
+  try{sessionStorage.setItem(pendingKey,'1');}catch(_){}
+  if(document.visibilityState==='hidden'){saveState();return;}
+  // Keep the current page and its data visible; apply the new shell on the next foreground return.
+ });
+ document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){saveState();return;}
+  applyPending();
+ });
+ window.addEventListener('pagehide',saveState);
+ window.addEventListener('load',()=>{
+  try{
+   const saved=Number(sessionStorage.getItem(scrollKey)||0);
+   if(saved>0)requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,saved)));
+  }catch(_){}
+ });
+ navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{
+  reg.update().catch(()=>{});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
+ }).catch(err=>console.warn('MITHAQ update check failed',err));
+})();
 </script>
 
 
