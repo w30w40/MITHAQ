@@ -5206,7 +5206,7 @@ searchCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(searchCi
 
 
 <script>
-(()=>{if(!('serviceWorker'in navigator)||location.protocol!=='https:')return;let reloading=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloading)return;reloading=true;try{sessionStorage.setItem('mithaq-update-scroll-v1',String(window.scrollY||0));sessionStorage.setItem('mithaq-update-reload-v1','1');}catch(_){}location.reload();});navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});}).catch(err=>console.warn('MITHAQ update check failed',err));})();
+(()=>{if(!('serviceWorker'in navigator)||location.protocol!=='https:')return;navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});}).catch(err=>console.warn('MITHAQ update check failed',err));})();
 </script>
 
 
