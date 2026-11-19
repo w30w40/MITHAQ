@@ -1,6 +1,8 @@
 const CACHE_NAME = 'mithaq-shell-v5-admin-ai-status-20261118';
 const APP_SHELL = ['./', './manifest.webmanifest', './icons/mithaq-icon.svg'];
 
+self.addEventListener('message', event => { if (event.data?.type === 'SKIP_WAITING') self.skipWaiting(); });
+
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
