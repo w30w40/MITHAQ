@@ -3489,16 +3489,16 @@ async function setupMithaqLiveUpdates(session){
 async function loadMithaqHomeFeed(){
  const host=document.getElementById('homeLiveFeed'),status=document.getElementById('homeFeedStatus');
  if(!host||!status)return;
- host.replaceChildren();
  if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
- status.textContent='جارٍ تحميل الأعضاء المتاحين...';
+ status.textContent=host.children.length?'':' ';
  const {data,error}=await supabaseClient.rpc('mithaq_home_feed');
- if(error){status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
+ if(error){if(!host.children.length)status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
  mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
- if(!data?.length){status.textContent='لا يوجد أعضاء آخرون متاحون حالياً.';return;}
- data.forEach(person=>{
+ if(!data?.length){if(!host.children.length)status.textContent='لا يوجد أعضاء آخرون متاحون حالياً.';return;}
+ const cachedIds=new Set([...host.querySelectorAll('[data-home-member-id]')].map(node=>node.dataset.homeMemberId));
+ data.forEach(person=>{if(cachedIds.has(person.id))return;
   const card=document.createElement('article');card.className='mithaq-live-member';
   const avatarWrap=document.createElement('div');avatarWrap.className='mithaq-live-avatar-wrap';
   const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
@@ -3512,7 +3512,7 @@ async function loadMithaqHomeFeed(){
   const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.city||person.country||''].filter(Boolean).join(' • ')||'عضو ميثاق';
   const action=document.createElement('button');action.type='button';action.className='secondary mithaq-live-message';action.textContent='مراسلة';
   name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));avatarWrap.style.cursor='pointer';avatarWrap.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  card.append(avatarWrap,name,meta,action);host.append(card);
+  card.dataset.homeMemberId=person.id;card.append(avatarWrap,name,meta,action);host.append(card);
  });
  status.textContent='تظهر هنا جميع الحسابات النشطة التي وافقت على الظهور. علامة الاتصال تعكس آخر نشاط خلال 5 دقائق.';
 }
@@ -3699,7 +3699,9 @@ async function loadMembers(){
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
  host.dataset.visibleLimit='30';
- status.textContent='جارٍ تحميل الأعضاء...';
+ const cacheKey='mithaq-members-cache-v1-'+session.user.id;
+ try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(Array.isArray(cached)&&cached.length){mithaqMemberCache=cached;renderMithaqMembers();status.textContent='';}}catch(_){}
+ if(!mithaqMemberCache.length)status.textContent='';
  const {data,error}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:null});
  if(error){status.textContent='تعذر تحميل الأعضاء: '+error.message;return;}
  const {data:managedRows,error:managedError}=await supabaseClient.rpc('mithaq_list_managed_profiles');
@@ -3708,6 +3710,7 @@ async function loadMembers(){
  const managedProfiles=(managedRows||[]).map(person=>({...person,details:person.details||{},is_platform_managed:true,can_interact:false}));
  mithaqPremiumMemberIds=await loadMithaqPremiumIds(realRows.map(person=>person.id));
  mithaqMemberCache=[...realRows,...managedProfiles];
+ try{sessionStorage.setItem(cacheKey,JSON.stringify(mithaqMemberCache));}catch(_){}
  renderMithaqMembers();
  if(!mithaqMemberCache.length)status.textContent='لا يوجد أعضاء أو ملفات إدارية متاحة للعرض حالياً.';
 }
@@ -3858,7 +3861,9 @@ async function loadConversations(){
  if(!supabaseClient){host.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){host.textContent='سجّل الدخول لعرض مراسلاتك.';return;}
- host.textContent='جارٍ تحميل المحادثات...';
+ const cacheKey='mithaq-conversations-cache-v1-'+session.user.id;
+ try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(Array.isArray(cached)&&cached.length){mithaqConversationCache=cached;renderMithaqConversationList();host.textContent='';}}catch(_){}
+ if(!mithaqConversationCache.length)host.textContent='';
  const [messageResult,peopleResult,preferenceResult]=await Promise.all([
   supabaseClient.from('messages').select('id,sender_id,recipient_id,body,created_at,read_at,attachment_name,attachment_kind,deleted_for_everyone_at').or('sender_id.eq.'+session.user.id+',recipient_id.eq.'+session.user.id).order('created_at',{ascending:false}).limit(300),
   Promise.resolve(null),
@@ -3883,6 +3888,7 @@ async function loadConversations(){
   const preview=last?.deleted_for_everyone_at?'تم حذف الرسالة':last?.body||(last?.attachment_kind==='voice'?'🎙️ رسالة صوتية':last?.attachment_name?'📎 '+last.attachment_name:'ابدأ المحادثة');
   return {id,name,last,unread,avatar,preview,favorite:!!pref?.favorite,muted:!!pref?.muted,archived:!!pref?.archived,pinned:!!pref?.pinned};
  });
+ try{sessionStorage.setItem(cacheKey,JSON.stringify(mithaqConversationCache));}catch(_){}
  renderMithaqConversationList();
 }
 const mithaqConversationSearch=document.getElementById('mithaqConversationSearch');
