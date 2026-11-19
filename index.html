@@ -31,6 +31,11 @@ footer{text-align:center;padding:22px;color:#87928b;font-size:12px}@media(max-wi
 /* Member area redesign: Mawada-inspired pink header, blue accents and slide-out navigation */
 .member-topbar{display:none}
 .member-drawer,.member-drawer-backdrop{display:none}
+/* Prevent the signup/login gate from flashing during asynchronous session restoration. */
+html.mithaq-auth-pending #entryGate{display:none!important}
+html.mithaq-auth-pending body::before{content:"جارٍ استعادة جلسة ميثاق…";position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#fff9fa;color:#246b98;font:600 16px system-ui,sans-serif}
+html.mithaq-auth-pending body::after{content:"";position:fixed;z-index:100000;top:calc(50% + 30px);left:calc(50% - 15px);width:30px;height:30px;border:3px solid #f3d5df;border-top-color:#d94368;border-radius:50%;animation:mithaq-auth-spin .8s linear infinite}
+@keyframes mithaq-auth-spin{to{transform:rotate(360deg)}}
 /* Keep the public entry screen visible while Supabase restores a saved session. */
 html[data-mithaq-initial-route] .tab{display:none!important}
 html[data-mithaq-initial-route="home"] #home,html[data-mithaq-initial-route="notifications"] #notifications,html[data-mithaq-initial-route="members"] #members,html[data-mithaq-initial-route="myprofile"] #myprofile,html[data-mithaq-initial-route="messages"] #messages,html[data-mithaq-initial-route="settings"] #settings,html[data-mithaq-initial-route="help"] #help,html[data-mithaq-initial-route="about"] #about{display:block!important}
