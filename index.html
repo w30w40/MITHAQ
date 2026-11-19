@@ -3486,19 +3486,10 @@ async function setupMithaqLiveUpdates(session){
   .subscribe();
  await loadMithaqUnreadCount();
 }
-async function loadMithaqHomeFeed(){
- const host=document.getElementById('homeLiveFeed'),status=document.getElementById('homeFeedStatus');
- if(!host||!status)return;
- if(!supabaseClient){status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
- const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
- status.textContent=host.children.length?'':' ';
- const {data,error}=await supabaseClient.rpc('mithaq_home_feed');
- if(error){if(!host.children.length)status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
- mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
- if(!data?.length){if(!host.children.length)status.textContent='لا يوجد أعضاء آخرون متاحون حالياً.';return;}
- const cachedIds=new Set([...host.querySelectorAll('[data-home-member-id]')].map(node=>node.dataset.homeMemberId));
- data.forEach(person=>{if(cachedIds.has(person.id))return;
+function renderMithaqHomeFeed(data){
+ const host=document.getElementById('homeLiveFeed'),status=document.getElementById('homeFeedStatus');if(!host||!status)return;
+ host.replaceChildren();
+ (data||[]).forEach(person=>{
   const card=document.createElement('article');card.className='mithaq-live-member';
   const avatarWrap=document.createElement('div');avatarWrap.className='mithaq-live-avatar-wrap';
   const avatar=document.createElement('div');avatar.className='mithaq-live-avatar';
@@ -3506,16 +3497,29 @@ async function loadMithaqHomeFeed(){
   avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(gender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(gender))?'👨🏻':'👤';
   if(person.is_platform_managed!==true)decorateMithaqMemberAvatar(avatar,person.id);
   avatar.setAttribute('aria-label',avatar.textContent==='👩🏻'?'ملف امرأة':avatar.textContent==='👨🏻'?'ملف رجل':'صورة رمزية');
-  const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';
-  dot.setAttribute('aria-label',dot.title);avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
-  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'members'));
+  const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';dot.setAttribute('aria-label',dot.title);
+  avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
+  const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));
   const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.city||person.country||''].filter(Boolean).join(' • ')||'عضو ميثاق';
   const action=document.createElement('button');action.type='button';action.className='secondary mithaq-live-message';action.textContent='مراسلة';
-  name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));avatarWrap.style.cursor='pointer';avatarWrap.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
-  card.dataset.homeMemberId=person.id;card.append(avatarWrap,name,meta,action);host.append(card);
+  avatarWrap.style.cursor='pointer';avatarWrap.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
+  card.append(avatarWrap,name,meta,action);host.append(card);
  });
- status.textContent='تظهر هنا جميع الحسابات النشطة التي وافقت على الظهور. علامة الاتصال تعكس آخر نشاط خلال 5 دقائق.';
+ status.textContent=data?.length?'تظهر هنا جميع الحسابات النشطة التي وافقت على الظهور. علامة الاتصال تعكس آخر نشاط خلال 5 دقائق.':'لا يوجد أعضاء آخرون متاحون حالياً.';
 }
+async function loadMithaqHomeFeed(){
+ const host=document.getElementById('homeLiveFeed'),status=document.getElementById('homeFeedStatus');if(!host||!status)return;
+ if(!supabaseClient){if(!host.children.length)status.textContent='الاتصال بقاعدة البيانات غير متاح.';return;}
+ const {data:{session}}=await supabaseClient.auth.getSession();if(!session){if(!host.children.length)status.textContent='سجّل الدخول لعرض الأعضاء.';return;}
+ const cacheKey='mithaq-home-feed-cache-v1-'+session.user.id;
+ try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(Array.isArray(cached)&&cached.length){mithaqPremiumMemberIds=await loadMithaqPremiumIds(cached.map(person=>person.id));renderMithaqHomeFeed(cached);}}catch(_){}
+ const {data,error}=await supabaseClient.rpc('mithaq_home_feed');
+ if(error){if(!host.children.length)status.textContent='تعذر تحميل الأعضاء حالياً.';console.error('MITHAQ home feed:',error.message);return;}
+ mithaqPremiumMemberIds=await loadMithaqPremiumIds((data||[]).map(person=>person.id));
+ try{sessionStorage.setItem(cacheKey,JSON.stringify(data||[]));}catch(_){}
+ renderMithaqHomeFeed(data||[]);
+}
+
 let mithaqMemberCache=[];
 let mithaqMemberViewMode='all';
 const mithaqDirectoryViews={
