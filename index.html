@@ -5221,6 +5221,7 @@ searchCountryForCitySelect.addEventListener('change',()=>fillAreaSelect(searchCi
  const routeKey='mithaq-last-page-v1',pendingKey='mithaq-silent-update-pending-v1',scrollKey='mithaq-silent-update-scroll-v1';
  let hadController=!!navigator.serviceWorker.controller;
  let reloadQueued=false;
+ try{const navEntry=performance.getEntriesByType('navigation')[0];if(navEntry&&navEntry.type==='reload')sessionStorage.removeItem(pendingKey);}catch(_){}
  const saveState=()=>{
   try{
    const active=document.querySelector('.tab:not(.hidden)');
