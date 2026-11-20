@@ -2073,6 +2073,11 @@ function validateWizardStep(stepNumber=currentWizardStep){
   if(field.type==='checkbox'&&!field.checked&&field.required){field.focus();return 'يرجى الموافقة على الحقول المطلوبة للمتابعة.';}
   if(field.required&&!field.checkValidity()){field.reportValidity();return 'يرجى إكمال الحقول المطلوبة بشكل صحيح.';}
  }
+ const ageField=document.getElementById('entryAge');
+ if(ageField){
+  const age=Number(ageField.value);
+  if(!ageField.value||!Number.isInteger(age)||age<18){ageField.focus();return 'يجب أن يكون عمر العضو 18 عاماً على الأقل للتسجيل في ميثاق.';}
+ }
  if(stepNumber===1){
   const username=document.getElementById('entryUsername').value.trim();
   if(username.length<3||username.length>=15)return 'اسم المستخدم يجب أن يكون من 3 إلى 14 حرفاً.';
