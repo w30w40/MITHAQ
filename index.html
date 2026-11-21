@@ -660,7 +660,7 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 .mithaq-full-member-profile-content{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:16px!important;padding-bottom:max(20px,env(safe-area-inset-bottom))!important}
 .mithaq-full-member-profile-hero{display:flex!important;align-items:center!important;gap:14px!important;padding:18px!important;margin-bottom:14px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:18px!important}
 .mithaq-full-member-profile-avatar{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:58px!important;height:58px!important;border-radius:50%!important;background:#e7f1ed!important;font-size:32px!important}
-.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}
+.mithaq-profile-name-row{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important;min-width:0!important}.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}.mithaq-profile-last-visit{display:inline-block!important;color:#89939b!important;font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .mithaq-full-member-profile-hero p{margin:0!important;color:#68776f!important;font-size:13px!important}
 .mithaq-full-member-profile-section{margin:0 0 14px!important;padding:16px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:16px!important}
 .mithaq-full-member-profile-section h3{margin:0 0 12px!important;color:#176b58!important;font-size:16px!important}
@@ -4532,9 +4532,12 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   const hero=document.createElement('div');hero.className='mithaq-full-member-profile-hero';
   const avatar=document.createElement('div');avatar.className='mithaq-full-member-profile-avatar';const memberGender=String(details.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(memberGender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(memberGender))?'👨🏻':'👤';
   const identity=document.createElement('div');
+  const nameRow=document.createElement('div');nameRow.className='mithaq-profile-name-row';
   const name=document.createElement('h2');name.textContent=profile?.display_name||requestedName||activeChatName||'عضو ميثاق';
+  const visit=document.createElement('small');visit.className='mithaq-profile-last-visit';visit.textContent='آخر زيارة: '+(profile.last_seen_at?relativeDate(profile.last_seen_at):'غير متاح');if(profile.last_seen_at)visit.title=fullDate(profile.last_seen_at);
+  nameRow.append(name,visit);
   const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
-  identity.append(name,sub);hero.append(avatar,identity);content.append(hero);
+  identity.append(nameRow,sub);hero.append(avatar,identity);content.append(hero);
   const memberBackground=await getMithaqAvatarBackground(userId);
   if(page.isConnected===false)return;
   applyMithaqBackgroundToAvatar(avatar,memberBackground);
