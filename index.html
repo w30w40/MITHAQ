@@ -3666,7 +3666,7 @@ function renderMithaqMembers(){
   const age=getAge(person),family=String(person.details?.family_status||person.details?.marital_status||'');
   const education=String(person.details?.education||'');
   const height=Number(person.details?.height||0),weight=Number(person.details?.weight||0);
-  const matchesAge=age===null?(ageMin===18&&ageMax===100):(age>=ageMin&&age<=ageMax);
+  const matchesAge=age===null?(ageMin===17&&ageMax===100):(age>=ageMin&&age<=ageMax);
   const matchesFamily=familyFilter==='all'||family.includes(familyFilter);
   const matchesEducation=educationFilter==='all'||education.includes(educationFilter);
   const matchesHeight=!heightFilter||height===heightFilter;
@@ -3933,7 +3933,7 @@ const homeCountry=document.getElementById('mithaqHomeCountry'),directoryCountry=
 if(homeCountry&&directoryCountry){[...directoryCountry.options].forEach(option=>{if(option.value==='all')return;const copy=document.createElement('option');copy.value=option.value;copy.textContent=option.textContent;homeCountry.append(copy);});}
 document.getElementById('mithaqHomeSearchButton')?.addEventListener('click',()=>{
  openMemberResults('search');
- const values={mithaqCountryFilter:homeCountry?.value||'all',mithaqGenderFilter:document.getElementById('mithaqHomeGender')?.value||'all',mithaqFamilyFilter:document.getElementById('mithaqHomeFamily')?.value||'all',mithaqMarriageFilter:document.getElementById('mithaqHomeMarriage')?.value||'all',mithaqDirectoryAgeMin:document.getElementById('mithaqHomeAgeMin')?.value||'18',mithaqDirectoryAgeMax:document.getElementById('mithaqHomeAgeMax')?.value||'100'};
+ const values={mithaqCountryFilter:homeCountry?.value||'all',mithaqGenderFilter:document.getElementById('mithaqHomeGender')?.value||'all',mithaqFamilyFilter:document.getElementById('mithaqHomeFamily')?.value||'all',mithaqMarriageFilter:document.getElementById('mithaqHomeMarriage')?.value||'all',mithaqDirectoryAgeMin:document.getElementById('mithaqHomeAgeMin')?.value||'17',mithaqDirectoryAgeMax:document.getElementById('mithaqHomeAgeMax')?.value||'100'};
  Object.entries(values).forEach(([id,value])=>{const field=document.getElementById(id);if(field)field.value=value;});
  syncMithaqAgeControls('directory');renderMithaqMembers();
 });
@@ -4615,7 +4615,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   actionsPanel.append(messageButton,interestButton,interestChoice,menuWrap,reportForm,actionStatus);
   content.append(actionsPanel);
 
-  const labels={age:'العمر',gender:'الجنس',city:'المدينة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:'الحجاب',body_build:'بنية الجسم',skin_color:'لون البشرة',origin:'الأصل',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي'};
+  const labels={age:'العمر',gender:'الجنس',city:'المنطقة',neighborhood:'الحي',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',country:'الإقامة',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:'الحجاب',body_build:'بنية الجسم',skin_color:'لون البشرة',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي'};
   const formatValue=value=>{
    if(value===null||value===undefined||value==='')return '';
    if(Array.isArray(value))return value.map(v=>typeof v==='object'?JSON.stringify(v):String(v)).join('، ');
@@ -4635,7 +4635,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   addSection('المعلومات الأساسية',[
    ['الدولة',profile?.country],['المنطقة / المدينة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
-  const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','origin','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title']);
+  const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','marriage_type','about','partner_preferences','username','health','region','neighborhood','salary','workplace','job_title']);
   const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
   addSection('المواصفات الشخصية',detailEntries);
   addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
