@@ -3784,7 +3784,7 @@ function showManagedMemberProfile(person){
   finally{aiInput.disabled=false;aiSend.disabled=false;aiInput.focus();}
  });
  const details=person.details||{};
- const fields=[['العمر',details.age?details.age+' سنة':'غير محدد'],['الجنس',details.gender||'غير محدد'],['المنطقة',worldArabicRegionValue(person.country,details.city||person.region||'')||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||'غير محدد'],['الحالة الاجتماعية',details.marital_status||'غير محدد'],['الأطفال',details.children||'غير محدد'],['نوع الزواج',person.marriage_type||'غير محدد']];
+ const fields=[['الجنسية',details.nationality||'غير محدد'],['الإقامة',worldArabicCountryValue(person.country||details.country)||'غير محدد'],['المنطقة',worldArabicRegionValue(person.country||details.country,person.region||details.city||'')||'غير محدد'],['العمر',details.age?details.age+' سنة':'غير محدد'],['الطول',details.height||'غير محدد'],['الوزن',details.weight||'غير محدد'],['نوع الزواج',person.marriage_type||details.marriage_type||'غير محدد'],['الجنس',details.gender||'غير محدد'],['الحالة الاجتماعية',details.marital_status||details.family_status||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||details.work||'غير محدد'],['الأطفال',details.children||'غير محدد']];
  const card=document.createElement('section');card.className='mithaq-profile-meta';
  const title=document.createElement('h3');title.textContent='معلومات الملف';card.append(title);
  fields.forEach(([labelText,value])=>{const row=document.createElement('div');row.className='mithaq-profile-meta-row';const l=document.createElement('span');l.textContent=labelText;const v=document.createElement('strong');v.textContent=value;row.append(l,v);card.append(row);});
@@ -4549,6 +4549,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    const months=Math.floor(days/30.4375);if(months<12)return 'منذ '+months+' شهر';
    const years=Math.floor(days/365.25);return 'منذ '+years+' سنة';
   };
+  const basicCard=document.createElement('section');basicCard.className='mithaq-profile-meta';const basicTitle=document.createElement('h3');basicTitle.textContent='المعلومات الأساسية';basicCard.append(basicTitle);[['الجنسية',details.nationality],['الإقامة',worldArabicCountryValue(profile.country||details.country)],['المنطقة',worldArabicRegionValue(profile.country||details.country,profile.region||details.city||'')],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile.marriage_type||details.marriage_type]].forEach(([label,value])=>{if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('div');line.className='mithaq-profile-meta-row';const key=document.createElement('span');key.textContent=label;const val=document.createElement('strong');val.textContent=String(value);line.append(key,val);basicCard.append(line);});content.append(basicCard);
   const metaCard=document.createElement('section');metaCard.className='mithaq-profile-meta';
   const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات الزيارة والتسجيل';metaCard.append(metaTitle);
     const online=!!profile.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
