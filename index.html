@@ -3933,7 +3933,7 @@ document.getElementById('mithaqHomeSearchButton')?.addEventListener('click',()=>
  syncMithaqAgeControls('directory');renderMithaqMembers();
 });
 document.getElementById('mithaqResetAgeFilters')?.addEventListener('click',()=>{
- const defaults={mithaqDirectoryAgeMin:'18',mithaqDirectoryAgeMax:'100',mithaqFamilyFilter:'all',mithaqEducationFilter:'all',mithaqHeightFilter:'',mithaqWeightFilter:''};
+ const defaults={mithaqDirectoryAgeMin:'18',mithaqDirectoryAgeMax:'100',mithaqFamilyFilter:'all',mithaqEducationFilter:'all',mithaqHeightFilter:'',mithaqWeightFilter:'',mithaqCountryFilter:'all',mithaqRegionFilter:'all'};
  Object.entries(defaults).forEach(([id,value])=>{const field=document.getElementById(id);if(field)field.value=value;});
  syncMithaqAgeControls('directory');renderMithaqMembers();
 });
@@ -3941,6 +3941,7 @@ document.querySelectorAll('[data-member-quick]').forEach(button=>button.addEvent
  const mode=button.dataset.memberQuick;
  if(mithaqSearchInput)mithaqSearchInput.value='';
  document.getElementById('mithaqCountryFilter').value='all';
+ const regionReset=document.getElementById('mithaqRegionFilter');if(regionReset)regionReset.value='all';
  document.getElementById('mithaqMarriageFilter').value='all';
  document.getElementById('mithaqDirectoryAgeMin').value='18';document.getElementById('mithaqDirectoryAgeMax').value='100';syncMithaqAgeControls('directory');
  document.getElementById('mithaqPresenceFilter').value=mode==='online'?'online':'all';
@@ -5302,7 +5303,6 @@ const WORLD_DATA_BASE='https://cdn.jsdelivr.net/gh/srestre/world-countries-citie
 let worldCountryChoices=[];
 let worldCountryRecords=[];
 let worldCountryNameToCode=new Map();
-const worldCityCache=new Map();
 const worldPriorityCountries=['SA','AE','KW','QA','BH','OM'];
 const worldArabicNames={SA:'السعودية',AE:'الإمارات',KW:'الكويت',QA:'قطر',BH:'البحرين',OM:'عُمان',US:'الولايات المتحدة',GB:'المملكة المتحدة',KR:'كوريا الجنوبية',KP:'كوريا الشمالية',RU:'روسيا',IR:'إيران',SY:'سوريا',YE:'اليمن',EG:'مصر',JO:'الأردن',PS:'فلسطين',LB:'لبنان',IQ:'العراق',MA:'المغرب',DZ:'الجزائر',TN:'تونس'};
 const worldRegionDataUrl='./data/world-regions-ar.json';
