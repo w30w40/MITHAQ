@@ -3619,7 +3619,7 @@ function renderMithaqMembers(){
   const age=getAge(person),family=String(person.details?.family_status||person.details?.marital_status||'');
   const education=String(person.details?.education||'');
   const height=Number(person.details?.height||0),weight=Number(person.details?.weight||0);
-  const matchesAge=age!==null&&age>=ageMin&&age<=ageMax;
+  const matchesAge=age===null?(ageMin===18&&ageMax===100):(age>=ageMin&&age<=ageMax);
   const matchesFamily=familyFilter==='all'||family.includes(familyFilter);
   const matchesEducation=educationFilter==='all'||education.includes(educationFilter);
   const matchesHeight=!heightFilter||height===heightFilter;
@@ -3629,7 +3629,7 @@ function renderMithaqMembers(){
  people.sort((a,b)=>{
   if(mithaqMemberViewMode==='newest'||sortMode==='newest')return new Date(b.created_at||b.joined_at||b.updated_at||0).getTime()-new Date(a.created_at||a.joined_at||a.updated_at||0).getTime();
   if(sortMode==='name')return String(a.display_name||'').localeCompare(String(b.display_name||''),'ar');
-  if(sortMode==='age_asc'||sortMode==='age_desc'){const aa=getAge(a)??999,bb=getAge(b)??999;return sortMode==='age_asc'?aa-bb:bb-aa;}
+  if(sortMode==='age_asc'||sortMode==='age_desc'){const aa=getAge(a),bb=getAge(b);return sortMode==='age_asc'?(aa??999)-(bb??999):(bb??-1)-(aa??-1);}
   if(sortMode==='country')return String(a.country||'').localeCompare(String(b.country||''),'ar');
   return new Date(b.last_seen_at||0).getTime()-new Date(a.last_seen_at||0).getTime();
  });
