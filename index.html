@@ -2310,7 +2310,7 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
- const profile={public_listing_consent:true,health_public:true,partner_preferences_public:true,terms_version:'2026-11-14-v1',terms_accepted_at:new Date().toISOString(),privacy_policy_accepted:true,honesty_declaration_accepted:!!document.getElementById('entryHonesty')?.checked,marriage_fee_agreed:!!document.getElementById('entryMarriageFee')?.checked,marriage_fee_amount_sar:500,marriage_fee_trigger:'marriage_contract_from_mithaq_introduction',username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhoneCountryCode').value+document.getElementById('entryPhone').value.replace(/\D/g,'').replace(/^0+/, ''),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),neighborhood:document.getElementById('entryNeighborhood').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ const profile={public_listing_consent:true,terms_version:'2026-11-14-v1',terms_accepted_at:new Date().toISOString(),privacy_policy_accepted:true,honesty_declaration_accepted:!!document.getElementById('entryHonesty')?.checked,marriage_fee_agreed:!!document.getElementById('entryMarriageFee')?.checked,marriage_fee_amount_sar:500,marriage_fee_trigger:'marriage_contract_from_mithaq_introduction',username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhoneCountryCode').value+document.getElementById('entryPhone').value.replace(/\D/g,'').replace(/^0+/, ''),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),neighborhood:document.getElementById('entryNeighborhood').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
   const email=document.getElementById('entrySignupEmail').value.trim();
   const password=document.getElementById('entrySignupPassword').value;
@@ -3289,7 +3289,7 @@ async function refreshProfileAccess(){
  ]);
  const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
  const savedDetails=privateRow?.details||{};
- const registrationKeys=['username','gender','marriage_type','family_status','age','children','country','nationality','city','neighborhood','origin','weight','height','skin_color','body_build','religiosity','prayer','smoking','covering','education','financial_status','work_field','work','monthly_income','health','health_public','partner_preferences_public','about','partner_preferences'];
+ const registrationKeys=['username','gender','marriage_type','family_status','age','children','country','nationality','city','neighborhood','origin','weight','height','skin_color','body_build','religiosity','prayer','smoking','covering','education','financial_status','work_field','work','monthly_income','health','about','partner_preferences'];
  const registrationMeta={};
  registrationKeys.forEach(key=>{if(authMeta[key]!==undefined&&authMeta[key]!==null&&String(authMeta[key]).trim()!=='')registrationMeta[key]=authMeta[key];});
  const meta={...registrationMeta,...savedDetails};
@@ -3382,7 +3382,6 @@ async function refreshProfileAccess(){
   addProfileSelect(marriageEditor,isWife?[['الوحيدة','الوحيدة'],['لا مانع من التعدد','لا مانع من التعدد']]:[['زواج عادي','زواج عادي'],['زوجة ثانية','زوجة ثانية']],'');
  });
 document.getElementById('profileCountry')?.addEventListener('change',()=>{const income=document.getElementById('edit_monthly_income');if(income){const previous=income.value;populateMithaqIncomeOptions(income,document.getElementById('profileCountry').value.trim(),previous);}});
- const partnerIsPublic=true;
  const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]&&x[1]!=='خاص');
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
@@ -3426,8 +3425,6 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   neighborhood:document.getElementById('profileNeighborhood').value,
   marriage_type:document.getElementById('marriageType').value,
   about:life,
-  health_public:true,
-  partner_preferences_public:true
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
@@ -3440,7 +3437,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
    p_region:updated.city||'',p_marriage_type:updated.marriage_type||'',p_life_text:updated.about||''
   });
   if(saveError)throw saveError;
-  status.textContent='تم حفظ ملفك ومواصفاتك وإعدادات الخصوصية بنجاح.';
+  status.textContent='تم حفظ جميع بيانات ملفك الشخصي بنجاح.';
   await refreshProfileAccess();
   showProfileReadView();
  }catch(err){
@@ -4629,7 +4626,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   addSection('المعلومات الأساسية',[
    ['الإقامة',profile?.country],['المنطقة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
-  const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','marriage_type','about','partner_preferences','username','health','region','neighborhood','salary','workplace','job_title']);
+  const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title','financial_status','monthly_income','origin']);
   const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
   addSection('المواصفات الشخصية',detailEntries);
   addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
