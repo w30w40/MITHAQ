@@ -26,7 +26,7 @@ create or replace function public.mithaq_list_managed_profiles()
 returns table (
   id uuid, display_name text, country text, region text, marriage_type text,
   life_text text, last_seen_at timestamptz, created_at timestamptz,
-  details jsonb, member_number bigint, is_platform_managed boolean,
+  details jsonb, is_platform_managed boolean,
   management_label text, can_interact boolean
 )
 language plpgsql
@@ -45,7 +45,7 @@ begin
   return query
   select m.id, m.display_name, m.country, m.region, m.marriage_type,
          m.life_text, null::timestamptz, m.created_at, m.details,
-         null::bigint, true, 'تحت إدارة ميثاق', false
+         true, 'تحت إدارة ميثاق', false
   from private.mithaq_managed_profiles m
   where m.is_active
   order by m.created_at desc;
