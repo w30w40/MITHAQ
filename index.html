@@ -3323,7 +3323,7 @@ async function refreshProfileAccess(){
   ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],['العمر',meta.age],['الطول',meta.height],['الوزن',meta.weight],
   ['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['عدد الأطفال',meta.children],
   ['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
-  ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
+  ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],[String(meta.gender||'wife')==='wife'?'الحجاب':'اللحية',meta.covering],
   ['المستوى التعليمي',meta.education],['الوضع المادي',meta.financial_status],['مجال العمل',meta.work_field],['الوظيفة',meta.work],['الدخل الشهري',meta.monthly_income],['الحالة الصحية',meta.health]
  ];
  details.replaceChildren();let count=0;
@@ -3357,7 +3357,7 @@ async function refreshProfileAccess(){
  const addProfileSelect=(select,choices,value)=>{select.replaceChildren(new Option('اختر',''));const seen=new Set();choices.forEach(([v,label])=>{const key=String(v);if(seen.has(key))return;seen.add(key);select.append(new Option(label,key));});if(value&&!seen.has(String(value)))select.append(new Option(String(value),String(value)));select.value=value??'';};
  const nationalityEditor=document.getElementById('edit_nationality');addProfileSelect(nationalityEditor,choiceMap.nationality,meta.nationality??'');
  const rangeChoices=(start,end)=>Array.from({length:end-start+1},(_,i)=>[String(start+i),String(start+i)]);
- const extraFields=[['age','العمر'],['height','الطول (سم)'],['weight','الوزن (كغ)'],['gender','الجنس'],['family_status','الحالة الاجتماعية'],['children','عدد الأطفال'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية']];
+ const extraFields=[['age','العمر'],['height','الطول (سم)'],['weight','الوزن (كغ)'],['gender','الجنس'],['family_status','الحالة الاجتماعية'],['children','عدد الأطفال'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering',String(meta.gender||'wife')==='wife'?'الحجاب':'اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية']];
  extraFields.forEach(([key,label])=>{
   const wrap=document.createElement('div');wrap.className='field';
   const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;
@@ -4611,7 +4611,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   actionsPanel.append(messageButton,interestButton,interestChoice,menuWrap,reportForm,actionStatus);
   content.append(actionsPanel);
 
-  const labels={age:'العمر',gender:'الجنس',city:'المنطقة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',country:'الإقامة',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:'الحجاب',body_build:'بنية الجسم',skin_color:'لون البشرة',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي'};
+  const labels={age:'العمر',gender:'الجنس',city:'المنطقة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',country:'الإقامة',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:(['wife','female','أنثى','امرأة','انثى'].includes(String(details.gender||'').trim().toLowerCase())?'الحجاب':'اللحية'),body_build:'بنية الجسم',skin_color:'لون البشرة',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي'};
   const formatValue=value=>{
    if(value===null||value===undefined||value==='')return '';
    if(Array.isArray(value))return value.map(v=>typeof v==='object'?JSON.stringify(v):String(v)).join('، ');
