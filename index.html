@@ -1675,6 +1675,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 </div>
 <div class="mithaq-member-filters" dir="rtl">
 <label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
+<label>المنطقة<select id="mithaqRegionFilter" aria-label="تصفية الأعضاء حسب المنطقة"><option value="all">كل المناطق</option></select></label>
 <label>الجنس<select id="mithaqGenderFilter" aria-label="تصفية الأعضاء حسب الجنس"><option value="all">الكل</option><option value="female">الإناث</option><option value="male">الذكور</option></select></label>
 <label id="mithaqHealthFilterWrap" hidden>الحالة الصحية<select id="mithaqHealthFilter" aria-label="تصفية الأعضاء حسب الحالة الصحية"><option value="all">الكل</option><option value="بصحة جيدة والحمد لله">بصحة جيدة والحمد لله</option><option value="لدي حالة صحية وأفضل توضيحها لاحقاً">لدي حالة صحية</option></select></label>
 <label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
@@ -3617,6 +3618,7 @@ function renderMithaqMembers(){
  const presenceFilter=document.getElementById('mithaqPresenceFilter')?.value||'all';
  const marriageFilter=document.getElementById('mithaqMarriageFilter')?.value||'all';
  const countryFilter=document.getElementById('mithaqCountryFilter')?.value||'all';
+ const regionFilter=document.getElementById('mithaqRegionFilter')?.value||'all';
  const genderFilter=document.getElementById('mithaqGenderFilter')?.value||'all';
  const healthSelect=document.getElementById('mithaqHealthFilter');
  let healthFilter=healthSelect?.value||'all';
@@ -3644,6 +3646,8 @@ function renderMithaqMembers(){
  const people=mithaqMemberCache.filter(person=>{
   const matchesQuery=!query||String(person.display_name||'').toLocaleLowerCase('ar').includes(query);
   const matchesSelectedCountry=matchesCountry(person);
+  const memberRegion=worldArabicRegionValue(person.country,person.region||person.details?.city||'');
+  const matchesSelectedRegion=regionFilter==='all'||memberRegion===regionFilter;
   const matchesPresence=presenceFilter==='all'||(presenceFilter==='online'?isOnline(person):!isOnline(person));
   const type=String(person.marriage_type||person.details?.marriage_type||'');
   const matchesMarriage=marriageFilter==='all'||type.includes(marriageFilter)||(marriageFilter==='معلن'&&type.includes('الزواج المعلن'))||(marriageFilter==='مسيار'&&type.includes('زواج المسيار'));
@@ -3662,7 +3666,7 @@ function renderMithaqMembers(){
   const matchesEducation=educationFilter==='all'||education.includes(educationFilter);
   const matchesHeight=!heightFilter||height===heightFilter;
   const matchesWeight=!weightFilter||weight===weightFilter;
-  return matchesQuery&&matchesSelectedCountry&&matchesPresence&&matchesMarriage&&matchesGender&&matchesPremium&&matchesHealthView&&matchesHealthFilter&&matchesAge&&matchesFamily&&matchesEducation&&matchesHeight&&matchesWeight;
+  return matchesQuery&&matchesSelectedCountry&&matchesSelectedRegion&&matchesPresence&&matchesMarriage&&matchesGender&&matchesPremium&&matchesHealthView&&matchesHealthFilter&&matchesAge&&matchesFamily&&matchesEducation&&matchesHeight&&matchesWeight;
  });
  people.sort((a,b)=>{
   if(mithaqMemberViewMode==='newest'||sortMode==='newest')return new Date(b.created_at||b.joined_at||b.updated_at||0).getTime()-new Date(a.created_at||a.joined_at||a.updated_at||0).getTime();
@@ -3687,7 +3691,7 @@ function renderMithaqMembers(){
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
   const managedLabel=managed?document.createElement('p'):null;
   if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
-  const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',person.country,person.region,mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
   const button=document.createElement('button');button.type='button';
   if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
@@ -5388,21 +5392,28 @@ function fillWorldCountrySelect(select,placeholder,current=''){
  if(!select)return;
  select.replaceChildren(new Option(placeholder,''));
  worldCountryChoices.forEach(([value,label])=>select.append(new Option(label,value)));
- if(current&&!worldCountryChoices.some(([value])=>value===current))select.append(new Option(current,current));
+ if(current&&current!=='all'&&!worldCountryChoices.some(([value])=>value===current))select.append(new Option(current,current));
  select.value=current||'';
 }
 (async()=>{
  try{
   await ensureWorldCountries();
-  ['entryCountry','profileCountry','country'].forEach(id=>{
+  ['entryCountry','profileCountry','mithaqCountryFilter'].forEach(id=>{
    const select=document.getElementById(id);
-   if(select){const current=select.value;fillWorldCountrySelect(select,id==='country'?'كل الدول': 'اختر دولة الإقامة',current||(id==='country'?'all':''));}
+   if(select){const current=select.value;fillWorldCountrySelect(select,id==='mithaqCountryFilter'?'جميع دول العالم':'اختر دولة الإقامة',current||(id==='mithaqCountryFilter'?'all':''));}
   });
   const nationality=document.getElementById('entryNationality');if(nationality)fillWorldCountrySelect(nationality,'اختر الجنسية',nationality.value);
   const entryCountry=document.getElementById('entryCountry'),entryCity=document.getElementById('entryCity');
   entryCountry?.addEventListener('change',()=>loadWorldRegions(entryCountry.value,entryCity,'اختر المنطقة'));
-  const searchCountry=document.getElementById('country'),searchCity=document.getElementById('cityFilter');
-  searchCountry?.addEventListener('change',()=>loadWorldRegions(searchCountry.value==='all'?'':searchCountry.value,searchCity,'كل المناطق'));
+  const searchCountry=document.getElementById('mithaqCountryFilter'),searchRegion=document.getElementById('mithaqRegionFilter');
+  const refreshSearchRegions=async()=>{
+   if(!searchRegion)return;
+   if(!searchCountry||searchCountry.value==='all'){searchRegion.replaceChildren(new Option('كل المناطق','all'));return;}
+   await loadWorldRegions(searchCountry.value,searchRegion,'كل المناطق');
+   if(searchRegion.options.length){searchRegion.options[0].value='all';searchRegion.options[0].textContent='كل المناطق';searchRegion.value='all';}
+  };
+  searchCountry?.addEventListener('change',refreshSearchRegions);
+  refreshSearchRegions().catch(error=>console.warn('MITHAQ directory regions:',error));
  }catch(error){console.warn('MITHAQ world countries:',error);}
 })();
 
