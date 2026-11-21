@@ -4633,7 +4633,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    section.append(grid);content.append(section);
   };
   addSection('المعلومات الأساسية',[
-   ['الدولة',profile?.country],['المنطقة / المدينة',profile?.region],['نوع الزواج',profile?.marriage_type]
+   ['الإقامة',profile?.country],['المنطقة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
   const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','marriage_type','about','partner_preferences','username','health','region','neighborhood','salary','workplace','job_title']);
   const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
