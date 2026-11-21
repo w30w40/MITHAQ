@@ -2508,7 +2508,7 @@ async function loadMithaqMemberRelations(action){
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;
   name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
-  const meta=document.createElement('small');meta.textContent=[person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
+  const meta=document.createElement('small');meta.textContent=[worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
   info.append(name,meta);
   const actionButton=document.createElement('button');actionButton.type='button';actionButton.className='secondary';
   if(action==='interest'||action==='ignore'){
@@ -3316,6 +3316,8 @@ async function refreshProfileAccess(){
  }
  await ensureWorldCountries();
  await ensureWorldRegionsData();
+ meta.country=worldArabicCountryValue(meta.country);
+ meta.nationality=worldArabicCountryValue(meta.nationality);
  if(meta.city)meta.city=worldArabicRegionValue(meta.country,meta.city);
  const profileFields=[
   ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],['العمر',meta.age],['الطول',meta.height],['الوزن',meta.weight],
@@ -3329,7 +3331,6 @@ async function refreshProfileAccess(){
  if(!count)details.textContent='لم نعثر على مواصفات التسجيل في بيانات الحساب.';
  document.getElementById('myProfileDisplayName').textContent=meta.username||'ملفي الشخصي';
  document.getElementById('myProfileSubline').textContent=[meta.age?meta.age+' سنة':'',meta.country,meta.city].filter(Boolean).join(' • ')||'بياناتك ومواصفاتك الشخصية';
- await ensureWorldCountries();
  const extraHost=document.getElementById('profileExtraFields');extraHost.replaceChildren();
  const countryChoices=worldCountryChoices;
  const locationCountry=document.getElementById('profileCountry'),locationRegion=document.getElementById('profileRegion');
@@ -3694,7 +3695,7 @@ function renderMithaqMembers(){
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
   const managedLabel=managed?document.createElement('p'):null;
   if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
-  const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
   const button=document.createElement('button');button.type='button';
   if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
@@ -3734,7 +3735,7 @@ function showManagedMemberProfile(person){
  const identity=document.createElement('div');
  const name=document.createElement('h2');name.textContent=person.display_name||'ملف تحت إدارة ميثاق';
  const label=document.createElement('p');label.className='mithaq-managed-member-label';label.textContent='تحت إدارة ميثاق • حساب افتراضي';
- const sub=document.createElement('p');sub.textContent=[person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
+ const sub=document.createElement('p');sub.textContent=[worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
  identity.append(name,label,sub);hero.append(avatar,identity);content.append(hero);
  const disclosure=document.createElement('div');disclosure.className='mithaq-managed-disclosure';
  disclosure.textContent='هذا ملف افتراضي تديره منصة ميثاق. المحادثة التالية مع مساعد ذكاء اصطناعي، وليست مع شخص حقيقي.';
@@ -5370,6 +5371,12 @@ function worldCountryLabel(country){
  const code=String(country.iso2||'').toUpperCase();
  if(worldArabicNames[code])return worldArabicNames[code];
  try{return new Intl.DisplayNames(['ar'],{type:'region'}).of(code)||country.name||code;}catch(_){return country.name||code;}
+}
+function worldArabicCountryValue(value){
+ const raw=String(value??'').trim();if(!raw)return '';
+ if(worldCountryNameToCode.has(raw))return raw;
+ const record=worldCountryRecords.find(country=>String(country.name||'').toLocaleLowerCase()===raw.toLocaleLowerCase()||String(country.iso2||'').toUpperCase()===raw.toUpperCase());
+ return record?worldCountryLabel(record):raw;
 }
 async function ensureWorldCountries(){
  if(worldCountryChoices.length)return worldCountryChoices;
