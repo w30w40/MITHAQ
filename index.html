@@ -4627,7 +4627,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   const publicProfileOrder=['gender','marital_status','family_status','children','education','occupation','job','work','work_field','workplace','job_title','financial_status','salary','monthly_income','health','smoking','covering','prayer','religiosity','body_build','skin_color','origin','partner_preferences'];
   const detailEntries=publicProfileOrder.flatMap(key=>{if(!(key in details))return [];const value=details[key];const label=labels[key]||key;if(key==='gender')return [[label,({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value)]];return [[label,value]];});
   addSection('المواصفات الشخصية',detailEntries);
-  addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
+  addSection('مواصفات الشريك المطلوب ونبذة عن العضو',[[ 'مواصفات الشريك المطلوب',details?.partner_preferences ],['نبذة',profile?.life_text]]);
   if(content.childElementCount<=1){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد مواصفات إضافية منشورة لهذا العضو حالياً.';content.append(empty);}
  }catch(error){
   if(page.isConnected!==false){content.replaceChildren();const message=document.createElement('p');message.className='notice';message.textContent='تعذر تحميل الملف الشخصي: '+(error?.message||'حاول مرة أخرى');content.append(message);}
