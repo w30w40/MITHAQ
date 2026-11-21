@@ -3434,6 +3434,8 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   partner_preferences:document.getElementById('profilePartnerPreferences').value.trim(),
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
+ // المنطقة تُحفظ في profiles.region فقط، ولا تُكرر داخل JSON details.
+ delete updated.city;
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
  btn.disabled=true;status.textContent='جارٍ حفظ جميع بيانات ملفك...';
  try{
