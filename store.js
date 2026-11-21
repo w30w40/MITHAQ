@@ -79,7 +79,7 @@
             <button type="button" id="mithaqStoreConsentClose" class="mithaq-store-close" aria-label="إغلاق المراجعة">×</button>
           </div>
           <h2 id="mithaqStoreConsentTitle">مراجعة رسالة واتساب</h2>
-          <p class="mithaq-store-privacy-note">ستتضمن الرسالة معلومات المعروض، وبيانات حسابك التالية عند توفرها: الاسم والبريد الإلكتروني ورقم العضوية ورقم الهاتف. لن تظهر هذه البيانات للأعضاء الآخرين. ستنتقل الرسالة إلى واتساب لتراجعها بنفسك؛ ولن تُرسل إلا إذا ضغطت زر «إرسال» داخل واتساب.</p>
+          <p class="mithaq-store-privacy-note">ستتضمن الرسالة معلومات المعروض، وبيانات حسابك التالية عند توفرها: الاسم والبريد الإلكتروني ورقم الهاتف. لن تظهر هذه البيانات للأعضاء الآخرين. ستنتقل الرسالة إلى واتساب لتراجعها بنفسك؛ ولن تُرسل إلا إذا ضغطت زر «إرسال» داخل واتساب.</p>
           <label class="mithaq-store-field">الرسالة الجاهزة (يمكنك تعديلها قبل فتح واتساب)<textarea id="mithaqStoreWhatsAppMessage" rows="13" maxlength="12000"></textarea></label>
           <label class="mithaq-store-consent-check"><input id="mithaqStoreWhatsAppConsent" type="checkbox"> أوافق على تضمين بيانات حسابي الموضحة أعلاه في رسالة واتساب الموجهة إلى إدارة ميثاق.</label>
           <div class="mithaq-store-form-actions"><button type="button" id="mithaqStoreWhatsAppContinue" class="primary" disabled>فتح واتساب ومراجعة الرسالة</button><button type="button" id="mithaqStoreWhatsAppCancel" class="secondary">إلغاء</button></div>
@@ -301,7 +301,7 @@
       return;
     }
     const [profileResult, detailsResult] = await Promise.all([
-      supabaseClient.from('profiles').select('display_name,member_number').eq('id', user.id).maybeSingle(),
+      supabaseClient.from('profiles').select('display_name').eq('id', user.id).maybeSingle(),
       supabaseClient.from('profile_details').select('details').eq('id', user.id).maybeSingle()
     ]);
     if (profileResult.error || detailsResult.error) {
@@ -327,7 +327,6 @@
       'معلومات العضو:',
       memberName ? 'الاسم: ' + memberName : '',
       user.email ? 'البريد الإلكتروني: ' + user.email : '',
-      profile.member_number !== null && profile.member_number !== undefined ? 'رقم العضوية: ' + profile.member_number : '',
       phone ? 'رقم الهاتف: ' + phone : '',
       '',
       'أرغب بالتواصل مع الإدارة بخصوص هذا العرض.',
