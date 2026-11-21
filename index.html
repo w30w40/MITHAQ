@@ -112,7 +112,7 @@ body.authenticated .card h2{color:#246b98}
 .member-profile-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid #f3e8eb;padding-bottom:12px;margin-bottom:13px}
 .member-profile-card-head h2{font-size:19px;color:#246b98;margin:0}
 .member-profile-card-head span{font-size:11px;color:#9a8790}
-.member-profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.member-profile-details{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
 .member-detail-item{background:#fff9fa;border:1px solid #f4e8eb;border-radius:12px;padding:11px 13px;min-width:0}
 .member-detail-item span{display:block;font-size:11px;color:#9b7d87;margin-bottom:5px}
 .member-detail-item strong{display:block;font-size:14px;color:#35444d;overflow-wrap:anywhere}
@@ -449,7 +449,7 @@ body.authenticated nav button:nth-child(4n),body.authenticated .member-drawer bu
   flex-wrap: wrap;
 }
 #myprofile .member-profile-details {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 @media (max-width: 700px) {
   body.authenticated main.wrap {
@@ -3304,9 +3304,9 @@ async function refreshProfileAccess(){
   meta.about=meta.about||publicRow.life_text||'';
  }
  const profileFields=[
-  ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
-  ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],
-  ['الوزن',meta.weight],['الطول',meta.height],['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
+  ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],['العمر',meta.age],['الطول',meta.height],['الوزن',meta.weight],
+  ['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['عدد الأطفال',meta.children],
+  ['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
   ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
   ['المستوى التعليمي',meta.education],['الوضع المادي',meta.financial_status],['مجال العمل',meta.work_field],['الوظيفة',meta.work],['الدخل الشهري',meta.monthly_income],['الحالة الصحية',meta.health]
  ];
@@ -3321,7 +3321,7 @@ async function refreshProfileAccess(){
  const locationCountry=document.getElementById('profileCountry'),locationRegion=document.getElementById('profileRegion');
  const addUniqueOptions=(select,items,placeholder,current='')=>{if(!select)return;select.replaceChildren(new Option(placeholder,''));const seen=new Set();items.forEach(item=>{const value=String(item??'').trim();if(!value||seen.has(value))return;seen.add(value);select.append(new Option(value,value));});if(current&&!seen.has(String(current))){select.append(new Option(String(current),String(current)));}select.value=current||'';};
  addUniqueOptions(locationCountry,countryChoices.map(x=>x[0]),'اختر دولة الإقامة',meta.country||'');
- const updateProfileRegions=(selected='')=>loadWorldCities(locationCountry?.value,locationRegion,'اختر المدينة',selected);
+ const updateProfileRegions=(selected='')=>loadWorldRegions(locationCountry?.value,locationRegion,'اختر المنطقة',selected);
  await updateProfileRegions(meta.city||'');
  locationCountry?.addEventListener('change',()=>{updateProfileRegions('');});
  const choiceMap={
@@ -5291,6 +5291,18 @@ const worldCityCache=new Map();
 const worldPriorityCountries=['SA','AE','KW','QA','BH','OM'];
 const worldArabicNames={SA:'السعودية',AE:'الإمارات',KW:'الكويت',QA:'قطر',BH:'البحرين',OM:'عُمان',US:'الولايات المتحدة',GB:'المملكة المتحدة',KR:'كوريا الجنوبية',KP:'كوريا الشمالية',RU:'روسيا',IR:'إيران',SY:'سوريا',YE:'اليمن',EG:'مصر',JO:'الأردن',PS:'فلسطين',LB:'لبنان',IQ:'العراق',MA:'المغرب',DZ:'الجزائر',TN:'تونس'};
 const worldSaudiCityNames={Riyadh:'الرياض',Jeddah:'جدة',Mecca:'مكة المكرمة',Makkah:'مكة المكرمة',Medina:'المدينة المنورة',Madinah:'المدينة المنورة',Dammam:'الدمام',Khobar:'الخبر',Dhahran:'الظهران',Taif:'الطائف',Tabuk:'تبوك',Abha:'أبها',Jazan:'جازان',Najran:'نجران',Hail:'حائل',Buraidah:'بريدة',Jubail:'الجبيل',Yanbu:'ينبع',AlKharj:'الخرج',Hofuf:'الهفوف'};
+const worldSaudiAdministrativeRegions=['منطقة الرياض','منطقة مكة المكرمة','منطقة المدينة المنورة','منطقة القصيم','المنطقة الشرقية','منطقة عسير','منطقة تبوك','منطقة حائل','منطقة الحدود الشمالية','منطقة جازان','منطقة نجران','منطقة الباحة','منطقة الجوف'];
+async function loadWorldRegions(countryLabel,select,placeholder,selected=''){
+ if(!select)return [];
+ const code=worldCountryNameToCode.get(countryLabel)||worldCountryRecords.find(c=>c.name===countryLabel)?.iso2;
+ if(String(code||'').toUpperCase()==='SA'){
+  select.replaceChildren(new Option(placeholder,''));
+  worldSaudiAdministrativeRegions.forEach(region=>select.append(new Option(region,region)));
+  if(selected&&!worldSaudiAdministrativeRegions.includes(selected))select.append(new Option(selected,selected));
+  select.value=selected||'';select.disabled=false;return worldSaudiAdministrativeRegions;
+ }
+ return loadWorldCities(countryLabel,select,placeholder,selected);
+}
 function worldCountryLabel(country){
  const code=String(country.iso2||'').toUpperCase();
  if(worldArabicNames[code])return worldArabicNames[code];
