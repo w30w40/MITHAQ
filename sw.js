@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mithaq-shell-v11-auto-member-profile-visibility-20261121';
+const CACHE_NAME = 'mithaq-shell-v12-world-countries-cities-20261121';
 const APP_SHELL = ['./', './manifest.webmanifest', './icons/mithaq-icon.svg'];
 
 self.addEventListener('message', event => { if (event.data?.type === 'SKIP_WAITING') self.skipWaiting(); });
