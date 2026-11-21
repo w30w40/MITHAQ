@@ -4631,8 +4631,8 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   addSection('المعلومات الأساسية',[
    ['الإقامة',profile?.country],['المنطقة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
-  const publicProfileFields=new Set(['age','gender','city','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title','financial_status','monthly_income','origin']);
-  const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
+  const publicProfileOrder=['nationality','country','age','height','weight','gender','marital_status','family_status','children','education','occupation','job','work','work_field','workplace','job_title','financial_status','salary','monthly_income','health','smoking','covering','prayer','religiosity','body_build','skin_color','origin','partner_preferences'];
+  const detailEntries=publicProfileOrder.flatMap(key=>{if(!(key in details))return [];const value=details[key];const label=labels[key]||key;if(key==='gender')return [[label,({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value)]];return [[label,value]];});
   addSection('المواصفات الشخصية',detailEntries);
   addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
   if(content.childElementCount<=1){const empty=document.createElement('p');empty.className='muted';empty.textContent='لا توجد مواصفات إضافية منشورة لهذا العضو حالياً.';content.append(empty);}
