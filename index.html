@@ -3286,8 +3286,6 @@ async function refreshProfileAccess(){
  const registrationMeta={};
  registrationKeys.forEach(key=>{if(authMeta[key]!==undefined&&authMeta[key]!==null&&String(authMeta[key]).trim()!=='')registrationMeta[key]=authMeta[key];});
  const meta={...registrationMeta,...savedDetails};
- if(meta.about==='خاص')meta.about='';
- if(meta.partner_preferences==='خاص')meta.partner_preferences='';
  // Repair older accounts where Auth still has registration data but the private row is empty/incomplete.
  const missingRegistrationKeys=Object.keys(registrationMeta).filter(key=>savedDetails[key]===undefined||savedDetails[key]===null||String(savedDetails[key]).trim()==='');
  if(missingRegistrationKeys.length&&!privateError){
