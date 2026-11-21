@@ -3702,8 +3702,8 @@ function renderMithaqMembers(){
   const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
   const dates=document.createElement('div');dates.className='mithaq-directory-dates';
-  const lastVisit=document.createElement('span');lastVisit.textContent='🕒 آخر زيارة: '+(managed?'—':(person.last_seen_at?relativeDate(person.last_seen_at):'غير متاح'));if(person.last_seen_at)lastVisit.title=fullDate(person.last_seen_at);
-  const registration=document.createElement('span');registration.textContent='📅 التسجيل: '+(person.created_at?relativeDate(person.created_at):'غير متاح');if(person.created_at)registration.title=fullDate(person.created_at);
+  const lastVisit=document.createElement('span');lastVisit.textContent='آخر زيارة: '+(managed?'—':(person.last_seen_at?relativeDate(person.last_seen_at):'غير متاح'));if(person.last_seen_at)lastVisit.title=fullDate(person.last_seen_at);
+  const registration=document.createElement('span');registration.textContent='التسجيل: '+(person.created_at?relativeDate(person.created_at):'غير متاح');if(person.created_at)registration.title=fullDate(person.created_at);
   dates.append(lastVisit,registration);
   const button=document.createElement('button');button.type='button';
   if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
