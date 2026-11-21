@@ -660,7 +660,7 @@ body.mithaq-chat-open #chatPanel>#chatProfileCard{
 .mithaq-full-member-profile-content{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:16px!important;padding-bottom:max(20px,env(safe-area-inset-bottom))!important}
 .mithaq-full-member-profile-hero{display:flex!important;align-items:center!important;gap:14px!important;padding:18px!important;margin-bottom:14px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:18px!important}
 .mithaq-full-member-profile-avatar{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:58px!important;height:58px!important;border-radius:50%!important;background:#e7f1ed!important;font-size:32px!important}
-.mithaq-profile-name-row{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important;min-width:0!important}.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}.mithaq-profile-last-visit{display:inline-block!important;color:#89939b!important;font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.mithaq-profile-name-row{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important;min-width:0!important}.mithaq-profile-name-dates{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important}.mithaq-full-member-profile-hero h2{margin:0 0 5px!important;color:#176b58!important;font-size:20px!important}.mithaq-profile-last-visit{display:inline-block!important;color:#89939b!important;font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .mithaq-full-member-profile-hero p{margin:0!important;color:#68776f!important;font-size:13px!important}
 .mithaq-full-member-profile-section{margin:0 0 14px!important;padding:16px!important;background:#fff!important;border:1px solid #e6ece8!important;border-radius:16px!important}
 .mithaq-full-member-profile-section h3{margin:0 0 12px!important;color:#176b58!important;font-size:16px!important}
@@ -4547,8 +4547,10 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   };
   const nameRow=document.createElement('div');nameRow.className='mithaq-profile-name-row';
   const name=document.createElement('h2');name.textContent=profile?.display_name||requestedName||activeChatName||'عضو ميثاق';
+  const dates=document.createElement('div');dates.className='mithaq-profile-name-dates';
   const visit=document.createElement('small');visit.className='mithaq-profile-last-visit';visit.textContent='آخر زيارة: '+(profile.last_seen_at?relativeDate(profile.last_seen_at):'غير متاح');if(profile.last_seen_at)visit.title=fullDate(profile.last_seen_at);
-  nameRow.append(name,visit);
+  const registration=document.createElement('small');registration.className='mithaq-profile-registration-date';registration.textContent='التسجيل: '+(profile.created_at?relativeDate(profile.created_at):'غير متاح');if(profile.created_at)registration.title=fullDate(profile.created_at);
+  dates.append(visit,registration);nameRow.append(name,dates);
   const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
   identity.append(nameRow,sub);hero.append(avatar,identity);content.append(hero);
   const memberBackground=await getMithaqAvatarBackground(userId);
@@ -4556,22 +4558,6 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   applyMithaqBackgroundToAvatar(avatar,memberBackground);
   enableMithaqAvatarBackgroundViewer(avatar,userId,memberBackground);
   const basicCard=document.createElement('section');basicCard.className='mithaq-profile-meta';const basicTitle=document.createElement('h3');basicTitle.textContent='المعلومات الأساسية';basicCard.append(basicTitle);[['الجنسية',details.nationality],['الإقامة',worldArabicCountryValue(profile.country||details.country)],['المنطقة',worldArabicRegionValue(profile.country||details.country,profile.region||details.city||'')],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile.marriage_type||details.marriage_type]].forEach(([label,value])=>{if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('div');line.className='mithaq-profile-meta-row';const key=document.createElement('span');key.textContent=label;const val=document.createElement('strong');val.textContent=String(value);line.append(key,val);basicCard.append(line);});content.append(basicCard);
-  const metaCard=document.createElement('section');metaCard.className='mithaq-profile-meta';
-  const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات التسجيل';metaCard.append(metaTitle);
-    const online=!!profile.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
-  [['تاريخ التسجيل',relativeDate(profile.created_at),profile.created_at]].forEach(([label,value,stamp])=>{
-   const line=document.createElement('div');line.className='mithaq-profile-meta-row';
-   const key=document.createElement('span');key.textContent=label;
-   const val=document.createElement('strong');val.textContent=value;val.title=fullDate(stamp);val.tabIndex=0;val.setAttribute('role','button');val.setAttribute('aria-label',label+'، '+fullDate(stamp));
-   const relative=value;let showingFull=false;
-   const toggleDate=()=>{showingFull=!showingFull;val.textContent=showingFull?fullDate(stamp):relative;};
-   val.addEventListener('click',toggleDate);val.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDate();}});
-   if(label==='تاريخ آخر زيارة'&&online){const secondary=document.createElement('small');secondary.className='meta-secondary';secondary.textContent='آخر نشاط '+relativeDate(stamp);line.append(key,val,secondary);}else line.append(key,val);
-   metaCard.append(line);
-  });
-  const dateHint=document.createElement('p');dateHint.className='notice';dateHint.textContent='مرّر المؤشر أو اضغط مطولاً على التاريخ لمعرفة اليوم والوقت بالتفصيل.';metaCard.append(dateHint);
-  content.append(metaCard);
-
   const actionsPanel=document.createElement('section');actionsPanel.className='mithaq-profile-actions-panel';
   const actionStatus=document.createElement('p');actionStatus.className='mithaq-profile-action-status';actionStatus.setAttribute('aria-live','polite');
   const messageButton=document.createElement('button');messageButton.type='button';messageButton.className='primary';messageButton.textContent='✉ أرسل رسالة';
