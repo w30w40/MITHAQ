@@ -3322,15 +3322,14 @@ async function refreshProfileAccess(){
  if(!count)details.textContent='لم نعثر على مواصفات التسجيل في بيانات الحساب.';
  document.getElementById('myProfileDisplayName').textContent=meta.username||'ملفي الشخصي';
  document.getElementById('myProfileSubline').textContent=[meta.age?meta.age+' سنة':'',meta.country,meta.city].filter(Boolean).join(' • ')||'بياناتك ومواصفاتك الشخصية';
+ await ensureWorldCountries();
  const extraHost=document.getElementById('profileExtraFields');extraHost.replaceChildren();
  const countryChoices=worldCountryChoices;
  const locationCountry=document.getElementById('profileCountry'),locationRegion=document.getElementById('profileRegion');
  const addUniqueOptions=(select,items,placeholder,current='')=>{if(!select)return;select.replaceChildren(new Option(placeholder,''));const seen=new Set();items.forEach(item=>{const value=String(item??'').trim();if(!value||seen.has(value))return;seen.add(value);select.append(new Option(value,value));});if(current&&!seen.has(String(current))){select.append(new Option(String(current),String(current)));}select.value=current||'';};
  addUniqueOptions(locationCountry,countryChoices.map(x=>x[0]),'اختر دولة الإقامة',meta.country||'');
  const updateProfileRegions=(selected='')=>loadWorldCities(locationCountry?.value,locationRegion,'اختر المدينة',selected);
- const neighborhoodChoices=['وسط المدينة','الحي الشمالي','الحي الجنوبي','الحي الشرقي','الحي الغربي','حي الجامعة','حي السوق','الحي القديم','أخرى'];
- addUniqueOptions(locationNeighborhood,neighborhoodChoices,'اختر الحي',meta.neighborhood||'');
- updateProfileRegions(meta.city||'');
+ await updateProfileRegions(meta.city||'');
  locationCountry?.addEventListener('change',()=>{updateProfileRegions('');});
  const choiceMap={
   gender:[['wife','أنثى'],['husband','ذكر']],
@@ -3390,8 +3389,8 @@ document.getElementById('profileCountry')?.addEventListener('change',()=>{const 
  showProfileReadView();
  document.getElementById('displayName').value=meta.username||'';
  document.getElementById('profileCountry').value=meta.country||'';
- updateProfileRegions(meta.city||'');
- document.getElementById('profileRegion').value=meta.city||'';
+ await updateProfileRegions(meta.city||'');
+ await updateProfileRegions(meta.city||'');
  
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
