@@ -1711,8 +1711,9 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <div class="field"><label for="profileRegion">المنطقة</label><select id="profileRegion"><option value="">اختر المنطقة</option></select></div>
 <div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
 <div id="profileExtraFields"></div>
-<div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" required placeholder="اكتب نبذة عن نفسك بحرية"></textarea></div>
-<p class="muted">ملفك المختصر يظهر تلقائياً للأعضاء المسجلين في ميثاق.</p>
+<div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" placeholder="اكتب نبذة عن نفسك بحرية"></textarea></div>
+<div class="field"><label for="profilePartnerPreferences">مواصفات شريك الحياة</label><textarea id="profilePartnerPreferences" data-profile-key="partner_preferences" maxlength="2000" placeholder="اكتب مواصفات شريك الحياة الذي تبحث عنه"></textarea></div>
+<p class="muted">يمكنك تعديل النبذة ومواصفات شريك الحياة وحفظهما في أي وقت. بعد الحفظ تظهران لجميع الأعضاء.</p>
 <div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ التعديلات</button><button class="secondary" id="cancelProfileEdit" type="button">إلغاء</button></div>
 </form><p id="profileStatus" class="auth-status" aria-live="polite"></p>
 </div>
@@ -3388,6 +3389,7 @@ document.getElementById('profileCountry')?.addEventListener('change',()=>{const 
  
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
+ document.getElementById('profilePartnerPreferences').value=meta.partner_preferences||'';
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
  }catch(error){
   console.error('MITHAQ profile load failed:',error);
@@ -3416,6 +3418,7 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   
   marriage_type:document.getElementById('marriageType').value,
   about:life,
+  partner_preferences:document.getElementById('profilePartnerPreferences').value.trim(),
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
