@@ -4532,16 +4532,6 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   const hero=document.createElement('div');hero.className='mithaq-full-member-profile-hero';
   const avatar=document.createElement('div');avatar.className='mithaq-full-member-profile-avatar';const memberGender=String(details.gender||'').trim().toLowerCase();avatar.textContent=(['wife','female','أنثى','امرأة','انثى'].includes(memberGender))?'👩🏻':(['husband','male','ذكر','رجل'].includes(memberGender))?'👨🏻':'👤';
   const identity=document.createElement('div');
-  const nameRow=document.createElement('div');nameRow.className='mithaq-profile-name-row';
-  const name=document.createElement('h2');name.textContent=profile?.display_name||requestedName||activeChatName||'عضو ميثاق';
-  const visit=document.createElement('small');visit.className='mithaq-profile-last-visit';visit.textContent='آخر زيارة: '+(profile.last_seen_at?relativeDate(profile.last_seen_at):'غير متاح');if(profile.last_seen_at)visit.title=fullDate(profile.last_seen_at);
-  nameRow.append(name,visit);
-  const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
-  identity.append(nameRow,sub);hero.append(avatar,identity);content.append(hero);
-  const memberBackground=await getMithaqAvatarBackground(userId);
-  if(page.isConnected===false)return;
-  applyMithaqBackgroundToAvatar(avatar,memberBackground);
-  enableMithaqAvatarBackgroundViewer(avatar,userId,memberBackground);
   const fullDate=value=>{if(!value)return 'غير متاح';const date=new Date(value);return Number.isNaN(date.getTime())?'غير متاح':date.toLocaleString('ar',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});};
   const relativeDate=value=>{
    if(!value)return 'غير متاح';
@@ -4555,6 +4545,16 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    const months=Math.floor(days/30.4375);if(months<12)return 'منذ '+months+' شهر';
    const years=Math.floor(days/365.25);return 'منذ '+years+' سنة';
   };
+  const nameRow=document.createElement('div');nameRow.className='mithaq-profile-name-row';
+  const name=document.createElement('h2');name.textContent=profile?.display_name||requestedName||activeChatName||'عضو ميثاق';
+  const visit=document.createElement('small');visit.className='mithaq-profile-last-visit';visit.textContent='آخر زيارة: '+(profile.last_seen_at?relativeDate(profile.last_seen_at):'غير متاح');if(profile.last_seen_at)visit.title=fullDate(profile.last_seen_at);
+  nameRow.append(name,visit);
+  const sub=document.createElement('p');sub.textContent=[profile?.country,profile?.region].filter(Boolean).join(' • ')||'عضو في ميثاق';
+  identity.append(nameRow,sub);hero.append(avatar,identity);content.append(hero);
+  const memberBackground=await getMithaqAvatarBackground(userId);
+  if(page.isConnected===false)return;
+  applyMithaqBackgroundToAvatar(avatar,memberBackground);
+  enableMithaqAvatarBackgroundViewer(avatar,userId,memberBackground);
   const basicCard=document.createElement('section');basicCard.className='mithaq-profile-meta';const basicTitle=document.createElement('h3');basicTitle.textContent='المعلومات الأساسية';basicCard.append(basicTitle);[['الجنسية',details.nationality],['الإقامة',worldArabicCountryValue(profile.country||details.country)],['المنطقة',worldArabicRegionValue(profile.country||details.country,profile.region||details.city||'')],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile.marriage_type||details.marriage_type]].forEach(([label,value])=>{if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('div');line.className='mithaq-profile-meta-row';const key=document.createElement('span');key.textContent=label;const val=document.createElement('strong');val.textContent=String(value);line.append(key,val);basicCard.append(line);});content.append(basicCard);
   const metaCard=document.createElement('section');metaCard.className='mithaq-profile-meta';
   const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات التسجيل';metaCard.append(metaTitle);
