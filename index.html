@@ -1504,6 +1504,12 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
  #mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-button{font-size:9px!important}
  #mithaqFullMemberProfile .mithaq-profile-action-button svg{width:18px!important;height:18px!important;flex-basis:18px!important}
 }
+
+/* Remove legacy decorative icons; each action now uses its single inline SVG icon */
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-button::before,
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-button::after{
+ content:none!important;display:none!important;
+}
 </style>
 
 </head>
