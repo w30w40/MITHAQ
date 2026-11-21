@@ -2420,7 +2420,7 @@ document.querySelector('[data-bottom-premium]')?.addEventListener('click',async(
  show('settings');
  const panel=document.getElementById('mithaqPremiumPanel');
  
- if(backgroundPanel)backgroundPanel.hidden=true;
+
  if(panel){panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'start'});}
  await loadMithaqMyMembership();
  await loadMithaqPremiumContacts();
