@@ -3362,11 +3362,15 @@ async function refreshProfileAccess(){
   }
   extraHost.append(wrap);
  });
+ const marriageEditor=document.getElementById('marriageType');
+ const marriageChoices=String(meta.gender||'wife')==='wife'?[['الوحيدة','الوحيدة'],['لا مانع من التعدد','لا مانع من التعدد']]:[['زواج عادي','زواج عادي'],['زوجة ثانية','زوجة ثانية']];
+ addProfileSelect(marriageEditor,marriageChoices,meta.marriage_type??'');
  const genderEditor=document.getElementById('edit_gender');
  genderEditor?.addEventListener('change',()=>{
   const isWife=genderEditor.value==='wife';
   addProfileSelect(document.getElementById('edit_family_status'),isWife?[['آنسة','آنسة'],['مطلقة','مطلقة'],['أرملة','أرملة']]:[['أعزب','أعزب'],['مطلق','مطلق'],['أرمل','أرمل'],['متزوج','متزوج']],'');
   addProfileSelect(document.getElementById('edit_covering'),(isWife?['محجبة','منقبة','غير محجبة']:['ملتحي','بدون لحية']).map(x=>[x,x]),'');
+  addProfileSelect(marriageEditor,isWife?[['الوحيدة','الوحيدة'],['لا مانع من التعدد','لا مانع من التعدد']]:[['زواج عادي','زواج عادي'],['زوجة ثانية','زوجة ثانية']],'');
  });
 document.getElementById('profileCountry')?.addEventListener('change',()=>{const income=document.getElementById('edit_monthly_income');if(income){const previous=income.value;populateMithaqIncomeOptions(income,document.getElementById('profileCountry').value.trim(),previous);}});
  const aboutRows=[['نبذة عني',meta.about],...(meta.partner_preferences_public===true||meta.partner_preferences_public==='true'?[['مواصفات شريك الحياة',meta.partner_preferences]]:[])].filter(x=>x[1]&&x[1]!=='خاص');
