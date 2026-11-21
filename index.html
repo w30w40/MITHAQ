@@ -1603,7 +1603,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <header>
 <div class="member-topbar">
   
-  <div class="member-topbar-actions"><button class="member-topbar-icon" id="memberSearchOpen" type="button" aria-label="البحث عن الأعضاء">⌕</button><button class="member-topbar-icon mithaq-notification-bell" id="memberNotificationsOpen" type="button" aria-label="الإشعارات">🔔<span class="mithaq-notification-badge" id="memberNotificationBadge" hidden>0</span></button><button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button></div>
+  <div class="member-topbar-actions"><button class="member-topbar-icon mithaq-notification-bell" id="memberNotificationsOpen" type="button" aria-label="الإشعارات">🔔<span class="mithaq-notification-badge" id="memberNotificationBadge" hidden>0</span></button><button class="member-menu-button" id="memberMenuOpen" type="button" aria-label="فتح القائمة">☰</button></div>
   <div class="member-brand"><span class="member-mark">♥</span><strong>MITHAQ</strong></div>
 </div>
 <div class="wrap hero"><div class="brand">MITHAQ <span style="opacity:.65">/</span> ميثاق</div><h1>ميثاق — طريقك إلى تعارف جاد</h1><p>مساحة آمنة للتعارف الجاد بقصد الزواج المعلن أو المسيار، بخطوات واضحة واحترام متبادل.</p></div></header>
@@ -1648,24 +1648,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
     <button type="button" class="member-entry-choice" data-member-shortcut-action="search"><span>🔭</span><strong>الباحث الآلي</strong></button>
    </div>
   </section>
-  <section class="mithaq-home-quick-search" dir="rtl" aria-label="ابدأ البحث">
- <div class="member-section-heading"><h2>ابدأ البحث</h2><span>بحث سريع عن شريك الحياة</span></div>
- <div class="mithaq-home-search-grid">
-  <label>أبحث عن<select id="mithaqHomeGender"><option value="all">الجميع</option><option value="female">زوجة</option><option value="male">زوج</option></select></label>
-  <label>الدولة<select id="mithaqHomeCountry"><option value="all">جميع الدول</option></select></label>
-  <label>الحالة العائلية<select id="mithaqHomeFamily"><option value="all">لا يهم</option><option>أعزب</option><option>آنسة</option><option>متزوج</option><option>مطلقة</option><option>أرمل</option><option>أرملة</option></select></label>
-  <label>نوع الزواج<select id="mithaqHomeMarriage"><option value="all">كل الأنواع</option><option value="معلن">معلن</option><option value="مسيار">مسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
- </div>
- <div class="mithaq-age-filter" data-age-filter="home" dir="rtl">
-  <div class="mithaq-age-filter-heading"><strong>العمر المطلوب</strong><span><b id="mithaqHomeAgeMinValue">18</b> – <b id="mithaqHomeAgeMaxValue">100</b> سنة</span></div>
-  <div class="mithaq-age-slider"><div class="mithaq-age-track"></div><div class="mithaq-age-range" id="mithaqHomeAgeRange"></div>
-   <input id="mithaqHomeAgeMin" type="range" min="18" max="100" step="1" value="18" aria-label="أقل عمر مطلوب">
-   <input id="mithaqHomeAgeMax" type="range" min="18" max="100" step="1" value="100" aria-label="أعلى عمر مطلوب">
-  </div><div class="mithaq-age-limits"><span>18 سنة</span><span>100 سنة</span></div>
- </div>
- <button type="button" class="primary" id="mithaqHomeSearchButton">بحث عن الأعضاء</button>
-</section>
-<div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>الأعضاء المتاحون</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
+  <div class="mithaq-home-feed-card"><div class="member-section-heading"><h2>أعضاء جدد ومتصلون الآن</h2><span>الأعضاء المتاحون</span></div><p id="homeFeedStatus" class="muted" aria-live="polite">جارٍ تحميل الأعضاء...</p><div id="homeLiveFeed" class="mithaq-live-feed"></div></div>
   <div id="mithaqAdminHomeWidget" class="mithaq-admin-home-widget" hidden><div><span>🛡️</span><strong>لوحة التحكم والمراقبة</strong><small>إدارة الأعضاء ومراجعة المنصة</small></div><button type="button" id="mithaqAdminHomeOpen">فتح لوحة الإدارة</button></div>
   <div class="member-service-grid">
     <button class="member-service" data-go="members"><span class="service-icon">👥</span><strong>الأعضاء</strong><small>تصفح أعضاء ميثاق</small></button><button class="member-service" data-go="myprofile"><span class="service-icon">👤</span><strong>ملفي الشخصي</strong><small>بياناتك ومعلوماتك</small></button>
