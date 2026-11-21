@@ -3315,7 +3315,7 @@ async function refreshProfileAccess(){
   meta.about=meta.about||publicRow.life_text||'';
  }
  await ensureWorldCountries();
- await ensureWorldRegionsData();
+ try{await ensureWorldRegionsData();}catch(regionDataError){console.warn('MITHAQ Arabic region data unavailable:',regionDataError);}
  meta.country=worldArabicCountryValue(meta.country);
  meta.nationality=worldArabicCountryValue(meta.nationality);
  if(meta.city)meta.city=worldArabicRegionValue(meta.country,meta.city);
