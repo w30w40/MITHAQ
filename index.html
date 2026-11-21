@@ -3374,7 +3374,7 @@ async function refreshProfileAccess(){
   addProfileSelect(marriageEditor,isWife?[['الوحيدة','الوحيدة'],['لا مانع من التعدد','لا مانع من التعدد']]:[['زواج عادي','زواج عادي'],['زوجة ثانية','زوجة ثانية']],'');
  });
 document.getElementById('profileCountry')?.addEventListener('change',()=>{const income=document.getElementById('edit_monthly_income');if(income){const previous=income.value;populateMithaqIncomeOptions(income,document.getElementById('profileCountry').value.trim(),previous);}});
- const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]&&x[1]!=='خاص');
+ const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>String(x[1]??'').trim()!=='');
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
  else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
@@ -3422,8 +3422,6 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
- if(updated.about==='خاص')updated.about='';
- if(updated.partner_preferences==='خاص')updated.partner_preferences='';
  btn.disabled=true;status.textContent='جارٍ حفظ جميع بيانات ملفك...';
  try{
   const {error:saveError}=await supabaseClient.rpc('mithaq_save_own_profile',{
