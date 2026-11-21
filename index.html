@@ -2155,13 +2155,7 @@ async function loadMithaqPremiumContacts(){
  if(!data?.length){host.textContent='لا توجد أرقام تواصل متاحة حالياً. يرجى المحاولة لاحقاً.';return;}
  const {data:{session}}=await supabaseClient.auth.getSession();
  let memberName=session?.user?.user_metadata?.display_name||session?.user?.user_metadata?.full_name||session?.user?.email||'عضو ميثاق';
- let memberNumber='غير متاح';
- if(session){
-  const {data:profiles,error:profileError}=await supabaseClient.rpc('mithaq_public_member_profiles_v2',{p_user_ids:[session.user.id]});
-  const own=(profiles||[]).find(person=>person.id===session.user.id);
-  if(own){memberName=own.display_name||memberName;memberNumber=own.member_number??memberNumber;}
-  if(profileError)console.warn('MITHAQ member number lookup:',profileError.message);
- }
+ if(session){memberName=session.user.user_metadata?.username||memberName;}
  data.forEach(contact=>{
   const button=document.createElement('button');button.type='button';button.className='primary mithaq-premium-contact-button';
   button.textContent='واتساب — '+(contact.label||'الإدارة');
