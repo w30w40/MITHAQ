@@ -5361,8 +5361,6 @@ async function loadWorldCities(countryLabel,select,placeholder,selected=''){
   const nationality=document.getElementById('entryNationality');if(nationality)fillWorldCountrySelect(nationality,'اختر الجنسية',nationality.value);
   const entryCountry=document.getElementById('entryCountry'),entryCity=document.getElementById('entryCity');
   entryCountry?.addEventListener('change',()=>loadWorldCities(entryCountry.value,entryCity,'اختر المدينة'));
-  const profileCountry=document.getElementById('profileCountry'),profileCity=document.getElementById('profileRegion');
-  profileCountry?.addEventListener('change',()=>loadWorldCities(profileCountry.value,profileCity,'اختر المدينة'));
   const searchCountry=document.getElementById('country'),searchCity=document.getElementById('cityFilter');
   searchCountry?.addEventListener('change',()=>loadWorldCities(searchCountry.value==='all'?'':searchCountry.value,searchCity,'كل المدن'));
  }catch(error){console.warn('MITHAQ world countries:',error);}
