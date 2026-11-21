@@ -1108,7 +1108,6 @@ a{color:#c2185b}
 @media(max-width:520px){.mithaq-feature-member-row{align-items:flex-start;flex-wrap:wrap}.mithaq-interest-action,.mithaq-feature-member-row>button{width:100%}.mithaq-search-tools{align-items:flex-start}.mithaq-quick-search button{flex:1}}
 
 .member-profile-cover.mithaq-profile-cover-has-background{background-repeat:no-repeat;background-color:#fff4f7;border:1px solid #f0dce2;box-shadow:inset 0 0 0 1px #ffffff70}
-#profileBackgroundOpen{background:#fff0f4;color:#a83f60;border:1px solid #f1d5de}
 #mithaqBackgroundSettings{scroll-margin-top:125px}
 
 /* The avatar itself is the owner's background-management control. */
@@ -1676,11 +1675,11 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <label>الطول (سم)<input id="mithaqHeightFilter" type="number" min="100" max="230" placeholder="أي طول"></label>
 <label>الوزن (كجم)<input id="mithaqWeightFilter" type="number" min="30" max="250" placeholder="أي وزن"></label>
 <div class="mithaq-age-filter" data-age-filter="directory" dir="rtl">
- <div class="mithaq-age-filter-heading"><strong>العمر المطلوب</strong><span><b id="mithaqDirectoryAgeMinValue">18</b> – <b id="mithaqDirectoryAgeMaxValue">100</b> سنة</span></div>
- <div class="mithaq-age-slider"><div class="mithaq-age-track"></div><div class="mithaq-age-range" id="mithaqDirectoryAgeRange"></div>
-  <input id="mithaqDirectoryAgeMin" type="range" min="18" max="100" step="1" value="18" aria-label="أقل عمر مطلوب">
-  <input id="mithaqDirectoryAgeMax" type="range" min="18" max="100" step="1" value="100" aria-label="أعلى عمر مطلوب">
- </div><div class="mithaq-age-limits"><span>18 سنة</span><span>100 سنة</span></div>
+ <div class="mithaq-age-filter-heading"><strong>العمر المطلوب</strong><span>من <b id="mithaqDirectoryAgeMinValue">17</b> إلى <b id="mithaqDirectoryAgeMaxValue">100</b> سنة</span></div>
+ <div class="mithaq-age-picker-row">
+  <label>من العمر<select id="mithaqDirectoryAgeMin" aria-label="أقل عمر مطلوب"></select></label>
+  <label>إلى العمر<select id="mithaqDirectoryAgeMax" aria-label="أعلى عمر مطلوب"></select></label>
+ </div>
 </div>
 <label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="newest">حسب تاريخ التسجيل</option><option value="age_asc">حسب العمر: الأصغر أولاً</option><option value="age_desc">حسب العمر: الأكبر أولاً</option><option value="country">حسب مكان الإقامة</option><option value="name">حسب الاسم</option></select></label>
 <button type="button" class="secondary" id="mithaqResetAgeFilters">إعادة ضبط الفلاتر</button>
@@ -1736,7 +1735,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   <h3>تعديل الملف</h3><input id="mithaqManagedAdminId" type="hidden">
   <div class="field"><label for="mithaqManagedAdminName">الاسم الرباعي</label><input id="mithaqManagedAdminName" maxlength="120" required></div>
   <div class="row">
-   <div class="field"><label for="mithaqManagedAdminAge">العمر</label><input id="mithaqManagedAdminAge" type="number" min="18" max="80" required></div>
+   <div class="field"><label for="mithaqManagedAdminAge">العمر</label><select id="mithaqManagedAdminAge" required><option value="">اختر العمر</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option></select></div>
    <div class="field"><label for="mithaqManagedAdminMarriage">نوع الزواج</label><select id="mithaqManagedAdminMarriage"><option value="معلن">معلن</option><option value="مسيار">مسيار</option></select></div>
   </div>
   <div class="field"><label for="mithaqManagedAdminRegion">المدينة</label><input id="mithaqManagedAdminRegion" maxlength="120" required></div>
@@ -3129,7 +3128,7 @@ async function loadMithaqAdminPanel(){
   detail.addEventListener('click',()=>{detailPanel.hidden=!detailPanel.hidden;detail.textContent=detailPanel.hidden?'عرض التفاصيل':'إخفاء التفاصيل';});
   const details=person.details&&typeof person.details==='object'?person.details:{};
   [['تاريخ إنشاء الحساب',person.created_at?new Date(person.created_at).toLocaleString('ar'):'غير متاح'],['البريد الإلكتروني',person.email||'غير متاح'],['آخر ظهور في ميثاق',person.last_seen_at?new Date(person.last_seen_at).toLocaleString('ar'):'لم يُسجل بعد'],['آخر تسجيل دخول للحساب',person.auth_last_sign_in_at?new Date(person.auth_last_sign_in_at).toLocaleString('ar'):'غير متاح']].forEach(([label,value])=>{const line=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+': ';line.append(strong,document.createTextNode(value));detailPanel.append(line);});
-  const fields=[['الاسم','username'],['الجنس','gender'],['الحالة الاجتماعية','family_status'],['العمر','age'],['عدد الأطفال','children'],['الجنسية','nationality'],['الأصل','origin'],['الوزن','weight'],['الطول','height'],['لون البشرة','skin_color'],['بنية الجسم','body_build'],['التدين','religiosity'],['الصلاة','prayer'],['التدخين','smoking'],['الحجاب / اللحية','covering'],['التعليم','education'],['الوضع المادي','financial_status'],['مجال العمل','work_field'],['الوظيفة','work'],['الدخل الشهري','monthly_income'],['الحالة الصحية','health'],['مواصفات الشريك','partner_preferences'],['النبذة','about']];
+  const fields=[['الاسم','username'],['الجنس','gender'],['الحالة الاجتماعية','family_status'],['العمر','age'],['عدد الأطفال','children'],['الجنسية','nationality'],['الحي','neighborhood'],['الوزن','weight'],['الطول','height'],['لون البشرة','skin_color'],['بنية الجسم','body_build'],['التدين','religiosity'],['الصلاة','prayer'],['التدخين','smoking'],['الحجاب / اللحية','covering'],['التعليم','education'],['الوضع المادي','financial_status'],['مجال العمل','work_field'],['الوظيفة','work'],['الدخل الشهري','monthly_income'],['الحالة الصحية','health'],['مواصفات الشريك','partner_preferences'],['النبذة','about']];
   fields.forEach(([label,key])=>{const value=details[key];if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+': ';line.append(strong,document.createTextNode(String(value)));detailPanel.append(line);});
   if(!detailPanel.childElementCount){detailPanel.textContent=person.life_text||'لا توجد تفاصيل إضافية محفوظة.';}
   const review=document.createElement('div');review.className='mithaq-admin-review';
@@ -3288,7 +3287,7 @@ async function refreshProfileAccess(){
  ]);
  const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
  const savedDetails=privateRow?.details||{};
- const registrationKeys=['username','gender','marriage_type','family_status','age','children','country','nationality','city','origin','weight','height','skin_color','body_build','religiosity','prayer','smoking','covering','education','financial_status','work_field','work','monthly_income','health','health_public','about','partner_preferences'];
+ const registrationKeys=['username','gender','marriage_type','family_status','age','children','country','nationality','city','neighborhood','origin','weight','height','skin_color','body_build','religiosity','prayer','smoking','covering','education','financial_status','work_field','work','monthly_income','health','health_public','about','partner_preferences'];
  const registrationMeta={};
  registrationKeys.forEach(key=>{if(authMeta[key]!==undefined&&authMeta[key]!==null&&String(authMeta[key]).trim()!=='')registrationMeta[key]=authMeta[key];});
  const meta={...registrationMeta,...savedDetails};
@@ -3313,7 +3312,7 @@ async function refreshProfileAccess(){
  }
  const profileFields=[
   ['رقم العضوية',publicRow?.member_number??'غير متاح'],['اسم المستخدم',meta.username],['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['العمر',meta.age],['عدد الأطفال',meta.children],
-  ['مكان الإقامة',meta.country],['الجنسية',meta.nationality],['المدينة',meta.city],['الأصل',meta.origin],
+  ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],['الحي',meta.neighborhood],
   ['الوزن',meta.weight],['الطول',meta.height],['لون البشرة',meta.skin_color],['بنية الجسم',meta.body_build],
   ['التدين',meta.religiosity],['الصلاة',meta.prayer],['التدخين',meta.smoking],['الحجاب / اللحية',meta.covering],
   ['المستوى التعليمي',meta.education],['الوضع المادي',meta.financial_status],['مجال العمل',meta.work_field],['الوظيفة',meta.work],['الدخل الشهري',meta.monthly_income],['الحالة الصحية',meta.health]
@@ -3342,7 +3341,7 @@ async function refreshProfileAccess(){
  };
  const addProfileSelect=(select,choices,value)=>{select.replaceChildren(new Option('اختر',''));choices.forEach(([v,label])=>select.append(new Option(label,v)));if(value&&!Array.from(select.options).some(o=>o.value===String(value)))select.append(new Option(String(value),String(value)));select.value=value??'';};
  const rangeChoices=(start,end)=>Array.from({length:end-start+1},(_,i)=>[String(start+i),String(start+i)]);
- const extraFields=[['gender','الجنس'],['family_status','الحالة الاجتماعية'],['age','العمر'],['children','عدد الأطفال'],['nationality','الجنسية'],['origin','الأصل'],['weight','الوزن (كغ)'],['height','الطول (سم)'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية'],['partner_preferences','مواصفات شريك الحياة']];
+ const extraFields=[['gender','الجنس'],['family_status','الحالة الاجتماعية'],['age','العمر'],['children','عدد الأطفال'],['nationality','الجنسية'],['neighborhood','الحي'],['weight','الوزن (كغ)'],['height','الطول (سم)'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية'],['partner_preferences','مواصفات شريك الحياة']];
  extraFields.forEach(([key,label])=>{
   const wrap=document.createElement('div');wrap.className='field';
   const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;
@@ -3352,7 +3351,7 @@ async function refreshProfileAccess(){
    populateMithaqIncomeOptions(input,meta.country||'',meta[key]??'');
    const hint=document.createElement('small');hint.className='muted';hint.textContent='تُعرض شرائح الدخل بعملة بلد الإقامة، والقيم تقريبية.';wrap.append(caption,input,hint);
   }else if(input.tagName==='SELECT'){
-   const choices=choiceMap[key]||(key==='age'?rangeChoices(18,100):key==='weight'?rangeChoices(40,210):rangeChoices(130,210));
+   const choices=choiceMap[key]||(key==='age'?rangeChoices(17,100):key==='weight'?rangeChoices(40,210):rangeChoices(130,210));
    addProfileSelect(input,choices,meta[key]??'');wrap.append(caption,input);
   }else{
    input.value=meta[key]??'';input.maxLength=key==='partner_preferences'?2000:120;
@@ -3412,8 +3411,8 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
  const previous=userData.user?.user_metadata||session.user.user_metadata||{};
  const updated={...previous,
   username:document.getElementById('displayName').value.trim(),
-  country:document.getElementById('profileCountry').value.trim(),
-  city:document.getElementById('profileRegion').value.trim(),
+  country:document.getElementById('profileCountry').value,
+  city:document.getElementById('profileRegion').value,
   marriage_type:document.getElementById('marriageType').value,
   about:life,
   health_public:!!document.getElementById('profileHealthPublic')?.checked,
@@ -3620,10 +3619,10 @@ function renderMithaqMembers(){
   healthFilter=values.includes(current)?current:'all';healthSelect.value=healthFilter;
  }
  const sortMode=document.getElementById('mithaqMemberSort')?.value||'activity';
- const ageMin=Number(document.getElementById('mithaqDirectoryAgeMin')?.value||18),ageMax=Number(document.getElementById('mithaqDirectoryAgeMax')?.value||100);
+ const ageMin=Number(document.getElementById('mithaqDirectoryAgeMin')?.value||17),ageMax=Number(document.getElementById('mithaqDirectoryAgeMax')?.value||100);
  const familyFilter=document.getElementById('mithaqFamilyFilter')?.value||'all',educationFilter=document.getElementById('mithaqEducationFilter')?.value||'all';
  const heightFilter=Number(document.getElementById('mithaqHeightFilter')?.value||0),weightFilter=Number(document.getElementById('mithaqWeightFilter')?.value||0);
- const getAge=person=>{const n=Number(person.details?.age??person.age);return Number.isInteger(n)&&n>=18&&n<=100?n:null;};
+ const getAge=person=>{const n=Number(person.details?.age??person.age);return Number.isInteger(n)&&n>=17&&n<=100?n:null;};
  const isOnline=person=>!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);
  const normalizeCountry=value=>String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/[\u064B-\u065F\u0670]/g,'').replace(/^(المملكة العربية المتحدة|المملكة العربية السعودية|جمهورية|دولة)\s*/,'').trim();
  const countryAliases={'المملكة العربية السعودية':['السعودية','المملكه العربيه السعوديه','saudi arabia'],'المملكة المتحدة':['بريطانيا','انجلترا','إنجلترا','uk','united kingdom'],'الإمارات العربية المتحدة':['الإمارات','الامارات','uae'],'اليمن':['اليمنية','yemen'],'مصر':['جمهورية مصر العربية','egypt'],'الولايات المتحدة':['امريكا','أمريكا','usa','united states']};
@@ -3827,7 +3826,7 @@ function openMemberResults(choice){
  if(!results||!grid||!status||!presence||!country||!marriage||!sort)return;
  show('members',false,false,true);
  presence.value='all';country.value='all';marriage.value='all';sort.value='activity';if(gender)gender.value='all';if(health)health.value='all';
- ['mithaqDirectoryAgeMin','mithaqDirectoryAgeMax'].forEach((id,index)=>{const el=document.getElementById(id);if(el)el.value=index===0?'18':'100';});
+ ['mithaqDirectoryAgeMin','mithaqDirectoryAgeMax'].forEach((id,index)=>{const el=document.getElementById(id);if(el)el.value=index===0?'17':'100';});
  ['mithaqFamilyFilter','mithaqEducationFilter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='all';});
  ['mithaqHeightFilter','mithaqWeightFilter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
  syncMithaqAgeControls('directory');const searchInput=document.getElementById('mithaqMemberSearch');if(searchInput)searchInput.value='';
@@ -3890,18 +3889,26 @@ document.getElementById('mithaqRunSearch')?.addEventListener('click',runMithaqSe
  memberShortcutButtons.forEach(button=>button.classList.remove('active'));
  renderMithaqMembers();
 }));
+function populateMithaqAgePicker(select,selected){
+ if(!select)return;
+ const current=String(selected??select.value??'');
+ select.replaceChildren(new Option('اختر العمر',''));
+ for(let age=17;age<=100;age++)select.append(new Option(String(age),String(age)));
+ if(current&&Number(current)>=17&&Number(current)<=100)select.value=current;
+}
 function syncMithaqAgeControls(scope){
  const prefix=scope==='home'?'mithaqHome':'mithaqDirectory';
- const min=document.getElementById(prefix+'AgeMin'),max=document.getElementById(prefix+'AgeMax'),minText=document.getElementById(prefix+'AgeMinValue'),maxText=document.getElementById(prefix+'AgeMaxValue'),range=document.getElementById(prefix+'AgeRange');
+ const min=document.getElementById(prefix+'AgeMin'),max=document.getElementById(prefix+'AgeMax'),minText=document.getElementById(prefix+'AgeMinValue'),maxText=document.getElementById(prefix+'AgeMaxValue');
  if(!min||!max)return;
- let a=Number(min.value),b=Number(max.value);
+ let a=Number(min.value||17),b=Number(max.value||100);
  if(a>b){if(document.activeElement===min)b=a;else a=b;min.value=String(a);max.value=String(b);}
  if(minText)minText.textContent=String(a);if(maxText)maxText.textContent=String(b);
- if(range){const left=(a-18)/82*100,right=(b-18)/82*100;range.style.left=left+'%';range.style.width=(right-left)+'%';}
 }
 function connectMithaqAgeControls(scope){
  const prefix=scope==='home'?'mithaqHome':'mithaqDirectory';
- [prefix+'AgeMin',prefix+'AgeMax'].forEach(id=>document.getElementById(id)?.addEventListener('input',()=>{syncMithaqAgeControls(scope);if(scope==='directory')renderMithaqMembers();}));
+ const min=document.getElementById(prefix+'AgeMin'),max=document.getElementById(prefix+'AgeMax');
+ if(scope==='directory'){populateMithaqAgePicker(min,'17');populateMithaqAgePicker(max,'100');}
+ [min,max].forEach(el=>el?.addEventListener('change',()=>{syncMithaqAgeControls(scope);if(scope==='directory')renderMithaqMembers();}));
  syncMithaqAgeControls(scope);
 }
 connectMithaqAgeControls('home');connectMithaqAgeControls('directory');
@@ -3914,7 +3921,7 @@ document.getElementById('mithaqHomeSearchButton')?.addEventListener('click',()=>
  syncMithaqAgeControls('directory');renderMithaqMembers();
 });
 document.getElementById('mithaqResetAgeFilters')?.addEventListener('click',()=>{
- const defaults={mithaqDirectoryAgeMin:'18',mithaqDirectoryAgeMax:'100',mithaqFamilyFilter:'all',mithaqEducationFilter:'all',mithaqHeightFilter:'',mithaqWeightFilter:''};
+ const defaults={mithaqDirectoryAgeMin:'17',mithaqDirectoryAgeMax:'100',mithaqFamilyFilter:'all',mithaqEducationFilter:'all',mithaqHeightFilter:'',mithaqWeightFilter:''};
  Object.entries(defaults).forEach(([id,value])=>{const field=document.getElementById(id);if(field)field.value=value;});
  syncMithaqAgeControls('directory');renderMithaqMembers();
 });
@@ -3923,7 +3930,7 @@ document.querySelectorAll('[data-member-quick]').forEach(button=>button.addEvent
  if(mithaqSearchInput)mithaqSearchInput.value='';
  document.getElementById('mithaqCountryFilter').value='all';
  document.getElementById('mithaqMarriageFilter').value='all';
- document.getElementById('mithaqDirectoryAgeMin').value='18';document.getElementById('mithaqDirectoryAgeMax').value='100';syncMithaqAgeControls('directory');
+ document.getElementById('mithaqDirectoryAgeMin').value='17';document.getElementById('mithaqDirectoryAgeMax').value='100';syncMithaqAgeControls('directory');
  document.getElementById('mithaqPresenceFilter').value=mode==='online'?'online':'all';
  document.getElementById('mithaqMemberSort').value=mode==='name'?'name':'activity';
  memberShortcutButtons.forEach(item=>item.classList.remove('active'));
@@ -4239,11 +4246,11 @@ async function validateMithaqBackgroundFile(file){
 const mithaqBackgroundSettingsButton=document.getElementById('settingsBackgroundOpen');
 const mithaqProfileAvatarButton=document.getElementById('profileAvatarBackgroundOpen');
 const mithaqBackgroundSettingsPanel=document.getElementById('mithaqBackgroundSettings');
-if(mithaqBackgroundSettingsPanel)document.getElementById('myprofile')?.append(mithaqBackgroundSettingsPanel);
+if(mithaqBackgroundSettingsPanel)document.getElementById('settings')?.append(mithaqBackgroundSettingsPanel);
 let mithaqBackgroundLastTrigger=mithaqProfileAvatarButton||mithaqBackgroundSettingsButton;
 function setMithaqBackgroundPanelOpen(open,trigger=mithaqBackgroundLastTrigger){if(!mithaqBackgroundSettingsPanel)return;if(trigger)mithaqBackgroundLastTrigger=trigger;mithaqBackgroundSettingsPanel.hidden=!open;[mithaqBackgroundSettingsButton,mithaqProfileAvatarButton].forEach(button=>button?.setAttribute('aria-expanded',String(open)));if(open){loadMithaqBackgroundSettings();mithaqBackgroundSettingsPanel.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('mithaqBackgroundFile')?.focus({preventScroll:true});}else (mithaqBackgroundLastTrigger||mithaqProfileAvatarButton||mithaqBackgroundSettingsButton)?.focus({preventScroll:true});}
-mithaqBackgroundSettingsButton?.addEventListener('click',()=>{show('myprofile');setMithaqBackgroundPanelOpen(true,mithaqBackgroundSettingsButton);});
-mithaqProfileAvatarButton?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(mithaqBackgroundSettingsPanel.hidden,mithaqProfileAvatarButton));
+mithaqBackgroundSettingsButton?.addEventListener('click',()=>{show('settings');setMithaqBackgroundPanelOpen(true,mithaqBackgroundSettingsButton);});
+mithaqProfileAvatarButton?.addEventListener('click',()=>{show('settings');setMithaqBackgroundPanelOpen(true,mithaqProfileAvatarButton);});
 document.getElementById('mithaqBackgroundClose')?.addEventListener('click',()=>setMithaqBackgroundPanelOpen(false));
 let mithaqBackgroundFileInput=document.getElementById('mithaqBackgroundFile');
 if(!mithaqBackgroundFileInput){
@@ -4611,7 +4618,7 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   addSection('المعلومات الأساسية',[
    ['الدولة',profile?.country],['المنطقة / المدينة',profile?.region],['نوع الزواج',profile?.marriage_type]
   ]);
-  const publicProfileFields=new Set(['age','gender','city','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','origin','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title']);
+  const publicProfileFields=new Set(['age','gender','city','neighborhood','education','occupation','job','work','work_field','marital_status','family_status','children','nationality','height','weight','smoking','religiosity','prayer','covering','body_build','skin_color','origin','marriage_type','about','partner_preferences','username','health','region','salary','workplace','job_title']);
   const detailEntries=Object.entries(details).filter(([key])=>publicProfileFields.has(key)).map(([key,value])=>[labels[key],key==='gender'?({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value):value]);
   addSection('المواصفات الشخصية',detailEntries);
   addSection('نبذة عن العضو',[['نبذة',profile?.life_text]]);
