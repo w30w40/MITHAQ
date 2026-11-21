@@ -3461,7 +3461,7 @@ async function loadMithaqNotifications(){
  data.forEach(item=>{
   const row=document.createElement('article');row.className='mithaq-notification-item'+(item.read_at?'':' unread');
   const icon=document.createElement('span');icon.className='mithaq-notification-item-icon';
-  icon.textContent=item.notification_type==='profile_view'?'👁️':item.notification_type==='interest'?'♥':'👤';
+  icon.textContent=item.notification_type==='profile_view'?'👁️':item.notification_type==='interest'?'♥':item.notification_type==='system_update'?'🔔':'👤';
   const copy=document.createElement('div');copy.className='mithaq-notification-copy';
   const title=document.createElement('strong');title.textContent=item.title||'إشعار جديد';
   const body=document.createElement('p');body.textContent=item.body||'';
