@@ -5408,6 +5408,7 @@ function fillWorldCountrySelect(select,placeholder,current=''){
 (async()=>{
  try{
   await ensureWorldCountries();
+  try{await ensureWorldRegionsData();}catch(regionDataError){console.warn('MITHAQ Arabic regions preload:',regionDataError);}
   ['entryCountry','profileCountry','mithaqCountryFilter'].forEach(id=>{
    const select=document.getElementById(id);
    if(select){const current=select.value;fillWorldCountrySelect(select,id==='mithaqCountryFilter'?'جميع دول العالم':'اختر دولة الإقامة',current||(id==='mithaqCountryFilter'?'all':''));}
