@@ -1676,14 +1676,6 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <div class="mithaq-member-filters" dir="rtl">
 <label>الدولة<select id="mithaqCountryFilter" aria-label="تصفية الأعضاء حسب الدولة"><option value="all">جميع دول العالم</option></select></label>
 <label>المنطقة<select id="mithaqRegionFilter" aria-label="تصفية الأعضاء حسب المنطقة"><option value="all">كل المناطق</option></select></label>
-<label>الجنس<select id="mithaqGenderFilter" aria-label="تصفية الأعضاء حسب الجنس"><option value="all">الكل</option><option value="female">الإناث</option><option value="male">الذكور</option></select></label>
-<label id="mithaqHealthFilterWrap" hidden>الحالة الصحية<select id="mithaqHealthFilter" aria-label="تصفية الأعضاء حسب الحالة الصحية"><option value="all">الكل</option><option value="بصحة جيدة والحمد لله">بصحة جيدة والحمد لله</option><option value="لدي حالة صحية وأفضل توضيحها لاحقاً">لدي حالة صحية</option></select></label>
-<label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
-<label>نوع الزواج<select id="mithaqMarriageFilter"><option value="all">كل الأنواع</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
-<label>الحالة العائلية<select id="mithaqFamilyFilter"><option value="all">لا يهم</option><option>أعزب</option><option>آنسة</option><option>متزوج</option><option>مطلقة</option><option>أرمل</option><option>أرملة</option></select></label>
-<label>المؤهل الدراسي<select id="mithaqEducationFilter"><option value="all">كل المؤهلات</option><option>ابتدائي</option><option>متوسط</option><option>ثانوي</option><option>دبلوم</option><option>جامعي</option><option>دراسات عليا</option></select></label>
-<label>الطول (سم)<input id="mithaqHeightFilter" type="number" min="100" max="230" placeholder="أي طول"></label>
-<label>الوزن (كجم)<input id="mithaqWeightFilter" type="number" min="30" max="250" placeholder="أي وزن"></label>
 <div class="mithaq-age-filter" data-age-filter="directory" dir="rtl">
  <div class="mithaq-age-filter-heading"><strong>العمر المطلوب</strong><span>من <b id="mithaqDirectoryAgeMinValue">18</b> إلى <b id="mithaqDirectoryAgeMaxValue">100</b> سنة</span></div>
  <div class="mithaq-age-picker-row">
@@ -1691,6 +1683,17 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
   <label>إلى العمر<select id="mithaqDirectoryAgeMax" aria-label="أعلى عمر مطلوب"></select></label>
  </div>
 </div>
+<label>الطول (سم)<input id="mithaqHeightFilter" type="number" min="100" max="230" placeholder="أي طول"></label>
+<label>الوزن (كجم)<input id="mithaqWeightFilter" type="number" min="30" max="250" placeholder="أي وزن"></label>
+<label>الجنس<select id="mithaqGenderFilter" aria-label="تصفية الأعضاء حسب الجنس"><option value="all">الكل</option><option value="female">الإناث</option><option value="male">الذكور</option></select></label>
+<label id="mithaqHealthFilterWrap" hidden>الحالة الصحية<select id="mithaqHealthFilter" aria-label="تصفية الأعضاء حسب الحالة الصحية"><option value="all">الكل</option><option value="بصحة جيدة والحمد لله">بصحة جيدة والحمد لله</option><option value="لدي حالة صحية وأفضل توضيحها لاحقاً">لدي حالة صحية</option></select></label>
+<label>حالة الاتصال<select id="mithaqPresenceFilter"><option value="all">كل الأعضاء</option><option value="online">المتصلون الآن</option><option value="offline">غير المتصلين</option></select></label>
+<label>نوع الزواج<select id="mithaqMarriageFilter"><option value="all">كل الأنواع</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></label>
+<label>الحالة العائلية<select id="mithaqFamilyFilter"><option value="all">لا يهم</option><option>أعزب</option><option>آنسة</option><option>متزوج</option><option>مطلقة</option><option>أرمل</option><option>أرملة</option></select></label>
+<label>المؤهل الدراسي<select id="mithaqEducationFilter"><option value="all">كل المؤهلات</option><option>ابتدائي</option><option>متوسط</option><option>ثانوي</option><option>دبلوم</option><option>جامعي</option><option>دراسات عليا</option></select></label>
+
+
+
 <label>ترتيب العرض<select id="mithaqMemberSort"><option value="activity">الأحدث نشاطاً</option><option value="newest">حسب تاريخ التسجيل</option><option value="age_asc">حسب العمر: الأصغر أولاً</option><option value="age_desc">حسب العمر: الأكبر أولاً</option><option value="country">حسب مكان الإقامة</option><option value="name">حسب الاسم</option></select></label>
 <button type="button" class="secondary" id="mithaqResetAgeFilters">إعادة ضبط الفلاتر</button>
 </div><p class="muted" id="membersStatus">جارٍ تحميل الأعضاء...</p><div id="membersGrid" class="member-service-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))"></div>
@@ -2505,7 +2508,7 @@ async function loadMithaqMemberRelations(action){
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;
   name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
-  const meta=document.createElement('small');meta.textContent=[person.country,person.region].filter(Boolean).join(' • ');
+  const meta=document.createElement('small');meta.textContent=[person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
   info.append(name,meta);
   const actionButton=document.createElement('button');actionButton.type='button';actionButton.className='secondary';
   if(action==='interest'||action==='ignore'){
@@ -3731,7 +3734,7 @@ function showManagedMemberProfile(person){
  const identity=document.createElement('div');
  const name=document.createElement('h2');name.textContent=person.display_name||'ملف تحت إدارة ميثاق';
  const label=document.createElement('p');label.className='mithaq-managed-member-label';label.textContent='تحت إدارة ميثاق • حساب افتراضي';
- const sub=document.createElement('p');sub.textContent=[person.country,person.region].filter(Boolean).join(' • ');
+ const sub=document.createElement('p');sub.textContent=[person.country,worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
  identity.append(name,label,sub);hero.append(avatar,identity);content.append(hero);
  const disclosure=document.createElement('div');disclosure.className='mithaq-managed-disclosure';
  disclosure.textContent='هذا ملف افتراضي تديره منصة ميثاق. المحادثة التالية مع مساعد ذكاء اصطناعي، وليست مع شخص حقيقي.';
@@ -3777,7 +3780,7 @@ function showManagedMemberProfile(person){
   finally{aiInput.disabled=false;aiSend.disabled=false;aiInput.focus();}
  });
  const details=person.details||{};
- const fields=[['العمر',details.age?details.age+' سنة':'غير محدد'],['الجنس',details.gender||'غير محدد'],['المدينة',details.city||person.region||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||'غير محدد'],['الحالة الاجتماعية',details.marital_status||'غير محدد'],['الأطفال',details.children||'غير محدد'],['نوع الزواج',person.marriage_type||'غير محدد']];
+ const fields=[['العمر',details.age?details.age+' سنة':'غير محدد'],['الجنس',details.gender||'غير محدد'],['المنطقة',worldArabicRegionValue(person.country,details.city||person.region||'')||'غير محدد'],['التعليم',details.education||'غير محدد'],['العمل',details.job||'غير محدد'],['الحالة الاجتماعية',details.marital_status||'غير محدد'],['الأطفال',details.children||'غير محدد'],['نوع الزواج',person.marriage_type||'غير محدد']];
  const card=document.createElement('section');card.className='mithaq-profile-meta';
  const title=document.createElement('h3');title.textContent='معلومات الملف';card.append(title);
  fields.forEach(([labelText,value])=>{const row=document.createElement('div');row.className='mithaq-profile-meta-row';const l=document.createElement('span');l.textContent=labelText;const v=document.createElement('strong');v.textContent=value;row.append(l,v);card.append(row);});
