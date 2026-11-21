@@ -1475,6 +1475,37 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 .mithaq-admin-chat-message small{display:block;color:#7a8491;font-size:10px;margin-bottom:4px}
 .mithaq-admin-chat-form{display:grid;gap:8px}
 </style>
+
+<style id="mithaq-profile-five-actions-v1">
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:center!important;
+ gap:0!important;width:100%!important;box-sizing:border-box!important;margin:0!important;
+ padding:5px 4px calc(5px + env(safe-area-inset-bottom))!important;
+ background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-button{
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:2px!important;min-width:0!important;width:100%!important;height:62px!important;min-height:62px!important;
+ margin:0!important;padding:4px 1px!important;border:0!important;border-radius:0!important;
+ background:transparent!important;color:#526477!important;box-shadow:none!important;
+ font-size:10px!important;font-weight:600!important;line-height:1.25!important;white-space:nowrap!important;
+}
+#mithaqFullMemberProfile .mithaq-profile-action-button svg{display:block!important;flex:0 0 19px!important;width:19px!important;height:19px!important}
+#mithaqFullMemberProfile .mithaq-profile-action-button span{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:clip!important}
+#mithaqFullMemberProfile .mithaq-profile-action-heart{color:#c45a7a!important}
+#mithaqFullMemberProfile .mithaq-profile-action-report,#mithaqFullMemberProfile .mithaq-profile-action-block{color:#657487!important}
+#mithaqFullMemberProfile .mithaq-profile-action-button.active{color:#c45a7a!important}
+#mithaqFullMemberProfile .mithaq-profile-action-button:disabled{opacity:.55!important}
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-interest-choice,
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-report-form,
+#mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-status{grid-column:1/-1!important}
+@media(max-width:380px){
+ #mithaqFullMemberProfile .mithaq-profile-actions-fixed{padding-left:2px!important;padding-right:2px!important}
+ #mithaqFullMemberProfile .mithaq-profile-actions-fixed>.mithaq-profile-action-button{font-size:9px!important}
+ #mithaqFullMemberProfile .mithaq-profile-action-button svg{width:18px!important;height:18px!important;flex-basis:18px!important}
+}
+</style>
+
 </head>
 <body>
 <div id="entryGate" dir="rtl">
@@ -4560,9 +4591,28 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   const basicCard=document.createElement('section');basicCard.className='mithaq-profile-meta';const basicTitle=document.createElement('h3');basicTitle.textContent='المعلومات الأساسية';basicCard.append(basicTitle);[['الجنسية',details.nationality],['الإقامة',worldArabicCountryValue(profile.country||details.country)],['المنطقة',worldArabicRegionValue(profile.country||details.country,profile.region||details.city||'')],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile.marriage_type||details.marriage_type]].forEach(([label,value])=>{if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('div');line.className='mithaq-profile-meta-row';const key=document.createElement('span');key.textContent=label;const val=document.createElement('strong');val.textContent=String(value);line.append(key,val);basicCard.append(line);});content.append(basicCard);
   const actionsPanel=document.createElement('section');actionsPanel.className='mithaq-profile-actions-panel';
   const actionStatus=document.createElement('p');actionStatus.className='mithaq-profile-action-status';actionStatus.setAttribute('aria-live','polite');
-  const messageButton=document.createElement('button');messageButton.type='button';messageButton.className='primary';messageButton.textContent='✉ أرسل رسالة';
+  const makeProfileActionIcon=(kind)=>{
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+   svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('width','19');svg.setAttribute('height','19');
+   svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');
+   svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');
+   const paths={
+    message:'M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z',
+    heart:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z',
+    ignore:'M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.8 10.8 0 0 1 12 5c5 0 9 7 9 7a16 16 0 0 1-3.1 3.7M6.2 6.2C4.2 7.5 3 9.3 3 12c0 0 4 7 9 7 1 0 2-.3 2.9-.8',
+    report:'M4 22V4m0 0c5-4 10 4 16 0v12c-6 4-11-4-16 0',
+    block:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM5 5l14 14'
+   };
+   const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',paths[kind]);svg.append(path);return svg;
+  };
+  const makeProfileActionButton=(kind,label)=>{
+   const button=document.createElement('button');button.type='button';button.className='mithaq-profile-action-button mithaq-profile-action-'+kind;
+   button.setAttribute('aria-label',label);button.append(makeProfileActionIcon(kind));
+   const text=document.createElement('span');text.textContent=label;button.append(text);return button;
+  };
+  const messageButton=makeProfileActionButton('message','المراسلة');
   messageButton.addEventListener('click',()=>{page.remove();show('messages');openChat(userId,profile.display_name||requestedName||'عضو ميثاق');});
-  const interestButton=document.createElement('button');interestButton.type='button';interestButton.className='secondary';interestButton.textContent='♡ إضافة للاهتمام';
+  const interestButton=makeProfileActionButton('heart','الاهتمام');interestButton.setAttribute('aria-pressed','false');
   const interestChoice=document.createElement('div');interestChoice.className='mithaq-profile-interest-choice';interestChoice.hidden=true;
   const interestQuestion=document.createElement('p');interestQuestion.textContent='هل تريد إضافة هذا العضو إلى قائمة الاهتمام؟';
   const interestChoices=document.createElement('div');interestChoices.className='mithaq-profile-choice-buttons';
@@ -4574,20 +4624,16 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    if(error)throw error;
   };
   supabaseClient.rpc('mithaq_get_member_actions',{p_target_id:userId}).then(({data,error})=>{
-   if(!error){isInterested=!!data?.interest;interestButton.textContent=isInterested?'♥ تمت الإضافة للاهتمام':'♡ إضافة للاهتمام';}
+   if(!error){isInterested=!!data?.interest;interestButton.setAttribute('aria-pressed',String(isInterested));interestButton.classList.toggle('active',isInterested);}
   }).catch(error=>console.warn('MITHAQ member action status:',error));
   interestButton.addEventListener('click',()=>{interestQuestion.textContent=isInterested?'هل تريد إزالة هذا العضو من قائمة الاهتمام؟':'هل تريد إضافة هذا العضو إلى قائمة الاهتمام؟';interestChoice.hidden=false;});
-  interestYes.addEventListener('click',async()=>{interestYes.disabled=true;try{await setMemberAction('interest',!isInterested);isInterested=!isInterested;interestButton.textContent=isInterested?'♥ تمت الإضافة للاهتمام':'♡ إضافة للاهتمام';actionStatus.textContent=isInterested?'تمت إضافة العضو إلى اهتماماتك.':'تمت إزالة العضو من اهتماماتك.';interestChoice.hidden=true;}catch(error){actionStatus.textContent='تعذر حفظ الاهتمام: '+(error.message||'حاول مرة أخرى');}finally{interestYes.disabled=false;}});
+  interestYes.addEventListener('click',async()=>{interestYes.disabled=true;try{await setMemberAction('interest',!isInterested);isInterested=!isInterested;interestButton.setAttribute('aria-pressed',String(isInterested));interestButton.classList.toggle('active',isInterested);actionStatus.textContent=isInterested?'تمت إضافة العضو إلى اهتماماتك.':'تمت إزالة العضو من اهتماماتك.';interestChoice.hidden=true;}catch(error){actionStatus.textContent='تعذر حفظ الاهتمام: '+(error.message||'حاول مرة أخرى');}finally{interestYes.disabled=false;}});
   interestNo.addEventListener('click',()=>{interestChoice.hidden=true;});
   interestChoices.append(interestYes,interestNo);interestChoice.append(interestQuestion,interestChoices);
 
-  const menuWrap=document.createElement('div');menuWrap.className='mithaq-profile-menu-wrap';
-  const menuTrigger=document.createElement('button');menuTrigger.type='button';menuTrigger.className='mithaq-profile-menu-trigger';menuTrigger.textContent='⋮ خيارات أخرى';
-  const menu=document.createElement('div');menu.className='mithaq-profile-menu';menu.hidden=true;
-  menuTrigger.addEventListener('click',()=>{menu.hidden=!menu.hidden;});
-  const ignoreButton=document.createElement('button');ignoreButton.type='button';ignoreButton.textContent='إضافة للتجاهل';
-  ignoreButton.addEventListener('click',async()=>{if(!confirm('هل تريد إضافة هذا العضو إلى قائمة التجاهل؟'))return;ignoreButton.disabled=true;try{await setMemberAction('ignore',true);actionStatus.textContent='تمت إضافة العضو إلى قائمة التجاهل، ولن يظهر لك ضمن قائمة الأعضاء.';menu.hidden=true;}catch(error){actionStatus.textContent='تعذر تنفيذ التجاهل: '+(error.message||'حاول مرة أخرى');}finally{ignoreButton.disabled=false;}});
-  const reportButton=document.createElement('button');reportButton.type='button';reportButton.textContent='إبلاغ الإدارة';
+  const ignoreButton=makeProfileActionButton('ignore','التجاهل');
+  ignoreButton.addEventListener('click',async()=>{if(!confirm('هل تريد إضافة هذا العضو إلى قائمة التجاهل؟'))return;ignoreButton.disabled=true;try{await setMemberAction('ignore',true);actionStatus.textContent='تمت إضافة العضو إلى قائمة التجاهل، ولن يظهر لك ضمن قائمة الأعضاء.';}catch(error){actionStatus.textContent='تعذر تنفيذ التجاهل: '+(error.message||'حاول مرة أخرى');}finally{ignoreButton.disabled=false;}});
+  const reportButton=makeProfileActionButton('report','الإبلاغ');
   const reportForm=document.createElement('form');reportForm.className='mithaq-profile-report-form';reportForm.hidden=true;
   const reasonLabel=document.createElement('label');reasonLabel.textContent='سبب البلاغ';
   const reasonSelect=document.createElement('select');reasonSelect.required=true;
@@ -4599,12 +4645,12 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   reportDetailsLabel.append(reportDetails);
   const reportSubmit=document.createElement('button');reportSubmit.type='submit';reportSubmit.className='primary';reportSubmit.textContent='إرسال البلاغ';
   reportForm.append(reasonLabel,reportDetailsLabel,reportSubmit);
-  reportButton.addEventListener('click',()=>{reportForm.hidden=!reportForm.hidden;menu.hidden=true;});
+  reportButton.addEventListener('click',()=>{reportForm.hidden=!reportForm.hidden;});
   reportForm.addEventListener('submit',async event=>{event.preventDefault();if(!reasonSelect.value)return;reportSubmit.disabled=true;try{const {error}=await supabaseClient.rpc('mithaq_submit_member_report',{p_target_id:userId,p_reason:reasonSelect.value,p_details:reportDetails.value.trim()});if(error)throw error;reportForm.hidden=true;actionStatus.textContent='تم إرسال البلاغ إلى الإدارة بنجاح. شكراً لمساعدتنا في حماية الأعضاء.';}catch(error){actionStatus.textContent='تعذر إرسال البلاغ: '+(error.message||'حاول مرة أخرى');}finally{reportSubmit.disabled=false;}});
-  const blockButton=document.createElement('button');blockButton.type='button';blockButton.className='danger';blockButton.textContent='حظر هذا العضو';
-  blockButton.addEventListener('click',async()=>{if(!confirm('هل تريد حظر هذا العضو؟ سيُمنع إرسال الرسائل بينكما وسيختفي من قائمة الأعضاء.'))return;blockButton.disabled=true;try{await setMemberAction('block',true);actionStatus.textContent='تم حظر العضو. لن يتمكن أي منكما من مراسلة الآخر.';menu.hidden=true;setTimeout(()=>{if(page.isConnected)page.remove();},900);}catch(error){actionStatus.textContent='تعذر حظر العضو: '+(error.message||'حاول مرة أخرى');}finally{blockButton.disabled=false;}});
-  menu.append(ignoreButton,reportButton,blockButton);menuWrap.append(menuTrigger,menu);
-  actionsPanel.append(messageButton,interestButton,interestChoice,menuWrap,reportForm,actionStatus);
+  const blockButton=makeProfileActionButton('block','الحظر');
+  blockButton.addEventListener('click',async()=>{if(!confirm('هل تريد حظر هذا العضو؟ سيُمنع إرسال الرسائل بينكما وسيختفي من قائمة الأعضاء.'))return;blockButton.disabled=true;try{await setMemberAction('block',true);actionStatus.textContent='تم حظر العضو. لن يتمكن أي منكما من مراسلة الآخر.';setTimeout(()=>{if(page.isConnected)page.remove();},900);}catch(error){actionStatus.textContent='تعذر حظر العضو: '+(error.message||'حاول مرة أخرى');}finally{blockButton.disabled=false;}});
+
+  actionsPanel.append(messageButton,interestButton,ignoreButton,reportButton,blockButton,interestChoice,reportForm,actionStatus);
   actionsPanel.classList.add('mithaq-profile-actions-fixed');
   page.append(actionsPanel);
 
