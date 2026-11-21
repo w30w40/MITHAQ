@@ -167,7 +167,7 @@ body.authenticated .card h2{color:#246b98}
 .mithaq-profile-meta-row span{color:#718078}
 .mithaq-profile-meta-row strong{color:#263b32;text-align:left}
 .mithaq-profile-meta-row .meta-secondary{display:block;color:#718078;font-size:11px;margin-top:4px;text-align:left}
-.mithaq-profile-actions-panel{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px;padding:14px;background:#fff;border:1px solid #e5ecef;border-radius:15px}
+.mithaq-profile-actions-panel{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px;padding:14px;background:#fff;border:1px solid #e5ecef;border-radius:15px}.mithaq-profile-actions-fixed{position:relative;flex:0 0 auto;margin:0;border-radius:15px 15px 0 0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #102a430f;z-index:2;background:#fff}.mithaq-full-member-profile-content{padding-bottom:24px!important}.mithaq-profile-actions-fixed>.mithaq-profile-action-status{max-height:60px;overflow:auto}.mithaq-profile-actions-fixed .mithaq-profile-menu{max-height:35vh;overflow:auto}@media(max-width:600px){.mithaq-profile-actions-fixed{gap:7px;padding:9px 8px calc(9px + env(safe-area-inset-bottom))}.mithaq-profile-actions-fixed>button{flex:1 1 calc(50% - 7px);min-width:0}.mithaq-profile-actions-fixed .mithaq-profile-menu-wrap{flex:1 1 100%}}
 .mithaq-profile-actions-panel>button{flex:1 1 135px;min-height:44px}
 .mithaq-profile-interest-choice,.mithaq-profile-report-form{width:100%;padding:13px;border:1px solid #e4ecef;border-radius:12px;background:#f8fbfa}
 .mithaq-profile-interest-choice[hidden],.mithaq-profile-report-form[hidden],.mithaq-profile-menu[hidden]{display:none!important}
@@ -4605,7 +4605,8 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   blockButton.addEventListener('click',async()=>{if(!confirm('هل تريد حظر هذا العضو؟ سيُمنع إرسال الرسائل بينكما وسيختفي من قائمة الأعضاء.'))return;blockButton.disabled=true;try{await setMemberAction('block',true);actionStatus.textContent='تم حظر العضو. لن يتمكن أي منكما من مراسلة الآخر.';menu.hidden=true;setTimeout(()=>{if(page.isConnected)page.remove();},900);}catch(error){actionStatus.textContent='تعذر حظر العضو: '+(error.message||'حاول مرة أخرى');}finally{blockButton.disabled=false;}});
   menu.append(ignoreButton,reportButton,blockButton);menuWrap.append(menuTrigger,menu);
   actionsPanel.append(messageButton,interestButton,interestChoice,menuWrap,reportForm,actionStatus);
-  content.append(actionsPanel);
+  actionsPanel.classList.add('mithaq-profile-actions-fixed');
+  page.append(actionsPanel);
 
   const labels={age:'العمر',gender:'الجنس',city:'المنطقة',education:'المؤهل الدراسي',occupation:'العمل',job:'العمل',work:'العمل',work_field:'مجال العمل',marital_status:'الحالة الاجتماعية',family_status:'الحالة الاجتماعية',children:'الأبناء',nationality:'الجنسية',country:'الإقامة',height:'الطول',weight:'الوزن',smoking:'التدخين',religiosity:'مستوى التدين',prayer:'الصلاة',covering:(['wife','female','أنثى','امرأة','انثى'].includes(String(details.gender||'').trim().toLowerCase())?'الحجاب':'اللحية'),body_build:'بنية الجسم',skin_color:'لون البشرة',marriage_type:'نوع الزواج',about:'نبذة',partner_preferences:'مواصفات الشريك المطلوب',username:'الاسم',health:'الحالة الصحية',country:'الدولة',region:'المنطقة / المدينة',salary:'الدخل الشهري',monthly_income:'الدخل الشهري',financial_status:'الوضع المادي',workplace:'جهة العمل',job_title:'المسمى الوظيفي',origin:'بلد الأصل'};
   const formatValue=value=>{
