@@ -2539,7 +2539,7 @@ async function loadMithaqInterestedBy(){
 
   const info=document.createElement('div');info.className='mithaq-feature-member-info';
   const name=document.createElement('strong');name.textContent=person.display_name||'عضو ميثاق';name.tabIndex=0;name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name||'عضو ميثاق','menuFeature'));
-  const meta=document.createElement('small');meta.textContent=[person.country,person.region].filter(Boolean).join(' • ');
+  const meta=document.createElement('small');meta.textContent=[worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||'')].filter(Boolean).join(' • ');
   info.append(name,meta);
   const interest=document.createElement('button');interest.type='button';interest.className='mithaq-interest-action';interest.textContent='♡ اهتمام';
   interest.addEventListener('click',async()=>{
@@ -3577,7 +3577,7 @@ function renderMithaqHomeFeed(data){
   const dot=document.createElement('span');dot.className=person.is_online?'mithaq-online-dot':'mithaq-offline-dot';dot.title=person.is_online?'متصل الآن':'غير متصل حالياً';dot.setAttribute('aria-label',dot.title);
   avatarWrap.append(avatar,dot);const homeFlag=mithaqCountryFlagBadge(person.country);if(homeFlag)avatarWrap.append(homeFlag);if(mithaqPremiumMemberIds.has(person.id))avatarWrap.append(makeMithaqPremiumBadge());
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));
-  const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',person.city||person.country||''].filter(Boolean).join(' • ')||'عضو ميثاق';
+  const meta=document.createElement('p');meta.textContent=[person.age?person.age+' سنة':'',worldArabicRegionValue(person.country,person.city||person.region||'')||worldArabicCountryValue(person.country)].filter(Boolean).join(' • ')||'عضو ميثاق';
   const action=document.createElement('button');action.type='button';action.className='secondary mithaq-live-message';action.textContent='مراسلة';
   avatarWrap.style.cursor='pointer';avatarWrap.addEventListener('click',()=>showChatMemberProfile(person.id,person.display_name,'home'));action.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});
   card.append(avatarWrap,name,meta,action);host.append(card);
@@ -3642,7 +3642,7 @@ function renderMithaqMembers(){
  const countryAliases={'المملكة العربية السعودية':['السعودية','المملكه العربيه السعوديه','saudi arabia'],'المملكة المتحدة':['بريطانيا','انجلترا','إنجلترا','uk','united kingdom'],'الإمارات العربية المتحدة':['الإمارات','الامارات','uae'],'اليمن':['اليمنية','yemen'],'مصر':['جمهورية مصر العربية','egypt'],'الولايات المتحدة':['امريكا','أمريكا','usa','united states']};
  const matchesCountry=person=>{
   if(countryFilter==='all')return true;
-  const selected=normalizeCountry(countryFilter),actual=normalizeCountry(person.country);
+  const selected=normalizeCountry(countryFilter),actual=normalizeCountry(worldArabicCountryValue(person.country));
   if(!actual)return false;
   if(actual===selected||actual.includes(selected)||selected.includes(actual))return true;
   return (countryAliases[countryFilter]||[]).some(alias=>normalizeCountry(alias)===actual||actual.includes(normalizeCountry(alias)));
