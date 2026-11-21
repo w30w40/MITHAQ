@@ -4624,9 +4624,6 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
    rows.forEach(([label,value])=>{const item=document.createElement('div');item.className='mithaq-full-member-profile-item';const key=document.createElement('small');key.textContent=label;const val=document.createElement('p');val.textContent=formatValue(value);item.append(key,val);grid.append(item);});
    section.append(grid);content.append(section);
   };
-  addSection('المعلومات الأساسية',[
-   ['الجنسية',details.nationality],['الإقامة',profile?.country||details.country],['المنطقة',profile?.region||details.region||details.city],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile?.marriage_type||details.marriage_type]
-  ]);
   const publicProfileOrder=['gender','marital_status','family_status','children','education','occupation','job','work','work_field','workplace','job_title','financial_status','salary','monthly_income','health','smoking','covering','prayer','religiosity','body_build','skin_color','origin','partner_preferences'];
   const detailEntries=publicProfileOrder.flatMap(key=>{if(!(key in details))return [];const value=details[key];const label=labels[key]||key;if(key==='gender')return [[label,({'wife':'أنثى','female':'أنثى','husband':'ذكر','male':'ذكر'}[String(value).toLowerCase()]||value)]];return [[label,value]];});
   addSection('المواصفات الشخصية',detailEntries);
