@@ -1533,7 +1533,6 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
           <label>الوظيفة <b class="required-star">*</b><input id="entryWork" required placeholder="ادخل الوظيفة"></label>
           <label>الدخل الشهري <b class="required-star">*</b><select id="entryMonthlyIncome" required><option value="">اختر الدخل الشهري</option></select><small class="muted">تُعرض شرائح الدخل بعملة بلد الإقامة، والقيم تقريبية.</small></label>
           <label>الحالة الصحية <b class="required-star">*</b><input id="entryHealth" maxlength="120" required placeholder="مثال: بصحة جيدة، أو اكتب الحالة التي ترغب بإظهارها"></label>
-          <label class="mithaq-health-consent"><input id="entryHealthPublic" type="checkbox"> أوافق على إظهار حالتي الصحية في قائمة الحالات الصحية للأعضاء المسجلين. لن تظهر إذا لم أفعّل هذا الخيار.</label>
         </section>
         <section class="wizard-panel" data-step-panel="4" hidden>
           <h2>مواصفات شريك حياتك</h2>
@@ -1714,9 +1713,6 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <div class="field"><label for="profileNeighborhood">الحي</label><select id="profileNeighborhood"><option value="">اختر الحي</option></select></div>
 <div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
 <div id="profileExtraFields"></div>
-<label class="mithaq-health-consent"><input id="profilePartnerPreferencesPublic" type="checkbox"> أوافق على إظهار مواصفات شريك الحياة للأعضاء المسجلين في ميثاق.</label>
-<p class="muted">هذا الخيار مغلق افتراضياً، ويمكنك تغييره في أي وقت.</p>
-<label class="mithaq-health-consent"><input id="profileHealthPublic" type="checkbox"> أوافق على إظهار حالتي الصحية في قائمة الحالات الصحية للأعضاء المسجلين في ميثاق.</label>
 <div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" required placeholder="اكتب نبذة عن نفسك بحرية"></textarea></div>
 <p class="muted">ملفك المختصر يظهر تلقائياً للأعضاء المسجلين في ميثاق.</p>
 <div class="row" style="margin-top:14px"><button class="primary" id="saveProfile" type="submit">حفظ التعديلات</button><button class="secondary" id="cancelProfileEdit" type="button">إلغاء</button></div>
@@ -2314,7 +2310,7 @@ document.getElementById('entryCreateForm').addEventListener('submit',async e=>{
  if(!supabaseClient){status.textContent=authUnavailableMessage();return;}
  const btn=document.getElementById('entryFinish');btn.disabled=true;status.textContent='جارٍ إنشاء الحساب...';
  const username=document.getElementById('entryUsername').value.trim();
- const profile={public_listing_consent:true,health_public:!!document.getElementById('entryHealthPublic')?.checked,terms_version:'2026-11-14-v1',terms_accepted_at:new Date().toISOString(),privacy_policy_accepted:true,honesty_declaration_accepted:!!document.getElementById('entryHonesty')?.checked,marriage_fee_agreed:!!document.getElementById('entryMarriageFee')?.checked,marriage_fee_amount_sar:500,marriage_fee_trigger:'marriage_contract_from_mithaq_introduction',username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhoneCountryCode').value+document.getElementById('entryPhone').value.replace(/\D/g,'').replace(/^0+/, ''),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),neighborhood:document.getElementById('entryNeighborhood').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,health_public:!!document.getElementById('entryHealthPublic')?.checked,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
+ const profile={public_listing_consent:true,health_public:true,terms_version:'2026-11-14-v1',terms_accepted_at:new Date().toISOString(),privacy_policy_accepted:true,honesty_declaration_accepted:!!document.getElementById('entryHonesty')?.checked,marriage_fee_agreed:!!document.getElementById('entryMarriageFee')?.checked,marriage_fee_amount_sar:500,marriage_fee_trigger:'marriage_contract_from_mithaq_introduction',username,full_name:document.getElementById('entryFullName').value.trim(),phone_number:document.getElementById('entryPhoneCountryCode').value+document.getElementById('entryPhone').value.replace(/\D/g,'').replace(/^0+/, ''),gender:chosenEntryGender,marriage_type:document.getElementById('entryMarriageType').value,family_status:document.getElementById('entryFamilyStatus').value,age:document.getElementById('entryAge').value,children:document.getElementById('entryChildren').value,country:document.getElementById('entryCountry').value,nationality:document.getElementById('entryNationality').value,city:document.getElementById('entryCity').value.trim(),neighborhood:document.getElementById('entryNeighborhood').value,weight:document.getElementById('entryWeight').value,height:document.getElementById('entryHeight').value,skin_color:document.getElementById('entrySkin').value,body_build:document.getElementById('entryBuild').value,religiosity:document.getElementById('entryReligiosity').value,prayer:document.getElementById('entryPrayer').value,smoking:document.getElementById('entrySmoking').value,covering:document.getElementById('entryCovering').value,education:document.getElementById('entryEducation').value,financial_status:document.getElementById('entryFinancial').value,work_field:document.getElementById('entryWorkField').value,work:document.getElementById('entryWork').value.trim(),monthly_income:document.getElementById('entryMonthlyIncome').value,health:document.getElementById('entryHealth').value,health_public:!!document.getElementById('entryHealthPublic')?.checked,about:document.getElementById('entryAbout').value.trim(),partner_preferences:document.getElementById('entryPartner').value.trim()};
  try{
   const email=document.getElementById('entrySignupEmail').value.trim();
   const password=document.getElementById('entrySignupPassword').value;
@@ -3386,8 +3382,8 @@ async function refreshProfileAccess(){
   addProfileSelect(marriageEditor,isWife?[['الوحيدة','الوحيدة'],['لا مانع من التعدد','لا مانع من التعدد']]:[['زواج عادي','زواج عادي'],['زوجة ثانية','زوجة ثانية']],'');
  });
 document.getElementById('profileCountry')?.addEventListener('change',()=>{const income=document.getElementById('edit_monthly_income');if(income){const previous=income.value;populateMithaqIncomeOptions(income,document.getElementById('profileCountry').value.trim(),previous);}});
- const partnerIsPublic=meta.partner_preferences_public===true||meta.partner_preferences_public==='true';
- const aboutRows=[['نبذة عني',meta.about],[partnerIsPublic?'مواصفات شريك الحياة':'مواصفات شريك الحياة (خاص)',meta.partner_preferences]].filter(x=>x[1]&&x[1]!=='خاص');
+ const partnerIsPublic=true;
+ const aboutRows=[['نبذة عني',meta.about],['مواصفات شريك الحياة',meta.partner_preferences]].filter(x=>x[1]&&x[1]!=='خاص');
  about.replaceChildren();
  if(aboutRows.length){aboutRows.forEach(([label,value])=>{const p=document.createElement('p');const b=document.createElement('strong');b.textContent=label+' : ';p.append(b,document.createTextNode(value));about.append(p);});}
  else about.textContent='لم تُضف نبذة أو مواصفات للشريك عند التسجيل.';
@@ -3402,8 +3398,6 @@ document.getElementById('profileCountry')?.addEventListener('change',()=>{const 
  document.getElementById('profileNeighborhood').value=meta.neighborhood||'';
  document.getElementById('marriageType').value=meta.marriage_type||'';
  document.getElementById('profileLifeText').value=meta.about||'';
- document.getElementById('profileHealthPublic').checked=meta.health_public===true||meta.health_public==='true';
- document.getElementById('profilePartnerPreferencesPublic').checked=meta.partner_preferences_public===true||meta.partner_preferences_public==='true';
  status.textContent=(privateError||publicError)?'بيانات الحساب ظاهرة، لكن يلزم تنفيذ ملف إعداد قاعدة البيانات db/profile.sql لتفعيل الحفظ الكامل.':'تم تحميل ملفك المحفوظ. يمكنك تعديله وحفظه من هنا.';
  }catch(error){
   console.error('MITHAQ profile load failed:',error);
@@ -3432,8 +3426,8 @@ document.getElementById('myProfileForm').addEventListener('submit',async e=>{
   neighborhood:document.getElementById('profileNeighborhood').value,
   marriage_type:document.getElementById('marriageType').value,
   about:life,
-  health_public:!!document.getElementById('profileHealthPublic')?.checked,
-  partner_preferences_public:!!document.getElementById('profilePartnerPreferencesPublic')?.checked
+  health_public:true,
+  partner_preferences_public:true
  };
  document.querySelectorAll('[data-profile-key]').forEach(input=>{updated[input.dataset.profileKey]=input.value.trim();});
  if(!updated.username){status.textContent='اكتب الاسم الظاهر أولاً.';return;}
