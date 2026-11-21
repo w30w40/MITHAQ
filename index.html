@@ -1510,7 +1510,7 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
           <h2>الجنسية والإقامة</h2>
           <label>مكان الإقامة <b class="required-star">*</b><select id="entryCountry" required><option value="">جارٍ تحميل دول العالم...</option></select></label>
           <label>الجنسية <b class="required-star">*</b><select id="entryNationality" required><option value="">جارٍ تحميل دول العالم...</option></select></label>
-          <label>المدينة <b class="required-star">*</b><select id="entryCity" required><option value="">اختر دولة الإقامة أولاً</option></select></label>
+          <label>المدينة <b class="required-star">*</b><select id="entryCity" required><option value="">اختر دولة الإقامة أولاً</option></select></label><small class="muted">قائمة عالمية للدول والمدن، وتُحمّل مدن الدولة المختارة فقط.</small>
           <p class="notice">الدين: للمسلمين فقط</p>
           <option>السعودية</option><option>مصر</option><option>الأردن</option><option>المغرب</option><option>الجزائر</option><option>تونس</option><option>سوريا</option><option>العراق</option><option>فلسطين</option><option>لبنان</option><option>اليمن</option><option>الإمارات</option><option>قطر</option><option>الكويت</option><option>البحرين</option><option>عمان</option><option>ليبيا</option><option>السودان</option><option>موريتانيا</option><option>فرنسا</option><option>ألمانيا</option><option>بلجيكا</option><option>هولندا</option><option>إسبانيا</option><option>إيطاليا</option><option>المملكة المتحدة</option><option>كندا</option><option>أمريكا</option><option>تركيا</option><option>أخرى</option></select></label>
           <h2>مواصفاتك</h2>
@@ -3122,7 +3122,7 @@ async function loadMithaqAdminPanel(){
   detail.addEventListener('click',()=>{detailPanel.hidden=!detailPanel.hidden;detail.textContent=detailPanel.hidden?'عرض التفاصيل':'إخفاء التفاصيل';});
   const details=person.details&&typeof person.details==='object'?person.details:{};
   [['تاريخ إنشاء الحساب',person.created_at?new Date(person.created_at).toLocaleString('ar'):'غير متاح'],['البريد الإلكتروني',person.email||'غير متاح'],['آخر ظهور في ميثاق',person.last_seen_at?new Date(person.last_seen_at).toLocaleString('ar'):'لم يُسجل بعد'],['آخر تسجيل دخول للحساب',person.auth_last_sign_in_at?new Date(person.auth_last_sign_in_at).toLocaleString('ar'):'غير متاح']].forEach(([label,value])=>{const line=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+': ';line.append(strong,document.createTextNode(value));detailPanel.append(line);});
-  const fields=[['الاسم','username'],['الجنس','gender'],['الحالة الاجتماعية','family_status'],['العمر','age'],['عدد الأطفال','children'],['الجنسية','nationality'],['الإقامة','country'],['المنطقة','city'],['الحي','neighborhood'],['الوزن','weight'],['الطول','height'],['لون البشرة','skin_color'],['بنية الجسم','body_build'],['التدين','religiosity'],['الصلاة','prayer'],['التدخين','smoking'],['الحجاب / اللحية','covering'],['التعليم','education'],['الوضع المادي','financial_status'],['مجال العمل','work_field'],['الوظيفة','work'],['الدخل الشهري','monthly_income'],['الحالة الصحية','health'],['مواصفات الشريك','partner_preferences'],['النبذة','about']];
+  const fields=[['الاسم','username'],['الجنس','gender'],['الحالة الاجتماعية','family_status'],['العمر','age'],['عدد الأطفال','children'],['الجنسية','nationality'],['الإقامة','country'],['المنطقة','city'],['الوزن','weight'],['الطول','height'],['لون البشرة','skin_color'],['بنية الجسم','body_build'],['التدين','religiosity'],['الصلاة','prayer'],['التدخين','smoking'],['الحجاب / اللحية','covering'],['التعليم','education'],['الوضع المادي','financial_status'],['مجال العمل','work_field'],['الوظيفة','work'],['الدخل الشهري','monthly_income'],['الحالة الصحية','health'],['مواصفات الشريك','partner_preferences'],['النبذة','about']];
   fields.forEach(([label,key])=>{const value=details[key];if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+': ';line.append(strong,document.createTextNode(String(value)));detailPanel.append(line);});
   if(!detailPanel.childElementCount){detailPanel.textContent=person.life_text||'لا توجد تفاصيل إضافية محفوظة.';}
   const review=document.createElement('div');review.className='mithaq-admin-review';
@@ -3277,7 +3277,7 @@ async function refreshProfileAccess(){
  const uid=session.user.id;
  const [{data:privateRow,error:privateError},{data:publicRow,error:publicError}]=await Promise.all([
   supabaseClient.from('profile_details').select('details').eq('id',uid).maybeSingle(),
-  supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published,member_number').eq('id',uid).maybeSingle()
+  supabaseClient.from('profiles').select('id,display_name,country,region,marriage_type,life_text,is_published').eq('id',uid).maybeSingle()
  ]);
  const authMeta=userData.user?.user_metadata||session.user.user_metadata||{};
  const savedDetails=privateRow?.details||{};
