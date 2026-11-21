@@ -716,7 +716,7 @@ body.authenticated main.wrap{padding-bottom:112px}
 .mithaq-directory-avatar .mithaq-country-flag-badge{right:-5px;bottom:-4px}
 .mithaq-directory-card{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#fff;border:1px solid #f0e3e6;border-radius:16px;padding:13px;box-shadow:0 5px 16px #963a4a08;min-width:0}
 .mithaq-directory-avatar{position:relative;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f9e9ee;font-size:27px;grid-row:span 3}
-.mithaq-directory-card h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere}
+.mithaq-directory-namebar{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}.mithaq-directory-namebar h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere;min-width:0}.mithaq-directory-last-visit{flex:0 0 auto;color:#89939b;font-size:10px;line-height:1.3;white-space:nowrap;max-width:48%;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.mithaq-directory-last-visit{font-size:9px;max-width:52%}}
 .mithaq-directory-dates{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;min-width:0;color:#89939b;font-size:10px;line-height:1.35;margin:1px 0}.mithaq-directory-dates span{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.mithaq-directory-dates{gap:2px 6px;font-size:9px}}
 .mithaq-directory-card p{margin:2px 0;color:#7c8790;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
 .mithaq-directory-card button{justify-self:start;margin-top:4px;padding:7px 13px;border-radius:22px;background:#e8f4fb;color:#286d96;font-size:11px}
@@ -3694,22 +3694,22 @@ function renderMithaqMembers(){
   const managed=person.is_platform_managed===true;
   decorateMithaqMemberAvatar(avatar,person.id);
   const directoryFlag=mithaqCountryFlagBadge(person.country);if(directoryFlag)avatar.append(directoryFlag);if(mithaqPremiumMemberIds.has(person.id))avatar.append(makeMithaqPremiumBadge());
+  const nameBar=document.createElement('div');nameBar.className='mithaq-directory-namebar';
   const name=document.createElement('h3');name.textContent=person.display_name||'عضو ميثاق';
+  const lastVisit=document.createElement('small');lastVisit.className='mithaq-directory-last-visit';lastVisit.textContent='آخر زيارة: '+(managed?'—':(person.last_seen_at?relativeDate(person.last_seen_at):'غير متاح'));if(person.last_seen_at)lastVisit.title=fullDate(person.last_seen_at);
+  nameBar.append(name,lastVisit);
   const managedLabel=managed?document.createElement('p'):null;
   if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
   const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
-  const dates=document.createElement('div');dates.className='mithaq-directory-dates';
-  const lastVisit=document.createElement('span');lastVisit.textContent='آخر زيارة: '+(managed?'—':(person.last_seen_at?relativeDate(person.last_seen_at):'غير متاح'));if(person.last_seen_at)lastVisit.title=fullDate(person.last_seen_at);
-  const registration=document.createElement('span');registration.textContent='التسجيل: '+(person.created_at?relativeDate(person.created_at):'غير متاح');if(person.created_at)registration.title=fullDate(person.created_at);
-  dates.append(lastVisit,registration);
+
   const button=document.createElement('button');button.type='button';
   if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
   else{button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});}
   avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';
   avatar.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
   name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
-  card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,dates,button);host.append(card);
+  card.append(avatar,nameBar);if(managedLabel)card.append(managedLabel);card.append(meta,presence,button);host.append(card);
  });
  if(visiblePeople.length<people.length){
   const more=document.createElement('button');more.type='button';more.className='mithaq-load-more-members';
@@ -4554,9 +4554,9 @@ async function showChatMemberProfile(requestedUserId=activeChatUser,requestedNam
   };
   const basicCard=document.createElement('section');basicCard.className='mithaq-profile-meta';const basicTitle=document.createElement('h3');basicTitle.textContent='المعلومات الأساسية';basicCard.append(basicTitle);[['الجنسية',details.nationality],['الإقامة',worldArabicCountryValue(profile.country||details.country)],['المنطقة',worldArabicRegionValue(profile.country||details.country,profile.region||details.city||'')],['العمر',details.age],['الطول',details.height],['الوزن',details.weight],['نوع الزواج',profile.marriage_type||details.marriage_type]].forEach(([label,value])=>{if(value===undefined||value===null||String(value).trim()==='')return;const line=document.createElement('div');line.className='mithaq-profile-meta-row';const key=document.createElement('span');key.textContent=label;const val=document.createElement('strong');val.textContent=String(value);line.append(key,val);basicCard.append(line);});content.append(basicCard);
   const metaCard=document.createElement('section');metaCard.className='mithaq-profile-meta';
-  const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات الزيارة والتسجيل';metaCard.append(metaTitle);
+  const metaTitle=document.createElement('h3');metaTitle.textContent='معلومات التسجيل';metaCard.append(metaTitle);
     const online=!!profile.last_seen_at&&(Date.now()-new Date(profile.last_seen_at).getTime()<5*60*1000);
-  [['تاريخ آخر زيارة',online?'🟢 متواجد الآن':relativeDate(profile.last_seen_at),profile.last_seen_at],['تاريخ التسجيل',relativeDate(profile.created_at),profile.created_at]].forEach(([label,value,stamp])=>{
+  [['تاريخ التسجيل',relativeDate(profile.created_at),profile.created_at]].forEach(([label,value,stamp])=>{
    const line=document.createElement('div');line.className='mithaq-profile-meta-row';
    const key=document.createElement('span');key.textContent=label;
    const val=document.createElement('strong');val.textContent=value;val.title=fullDate(stamp);val.tabIndex=0;val.setAttribute('role','button');val.setAttribute('aria-label',label+'، '+fullDate(stamp));
