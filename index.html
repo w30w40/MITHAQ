@@ -717,6 +717,7 @@ body.authenticated main.wrap{padding-bottom:112px}
 .mithaq-directory-card{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#fff;border:1px solid #f0e3e6;border-radius:16px;padding:13px;box-shadow:0 5px 16px #963a4a08;min-width:0}
 .mithaq-directory-avatar{position:relative;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#f9e9ee;font-size:27px;grid-row:span 3}
 .mithaq-directory-card h3{margin:0;color:#286d96;font-size:14px;overflow-wrap:anywhere}
+.mithaq-directory-dates{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;min-width:0;color:#89939b;font-size:10px;line-height:1.35;margin:1px 0}.mithaq-directory-dates span{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.mithaq-directory-dates{gap:2px 6px;font-size:9px}}
 .mithaq-directory-card p{margin:2px 0;color:#7c8790;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
 .mithaq-directory-card button{justify-self:start;margin-top:4px;padding:7px 13px;border-radius:22px;background:#e8f4fb;color:#286d96;font-size:11px}
 .mithaq-bottom-nav{display:none}
@@ -3700,13 +3701,17 @@ function renderMithaqMembers(){
   if(managedLabel){managedLabel.className='mithaq-managed-member-label';managedLabel.textContent='تحت إدارة ميثاق • حساب افتراضي';}
   const meta=document.createElement('p');meta.textContent=[managed?'ملف إداري افتراضي':'',getAge(person)?getAge(person)+' سنة':'',worldArabicCountryValue(person.country),worldArabicRegionValue(person.country,person.region||person.details?.city||''),mithaqMemberViewMode==='health'?person.details?.health:''].filter(Boolean).join(' • ')||'عضو في ميثاق';
   const presence=document.createElement('p');const online=!managed&&!!person.last_seen_at&&(Date.now()-new Date(person.last_seen_at).getTime()<5*60*1000);presence.textContent=managed?'حساب غير متصل بالتفاعلات':(online?'🟢 متصل الآن':'⚪ غير متصل حالياً');
+  const dates=document.createElement('div');dates.className='mithaq-directory-dates';
+  const lastVisit=document.createElement('span');lastVisit.textContent='🕒 آخر زيارة: '+(managed?'—':(person.last_seen_at?relativeDate(person.last_seen_at):'غير متاح'));if(person.last_seen_at)lastVisit.title=fullDate(person.last_seen_at);
+  const registration=document.createElement('span');registration.textContent='📅 التسجيل: '+(person.created_at?relativeDate(person.created_at):'غير متاح');if(person.created_at)registration.title=fullDate(person.created_at);
+  dates.append(lastVisit,registration);
   const button=document.createElement('button');button.type='button';
   if(managed){button.textContent='عرض الملف والمحادثة الذكية';button.className='primary';button.addEventListener('click',()=>showManagedMemberProfile(person));}
   else{button.textContent='إرسال رسالة';button.addEventListener('click',()=>{show('messages');openChat(person.id,person.display_name||'عضو ميثاق');});}
   avatar.title='عرض الملف الشخصي';avatar.style.cursor='pointer';
   avatar.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
   name.title='اضغط لعرض الملف الشخصي';name.style.cursor='pointer';name.addEventListener('click',()=>managed?showManagedMemberProfile(person):showChatMemberProfile(person.id,person.display_name,'members'));
-  card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,button);host.append(card);
+  card.append(avatar,name);if(managedLabel)card.append(managedLabel);card.append(meta,presence,dates,button);host.append(card);
  });
  if(visiblePeople.length<people.length){
   const more=document.createElement('button');more.type='button';more.className='mithaq-load-more-members';
