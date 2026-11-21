@@ -3302,8 +3302,6 @@ async function refreshProfileAccess(){
  }
  if(privateError)console.warn('MITHAQ private profile load:',privateError.message);
  if(publicError)console.warn('MITHAQ public profile load:',publicError.message);
- await ensureWorldRegionsData();
- if(meta.city)meta.city=worldArabicRegionValue(meta.country,meta.city);
  if(publicRow){
   // Keep the actual registration/private values first; use the public summary only as a fallback.
   meta.username=meta.username||((publicRow.display_name&&publicRow.display_name!=='عضو ميثاق')?publicRow.display_name:'');
@@ -3312,6 +3310,9 @@ async function refreshProfileAccess(){
   meta.marriage_type=meta.marriage_type||publicRow.marriage_type||'';
   meta.about=meta.about||publicRow.life_text||'';
  }
+ await ensureWorldCountries();
+ await ensureWorldRegionsData();
+ if(meta.city)meta.city=worldArabicRegionValue(meta.country,meta.city);
  const profileFields=[
   ['الجنسية',meta.nationality],['الإقامة',meta.country],['المنطقة',meta.city],['العمر',meta.age],['الطول',meta.height],['الوزن',meta.weight],
   ['الجنس',meta.gender],['نوع الزواج',meta.marriage_type],['الحالة العائلية',meta.family_status],['عدد الأطفال',meta.children],
