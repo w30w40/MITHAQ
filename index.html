@@ -1503,19 +1503,25 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
           <h2>الحالة الاجتماعية</h2>
           <label>نوع الزواج <b class="required-star">*</b><select id="entryMarriageType" required><option value="">إختر ..</option><option>الوحيدة</option><option>لا مانع من التعدد</option></select></label>
           <label>الحالة العائلية <b class="required-star">*</b><select id="entryFamilyStatus" required><option value="">إختر ..</option><option>آنسة</option><option>مطلقة</option><option>أرملة</option></select></label>
-          <label>العمر <b class="required-star">*</b><select id="entryAge" required><option value="">إختر ..</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option></select></label>
+          
           <label>عدد الأطفال <b class="required-star">*</b><select id="entryChildren" required><option value="">إختر ..</option><option>بدون أطفال</option><option>طفل واحد</option><option>طفلان</option><option>3</option><option>4</option><option>5</option><option>6 أو أكثر</option></select></label>
         </section>
         <section class="wizard-panel" data-step-panel="2" hidden>
-          <h2>الجنسية والإقامة</h2>
-          <label>مكان الإقامة <b class="required-star">*</b><select id="entryCountry" required><option value="">جارٍ تحميل دول العالم...</option></select></label>
+          <h2>الجنسية والإقامة والمنطقة والمواصفات الأساسية</h2>
           <label>الجنسية <b class="required-star">*</b><select id="entryNationality" required><option value="">جارٍ تحميل دول العالم...</option></select></label>
-          <label>المدينة <b class="required-star">*</b><select id="entryCity" required><option value="">اختر دولة الإقامة أولاً</option></select></label><small class="muted">قائمة عالمية للدول والمدن، وتُحمّل مدن الدولة المختارة فقط. مصدر البيانات: <a href="https://github.com/srestre/world-countries-cities-db" target="_blank" rel="noopener">World Countries & Cities Database (ODbL)</a>.</small>
+          <label>مكان الإقامة <b class="required-star">*</b><select id="entryCountry" required><option value="">جارٍ تحميل دول العالم...</option></select></label>
+          <label>المنطقة <b class="required-star">*</b><select id="entryCity" required><option value="">اختر دولة الإقامة أولاً</option></select></label>
+          <label>العمر <b class="required-star">*</b><select id="entryAge" required><option value="">إختر ..</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option></select></label>
+          <label>الطول (سم) <b class="required-star">*</b><select id="entryHeight" required><option value="">إختر ..</option><option value="140">140</option><option value="141">141</option><option value="142">142</option><option value="143">143</option><option value="144">144</option><option value="145">145</option><option value="146">146</option><option value="147">147</option><option value="148">148</option><option value="149">149</option><option value="150">150</option><option value="151">151</option><option value="152">152</option><option value="153">153</option><option value="154">154</option><option value="155">155</option><option value="156">156</option><option value="157">157</option><option value="158">158</option><option value="159">159</option><option value="160">160</option><option value="161">161</option><option value="162">162</option><option value="163">163</option><option value="164">164</option><option value="165">165</option><option value="166">166</option><option value="167">167</option><option value="168">168</option><option value="169">169</option><option value="170">170</option><option value="171">171</option><option value="172">172</option><option value="173">173</option><option value="174">174</option><option value="175">175</option><option value="176">176</option><option value="177">177</option><option value="178">178</option><option value="179">179</option><option value="180">180</option><option value="181">181</option><option value="182">182</option><option value="183">183</option><option value="184">184</option><option value="185">185</option><option value="186">186</option><option value="187">187</option><option value="188">188</option><option value="189">189</option><option value="190">190</option><option value="191">191</option><option value="192">192</option><option value="193">193</option><option value="194">194</option><option value="195">195</option><option value="196">196</option><option value="197">197</option><option value="198">198</option><option value="199">199</option><option value="200">200</option><option value="201">201</option><option value="202">202</option><option value="203">203</option><option value="204">204</option><option value="205">205</option><option value="206">206</option><option value="207">207</option><option value="208">208</option><option value="209">209</option><option value="210">210</option></select></label>
+          <label>الوزن (كغ) <b class="required-star">*</b><select id="entryWeight" required><option value="">إختر ..</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option><option value="121">121</option><option value="122">122</option><option value="123">123</option><option value="124">124</option><option value="125">125</option><option value="126">126</option><option value="127">127</option><option value="128">128</option><option value="129">129</option><option value="130">130</option><option value="131">131</option><option value="132">132</option><option value="133">133</option><option value="134">134</option><option value="135">135</option><option value="136">136</option><option value="137">137</option><option value="138">138</option><option value="139">139</option><option value="140">140</option><option value="141">141</option><option value="142">142</option><option value="143">143</option><option value="144">144</option><option value="145">145</option><option value="146">146</option><option value="147">147</option><option value="148">148</option><option value="149">149</option><option value="150">150</option></select></label>
+          
+          
+          <small class="muted">تظهر المناطق الإدارية باللغة العربية حسب دولة الإقامة.</small>
           <p class="notice">الدين: للمسلمين فقط</p>
           <option>السعودية</option><option>مصر</option><option>الأردن</option><option>المغرب</option><option>الجزائر</option><option>تونس</option><option>سوريا</option><option>العراق</option><option>فلسطين</option><option>لبنان</option><option>اليمن</option><option>الإمارات</option><option>قطر</option><option>الكويت</option><option>البحرين</option><option>عمان</option><option>ليبيا</option><option>السودان</option><option>موريتانيا</option><option>فرنسا</option><option>ألمانيا</option><option>بلجيكا</option><option>هولندا</option><option>إسبانيا</option><option>إيطاليا</option><option>المملكة المتحدة</option><option>كندا</option><option>أمريكا</option><option>تركيا</option><option>أخرى</option></select></label>
           <h2>مواصفاتك</h2>
-          <label>الوزن (كغ) <b class="required-star">*</b><select id="entryWeight" required><option value="">إختر ..</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option><option value="121">121</option><option value="122">122</option><option value="123">123</option><option value="124">124</option><option value="125">125</option><option value="126">126</option><option value="127">127</option><option value="128">128</option><option value="129">129</option><option value="130">130</option><option value="131">131</option><option value="132">132</option><option value="133">133</option><option value="134">134</option><option value="135">135</option><option value="136">136</option><option value="137">137</option><option value="138">138</option><option value="139">139</option><option value="140">140</option><option value="141">141</option><option value="142">142</option><option value="143">143</option><option value="144">144</option><option value="145">145</option><option value="146">146</option><option value="147">147</option><option value="148">148</option><option value="149">149</option><option value="150">150</option></select></label>
-          <label>الطول (سم) <b class="required-star">*</b><select id="entryHeight" required><option value="">إختر ..</option><option value="140">140</option><option value="141">141</option><option value="142">142</option><option value="143">143</option><option value="144">144</option><option value="145">145</option><option value="146">146</option><option value="147">147</option><option value="148">148</option><option value="149">149</option><option value="150">150</option><option value="151">151</option><option value="152">152</option><option value="153">153</option><option value="154">154</option><option value="155">155</option><option value="156">156</option><option value="157">157</option><option value="158">158</option><option value="159">159</option><option value="160">160</option><option value="161">161</option><option value="162">162</option><option value="163">163</option><option value="164">164</option><option value="165">165</option><option value="166">166</option><option value="167">167</option><option value="168">168</option><option value="169">169</option><option value="170">170</option><option value="171">171</option><option value="172">172</option><option value="173">173</option><option value="174">174</option><option value="175">175</option><option value="176">176</option><option value="177">177</option><option value="178">178</option><option value="179">179</option><option value="180">180</option><option value="181">181</option><option value="182">182</option><option value="183">183</option><option value="184">184</option><option value="185">185</option><option value="186">186</option><option value="187">187</option><option value="188">188</option><option value="189">189</option><option value="190">190</option><option value="191">191</option><option value="192">192</option><option value="193">193</option><option value="194">194</option><option value="195">195</option><option value="196">196</option><option value="197">197</option><option value="198">198</option><option value="199">199</option><option value="200">200</option><option value="201">201</option><option value="202">202</option><option value="203">203</option><option value="204">204</option><option value="205">205</option><option value="206">206</option><option value="207">207</option><option value="208">208</option><option value="209">209</option><option value="210">210</option></select></label>
+          
+          
           <label>لون البشرة <b class="required-star">*</b><select id="entrySkin" required><option value="">إختر ..</option><option>أبيض</option><option>حنطي</option><option>أسمر فاتح</option><option>أسمر</option><option>داكن</option></select></label>
           <label>بنية الجسم <b class="required-star">*</b><select id="entryBuild" required><option value="">إختر ..</option><option>نحيف</option><option>متوسط</option><option>رياضي</option><option>ممتلئ</option><option>ممتلئ جداً</option></select></label>
         </section>
@@ -1707,10 +1713,11 @@ body.authenticated.mithaq-main-admin .mithaq-bottom-nav{grid-template-columns:re
 <div class="member-profile-card-head"><h2>تعديل بيانات ملفي</h2><span>تظهر بياناتك مرة واحدة في صفحة الملف</span></div>
 <form id="myProfileForm" hidden>
 <div class="field"><label for="displayName">الاسم الظاهر</label><input id="displayName" maxlength="60" required autocomplete="name" placeholder="الاسم الذي تريد عرضه"></div>
+<div class="field"><label for="edit_nationality">الجنسية</label><select id="edit_nationality" data-profile-key="nationality"><option value="">اختر الجنسية</option></select></div>
 <div class="field"><label for="profileCountry">الإقامة</label><select id="profileCountry"><option value="">اختر دولة الإقامة</option></select></div>
 <div class="field"><label for="profileRegion">المنطقة</label><select id="profileRegion"><option value="">اختر المنطقة</option></select></div>
-<div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
 <div id="profileExtraFields"></div>
+<div class="field"><label for="marriageType">نوع الزواج</label><select id="marriageType" required><option value="">اختر</option><option value="معلن">الزواج المعلن</option><option value="مسيار">زواج المسيار</option><option value="الوحيدة">الوحيدة</option><option value="لا مانع من التعدد">لا مانع من التعدد</option></select></div>
 <div class="field"><label for="profileLifeText">نبذة عني</label><textarea id="profileLifeText" maxlength="2000" placeholder="اكتب نبذة عن نفسك بحرية"></textarea></div>
 <div class="field"><label for="profilePartnerPreferences">مواصفات شريك الحياة</label><textarea id="profilePartnerPreferences" data-profile-key="partner_preferences" maxlength="2000" placeholder="اكتب مواصفات شريك الحياة الذي تبحث عنه"></textarea></div>
 <p class="muted">يمكنك تعديل النبذة ومواصفات شريك الحياة وحفظهما في أي وقت. بعد الحفظ تظهران لجميع الأعضاء.</p>
@@ -3295,6 +3302,8 @@ async function refreshProfileAccess(){
  }
  if(privateError)console.warn('MITHAQ private profile load:',privateError.message);
  if(publicError)console.warn('MITHAQ public profile load:',publicError.message);
+ await ensureWorldRegionsData();
+ if(meta.city)meta.city=worldArabicRegionValue(meta.country,meta.city);
  if(publicRow){
   // Keep the actual registration/private values first; use the public summary only as a fallback.
   meta.username=meta.username||((publicRow.display_name&&publicRow.display_name!=='عضو ميثاق')?publicRow.display_name:'');
@@ -3340,8 +3349,9 @@ async function refreshProfileAccess(){
   work_field:['لا أعمل','القطاع الحكومي','القطاع الخاص','أعمال حرة','التعليم','الصحة','الهندسة','التجارة','إدارة وأعمال','شيء آخر'].map(x=>[x,x])
  };
  const addProfileSelect=(select,choices,value)=>{select.replaceChildren(new Option('اختر',''));const seen=new Set();choices.forEach(([v,label])=>{const key=String(v);if(seen.has(key))return;seen.add(key);select.append(new Option(label,key));});if(value&&!seen.has(String(value)))select.append(new Option(String(value),String(value)));select.value=value??'';};
+ const nationalityEditor=document.getElementById('edit_nationality');addProfileSelect(nationalityEditor,choiceMap.nationality,meta.nationality??'');
  const rangeChoices=(start,end)=>Array.from({length:end-start+1},(_,i)=>[String(start+i),String(start+i)]);
- const extraFields=[['gender','الجنس'],['family_status','الحالة الاجتماعية'],['age','العمر'],['children','عدد الأطفال'],['nationality','الجنسية'],['weight','الوزن (كغ)'],['height','الطول (سم)'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية']];
+ const extraFields=[['age','العمر'],['height','الطول (سم)'],['weight','الوزن (كغ)'],['gender','الجنس'],['family_status','الحالة الاجتماعية'],['children','عدد الأطفال'],['skin_color','لون البشرة'],['body_build','بنية الجسم'],['religiosity','التدين'],['prayer','الصلاة'],['smoking','التدخين'],['covering','الحجاب / اللحية'],['education','المستوى التعليمي'],['financial_status','الوضع المادي'],['work_field','مجال العمل'],['work','الوظيفة'],['monthly_income','الدخل الشهري'],['health','الحالة الصحية']];
  extraFields.forEach(([key,label])=>{
   const wrap=document.createElement('div');wrap.className='field';
   const caption=document.createElement('label');caption.textContent=label;caption.htmlFor='edit_'+key;
@@ -5290,18 +5300,63 @@ let worldCountryNameToCode=new Map();
 const worldCityCache=new Map();
 const worldPriorityCountries=['SA','AE','KW','QA','BH','OM'];
 const worldArabicNames={SA:'السعودية',AE:'الإمارات',KW:'الكويت',QA:'قطر',BH:'البحرين',OM:'عُمان',US:'الولايات المتحدة',GB:'المملكة المتحدة',KR:'كوريا الجنوبية',KP:'كوريا الشمالية',RU:'روسيا',IR:'إيران',SY:'سوريا',YE:'اليمن',EG:'مصر',JO:'الأردن',PS:'فلسطين',LB:'لبنان',IQ:'العراق',MA:'المغرب',DZ:'الجزائر',TN:'تونس'};
-const worldSaudiCityNames={Riyadh:'الرياض',Jeddah:'جدة',Mecca:'مكة المكرمة',Makkah:'مكة المكرمة',Medina:'المدينة المنورة',Madinah:'المدينة المنورة',Dammam:'الدمام',Khobar:'الخبر',Dhahran:'الظهران',Taif:'الطائف',Tabuk:'تبوك',Abha:'أبها',Jazan:'جازان',Najran:'نجران',Hail:'حائل',Buraidah:'بريدة',Jubail:'الجبيل',Yanbu:'ينبع',AlKharj:'الخرج',Hofuf:'الهفوف'};
-const worldSaudiAdministrativeRegions=['منطقة الرياض','منطقة مكة المكرمة','منطقة المدينة المنورة','منطقة القصيم','المنطقة الشرقية','منطقة عسير','منطقة تبوك','منطقة حائل','منطقة الحدود الشمالية','منطقة جازان','منطقة نجران','منطقة الباحة','منطقة الجوف'];
+const worldRegionDataUrl='./data/world-regions-ar.json';
+let worldRegionRecords=null;
+const worldRegionsByCode=new Map();
+async function ensureWorldRegionsData(){
+ if(worldRegionRecords)return worldRegionRecords;
+ const response=await fetch(worldRegionDataUrl,{cache:'force-cache'});
+ if(!response.ok)throw new Error('تعذر تحميل المناطق الإدارية العربية');
+ const payload=await response.json();
+ worldRegionRecords=Array.isArray(payload.countries)?payload.countries:[];
+ worldRegionsByCode.clear();
+ worldRegionRecords.forEach(country=>worldRegionsByCode.set(String(country.code||'').toUpperCase(),country.regions||[]));
+ return worldRegionRecords;
+}
+function worldTransliterateArabic(value){
+ let text=String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ const pairs=[['sh','ش'],['ch','تش'],['th','ث'],['kh','خ'],['gh','غ'],['ph','ف'],['dh','ذ'],['zh','ژ'],['oo','و'],['ee','ي'],['ou','و'],['ai','اي'],['ay','اي'],['ei','ي'],['ie','ي'],['ck','ك'],['qu','ك'],['ng','نغ']];
+ pairs.forEach(([a,b])=>{text=text.replaceAll(a,b);});
+ const letters={a:'ا',b:'ب',c:'ك',d:'د',e:'ي',f:'ف',g:'ج',h:'ه',i:'ي',j:'ج',k:'ك',l:'ل',m:'م',n:'ن',o:'و',p:'ب',q:'ق',r:'ر',s:'س',t:'ت',u:'و',v:'ڤ',w:'و',x:'كس',y:'ي',z:'ز',"'":'','-':' ','_':' ','.':' '};
+ return text.split('').map(ch=>letters[ch]??(/\d/.test(ch)?ch:ch===' '?' ':ch)).join('').replace(/\s+/g,' ').trim()||String(value||'');
+}
+function worldCountryCode(countryLabel){
+ return String(worldCountryNameToCode.get(countryLabel)||worldCountryRecords.find(c=>c.name===countryLabel)?.iso2||'').toUpperCase();
+}
+function worldArabicRegionValue(countryLabel,value){
+ const raw=String(value??'').trim();if(!raw)return '';
+ const code=worldCountryCode(countryLabel);
+ const rows=worldRegionsByCode.get(code)||[];
+ const found=rows.find(item=>String(item.en||'').toLocaleLowerCase()===raw.toLocaleLowerCase()||String(item.ar||'')===raw);
+ if(found)return found.ar;
+ if(/[\u0600-\u06FF]/.test(raw))return raw;
+ return worldTransliterateArabic(raw);
+}
 async function loadWorldRegions(countryLabel,select,placeholder,selected=''){
  if(!select)return [];
- const code=worldCountryNameToCode.get(countryLabel)||worldCountryRecords.find(c=>c.name===countryLabel)?.iso2;
- if(String(code||'').toUpperCase()==='SA'){
-  select.replaceChildren(new Option(placeholder,''));
-  worldSaudiAdministrativeRegions.forEach(region=>select.append(new Option(region,region)));
-  if(selected&&!worldSaudiAdministrativeRegions.includes(selected))select.append(new Option(selected,selected));
-  select.value=selected||'';select.disabled=false;return worldSaudiAdministrativeRegions;
+ select.replaceChildren(new Option(placeholder,''));select.disabled=true;
+ try{
+  await ensureWorldRegionsData();
+  const code=worldCountryCode(countryLabel);
+  const rows=(worldRegionsByCode.get(code)||[]).slice().sort((a,b)=>String(a.ar).localeCompare(String(b.ar),'ar'));
+  if(rows.length){
+   rows.forEach(region=>select.append(new Option(region.ar,region.ar)));
+   const normalized=worldArabicRegionValue(countryLabel,selected);
+   if(normalized&&!rows.some(region=>region.ar===normalized))select.append(new Option(normalized,normalized));
+   select.value=normalized||'';
+  }else{
+   const fallback=selected?worldArabicRegionValue(countryLabel,selected):'غير محدد';
+   select.append(new Option(fallback||'غير محدد',fallback||'غير محدد'));
+   select.value=fallback||'غير محدد';
+  }
+  select.disabled=false;return rows;
+ }catch(error){
+  const fallback=selected?worldArabicRegionValue(countryLabel,selected):'';
+  if(fallback)select.append(new Option(fallback,fallback));
+  select.append(new Option('تعذر تحميل المناطق؛ أعد المحاولة بعد الاتصال بالإنترنت',''));
+  select.value=fallback;select.disabled=false;
+  console.warn('MITHAQ Arabic regions:',error);return [];
  }
- return loadWorldCities(countryLabel,select,placeholder,selected);
 }
 function worldCountryLabel(country){
  const code=String(country.iso2||'').toUpperCase();
@@ -5335,32 +5390,6 @@ function fillWorldCountrySelect(select,placeholder,current=''){
  if(current&&!worldCountryChoices.some(([value])=>value===current))select.append(new Option(current,current));
  select.value=current||'';
 }
-async function loadWorldCities(countryLabel,select,placeholder,selected=''){
- if(!select)return [];
- select.replaceChildren(new Option(placeholder,''));select.disabled=true;
- if(!countryLabel){select.disabled=false;return [];}
- const code=worldCountryNameToCode.get(countryLabel)||worldCountryRecords.find(c=>c.name===countryLabel)?.iso2;
- if(!code){if(selected)select.append(new Option(selected,selected));select.value=selected||'';select.disabled=false;return [];}
- try{
-  let cities=worldCityCache.get(code);
-  if(!cities){
-   const response=await fetch(WORLD_DATA_BASE+'/countries/'+code+'.json',{cache:'force-cache'});
-   if(!response.ok)throw new Error('city list unavailable');
-   const payload=await response.json(),country=Array.isArray(payload)?payload[0]:payload,states=country?.states||[],rows=[];
-   states.forEach(state=>(state.cities||[]).forEach(city=>{if(city?.name)rows.push(city.name);}));
-   cities=[...new Set(rows)].sort((a,b)=>a.localeCompare(b,'ar'));
-   if(!cities.length)cities=[...new Set(states.map(state=>state.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
-   worldCityCache.set(code,cities);
-  }
-  cities.forEach(city=>{const label=code==='SA'?(worldSaudiCityNames[city]||city):city;select.append(new Option(label,label));});
-  if(selected&&!cities.includes(selected)&&!(code==='SA'&&Object.values(worldSaudiCityNames).includes(selected)))select.append(new Option(selected,selected));
-  select.value=selected||'';select.disabled=false;return cities;
- }catch(error){
-  if(selected)select.append(new Option(selected,selected));
-  select.append(new Option('تعذر تحميل المدن؛ أعد المحاولة بعد الاتصال بالإنترنت',''));
-  select.value=selected||'';select.disabled=false;console.warn('MITHAQ world cities:',code,error);return [];
- }
-}
 (async()=>{
  try{
   await ensureWorldCountries();
@@ -5370,9 +5399,9 @@ async function loadWorldCities(countryLabel,select,placeholder,selected=''){
   });
   const nationality=document.getElementById('entryNationality');if(nationality)fillWorldCountrySelect(nationality,'اختر الجنسية',nationality.value);
   const entryCountry=document.getElementById('entryCountry'),entryCity=document.getElementById('entryCity');
-  entryCountry?.addEventListener('change',()=>loadWorldCities(entryCountry.value,entryCity,'اختر المدينة'));
+  entryCountry?.addEventListener('change',()=>loadWorldRegions(entryCountry.value,entryCity,'اختر المنطقة'));
   const searchCountry=document.getElementById('country'),searchCity=document.getElementById('cityFilter');
-  searchCountry?.addEventListener('change',()=>loadWorldCities(searchCountry.value==='all'?'':searchCountry.value,searchCity,'كل المدن'));
+  searchCountry?.addEventListener('change',()=>loadWorldRegions(searchCountry.value==='all'?'':searchCountry.value,searchCity,'كل المناطق'));
  }catch(error){console.warn('MITHAQ world countries:',error);}
 })();
 
